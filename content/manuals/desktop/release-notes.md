@@ -29,6 +29,19 @@ For more frequently asked questions, see the [FAQs](/manuals/desktop/troubleshoo
 >
 > If you're experiencing malware detection issues on Mac, follow the steps documented in [docker/for-mac#7527](https://github.com/docker/for-mac/issues/7527).
 
+## 4.43.1
+
+{{< release-date date="2025-07-04" >}}
+
+{{< desktop-install-v2 all=true beta_win_arm=true version="4.43.1" build_path="/198352/" >}}
+
+### Bug fixes and enhancements
+
+#### For all platforms
+
+- Fixed an issue that caused Docker Desktop UI to break when Ask Gordon responses contained HTML tags.
+- Fixed an issue that prevented extensions from communicating with their backends.
+
 ## 4.43.0
 
 {{< release-date date="2025-07-03" >}}
@@ -81,6 +94,10 @@ For more frequently asked questions, see the [FAQs](/manuals/desktop/troubleshoo
 #### For all platforms
 
 - `docker buildx bake` will not build images in Compose files with a top-level models attribute. Use `docker compose build` instead.
+- Gordon responses containing HTML can cause Desktop UI to be permanently broken. As a workaround, you can delete `persisted-state.json` file to reset the UI. The file is located in the following directories:
+  - Windows: `%APPDATA%\Docker Desktop\persisted-state.json`
+  - Linux: `$XDG_CONFIG_HOME/Docker Desktop/persisted-state.json` or `~/.config/Docker Desktop/persisted-state.json`
+  - Mac: `~/Library/Application Support/Docker Desktop/persisted-state.json`
 
 #### For Windows
 
@@ -223,7 +240,7 @@ For more frequently asked questions, see the [FAQs](/manuals/desktop/troubleshoo
 - Docker Model Runner is now available on x86 Windows machines with NVIDIA GPUs.
 - You can now [push models](/manuals/ai/model-runner.md#push-a-model-to-docker-hub) to Docker Hub with Docker Model Runner.
 - Added support for Docker Model Runner's model management and chat interface in Docker Desktop for Mac and Windows (on hardware supporting Docker Model Runner). Users can now view, interact with, and manage local AI models through a new dedicated interface.
-- [Docker Compose](/manuals/ai/compose/model-runner.md) and Testcontainers [Java](https://java.testcontainers.org/modules/docker_model_runner/) and [Go](https://golang.testcontainers.org/modules/dockermodelrunner/) now support Docker Model Runner.
+- [Docker Compose](/manuals/ai/compose/models-and-compose.md) and Testcontainers [Java](https://java.testcontainers.org/modules/docker_model_runner/) and [Go](https://golang.testcontainers.org/modules/dockermodelrunner/) now support Docker Model Runner.
 - Introducing Docker Desktop in the [Microsoft App Store](https://apps.microsoft.com/detail/xp8cbj40xlbwkx?hl=en-GB&gl=GB).
 
 ### Upgrades
