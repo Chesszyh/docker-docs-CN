@@ -109,6 +109,10 @@ outputs:
 languages:
   en:
     languageName: English
+  zh:
+    languageName: 中文
+    weight: 1
+    title: Docker 文档
 
 # Site-wide parameters
 # Can be accessed in content with {{% param "param_name" %}}

@@ -1,0 +1,245 @@
+## sidebar/aside/toc strings:
+
+editPage:
+  other: 编辑此页
+requestChanges:
+  other: 请求更改
+tableOfContents:
+  other: 目录
+relatedContent:
+  other: 相关内容
+
+## callout titles:
+
+experimental: 实验性功能
+restricted: 受限功能
+important: 重要
+note: 注意
+tip: 提示
+warning: 警告
+caution: 小心
+
+## openapi strings:
+
+apiExampleResponse:
+  other: 响应示例
+apiExampleResponseCode:
+  other: 响应代码示例
+apiPropParam:
+  other: 参数
+apiPropType:
+  other: 类型
+apiPropValue:
+  other: 值
+apiPropReq:
+  other: 是否必须
+apiPropDesc:
+  other: 描述
+
+## search strings:
+
+searchPlaceholder:
+  other: 搜索
+searchClear:
+  other: 清除
+searchNoResults:
+  other: 没有结果
+searchResult:
+  one: 个结果
+  other: 个结果
+searchResultFor:
+  other: "关于"
+searchResultIn:
+  other: "在"
+searchBreadcrumb:
+  other: "在"
+searchRecent:
+  other: 最近
+searchSuggestions:
+  other: 建议
+searchSeeAll:
+  other: 查看所有结果
+searchPoweredBy:
+  other: 技术支持
+searchAIPowered:
+  other: AI 驱动
+searchAIPoweredDescription:
+  other: 此搜索由 AI 驱动。结果可能不完整或不准确。
+searchAIPoweredFeedback:
+  other: 提供反馈
+searchAIPoweredMore:
+  other: 提出后续问题
+searchAIPoweredCopy:
+  other: 复制
+searchAIPoweredCopied:
+  other: 已复制
+searchAIPoweredSources:
+  other: 来源
+searchAIPoweredQuestion:
+  other: 您问
+searchAIPoweredAnswer:
+  other: 答案
+searchAIPoweredThinking:
+  other: 思考中...
+
+## 404 strings:
+
+404Title:
+  other: 找不到页面
+404Text:
+  other: 您正在查找的页面不存在。
+404Homepage:
+  other: 返回首页
+
+## cookie consent strings:
+
+cookieConsentTitle:
+  other: Cookie 同意
+cookieConsentText:
+  other: 我们使用 Cookie 来个性化内容和广告，提供社交媒体功能并分析我们的流量。我们还与我们的社交媒体、广告和分析合作伙伴共享有关您使用我们网站的信息。
+cookieConsentButton:
+  other: Cookie 设置
+cookieConsentLink:
+https://www.docker.com/legal/cookie-policy
+
+## feedback strings:
+
+feedbackTitle:
+  other: 此页面是否有帮助？
+feedbackYes:
+  other: "是"
+feedbackNo:
+  other: "否"
+feedbackThanks:
+  other: 感谢您的反馈！
+feedbackDescription:
+  other: 告诉我们如何改进此页面。
+feedbackSubmit:
+  other: 提交
+feedbackSkip:
+  other: 跳过
+feedbackNotice:
+  other: 您的反馈是匿名的。要提出文档问题��请使用
+feedbackNoticeLink:
+  other: 请求更改
+feedbackNoticeEnd:
+  other: 按钮。
+
+## language strings:
+
+languageSwitcherLabel:
+  other: 语言
+languageName:
+  other: 中文
+
+## theme strings:
+
+themeSwitcherLabel:
+  other: 主题
+themeLight:
+  other: 浅色
+themeDark:
+  other: 深色
+themeSystem:
+  other: 跟随系统
+
+## page strings:
+
+pageLastUpdated:
+  other: 最后更新
+
+## code strings:
+
+codeCopied:
+  other: 已复制！
+codeCopy:
+  other: 复制
+
+## learning path strings:
+
+learningPathTitle:
+  other: 学习路径
+learningPathMinutes:
+  other: 分钟
+learningPathSteps:
+  other: 步骤
+learningPathNext:
+  other: 下一步
+learningPathPrevious:
+  other: 上一步
+
+## guide strings:
+
+guideTitle:
+  other: 您将学到什么
+guideMinutes:
+  other: 分钟
+guideSteps:
+  other: 步骤
+guideNext:
+  other: 下一步
+guidePrevious:
+  other: 上一步
+
+## glossary strings:
+
+glossaryTerm:
+  other: 术语
+glossaryDefinition:
+  other: 定义
+
+## landing page strings:
+
+landingFeatured:
+  other: 精选
+landingExplore:
+  other: 探索
+landingReadMore:
+  other: 阅读更多
+landingViewAll:
+  other: 查看全部
+landingManuals:
+  other: 手册
+landingReference:
+  other: 参考
+landingGuides:
+  other: 指南
+landingGetStarted:
+  other: 入门
+landingPopular:
+  other: 热门
+landingRecent:
+  other: 最近
+landingTags:
+  other: 标签
+landingLanguages:
+  other: 语言
+landingLearningPaths:
+  other: 学习路径
+landingReady:
+  other: 准备好开始了吗？
+landingReadyButton:
+  other: 获取 Docker
+landingReadyButtonLink:
+  other_x: /get-docker/
+landingCommunity:
+  other: 社区
+landingCommunityText:
+  other: 与我们和其他 Docker 用户联系。
+landingCommunityLink:
+  other: 加入我们的社区
+landingCommunityLinkHref:
+  other: https://www.docker.com/community/
+landingNewsletter:
+  other: 时事通讯
+landingNewsletterText:
+  other: 及时了解 Docker 的最新动态。
+landingNewsletterLink:
+  other: 订阅
+landingNewsletterLinkHref:
+  other: https://www.docker.com/newsletter-subscription/
+
+## breadcrumb strings:
+
+breadcrumbHome:
+  other: 文档
