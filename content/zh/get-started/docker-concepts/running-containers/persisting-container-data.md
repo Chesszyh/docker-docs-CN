@@ -1,68 +1,71 @@
 ---
 title: 持久化容器数据
 weight: 3
-keywords: concepts, build, images, container, docker desktop
-description: 此概念页面将教您 Docker 中数据持久性的重要性
-aliases:
+keywords: concepts, build, images, container, docker desktop, 概念, 构建, 镜像, 容器
+description: 此概念页面将向您介绍 Docker 中数据持久化的重要性
+aliases: 
  - /guides/walkthroughs/persist-data/
  - /guides/docker-concepts/running-containers/persisting-container-data/
 ---
 
 {{< youtube-embed 10_2BjqB_Ls >}}
 
-## 说明
+## 解释
 
-当容器启动时，它使用镜像提供的文件和配置。每个容器都能够创建、修改和删除文件，这样做不会影响任何其他容器。当容器被删除时，这些文件更改也会被删除。
+容器启动时，它使用镜像提供的文件和配置。每个容器都能够创建、修改和删除文件，并且这样做不会影响任何其他容器。当容器被删除时，这些文件更改也会被删除。
 
-虽然容器的这种短暂性很棒，但当您想要持久化数据时，这就构成了挑战。例如，如果您重启数据库容器，您可能不希望以空数据库开始。那么，您如何持久化文件？
+虽然容器这种短暂的特性很好，但在您想要持久化数据时，它也带来了一个挑战。例如，如果您重新启动一个数据库容器，您可能不想从一个空的数据库开始。那么，您如何持久化文件呢？
 
-### 容器卷 (Volumes)
+### 容器卷 (Container volumes)
 
-卷（Volumes）是一种存储机制，提供在单个容器生命周期之外持久化数据的能力。可以将其视为提供从容器内部到容器外部的快捷方式或符号链接。
+卷是一种存储机制，它提供了在单个容器的生命周期之外持久化数据的能力。可以将其视为提供从容器内部到容器外部的快捷方式或符号链接。
 
-举个例子，假设您创建了一个名为 `log-data` 的卷。
+例如，假设您创建了一个名为 `log-data` 的卷。
 
 ```console
 $ docker volume create log-data
 ```
 
-当使用以下命令启动容器时，该卷将被挂载（或附加）到容器内的 `/logs` 处：
+使用以下命令启动容器时，卷将挂载（或附加）到容器内的 `/logs` 路径：
 
 ```console
 $ docker run -d -p 80:80 -v log-data:/logs docker/welcome-to-docker
 ```
 
-如果卷 `log-data` 不存在，Docker 会自动为您创建它。
+如果卷 `log-data` 不存在，Docker 会为您自动创建它。
 
-当容器运行时，它写入 `/logs` 文件夹的所有文件都将保存在此卷中，即容器外部。如果您删除容器并使用相同的卷启动一个新容器，文件仍然会在那里。
+容器运行时，它写入 `/logs` 文件夹的所有文件都将保存在这个卷中，位于容器外部。如果您删除该容器并使用相同的卷启动一个新容器，这些文件仍然会存在。
 
 > **使用卷共享文件**
 >
-> 您可以将同一个卷附加到多个容器，以便在容器之间共享文件。这在诸如日志聚合、数据管道或其他事件驱动的应用程序等场景中可能会有所帮助。
+> 您可以将同一个卷附加到多个容器，以便在容器之间共享文件。这在日志聚合、数据管道或其他事件驱动型应用程序等场景中可能会很有帮助。
+
 
 ### 管理卷
 
 卷拥有超出容器生命周期的自身生命周期，并且根据您使用的数据和应用程序类型，卷可能会变得非常大。以下命令将有助于管理卷：
 
 - `docker volume ls` - 列出所有卷
-- `docker volume rm <volume-name-or-id>` - 删除卷（仅当卷未附加到任何容器时有效）
+- `docker volume rm <volume-name-or-id>` - 删除卷（仅在卷未附加到任何容器时有效）
 - `docker volume prune` - 删除所有未使用的（未附加的）卷
+
+
 
 ## 试一试
 
-在本指南中，您将练习创建和使用卷来持久化由 Postgres 容器创建的数据。当数据库运行时，它将文件存储到 `/var/lib/postgresql/data` 目录中。通过在此处附加卷，您将能够多次重启容器，同时保留数据。
+在本指南中，您将练习创建并使用卷来持久化 Postgres 容器创建的数据。数据库运行时，它将文件存储在 `/var/lib/postgresql/data` 目录中。通过在此处附加卷，您将能够在保留数据的同时多次重启容器。
 
 ### 使用卷
 
 1. [下载并安装](/get-started/get-docker/) Docker Desktop。
 
-2. 使用 [Postgres 镜像](https://hub.docker.com/_/postgres) 启动容器，命令如下：
+2. 使用以下命令启动一个使用 [Postgres 镜像](https://hub.docker.com/_/postgres) 的容器：
 
     ```console
     $ docker run --name=db -e POSTGRES_PASSWORD=secret -d -v postgres_data:/var/lib/postgresql/data postgres
     ```
 
-    这将在后台启动数据库，使用密码对其进行配置，并将卷附加到 PostgreSQL 将持久化数据库文件的目录。
+    这将在后台启动数据库，配置密码，并在 PostgreSQL 持久化数据库文件的目录中附加一个卷。
 
 3. 使用以下命令连接到数据库：
 
@@ -80,7 +83,7 @@ $ docker run -d -p 80:80 -v log-data:/logs docker/welcome-to-docker
     INSERT INTO tasks (description) VALUES ('Finish work'), ('Have fun');
     ```
 
-5. 在 PostgreSQL 命令行中运行以下命令，验证数据是否在数据库中：
+5. 在 PostgreSQL 命令行中运行以下命令验证数据是否在数据库中：
 
     ```text
     SELECT * FROM tasks;
@@ -96,7 +99,7 @@ $ docker run -d -p 80:80 -v log-data:/logs docker/welcome-to-docker
     (2 rows)
     ```
 
-6. 通过运行以下命令退出 PostgreSQL shell：
+6. 运行以下命令退出 PostgreSQL shell：
 
     ```console
     \q
@@ -109,15 +112,15 @@ $ docker run -d -p 80:80 -v log-data:/logs docker/welcome-to-docker
     $ docker rm db
     ```
 
-8. 通过运行以下命令启动一个新容器，并附加具有持久数据的相同卷：
+8. 运行以下命令启动一个新容器，并附加带有持久化数据的相同卷：
 
     ```console
     $ docker run --name=new-db -d -v postgres_data:/var/lib/postgresql/data postgres 
     ```
 
-    您可能已经注意到 `POSTGRES_PASSWORD` 环境变量已被省略。这是因为该变量仅在引导新数据库时使用。
+    您可能已经注意到省略了 `POSTGRES_PASSWORD` 环境变量。这是因为该变量仅在引导新数据库时使用。
 
-9. 通过运行以下命令验证数据库是否仍有记录：
+9. 运行以下命令验证数据库是否仍然具有这些记录：
 
     ```console
     $ docker exec -ti new-db psql -U postgres -c "SELECT * FROM tasks"
@@ -133,40 +136,43 @@ Docker Desktop Dashboard 提供了查看任何卷内容的能力，以及导出�
 
 3. **Data**（数据）选项卡显示卷的内容并提供浏览文件的能力。双击文件将允许您查看内容并进行更改。
 
-4. 右键单击任何文件以保存或删除它。
+4. 右键点击任何文件进行保存或删除。
 
-### 删除卷
 
-在删除卷之前，它必须未附加到任何容器。如果您尚未删除以前的容器，请使用以下命令执行此操作（`-f` 将先停止容器，然后将其删除）：
+### 移除卷
+
+在移除卷之前，它必须未附加到任何容器。如果您还没有移除之前的容器，请使用以下命令执行此操作（`-f` 将先停止容器然后移除它）：
 
 ```console
 $ docker rm -f new-db
 ```
 
-有几种删除卷的方法，包括以下方法：
+移除卷有几种方法，包括以下方法：
 
-- 在 Docker Desktop Dashboard 中的卷上选择 **Delete Volume**（删除卷）选项。
+- 在 Docker Desktop Dashboard 中选择卷上的 **Delete Volume**（删除卷）选项。
 - 使用 `docker volume rm` 命令：
 
     ```console
     $ docker volume rm postgres_data
     ```
-- 使用 `docker volume prune` 命令删除所有未使用的卷：
+- 使用 `docker volume prune` 命令移除所有未使用的卷：
 
     ```console
     $ docker volume prune
     ```
+
 
 ## 其他资源
 
 以下资源将帮助您了解有关卷的更多信息：
 
 - [在 Docker 中管理数据](/engine/storage)
-- [卷](/engine/storage/volumes)
-- [卷挂载](/engine/containers/run/#volume-mounts)
+- [卷 (Volumes)](/engine/storage/volumes)
+- [卷挂载 (Volume mounts)](/engine/containers/run/#volume-mounts)
+
 
 ## 下一步
 
-既然您已了解持久化容器数据，是时候学习与容器共享本地文件了。
+现在您已经了解了持久化容器数据，是时候学习与容器共享本地文件了。
 
 {{< button text="与容器共享本地文件" url="sharing-local-files" >}}
