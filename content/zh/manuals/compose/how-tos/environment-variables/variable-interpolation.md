@@ -1,7 +1,7 @@
 ---
-title: 使用插值在 Compose 文件中设置、使用和管理变量
-linkTitle: 插值
-description: 如何在 Compose 文件中使用插值设置、使用和管理变量
+title: Set, use, and manage variables in a Compose file with interpolation
+linkTitle: Interpolation
+description: How to set, use, and manage variables in your Compose file with interpolation
 keywords: compose, orchestration, environment, variables, interpolation
 weight: 40
 aliases:
@@ -10,11 +10,13 @@ aliases:
 - /compose/environment-variables/variable-interpolation/
 ---
 
-Compose 文件可以使用变量来提供更大的灵活性。如果你想快速切换镜像标签以测试多个版本，或者想根据本地环境调整卷源，你不需要每次都编辑 Compose 文件，只需设置变量，在运行时将值插入到 Compose 文件中。
+A Compose file can use variables to offer more flexibility. If you want to quickly switch 
+between image tags to test multiple versions, or want to adjust a volume source to your local
+environment, you don't need to edit the Compose file each time, you can just set variables that insert values into your Compose file at run time.
 
-插值还可用于在运行时将值插入到 Compose 文件中，然后用于将变量传递到容器的环境中。
+Interpolation can also be used to insert values into your Compose file at run time, which is then used to pass variables into your container's environment
 
-下面是一个简单的示例：
+Below is a simple example: 
 
 ```console
 $ cat .env
@@ -25,8 +27,8 @@ services:
     image: "webapp:${TAG}"
 ```
 
-当你运行 `docker compose up` 时，Compose 文件中定义的 `web` 服务会[插值](variable-interpolation.md)镜像 `webapp:v1.5`，该值是在 `.env` 文件中设置的。你可以使用
-[config 命令](/reference/cli/docker/compose/config.md)验证这一点，该命令会将解析后的应用程序配置打印到终端：
+When you run `docker compose up`, the `web` service defined in the Compose file [interpolates](variable-interpolation.md) in the image `webapp:v1.5` which was set in the `.env` file. You can verify this with the
+[config command](/reference/cli/docker/compose/config.md), which prints your resolved application config to the terminal:
 
 ```console
 $ docker compose config
@@ -35,52 +37,52 @@ services:
     image: 'webapp:v1.5'
 ```
 
-## 插值语法
+## Interpolation syntax
 
-插值适用于未加引号和双引号的值。
-支持带花括号（`${VAR}`）和不带花括号（`$VAR`）两种表达式。
+Interpolation is applied for unquoted and double-quoted values.
+Both braced (`${VAR}`) and unbraced (`$VAR`) expressions are supported.
 
-对于带花括号的表达式，支持以下格式：
-- 直接替换
-  - `${VAR}` -> `VAR` 的值
-- 默认值
-  - `${VAR:-default}` -> 如果 `VAR` 已设置且非空，则为 `VAR` 的值，否则为 `default`
-  - `${VAR-default}` -> 如果 `VAR` 已设置，则为 `VAR` 的值，否则为 `default`
-- 必需值
-  - `${VAR:?error}` -> 如果 `VAR` 已设置且非空，则为 `VAR` 的值，否则以错误退出
-  - `${VAR?error}` -> 如果 `VAR` 已设置，则为 `VAR` 的值，否则以错误退出
-- 替代值
-  - `${VAR:+replacement}` -> 如果 `VAR` 已设置且非空，则为 `replacement`，否则为空
-  - `${VAR+replacement}` -> 如果 `VAR` 已设置，则为 `replacement`，否则为空
+For braced expressions, the following formats are supported:
+- Direct substitution
+  - `${VAR}` -> value of `VAR`
+- Default value
+  - `${VAR:-default}` -> value of `VAR` if set and non-empty, otherwise `default`
+  - `${VAR-default}` -> value of `VAR` if set, otherwise `default`
+- Required value
+  - `${VAR:?error}` -> value of `VAR` if set and non-empty, otherwise exit with error
+  - `${VAR?error}` -> value of `VAR` if set, otherwise exit with error
+- Alternative value
+  - `${VAR:+replacement}` -> `replacement` if `VAR` is set and non-empty, otherwise empty
+  - `${VAR+replacement}` -> `replacement` if `VAR` is set, otherwise empty
 
-有关更多信息，请参阅 Compose 规范中的[插值](/reference/compose-file/interpolation.md)。
+For more information, see [Interpolation](/reference/compose-file/interpolation.md) in the Compose Specification. 
 
-## 使用插值设置变量的方法
+## Ways to set variables with interpolation
 
-Docker Compose 可以从多个来源将变量插值到 Compose 文件中。
+Docker Compose can interpolate variables into your Compose file from multiple sources. 
 
-请注意，当同一变量由多个来源声明时，会应用优先级：
+Note that when the same variable is declared by multiple sources, precedence applies:
 
-1. 来自 shell 环境的变量
-2. 如果未设置 `--env-file`，则为本地工作目录（`PWD`）中 `.env` 文件设置的变量
-3. 由 `--env-file` 设置的文件或项目目录中的 `.env` 文件中的变量
+1. Variables from your shell environment
+2. If `--env-file` is not set, variables set by an `.env` file in local working directory (`PWD`)
+3. Variables from a file set by `--env-file` or an `.env` file in project directory
 
-你可以通过运行 `docker compose config --environment` 检查 Compose 用于插值 Compose 模型的变量和值。
+You can check variables and values used by Compose to interpolate the Compose model by running `docker compose config --environment`.
 
-### `.env` 文件
+### `.env` file
 
-Docker Compose 中的 `.env` 文件是一个文本文件，用于定义在运行 `docker compose up` 时应可用于插值的变量。此文件通常包含变量的键值对，它允许你在一个地方集中和管理配置。如果你有多个需要存储的变量，`.env` 文件非常有用。
+An `.env` file in Docker Compose is a text file used to define variables that should be made available for interpolation when running `docker compose up`. This file typically contains key-value pairs of variables, and it lets you  centralize and manage configuration in one place. The `.env` file is useful if you have multiple variables you need to store.
 
-`.env` 文件是设置变量的默认方法。`.env` 文件应放在 `compose.yaml` 文件旁边的项目根目录中。有关环境文件格式的更多信息，请参阅[环境文件语法](#env-file-syntax)。
+The `.env` file is the default method for setting variables. The `.env` file should be placed at the root of the project directory next to your `compose.yaml` file. For more information on formatting an environment file, see [Syntax for environment files](#env-file-syntax).
 
-基本示例：
+Basic example: 
 
 ```console
 $ cat .env
-## 根据 DEV_MODE 定义 COMPOSE_DEBUG，默认为 false
+## define COMPOSE_DEBUG based on DEV_MODE, defaults to false
 COMPOSE_DEBUG=${DEV_MODE:-false}
 
-$ cat compose.yaml
+$ cat compose.yaml 
   services:
     webapp:
       image: my-webapp-image
@@ -94,9 +96,9 @@ services:
       DEBUG: "true"
 ```
 
-#### 附加信息
+#### Additional information 
 
-- 如果你在 `.env` 文件中定义了一个变量，你可以在 `compose.yaml` 中使用 [`environment` 属性](/reference/compose-file/services.md#environment)直接引用它。例如，如果你的 `.env` 文件包含环境变量 `DEBUG=1`，而你的 `compose.yaml` 文件如下所示：
+- If you define a variable in your `.env` file, you can reference it directly in your `compose.yaml` with the [`environment` attribute](/reference/compose-file/services.md#environment). For example, if your `.env` file contains the environment variable `DEBUG=1` and your `compose.yaml` file looks like this:
    ```yaml
     services:
       webapp:
@@ -104,58 +106,58 @@ services:
         environment:
           - DEBUG=${DEBUG}
    ```
-   Docker Compose 会将 `${DEBUG}` 替换为 `.env` 文件中的值
+   Docker Compose replaces `${DEBUG}` with the value from the `.env` file
 
    > [!IMPORTANT]
    >
-   > 当使用 `.env` 文件中的变量作为容器环境中的环境变量时，请注意[环境变量优先级](envvars-precedence.md)。
+   > Be aware of [Environment variables precedence](envvars-precedence.md) when using variables in an `.env` file that  as environment variables in your container's environment.
 
-- 你可以将 `.env` 文件放在项目根目录以外的位置，然后在 CLI 中使用 [`--env-file` 选项](#substitute-with---env-file)让 Compose 找到它。
+- You can place your `.env` file in a location other than the root of your project's directory, and then use the [`--env-file` option in the CLI](#substitute-with---env-file) so Compose can navigate to it.
 
-- 你的 `.env` 文件可以被另一个 `.env` 文件覆盖，如果它[使用 `--env-file` 替换](#substitute-with---env-file)。
+- Your `.env` file can be overridden by another `.env` if it is [substituted with `--env-file`](#substitute-with---env-file).
 
 > [!IMPORTANT]
 >
-> 从 `.env` 文件替换是 Docker Compose CLI 功能。
+> Substitution from `.env` files is a Docker Compose CLI feature.
 >
-> 运行 `docker stack deploy` 时 Swarm 不支持此功能。
+> It is not supported by Swarm when running `docker stack deploy`.
 
-#### `.env` 文件语法
+#### `.env` file syntax
 
-以下语法规则适用于环境文件：
+The following syntax rules apply to environment files:
 
-- 以 `#` 开头的行被处理为注释并被忽略。
-- 空白行被忽略。
-- 未加引号和双引号（`"`）的值会应用插值。
-- 每行表示一个键值对。值可以选择性地加引号。
+- Lines beginning with `#` are processed as comments and ignored.
+- Blank lines are ignored.
+- Unquoted and double-quoted (`"`) values have interpolation applied.
+- Each line represents a key-value pair. Values can optionally be quoted.
   - `VAR=VAL` -> `VAL`
   - `VAR="VAL"` -> `VAL`
   - `VAR='VAL'` -> `VAL`
-- 未加引号值的行内注释必须以空格开头。
+- Inline comments for unquoted values must be preceded with a space.
   - `VAR=VAL # comment` -> `VAL`
   - `VAR=VAL# not a comment` -> `VAL# not a comment`
-- 加引号值的行内注释必须在结束引号之后。
+- Inline comments for quoted values must follow the closing quote.
   - `VAR="VAL # not a comment"` -> `VAL # not a comment`
   - `VAR="VAL" # comment` -> `VAL`
-- 单引号（`'`）的值按字面意思使用。
+- Single-quoted (`'`) values are used literally.
   - `VAR='$OTHER'` -> `$OTHER`
   - `VAR='${OTHER}'` -> `${OTHER}`
-- 引号可以用 `\` 转义。
+- Quotes can be escaped with `\`.
   - `VAR='Let\'s go!'` -> `Let's go!`
   - `VAR="{\"hello\": \"json\"}"` -> `{"hello": "json"}`
-- 双引号值中支持常见的 shell 转义序列，包括 `\n`、`\r`、`\t` 和 `\\`。
+- Common shell escape sequences including `\n`, `\r`, `\t`, and `\\` are supported in double-quoted values.
   - `VAR="some\tvalue"` -> `some  value`
   - `VAR='some\tvalue'` -> `some\tvalue`
   - `VAR=some\tvalue` -> `some\tvalue`
-- 单引号值可以跨多行。示例：
+- Single-quoted values can span multiple lines. Example:
 
    ```yaml
    KEY='SOME
    VALUE'
    ```
 
-   如果你随后运行 `docker compose config`，你会看到：
-
+   If you then run `docker compose config`, you'll see:
+  
    ```yaml
    environment:
      KEY: |-
@@ -163,21 +165,21 @@ services:
        VALUE
    ```
 
-### 使用 `--env-file` 替换
+### Substitute with `--env-file`
 
-你可以在 `.env` 文件中为多个环境变量设置默认值，然后在 CLI 中将该文件作为参数传递。
+You can set default values for multiple environment variables, in an `.env` file and then pass the file as an argument in the CLI.
 
-此方法的优点是你可以将文件存储在任何位置并适当命名，例如，
-此文件路径相对于执行 Docker Compose 命令的当前工作目录。使用 `--env-file` 选项传递文件路径：
+The advantage of this method is that you can store the file anywhere and name it appropriately, for example, 
+This file path is relative to the current working directory where the Docker Compose command is executed. Passing the file path is done using the `--env-file` option:
 
 ```console
 $ docker compose --env-file ./config/.env.dev up
 ```
 
-#### 附加信息
+#### Additional information 
 
-- 如果你想临时覆盖 `compose.yaml` 文件中已引用的 `.env` 文件，此方法很有用。例如，你可能有不同的 `.env` 文件用于生产（`.env.prod`）和测试（`.env.test`）。
-  在以下示例中，有两个环境文件，`.env` 和 `.env.dev`。两者为 `TAG` 设置了不同的值。
+- This method is useful if you want to temporarily override an `.env` file that is already referenced in your `compose.yaml` file. For example you may have different `.env` files for production ( `.env.prod`) and testing (`.env.test`).
+  In the following example, there are two environment files, `.env` and `.env.dev`. Both have different values set for `TAG`. 
   ```console
   $ cat .env
   TAG=v1.5
@@ -188,50 +190,50 @@ $ docker compose --env-file ./config/.env.dev up
     web:
       image: "webapp:${TAG}"
   ```
-  如果命令行中未使用 `--env-file`，则默认加载 `.env` 文件：
+  If the `--env-file` is not used in the command line, the `.env` file is loaded by default:
   ```console
   $ docker compose config
   services:
     web:
       image: 'webapp:v1.5'
   ```
-  传递 `--env-file` 参数会覆盖默认文件路径：
+  Passing the `--env-file` argument overrides the default file path:
   ```console
   $ docker compose --env-file ./config/.env.dev config
   services:
     web:
       image: 'webapp:v1.6'
   ```
-  当传递无效的文件路径作为 `--env-file` 参数时，Compose 返回错误：
+  When an invalid file path is being passed as an `--env-file` argument, Compose returns an error:
   ```console
   $ docker compose --env-file ./doesnotexist/.env.dev  config
   ERROR: Couldn't find env file: /home/user/./doesnotexist/.env.dev
   ```
-- 你可以使用多个 `--env-file` 选项指定多个环境文件，Docker Compose 按顺序读取它们。后面的文件可以覆盖前面文件中的变量。
+- You can use multiple `--env-file` options to specify multiple environment files, and Docker Compose reads them in order. Later files can override variables from earlier files.
   ```console
   $ docker compose --env-file .env --env-file .env.override up
   ```
-- 你可以在启动容器时从命令行覆盖特定的环境变量。
+- You can override specific environment variables from the command line when starting containers. 
   ```console
   $ docker compose --env-file .env.dev up -e DATABASE_URL=mysql://new_user:new_password@new_db:3306/new_database
   ```
 
-### 本地 `.env` 文件与 &lt;project directory&gt; `.env` 文件
+### local `.env` file versus &lt;project directory&gt; `.env` file
 
-`.env` 文件也可用于声明[预定义环境变量](envvars.md)，用于控制 Compose 行为和要加载的文件。
+An `.env` file can also be used to declare [pre-defined environment variables](envvars.md) used to control Compose behavior and files to be loaded. 
 
-当没有明确的 `--env-file` 标志执行时，Compose 在你的工作目录（[PWD](https://www.gnu.org/software/bash/manual/html_node/Bash-Variables.html#index-PWD)）中搜索 `.env` 文件并加载值，
-用于自身配置和插值。如果此文件中的值定义了 `COMPOSE_FILE` 预定义变量，导致项目目录设置为另一个文件夹，
-Compose 将加载第二个 `.env` 文件（如果存在）。这个第二个 `.env` 文件具有较低的优先级。
+When executed without an explicit `--env-file` flag, Compose searches for an `.env` file in your working directory ([PWD](https://www.gnu.org/software/bash/manual/html_node/Bash-Variables.html#index-PWD)) and loads values 
+both for self-configuration and interpolation. If the values in this file define the `COMPOSE_FILE` pre-defined variable, which results in a project directory being set to another folder, 
+Compose will load a second `.env` file, if present. This second `.env` file has a lower precedence. 
 
-此机制使得可以使用自定义变量集作为覆盖来调用现有的 Compose 项目，而无需通过命令行传递环境变量。
+This mechanism makes it possible to invoke an existing Compose project with a custom set of variables as overrides, without the need to pass environment variables by the command line.
 
 ```console
 $ cat .env
 COMPOSE_FILE=../compose.yaml
 POSTGRES_VERSION=9.3
 
-$ cat ../compose.yaml
+$ cat ../compose.yaml 
 services:
   db:
     image: "postgres:${POSTGRES_VERSION}"
@@ -244,22 +246,22 @@ services:
     image: "postgres:9.3"
 ```
 
-### 从 shell 替换
+### Substitute from the shell 
 
-你可以使用主机上的现有环境变量或执行 `docker compose` 命令的 shell 环境中的变量。这允许你在运行时动态地将值注入到 Docker Compose 配置中。
-例如，假设 shell 包含 `POSTGRES_VERSION=9.3`，并且你提供以下配置：
+You can use existing environment variables from your host machine or from the shell environment where you execute `docker compose` commands. This lets you dynamically inject values into your Docker Compose configuration at runtime.
+For example, suppose the shell contains `POSTGRES_VERSION=9.3` and you supply the following configuration:
 
 ```yaml
 db:
   image: "postgres:${POSTGRES_VERSION}"
 ```
 
-当你使用此配置运行 `docker compose up` 时，Compose 在 shell 中查找 `POSTGRES_VERSION` 环境变量并替换其值。在此示例中，Compose 在运行配置之前将镜像解析为 `postgres:9.3`。
+When you run `docker compose up` with this configuration, Compose looks for the `POSTGRES_VERSION` environment variable in the shell and substitutes its value in. For this example, Compose resolves the image to `postgres:9.3` before running the configuration.
 
-如果未设置环境变量，Compose 使用空字符串替换。在前面的示例中，如果未设置 `POSTGRES_VERSION`，则镜像选项的值为 `postgres:`。
+If an environment variable is not set, Compose substitutes with an empty string. In the previous example, if `POSTGRES_VERSION` is not set, the value for the image option is `postgres:`.
 
 > [!NOTE]
 >
-> `postgres:` 不是有效的镜像引用。Docker 期望要么是不带标签的引用（如 `postgres`，默认为最新镜像），要么是带标签的引用（如 `postgres:15`）。
+> `postgres:` is not a valid image reference. Docker expects either a reference without a tag, like `postgres` which defaults to the latest image, or with a tag such as `postgres:15`.
 
 

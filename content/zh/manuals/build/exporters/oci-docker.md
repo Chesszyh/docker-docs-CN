@@ -1,19 +1,24 @@
 ---
-title: OCI 和 Docker 导出器
+title: OCI and Docker exporters
 keywords: build, buildx, buildkit, exporter, oci, docker
 description: >
-  OCI 和 Docker 导出器在本地文件系统上创建镜像布局 tarball
+  The OCI and Docker exporters create an image layout tarball on the local filesystem
 aliases:
   - /build/building/exporters/oci-docker/
 ---
 
-`oci` 导出器将构建结果输出为 [OCI 镜像布局](https://github.com/opencontainers/image-spec/blob/main/image-layout.md) tarball。`docker` 导出器的行为相同，但它导出的是 Docker 镜像布局。
+The `oci` exporter outputs the build result into an
+[OCI image layout](https://github.com/opencontainers/image-spec/blob/main/image-layout.md)
+tarball. The `docker` exporter behaves the same way, except it exports a Docker
+image layout instead.
 
-[`docker` 驱动程序](/manuals/build/builders/drivers/docker.md)不支持这些导出器。如果您想生成这些输出，必须使用 `docker-container` 或其他驱动程序。
+The [`docker` driver](/manuals/build/builders/drivers/docker.md) doesn't support these exporters. You
+must use `docker-container` or some other driver if you want to generate these
+outputs.
 
-## 概要
+## Synopsis
 
-使用 `oci` 和 `docker` 导出器构建容器镜像：
+Build a container image using the `oci` and `docker` exporters:
 
 ```console
 $ docker buildx build --output type=oci[,parameters] .
@@ -23,34 +28,38 @@ $ docker buildx build --output type=oci[,parameters] .
 $ docker buildx build --output type=docker[,parameters] .
 ```
 
-下表描述了可用的参数：
+The following table describes the available parameters:
 
-| 参数           | 类型                                   | 默认值 | 描述                                                                                                                           |
+| Parameter           | Type                                   | Default | Description                                                                                                                           |
 | ------------------- | -------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`              | String                                 |         | 指定镜像名称                                                                                                                 |
-| `dest`              | String                                 |         | 路径                                                                                                                  |
-| `tar`               | `true`,`false`                         | `true`  | 将输出打包为 tarball 布局                                                                                               |
-| `compression`       | `uncompressed`,`gzip`,`estargz`,`zstd` | `gzip`  | 压缩类型，参见[压缩][1]                                                                                                |
-| `compression-level` | `0..22`                                |         | 压缩级别，参见[压缩][1]                                                                                               |
-| `force-compression` | `true`,`false`                         | `false` | 强制应用压缩，参见[压缩][1]                                                                                    |
-| `oci-mediatypes`    | `true`,`false`                         |         | 在导出器清单中使用 OCI 媒体类型。`type=oci` 默认为 `true`，`type=docker` 默认为 `false`。参见 [OCI 媒体类型][2] |
-| `annotation.<key>`  | String                                 |         | 将带有相应 `key` 和 `value` 的注解附加到构建的镜像，参见[注解][3]                                    |
+| `name`              | String                                 |         | Specify image name(s)                                                                                                                 |
+| `dest`              | String                                 |         | Path                                                                                                                                  |
+| `tar`               | `true`,`false`                         | `true`  | Bundle the output into a tarball layout                                                                                               |
+| `compression`       | `uncompressed`,`gzip`,`estargz`,`zstd` | `gzip`  | Compression type, see [compression][1]                                                                                                |
+| `compression-level` | `0..22`                                |         | Compression level, see [compression][1]                                                                                               |
+| `force-compression` | `true`,`false`                         | `false` | Forcefully apply compression, see [compression][1]                                                                                    |
+| `oci-mediatypes`    | `true`,`false`                         |         | Use OCI media types in exporter manifests. Defaults to `true` for `type=oci`, and `false` for `type=docker`. See [OCI Media types][2] |
+| `annotation.<key>`  | String                                 |         | Attach an annotation with the respective `key` and `value` to the built image,see [annotations][3]                                    |
 
 [1]: _index.md#compression
 [2]: _index.md#oci-media-types
 [3]: #annotations
 
-## 注解 {#annotations}
+## Annotations
 
-这些导出器支持使用 `annotation` 参数添加 OCI 注解，后跟使用点表示法的注解名称。以下示例设置 `org.opencontainers.image.title` 注解：
+These exporters support adding OCI annotation using `annotation` parameter,
+followed by the annotation name using dot notation. The following example sets
+the `org.opencontainers.image.title` annotation:
 
 ```console
 $ docker buildx build \
     --output "type=<type>,name=<registry>/<image>,annotation.org.opencontainers.image.title=<title>" .
 ```
 
-有关注解的更多信息，请参阅 [BuildKit 文档](https://github.com/moby/buildkit/blob/master/docs/annotations.md)。
+For more information about annotations, see
+[BuildKit documentation](https://github.com/moby/buildkit/blob/master/docs/annotations.md).
 
-## 进一步阅读
+## Further reading
 
-有关 `oci` 或 `docker` 导出器的更多信息，请参阅 [BuildKit README](https://github.com/moby/buildkit/blob/master/README.md#docker-tarball)。
+For more information on the `oci` or `docker` exporters, see the
+[BuildKit README](https://github.com/moby/buildkit/blob/master/README.md#docker-tarball).

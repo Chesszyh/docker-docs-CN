@@ -1,53 +1,63 @@
 ---
-title: 构建上下文
+title: Build context
 weight: 30
-description: 了解如何使用构建上下文从 Dockerfile 访问文件
+description: Learn how to use the build context to access files from your Dockerfile
 keywords: build, buildx, buildkit, context, git, tarball, stdin
 aliases:
   - /build/building/context/
 ---
 
-`docker build` 和 `docker buildx build` 命令从 [Dockerfile](/reference/dockerfile.md) 和上下文构建 Docker 镜像。
+The `docker build` and `docker buildx build` commands build Docker images from
+a [Dockerfile](/reference/dockerfile.md) and a context.
 
-## 什么是构建上下文？
+## What is a build context?
 
-构建上下文是构建过程可以访问的文件集合。传递给构建命令的位置参数指定了要用于构建的上下文：
+The build context is the set of files that your build can access.
+The positional argument that you pass to the build command specifies the
+context that you want to use for the build:
 
 ```console
 $ docker build [OPTIONS] PATH | URL | -
                          ^^^^^^^^^^^^^^
 ```
 
-您可以将以下任何一种输入作为构建的上下文：
+You can pass any of the following inputs as the context for a build:
 
-- 本地目录的相对或绝对路径
-- Git 仓库、tarball 或纯文本文件的远程 URL
-- 通过标准输入管道传递给 `docker build` 命令的纯文本文件或 tarball
+- The relative or absolute path to a local directory
+- A remote URL of a Git repository, tarball, or plain-text file
+- A plain-text file or tarball piped to the `docker build` command through standard input
 
-### 文件系统上下文
+### Filesystem contexts
 
-当您的构建上下文是本地目录、远程 Git 仓库或 tar 文件时，它就成为构建器在构建期间可以访问的文件集合。`COPY` 和 `ADD` 等构建指令可以引用上下文中的任何文件和目录。
+When your build context is a local directory, a remote Git repository, or a tar
+file, then that becomes the set of files that the builder can access during the
+build. Build instructions such as `COPY` and `ADD` can refer to any of the
+files and directories in the context.
 
-文件系统构建上下文是递归处理的：
+A filesystem build context is processed recursively:
 
-- 当您指定本地目录或 tarball 时，所有子目录都会被包含
-- 当您指定远程 Git 仓库时，仓库及其包含的所有子模块都会被包含
+- When you specify a local directory or a tarball, all subdirectories are included
+- When you specify a remote Git repository, the repository and all submodules are included
 
-有关可用于构建的不同类型文件系统上下文的更多信息，请参阅：
+For more information about the different types of filesystem contexts that you
+can use with your builds, see:
 
-- [本地文件](#local-context)
-- [Git 仓库](#git-repositories)
-- [远程 tarball](#remote-tarballs)
+- [Local files](#local-context)
+- [Git repositories](#git-repositories)
+- [Remote tarballs](#remote-tarballs)
 
-### 文本文件上下文
+### Text file contexts
 
-当您的构建上下文是纯文本文件时，构建器将该文件解释为 Dockerfile。使用这种方法，构建不使用文件系统上下文。
+When your build context is a plain-text file, the builder interprets the file
+as a Dockerfile. With this approach, the build doesn't use a filesystem context.
 
-有关更多信息，请参阅[空构建上下文](#empty-context)。
+For more information, see [empty build context](#empty-context).
 
-## 本地上下文 {#local-context}
+## Local context
 
-要使用本地构建上下文，您可以向 `docker build` 命令指定相对或绝对文件路径。以下示例显示使用当前目录 (`.`) 作为构建上下文的构建命令：
+To use a local build context, you can specify a relative or absolute filepath
+to the `docker build` command. The following example shows a build command that
+uses the current directory (`.`) as a build context:
 
 ```console
 $ docker build .
@@ -58,13 +68,16 @@ $ docker build .
 ...
 ```
 
-这使得当前工作目录中的文件和目录可供构建器使用。构建器在需要时从构建上下文加载所需的文件。
+This makes files and directories in the current working directory available to
+the builder. The builder loads the files it needs from the build context when
+needed.
 
-您也可以使用本地 tarball 作为构建上下文，通过将 tarball 内容管道传递给 `docker build` 命令。请参阅 [Tarballs](#local-tarballs)。
+You can also use local tarballs as build context, by piping the tarball
+contents to the `docker build` command. See [Tarballs](#local-tarballs).
 
-### 本地目录
+### Local directories
 
-考虑以下目录结构：
+Consider the following directory structure:
 
 ```text
 .
@@ -75,7 +88,8 @@ $ docker build .
 └── package-lock.json
 ```
 
-如果将此目录作为上下文传递，Dockerfile 指令可以引用并包含这些文件到构建中。
+Dockerfile instructions can reference and include these files in the build if
+you pass this directory as a context.
 
 ```dockerfile
 # syntax=docker/dockerfile:1
@@ -90,17 +104,21 @@ COPY index.ts src .
 $ docker build .
 ```
 
-### 从标准输入读取 Dockerfile 的本地上下文
+### Local context with Dockerfile from stdin
 
-使用以下语法，可以使用本地文件系统上的文件进行构建，同时从标准输入读取 Dockerfile。
+Use the following syntax to build an image using files on your local
+filesystem, while using a Dockerfile from stdin.
 
 ```console
 $ docker build -f- <PATH>
 ```
 
-该语法使用 -f（或 --file）选项指定要使用的 Dockerfile，并使用连字符 (-) 作为文件名来指示 Docker 从标准输入读取 Dockerfile。
+The syntax uses the -f (or --file) option to specify the Dockerfile to use, and
+it uses a hyphen (-) as filename to instruct Docker to read the Dockerfile from
+stdin.
 
-以下示例使用当前目录 (.) 作为构建上下文，并使用 here-document 通过标准输入传递的 Dockerfile 构建镜像。
+The following example uses the current directory (.) as the build context, and
+builds an image using a Dockerfile passed through stdin using a here-document.
 
 ```bash
 # create a directory to work in
@@ -119,11 +137,12 @@ RUN cat /somefile.txt
 EOF
 ```
 
-### 本地 tarball {#local-tarballs}
+### Local tarballs
 
-当您将 tarball 管道传递给构建命令时，构建将使用 tarball 的内容作为文件系统上下文。
+When you pipe a tarball to the build command, the build uses the contents of
+the tarball as a filesystem context.
 
-例如，给定以下项目目录：
+For example, given the following project directory:
 
 ```text
 .
@@ -136,60 +155,75 @@ EOF
 └── test.Dockerfile
 ```
 
-您可以创建目录的 tarball 并将其管道传递给构建以用作上下文：
+You can create a tarball of the directory and pipe it to the build for use as
+a context:
 
 ```console
 $ tar czf foo.tar.gz *
 $ docker build - < foo.tar.gz
 ```
 
-构建从 tarball 上下文解析 Dockerfile。您可以使用 `--file` 标志指定相对于 tarball 根目录的 Dockerfile 名称和位置。以下命令使用 tarball 中的 `test.Dockerfile` 进行构建：
+The build resolves the Dockerfile from the tarball context. You can use the
+`--file` flag to specify the name and location of the Dockerfile relative to
+the root of the tarball. The following command builds using `test.Dockerfile`
+in the tarball:
 
 ```console
 $ docker build --file test.Dockerfile - < foo.tar.gz
 ```
 
-## 远程上下文
+## Remote context
 
-您可以指定远程 Git 仓库、tarball 或纯文本文件的地址作为构建上下文。
+You can specify the address of a remote Git repository, tarball, or plain-text
+file as your build context.
 
-- 对于 Git 仓库，构建器会自动克隆仓库。请参阅 [Git 仓库](#git-repositories)。
-- 对于 tarball，构建器会下载并解压 tarball 的内容。请参阅 [Tarballs](#remote-tarballs)。
+- For Git repositories, the builder automatically clones the repository. See
+  [Git repositories](#git-repositories).
+- For tarballs, the builder downloads and extracts the contents of the tarball.
+  See [Tarballs](#remote-tarballs).
 
-如果远程 tarball 是文本文件，构建器不会收到[文件系统上下文](#filesystem-contexts)，而是假设远程文件是 Dockerfile。请参阅[空构建上下文](#empty-context)。
+If the remote tarball is a text file, the builder receives no [filesystem
+context](#filesystem-contexts), and instead assumes that the remote
+file is a Dockerfile. See [Empty build context](#empty-context).
 
-### Git 仓库 {#git-repositories}
+### Git repositories
 
-当您将指向 Git 仓库位置的 URL 作为参数传递给 `docker build` 时，构建器使用该仓库作为构建上下文。
+When you pass a URL pointing to the location of a Git repository as an argument
+to `docker build`, the builder uses the repository as the build context.
 
-构建器执行仓库的浅克隆，只下载 HEAD 提交，而不是整个历史记录。
+The builder performs a shallow clone of the repository, downloading only
+the HEAD commit, not the entire history.
 
-构建器递归克隆仓库及其包含的所有子模块。
+The builder recursively clones the repository and any submodules it contains.
 
 ```console
 $ docker build https://github.com/user/myrepo.git
 ```
 
-默认情况下，构建器克隆您指定的仓库的默认分支上的最新提交。
+By default, the builder clones the latest commit on the default branch of the
+repository that you specify.
 
-#### URL 片段
+#### URL fragments
 
-您可以将 URL 片段附加到 Git 仓库地址，使构建器克隆仓库的特定分支、标签和子目录。
+You can append URL fragments to the Git repository address to make the builder
+clone a specific branch, tag, and subdirectory of a repository.
 
-URL 片段的格式是 `#ref:dir`，其中：
+The format of the URL fragment is `#ref:dir`, where:
 
-- `ref` 是分支、标签或提交哈希的名称
-- `dir` 是仓库内的子目录
+- `ref` is the name of the branch, tag, or commit hash
+- `dir` is a subdirectory inside the repository
 
-例如，以下命令使用 `container` 分支以及该分支中的 `docker` 子目录作为构建上下文：
+For example, the following command uses the `container` branch,
+and the `docker` subdirectory in that branch, as the build context:
 
 ```console
 $ docker build https://github.com/user/myrepo.git#container:docker
 ```
 
-下表显示了所有有效的后缀及其构建上下文：
+The following table represents all the valid suffixes with their build
+contexts:
 
-| 构建语法后缀                   | 使用的提交                    | 使用的构建上下文 |
+| Build Syntax Suffix            | Commit Used                   | Build Context Used |
 | ------------------------------ | ----------------------------- | ------------------ |
 | `myrepo.git`                   | `refs/heads/<default branch>` | `/`                |
 | `myrepo.git#mytag`             | `refs/tags/mytag`             | `/`                |
@@ -200,7 +234,9 @@ $ docker build https://github.com/user/myrepo.git#container:docker
 | `myrepo.git#mytag:myfolder`    | `refs/tags/mytag`             | `/myfolder`        |
 | `myrepo.git#mybranch:myfolder` | `refs/heads/mybranch`         | `/myfolder`        |
 
-当您使用提交哈希作为 URL 片段中的 `ref` 时，请使用完整的 40 个字符的 SHA-1 提交哈希。不支持短哈希，例如截断为 7 个字符的哈希。
+When you use a commit hash as the `ref` in the URL fragment, use the full,
+40-character string SHA-1 hash of the commit. A short hash, for example a hash
+truncated to 7 characters, is not supported.
 
 ```bash
 # ✅ The following works:
@@ -209,9 +245,12 @@ docker build github.com/docker/buildx#d4f088e689b41353d74f1a0bfcd6d7c0b213aed2
 docker build github.com/docker/buildx#d4f088e
 ```
 
-#### 保留 `.git` 目录
+#### Keep `.git` directory
 
-默认情况下，BuildKit 在使用 Git 上下文时不保留 `.git` 目录。您可以通过设置 [`BUILDKIT_CONTEXT_KEEP_GIT_DIR` 构建参数](/reference/dockerfile.md#buildkit-built-in-build-args) 来配置 BuildKit 保留该目录。如果您想在构建期间检索 Git 信息，这可能很有用：
+By default, BuildKit doesn't keep the `.git` directory when using Git contexts.
+You can configure BuildKit to keep the directory by setting the
+[`BUILDKIT_CONTEXT_KEEP_GIT_DIR` build argument](/reference/dockerfile.md#buildkit-built-in-build-args).
+This can be useful to if you want to retrieve Git information during your build:
 
 ```dockerfile
 # syntax=docker/dockerfile:1
@@ -227,17 +266,24 @@ $ docker build \
   https://github.com/user/myrepo.git#main
 ```
 
-#### 私有仓库
+#### Private repositories
 
-当您指定的 Git 上下文也是私有仓库时，构建器需要您提供必要的身份验证凭据。您可以使用 SSH 或基于令牌的身份验证。
+When you specify a Git context that's also a private repository, the builder
+needs you to provide the necessary authentication credentials. You can use
+either SSH or token-based authentication.
 
-如果您指定的 Git 上下文是 SSH 或 Git 地址，Buildx 会自动检测并使用 SSH 凭据。默认情况下，这使用 `$SSH_AUTH_SOCK`。您可以使用 [`--ssh` 标志](/reference/cli/docker/buildx/build.md#ssh) 配置要使用的 SSH 凭据。
+Buildx automatically detects and uses SSH credentials if the Git context you
+specify is an SSH or Git address. By default, this uses `$SSH_AUTH_SOCK`.
+You can configure the SSH credentials to use with the
+[`--ssh` flag](/reference/cli/docker/buildx/build.md#ssh).
 
 ```console
 $ docker buildx build --ssh default git@github.com:user/private.git
 ```
 
-如果您想改用基于令牌的身份验证，可以使用 [`--secret` 标志](/reference/cli/docker/buildx/build.md#secret) 传递令牌。
+If you want to use token-based authentication instead, you can pass the token
+using the
+[`--secret` flag](/reference/cli/docker/buildx/build.md#secret).
 
 ```console
 $ GIT_AUTH_TOKEN=<token> docker buildx build \
@@ -247,21 +293,28 @@ $ GIT_AUTH_TOKEN=<token> docker buildx build \
 
 > [!NOTE]
 >
-> 不要使用 `--build-arg` 传递密钥。
+> Don't use `--build-arg` for secrets.
 
-### 从标准输入读取 Dockerfile 的远程上下文
+### Remote context with Dockerfile from stdin
 
-使用以下语法，可以使用本地文件系统上的文件进行构建，同时从标准输入读取 Dockerfile。
+Use the following syntax to build an image using files on your local
+filesystem, while using a Dockerfile from stdin.
 
 ```console
 $ docker build -f- <URL>
 ```
 
-该语法使用 -f（或 --file）选项指定要使用的 Dockerfile，并使用连字符 (-) 作为文件名来指示 Docker 从标准输入读取 Dockerfile。
+The syntax uses the -f (or --file) option to specify the Dockerfile to use, and
+it uses a hyphen (-) as filename to instruct Docker to read the Dockerfile from
+stdin.
 
-这在以下情况下很有用：您想从不包含 Dockerfile 的仓库构建镜像，或者您想使用自定义 Dockerfile 进行构建，而无需维护自己的仓库分支。
+This can be useful in situations where you want to build an image from a
+repository that doesn't contain a Dockerfile. Or if you want to build with a
+custom Dockerfile, without maintaining your own fork of the repository.
 
-以下示例使用从标准输入传递的 Dockerfile 构建镜像，并从 GitHub 上的 [hello-world](https://github.com/docker-library/hello-world) 仓库添加 `hello.c` 文件。
+The following example builds an image using a Dockerfile from stdin, and adds
+the `hello.c` file from the [hello-world](https://github.com/docker-library/hello-world)
+repository on GitHub.
 
 ```bash
 docker build -t myimage:latest -f- https://github.com/docker-library/hello-world.git <<EOF
@@ -270,9 +323,9 @@ COPY hello.c ./
 EOF
 ```
 
-### 远程 tarball {#remote-tarballs}
+### Remote tarballs
 
-如果您传递远程 tarball 的 URL，URL 本身会被发送到构建器。
+If you pass the URL to a remote tarball, the URL itself is sent to the builder.
 
 ```console
 $ docker build http://server/context.tar.gz
@@ -284,17 +337,27 @@ $ docker build http://server/context.tar.gz
 ...
 ```
 
-下载操作将在运行 BuildKit 守护进程的主机上执行。请注意，如果您使用远程 Docker 上下文或远程构建器，这不一定是您发出构建命令的同一台机器。BuildKit 获取 `context.tar.gz` 并将其用作构建上下文。Tarball 上下文必须是符合标准 `tar` Unix 格式的 tar 归档，并且可以使用 `xz`、`bzip2`、`gzip` 或 `identity`（无压缩）格式之一进行压缩。
+The download operation will be performed on the host where the BuildKit daemon
+is running. Note that if you're using a remote Docker context or a remote
+builder, that's not necessarily the same machine as where you issue the build
+command. BuildKit fetches the `context.tar.gz` and uses it as the build
+context. Tarball contexts must be tar archives conforming to the standard `tar`
+Unix format and can be compressed with any one of the `xz`, `bzip2`, `gzip` or
+`identity` (no compression) formats.
 
-## 空上下文 {#empty-context}
+## Empty context
 
-当您使用文本文件作为构建上下文时，构建器将该文件解释为 Dockerfile。使用文本文件作为上下文意味着构建没有文件系统上下文。
+When you use a text file as the build context, the builder interprets the file
+as a Dockerfile. Using a text file as context means that the build has no
+filesystem context.
 
-当您的 Dockerfile 不依赖任何本地文件时，您可以使用空构建上下文进行构建。
+You can build with an empty build context when your Dockerfile doesn't depend
+on any local files.
 
-### 如何在没有上下文的情况下构建
+### How to build without a context
 
-您可以通过标准输入流传递文本文件，或指向远程文本文件的 URL。
+You can pass the text file using a standard input stream, or by pointing at the
+URL of a remote text file.
 
 {{< tabs >}}
 {{< tab name="Unix pipe" >}}
@@ -330,7 +393,8 @@ $ docker build https://raw.githubusercontent.com/dvdksn/clockbox/main/Dockerfile
 {{< /tab >}}
 {{< /tabs >}}
 
-当您在没有文件系统上下文的情况下构建时，`COPY` 等 Dockerfile 指令无法引用本地文件：
+When you build without a filesystem context, Dockerfile instructions such as
+`COPY` can't refer to local files:
 
 ```console
 $ ls
@@ -356,9 +420,10 @@ Dockerfile:2
 ERROR: failed to solve: failed to compute cache key: failed to calculate checksum of ref 7ab2bb61-0c28-432e-abf5-a4c3440bc6b6::4lgfpdf54n5uqxnv9v6ymg7ih: "/main.c": not found
 ```
 
-## .dockerignore 文件
+## .dockerignore files
 
-您可以使用 `.dockerignore` 文件从构建上下文中排除文件或目录。
+You can use a `.dockerignore` file to exclude files or directories from the
+build context.
 
 ```text
 # .dockerignore
@@ -366,51 +431,66 @@ node_modules
 bar
 ```
 
-这有助于避免将不需要的文件和目录发送到构建器，从而提高构建速度，特别是在使用远程构建器时。
+This helps avoid sending unwanted files and directories to the builder,
+improving build speed, especially when using a remote builder.
 
-### 文件名和位置
+### Filename and location
 
-当您运行构建命令时，构建客户端会在上下文的根目录中查找名为 `.dockerignore` 的文件。如果该文件存在，与文件中模式匹配的文件和目录将在发送到构建器之前从构建上下文中移除。
+When you run a build command, the build client looks for a file named
+`.dockerignore` in the root directory of the context. If this file exists, the
+files and directories that match patterns in the files are removed from the
+build context before it's sent to the builder.
 
-如果您使用多个 Dockerfile，可以为每个 Dockerfile 使用不同的忽略文件。您可以使用特殊的命名约定来实现。将忽略文件放在与 Dockerfile 相同的目录中，并以 Dockerfile 的名称作为忽略文件的前缀，如以下示例所示。
+If you use multiple Dockerfiles, you can use different ignore-files for each
+Dockerfile. You do so using a special naming convention for the ignore-files.
+Place your ignore-file in the same directory as the Dockerfile, and prefix the
+ignore-file with the name of the Dockerfile, as shown in the following example.
 
 ```text
 .
 ├── index.ts
 ├── src/
 ├── docker
-│   ├── build.Dockerfile
-│   ├── build.Dockerfile.dockerignore
-│   ├── lint.Dockerfile
-│   ├── lint.Dockerfile.dockerignore
-│   ├── test.Dockerfile
-│   └── test.Dockerfile.dockerignore
+│   ├── build.Dockerfile
+│   ├── build.Dockerfile.dockerignore
+│   ├── lint.Dockerfile
+│   ├── lint.Dockerfile.dockerignore
+│   ├── test.Dockerfile
+│   └── test.Dockerfile.dockerignore
 ├── package.json
 └── package-lock.json
 ```
 
-如果两者都存在，特定于 Dockerfile 的忽略文件优先于构建上下文根目录的 `.dockerignore` 文件。
+A Dockerfile-specific ignore-file takes precedence over the `.dockerignore`
+file at the root of the build context if both exist.
 
-### 语法
+### Syntax
 
-`.dockerignore` 文件是一个以换行符分隔的模式列表，类似于 Unix shell 的文件通配符。忽略模式中的前导和尾随斜杠会被忽略。以下模式都会排除构建上下文根目录下 `foo` 子目录中名为 `bar` 的文件或目录：
+The `.dockerignore` file is a newline-separated list of patterns similar to the
+file globs of Unix shells. Leading and trailing slashes in ignore patterns are
+disregarded. The following patterns all exclude a file or directory named `bar`
+in the subdirectory `foo` under the root of the build context:
 
 - `/foo/bar/`
 - `/foo/bar`
 - `foo/bar/`
 - `foo/bar`
 
-如果 `.dockerignore` 文件中的一行在第 1 列以 `#` 开头，则该行被视为注释，在 CLI 解释之前会被忽略。
+If a line in `.dockerignore` file starts with `#` in column 1, then this line
+is considered as a comment and is ignored before interpreted by the CLI.
 
 ```gitignore
 #/this/is/a/comment
 ```
 
-如果您想了解 `.dockerignore` 模式匹配逻辑的精确细节，请查看 GitHub 上的 [moby/patternmatcher 仓库](https://github.com/moby/patternmatcher/tree/main/ignorefile)，其中包含源代码。
+If you're interested in learning the precise details of the `.dockerignore`
+pattern matching logic, check out the
+[moby/patternmatcher repository](https://github.com/moby/patternmatcher/tree/main/ignorefile)
+on GitHub, which contains the source code.
 
-#### 匹配
+#### Matching
 
-以下代码片段显示了一个示例 `.dockerignore` 文件。
+The following code snippet shows an example `.dockerignore` file.
 
 ```text
 # comment
@@ -419,37 +499,54 @@ bar
 temp?
 ```
 
-此文件导致以下构建行为：
+This file causes the following build behavior:
 
-| 规则        | 行为                                                                                                                                                                                                      |
+| Rule        | Behavior                                                                                                                                                                                                      |
 | :---------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `# comment` | 被忽略。                                                                                                                                                                                                      |
-| `*/temp*`   | 排除根目录的任何直接子目录中名称以 `temp` 开头的文件和目录。例如，纯文本文件 `/somedir/temporary.txt` 会被排除，目录 `/somedir/temp` 也是如此。 |
-| `*/*/temp*` | 排除根目录下两级子目录中以 `temp` 开头的文件和目录。例如，`/somedir/subdir/temporary.txt` 会被排除。                                         |
-| `temp?`     | 排除根目录中名称是 `temp` 加一个字符扩展名的文件和目录。例如，`/tempa` 和 `/tempb` 会被排除。                                                     |
+| `# comment` | Ignored.                                                                                                                                                                                                      |
+| `*/temp*`   | Exclude files and directories whose names start with `temp` in any immediate subdirectory of the root. For example, the plain file `/somedir/temporary.txt` is excluded, as is the directory `/somedir/temp`. |
+| `*/*/temp*` | Exclude files and directories starting with `temp` from any subdirectory that is two levels below the root. For example, `/somedir/subdir/temporary.txt` is excluded.                                         |
+| `temp?`     | Exclude files and directories in the root directory whose names are a one-character extension of `temp`. For example, `/tempa` and `/tempb` are excluded.                                                     |
 
-匹配使用 Go 的 [`filepath.Match` 函数](https://golang.org/pkg/path/filepath#Match) 规则完成。预处理步骤使用 Go 的 [`filepath.Clean` 函数](https://golang.org/pkg/path/filepath/#Clean) 来修剪空白并移除 `.` 和 `..`。预处理后为空的行会被忽略。
+Matching is done using Go's
+[`filepath.Match` function](https://golang.org/pkg/path/filepath#Match) rules.
+A preprocessing step uses Go's
+[`filepath.Clean` function](https://golang.org/pkg/path/filepath/#Clean)
+to trim whitespace and remove `.` and `..`.
+Lines that are blank after preprocessing are ignored.
 
 > [!NOTE]
 >
-> 由于历史原因，模式 `.` 会被忽略。
+> For historical reasons, the pattern `.` is ignored.
 
-除了 Go 的 `filepath.Match` 规则外，Docker 还支持特殊的通配符字符串 `**`，可以匹配任意数量的目录（包括零个）。例如，`**/*.go` 会排除在构建上下文中任何位置找到的所有以 `.go` 结尾的文件。
+Beyond Go's `filepath.Match` rules, Docker also supports a special wildcard
+string `**` that matches any number of directories (including zero). For
+example, `**/*.go` excludes all files that end with `.go` found anywhere in the
+build context.
 
-您可以使用 `.dockerignore` 文件排除 `Dockerfile` 和 `.dockerignore` 文件。这些文件仍会被发送到构建器，因为运行构建需要它们。但是，您无法使用 `ADD`、`COPY` 或绑定挂载将这些文件复制到镜像中。
+You can use the `.dockerignore` file to exclude the `Dockerfile` and
+`.dockerignore` files. These files are still sent to the builder as they're
+needed for running the build. But you can't copy the files into the image using
+`ADD`, `COPY`, or bind mounts.
 
-#### 否定匹配
+#### Negating matches
 
-您可以在行前加上 `!`（感叹号）来为排除规则创建例外。以下是使用此机制的示例 `.dockerignore` 文件：
+You can prepend lines with a `!` (exclamation mark) to make exceptions to
+exclusions. The following is an example `.dockerignore` file that uses this
+mechanism:
 
 ```text
 *.md
 !README.md
 ```
 
-上下文目录下的所有 markdown 文件都会被排除，_除了_ `README.md`。请注意，子目录下的 markdown 文件仍然会被包含。
+All markdown files right under the context directory _except_ `README.md` are
+excluded from the context. Note that markdown files under subdirectories are
+still included.
 
-`!` 例外规则的位置会影响行为：`.dockerignore` 中与特定文件匹配的最后一行决定该文件是被包含还是被排除。考虑以下示例：
+The placement of `!` exception rules influences the behavior: the last line of
+the `.dockerignore` that matches a particular file determines whether it's
+included or excluded. Consider the following example:
 
 ```text
 *.md
@@ -457,9 +554,10 @@ temp?
 README-secret.md
 ```
 
-除了 `README-secret.md` 之外的 README 文件外，没有 markdown 文件会被包含在上下文中。
+No markdown files are included in the context except README files other than
+`README-secret.md`.
 
-现在考虑这个示例：
+Now consider this example:
 
 ```text
 *.md
@@ -467,31 +565,38 @@ README-secret.md
 !README*.md
 ```
 
-所有 README 文件都会被包含。中间的行没有效果，因为 `!README*.md` 匹配 `README-secret.md` 且排在最后。
+All of the README files are included. The middle line has no effect because
+`!README*.md` matches `README-secret.md` and comes last.
 
-## 命名上下文
+## Named contexts
 
-除了默认构建上下文（`docker build` 命令的位置参数）外，您还可以向构建传递额外的命名上下文。
+In addition to the default build context (the positional argument to the
+`docker build` command), you can also pass additional named contexts to builds.
 
-命名上下文使用 `--build-context` 标志指定，后跟名称-值对。这允许您在构建期间包含来自多个来源的文件和目录，同时保持它们在逻辑上的分离。
+Named contexts are specified using the `--build-context` flag, followed by a
+name-value pair. This lets you include files and directories from multiple
+sources during the build, while keeping them logically separated.
 
 ```console
 $ docker build --build-context docs=./docs .
 ```
 
-在此示例中：
+In this example:
 
-- 命名的 `docs` 上下文指向 `./docs` 目录。
-- 默认上下文 (`.`) 指向当前工作目录。
+- The named `docs` context points to the `./docs` directory.
+- The default context (`.`) points to the current working directory.
 
-### 在 Dockerfile 中使用命名上下文
+### Using named contexts in a Dockerfile
 
-Dockerfile 指令可以像引用多阶段构建中的阶段一样引用命名上下文。
+Dockerfile instructions can reference named contexts as if they are stages in a
+multi-stage build.
 
-例如，以下 Dockerfile：
+For example, the following Dockerfile:
 
-1. 使用 `COPY` 指令将文件从默认上下文复制到当前构建阶段。
-2. 绑定挂载命名上下文中的文件，以在构建过程中处理这些文件。
+1. Uses a `COPY` instruction to copy files from the default context into the
+   current build stage.
+2. Bind mounts the files in a named context to process the files as part of the
+   build.
 
 ```dockerfile
 # syntax=docker/dockerfile:1
@@ -507,19 +612,23 @@ RUN --mount=from=docs,target=/app/docs \
     make manpages
 ```
 
-### 命名上下文的用例
+### Use cases for named contexts
 
-使用命名上下文可以在构建 Docker 镜像时提供更大的灵活性和效率。以下是一些使用命名上下文可能有用的场景：
+Using named contexts allows for greater flexibility and efficiency when
+building Docker images. Here are some scenarios where using named contexts can
+be useful:
 
-#### 示例：组合本地和远程来源
+#### Example: combine local and remote sources
 
-您可以为不同类型的来源定义单独的命名上下文。例如，考虑一个项目，应用程序源代码是本地的，但部署脚本存储在 Git 仓库中：
+You can define separate named contexts for different types of sources. For
+example, consider a project where the application source code is local, but the
+deployment scripts are stored in a Git repository:
 
 ```console
 $ docker build --build-context scripts=https://github.com/user/deployment-scripts.git .
 ```
 
-在 Dockerfile 中，您可以独立使用这些上下文：
+In the Dockerfile, you can use these contexts independently:
 
 ```dockerfile
 # syntax=docker/dockerfile:1
@@ -532,15 +641,18 @@ COPY . /opt/app
 RUN --mount=from=scripts,target=/scripts /scripts/main.sh
 ```
 
-#### 示例：使用自定义依赖项进行动态构建
+#### Example: dynamic builds with custom dependencies
 
-在某些场景中，您可能需要将配置文件或依赖项从外部来源动态注入到构建中。命名上下文通过允许您挂载不同的配置而无需修改默认构建上下文，使这变得简单直接。
+In some scenarios, you might need to dynamically inject configuration files or
+dependencies into the build from external sources. Named contexts make this
+straightforward by allowing you to mount different configurations without
+modifying the default build context.
 
 ```console
 $ docker build --build-context config=./configs/prod .
 ```
 
-示例 Dockerfile：
+Example Dockerfile:
 
 ```dockerfile
 # syntax=docker/dockerfile:1
@@ -550,27 +662,35 @@ FROM nginx:alpine
 COPY --from=config nginx.conf /etc/nginx/nginx.conf
 ```
 
-#### 示例：固定或覆盖镜像
+#### Example: pin or override images
 
-您可以在 Dockerfile 中像引用镜像一样引用命名上下文。这意味着您可以通过使用命名上下文覆盖来更改 Dockerfile 中的镜像引用。例如，给定以下 Dockerfile：
+You can refer to named contexts in a Dockerfile the same way you can refer to
+an image. That means you can change an image reference in your Dockerfile by
+overriding it with a named context. For example, given the following
+Dockerfile:
 
 ```dockerfile
 FROM alpine:{{% param example_alpine_version %}}
 ```
 
-如果您想强制镜像引用解析为不同的版本，而无需更改 Dockerfile，可以向构建传递同名的上下文。例如：
+If you want to force image reference to resolve to a different version, without
+changing the Dockerfile, you can pass a context with the same name to the
+build. For example:
 
 ```console
 docker buildx build --build-context alpine:{{% param example_alpine_version %}}=docker-image://alpine:edge .
 ```
 
-`docker-image://` 前缀将上下文标记为镜像引用。引用可以是本地镜像或注册表中的镜像。
+The `docker-image://` prefix marks the context as an image reference. The
+reference can be a local image or an image in your registry.
 
-### 使用 Bake 的命名上下文
+### Named contexts with Bake
 
-[Bake](/manuals/build/bake/_index.md) 是内置于 `docker build` 的工具，允许您使用配置文件管理构建配置。Bake 完全支持命名上下文。
+[Bake](/manuals/build/bake/_index.md) is a tool built into `docker build` that
+lets you manage your build configuration with a configuration file. Bake fully
+supports named contexts.
 
-要在 Bake 文件中定义命名上下文：
+To define named contexts in a Bake file:
 
 ```hcl {title=docker-bake.hcl}
 target "app" {
@@ -580,26 +700,34 @@ target "app" {
 }
 ```
 
-这相当于以下 CLI 调用：
+This is equivalent to the following CLI invocation:
 
 ```console
 $ docker build --build-context docs=./docs .
 ```
 
-#### 使用命名上下文链接目标
+#### Linking targets with named contexts
 
-除了使复杂的构建更易于管理外，Bake 还提供了超出 CLI 上 `docker build` 功能的额外特性。您可以使用命名上下文创建构建管道，其中一个目标依赖并构建在另一个目标之上。例如，考虑一个 Docker 构建设置，其中有两个 Dockerfile：
+In addition to making complex builds more manageable, Bake also provides
+additional features on top of what you can do with `docker build` on the CLI.
+You can use named contexts to create build pipelines, where one target depends
+on and builds on top of another. For example, consider a Docker build setup
+where you have two Dockerfiles:
 
-- `base.Dockerfile`：用于构建基础镜像
-- `app.Dockerfile`：用于构建应用程序镜像
+- `base.Dockerfile`: for building a base image
+- `app.Dockerfile`: for building an application image
 
-`app.Dockerfile` 使用 `base.Dockerfile` 生成的镜像作为其基础镜像：
+The `app.Dockerfile` uses the image produced by `base.Dockerfile` as it's base
+image:
 
 ```dockerfile {title=app.Dockerfile}
 FROM mybaseimage
 ```
 
-通常，您必须先构建基础镜像，然后将其加载到 Docker Engine 的本地镜像存储或推送到注册表。使用 Bake，您可以直接引用其他目标，在 `app` 目标和 `base` 目标之间创建依赖关系。
+Normally, you would have to build the base image first, and then either load it
+to Docker Engine's local image store or push it to a registry. With Bake, you
+can reference other targets directly, creating a dependency between the `app`
+target and the `base` target.
 
 ```hcl {title=docker-bake.hcl}
 target "base" {
@@ -615,15 +743,17 @@ target "app" {
 }
 ```
 
-使用此配置，`app.Dockerfile` 中对 `mybaseimage` 的引用将使用构建 `base` 目标的结果。构建 `app` 目标还会在必要时触发 `mybaseimage` 的重新构建：
+With this configuration, references to `mybaseimage` in `app.Dockerfile` use
+the results from building the `base` target. Building the `app` target will
+also trigger a rebuild of `mybaseimage`, if necessary:
 
 ```console
 $ docker buildx bake app
 ```
 
-### 进一步阅读
+### Further reading
 
-有关使用命名上下文的更多信息，请参阅：
+For more information about working with named contexts, see:
 
-- [`--build-context` CLI 参考](/reference/cli/docker/buildx/build.md#build-context)
-- [在 Bake 中使用额外上下文](/manuals/build/bake/contexts.md)
+- [`--build-context` CLI reference](/reference/cli/docker/buildx/build.md#build-context)
+- [Using Bake with additional contexts](/manuals/build/bake/contexts.md)

@@ -1,9 +1,9 @@
 ---
 title: 使用容器进行开发
-keywords: concepts, build, images, container, docker desktop
-description: 这个概念页面将教您如何使用容器进行开发
+keywords: concepts, build, images, container, docker desktop, 概念, 构建, 镜像, 容器
+description: 此概念页面将教您如何使用容器进行开发
 summary: |
-  学习如何运行您的第一个容器，获得使用 Docker 强大功能的实践经验。我们将涵盖在容器化环境中对后端和前端代码进行实时更改，确​​保无缝集成和测试。
+  学习如何运行您的第一个容器，获得使用 Docker 强大功能的实践经验。我们将涵盖在容器化环境中对后端和前端代码进行实时更改，确保证无缝集成和测试。
 weight: 2
 aliases:
  - /guides/getting-started/develop-with-containers/
@@ -11,33 +11,35 @@ aliases:
 
 {{< youtube-embed D0SDBrS3t9I >}}
 
-## 说明
+## 解释
 
-现在您已经安装了 Docker Desktop，准备好进行一些应用程序开发了。具体来说，您将执行以下操作：
+现在您已经安装了 Docker Desktop，可以准备进行一些应用程序开发了。具体来说，您将执行以下操作：
 
-1. 克隆并启动开发项目
+1. 克隆并启动一个开发项目
 2. 对后端和前端进行更改
 3. 立即查看更改
 
 ## 试一试
 
-在这个动手指南中，您将学习如何使用容器进行开发。
+在本实践指南中，您将学习如何使用容器进行开发。
+
 
 ## 启动项目
 
-1. 要开始使用，请将项目克隆或[以 ZIP 文件下载](https://github.com/docker/getting-started-todo-app/archive/refs/heads/main.zip)到您的本地计算机。
+1. 首先，克隆或[以 ZIP 文件形式下载项目](https://github.com/docker/getting-started-todo-app/archive/refs/heads/main.zip)到您的本地机器。
 
     ```console
     $ git clone https://github.com/docker/getting-started-todo-app
     ```
 
-    项目克隆后，导航到克隆创建的新目录中：
+    项目克隆后，进入克隆创建的新目录：
 
     ```console
     $ cd getting-started-todo-app
     ```
 
-2. 拥有项目后，使用 Docker Compose 启动开发环境。
+2. 一旦有了项目，使用 Docker Compose 启动开发环境。
+
 
     要使用 CLI 启动项目，请运行以下命令：
 
@@ -45,35 +47,38 @@ aliases:
    $ docker compose watch
    ```
 
-   您将看到显示正在拉取容器镜像、启动容器等的输出。如果此时您不明白所有内容，请不要担心。但是，片刻之后，事情应该会稳定下来并完成。
+   您将看到显示容器镜像被拉取、容器启动等的输出。如果您此时不完全理解所有内容，请不要担心。但是，过一两分钟，情况应该会稳定下来并完成。
 
-3. 打开浏览器访问 [http://localhost](http://localhost) 以查看已启动并运行的应用程序。应用程序可能需要几分钟才能运行。该应用程序是一个简单的待办事项应用程序，因此请随意添加一两个项目，将某些项目标记为已完成，甚至删除一个项目。
 
-    ![首次启动后的入门待办事项应用程序的屏幕截图](images/develop-getting-started-app-first-launch.webp)
+3. 打开浏览器访问 [http://localhost](http://localhost) 查看应用程序运行情况。应用程序运行可能需要几分钟。该应用程序是一个简单的待办事项应用程序，所以随意添加一两个项目，标记一些为已完成，甚至删除一个项目。
 
-### 环境中有什么？
+    ![首次启动后的入门待办事项应用程序截图](images/develop-getting-started-app-first-launch.webp)
 
-现在环境已经启动并运行，其中实际上有什么？在较高级别上，有几个容器（或进程），每个容器都满足应用程序的特定需求：
 
-- React 前端 - 一个 Node 容器，使用 [Vite](https://vitejs.dev/) 运行 React 开发服务器。
-- Node 后端 - 后端提供了一个 API，提供检索、创建和删除待办事项的功能。
-- MySQL 数据库 - 存储项目列表的数据库。
-- phpMyAdmin - 一个基于 Web 的界面，用于与数据库交互，可通过 [http://db.localhost](http://db.localhost) 访问。
-- Traefik 代理 - [Traefik](https://traefik.io/traefik/) 是一个应用程序代理，可将请求路由到正确的服务。它将所有针对 `localhost/api/*` 的请求发送到后端，将针对 `localhost/*` 的请求发送到前端，然后将针对 `db.localhost` 的请求发送到 phpMyAdmin。这提供了使用端口 80 访问所有应用程序的能力（而不是每个服务使用不同的端口）。
+### 环境里有什么？
 
-有了这个环境，作为开发人员，您不需要安装或配置任何服务、填充数据库模式、配置数据库凭据或任何东西。您只需要 Docker Desktop。其余的就可以工作了。
+现在环境已经启动并运行，里面实际上有什么？从高层次来看，有几个容器（或进程），每个容器都为应用程序的特定需求提供服务：
 
-## 修改应用程序
+- React 前端 - 一个运行 React 开发服务器的 Node 容器，使用 [Vite](https://vitejs.dev/)。
+- Node 后端 - 后端提供一个 API，提供检索、创建和删除待办事项的能力。
+- MySQL 数据库 - 用于存储项目列表的数据库。
+- phpMyAdmin - 一个与数据库交互的基于 Web 的界面，可通过 [http://db.localhost](http://db.localhost) 访问。
+- Traefik 代理 - [Traefik](https://traefik.io/traefik/) 是一个应用程序代理，可将请求路由到正确的服务。它将所有对 `localhost/api/*` 的请求发送到后端，对 `localhost/*` 的请求发送到前端，然后将对 `db.localhost` 的请求发送到 phpMyAdmin。这提供了使用端口 80 访问所有应用程序的能力（而不是每个服务使用不同的端口）。
 
-有了这个启动并运行的环境，您就可以对应用程序进行一些更改，并查看 Docker 如何帮助提供快速反馈循环。
+有了这个环境，作为开发人员的您无需安装或配置任何服务、填充数据库模式、配置数据库凭据或做任何事情。您只需要 Docker Desktop。剩下的就能正常工作。
+
+
+## 更改应用程序
+
+随着此环境的运行，您已准备好对应用程序进行一些更改，并查看 Docker 如何帮助提供快速的反馈循环。
 
 ### 更改问候语
 
-页面顶部的问候语由 `/api/greeting` 处的 API 调用填充。目前，它总是返回 "Hello world!"。您现在将其修改为返回三个随机消息之一（您可以选择）。
+页面顶部的问候语由 `/api/greeting` 处的 API 调用填充。目前，它总是返回 "Hello world!"。您现在将修改它以返回三个随机消息之一（您可以选择）。
 
 1. 在文本编辑器中打开 `backend/src/routes/getGreeting.js` 文件。此文件为 API 端点提供处理程序。
 
-2. 将顶部的变量修改为问候语数组。随意使用以下修改或根据自己的喜好进行自定义。此外，更新端点以从此列表中发送随机问候语。
+2. 将顶部的变量修改为问候语数组。随意使用以下修改或根据自己的喜好进行自定义。此外，更新端点以发送此列表中的随机问候语。
 
     ```js {linenos=table,hl_lines=["1-5",9],linenostart=1}
     const GREETINGS = [
@@ -89,15 +94,16 @@ aliases:
     };
     ```
 
-3. 如果您尚未保存文件，请保存。如果您刷新浏览器，您应该会看到一个新的问候语。如果您继续刷新，应该会看到所有消息出现。
+3. 如果尚未保存，请保存文件。如果您刷新浏览器，应该会看到一个新的问候语。如果您继续刷新，应该会看到所有消息出现。
 
-    ![带有新问候语的待办事项应用程序的屏幕截图](images/develop-app-with-greetings.webp)
+    ![带有新问候语的待办事项应用程序截图](images/develop-app-with-greetings.webp)
+
 
 ### 更改占位符文本
 
-当您查看应用程序时，您会看到占位符文本只是简单的 "New Item"。您现在将使其更具描述性和趣味性。您还将对应用程序的样式进行一些更改。
+当您查看应用程序时，您会看到占位符文本只是简单的 "New Item"（新项目）。您现在将使其更具描述性和趣味性。您还将对应用程序的样式进行一些更改。
 
-1. 打开 `client/src/components/AddNewItemForm.jsx` 文件。这提供了将新项目添加到待办事项列表的组件。
+1. 打开 `client/src/components/AddNewItemForm.jsx` 文件。这提供了向待办事项列表添加新项目的组件。
 
 2. 修改 `Form.Control` 元素的 `placeholder` 属性为您想要显示的任何内容。
 
@@ -111,19 +117,20 @@ aliases:
     />
     ```
 
-3. 保存文件并返回浏览器。您应该会看到更改已热重载到浏览器中。如果您不喜欢它，请随意调整它，直到它看起来恰到好处。
+3. 保存文件并返回浏览器。您应该看到更改已热重载到您的浏览器中。如果您不喜欢它，可以随意调整，直到它看起来恰到好处。
 
-![添加项目文本字段中带有更新占位符的待办事项应用程序的屏幕截图](images/develop-app-with-updated-placeholder.webp)
+![在添加项目文本字段中带有更新占位符的待办事项应用程序截图](images/develop-app-with-updated-placeholder.webp)
+
 
 ### 更改背景颜色
 
-在您认为应用程序最终完成之前，您需要使颜色更好。
+在您认为应用程序最终完成之前，您需要改善颜色。
 
 1. 打开 `client/src/index.scss` 文件。
 
 2. 将 `background-color` 属性调整为您喜欢的任何颜色。提供的代码片段是柔和的蓝色，以配合 Docker 的航海主题。
 
-    如果您使用的是 IDE，则可以使用集成的颜色选择器选择颜色。否则，请随意使用在线 [颜色选择器](https://www.w3schools.com/colors/colors_picker.asp)。
+    如果您使用的是 IDE，则可以使用集成的颜色选择器选取颜色。否则，可以随意使用在线[颜色选择器](https://www.w3schools.com/colors/colors_picker.asp)。
 
     ```css {linenos=table,hl_lines=2,linenostart=3}
     body {
@@ -133,24 +140,26 @@ aliases:
     }
     ```
 
-    每次保存都应该让您在浏览器中立即看到更改。不断调整它，直到它是适合您的完美设置。
+    每次保存都应让您立即在浏览器中看到更改。不断调整直到它成为您完美的设置。
 
-    ![带有新占位符和背景颜色的待办事项应用程序的屏幕截图](images/develop-app-with-updated-client.webp)
 
-就这样，您完成了。恭喜您更新了网站。
+    ![带有新占位符和背景颜色的待办事项应用程序截图](images/develop-app-with-updated-client.webp)
+
+就这样，您完成了。祝贺您更新了网站。
+
 
 ## 回顾
 
-在继续之前，花点时间回顾一下这里发生了什么。在片刻之间，您能够：
+在继续之前，花点时间回顾一下这里发生的事情。在短短几分钟内，您能够：
 
-- 零安装工作启动完整的开发项目。容器化环境提供了开发环境，确保您拥有所需的一切。您无需在计算机上直接安装 Node、MySQL 或任何其他依赖项。您只需要 Docker Desktop 和代码编辑器。
+- 以零安装工作量启动一个完整的开发项目。容器化环境提供了开发环境，确保您拥有所需的一切。您无需在机器上直接安装 Node、MySQL 或任何其他依赖项。您只需要 Docker Desktop 和代码编辑器。
 
-- 进行更改并立即查看。这是可能的，因为 1) 每个容器中运行的进程都在监视并响应及文件更改，2) 文件与容器化环境共享。
+- 进行更改并立即查看它们。这之所以成为可能，是因为 1) 每个容器中运行的进程都在监视并响应及文件更改，以及 2) 文件与容器化环境共享。
 
-Docker Desktop 实现了所有这些以及更多功能。一旦您开始用容器思考，您就可以创建几乎任何环境并轻松与团队共享。
+Docker Desktop 实现了所有这些以及更多功能。一旦您开始使用容器进行思考，就可以创建几乎任何环境并轻松与团队共享。
 
 ## 下一步
 
-现在应用程序已更新，您已准备好学习将其打包为容器镜像并将其推送到注册表，特别是 Docker Hub。
+现在应用程序已更新，您准备好学习将其打包为容器镜像并推送到注册表（特别是 Docker Hub）了。
 
 {{< button text="构建并推送您的第一个镜像" url="build-and-push-first-image" >}}

@@ -1,22 +1,40 @@
 ---
 description: How PKI works in swarm mode
 keywords: swarm, security, tls, pki,
-title: 使用公钥基础设施 (PKI) 管理 swarm 安全
+title: Manage swarm security with public key infrastructure (PKI)
 ---
 
-Docker 内置的 Swarm 模式公钥基础设施（PKI）系统使得安全部署容器编排系统变得简单。swarm 中的节点使用双向传输层安全（TLS）来认证、授权和加密与 swarm 中其他节点的通信。
+The Swarm mode public key infrastructure (PKI) system built into Docker
+makes it simple to securely deploy a container orchestration system. The nodes
+in a swarm use mutual Transport Layer Security (TLS) to authenticate, authorize,
+and encrypt the communications with other nodes in the swarm.
 
-当你通过运行 `docker swarm init` 创建 swarm 时，Docker 会将自身指定为管理节点。默认情况下，管理节点会生成一个新的根证书颁发机构（CA）以及一个密钥对，用于保护与加入 swarm 的其他节点之间的通信。如果你愿意，可以使用 [docker swarm init](/reference/cli/docker/swarm/init.md) 命令的 `--external-ca` 标志指定你自己的外部生成的根 CA。
+When you create a swarm by running `docker swarm init`, Docker designates itself
+as a manager node. By default, the manager node generates a new root Certificate
+Authority (CA) along with a key pair, which are used to secure communications
+with other nodes that join the swarm. If you prefer, you can specify your own
+externally-generated root CA, using the `--external-ca` flag of the
+[docker swarm init](/reference/cli/docker/swarm/init.md) command.
 
-管理节点还会生成两个令牌，用于将其他节点加入 swarm：一个工作节点令牌和一个管理节点令牌。每个令牌都包含根 CA 证书的摘要和一个随机生成的密钥。当节点加入 swarm 时，加入的节点使用摘要来验证远程管理节点的根 CA 证书。远程管理节点使用密钥来确保加入的节点是经过批准的节点。
+The manager node also generates two tokens to use when you join additional nodes
+to the swarm: one worker token and one manager token. Each token
+includes the digest of the root CA's certificate and a randomly generated
+secret. When a node joins the swarm, the joining node uses the digest to
+validate the root CA certificate from the remote manager. The remote manager
+uses the secret to ensure the joining node is an approved node.
 
-每当有新节点加入 swarm 时，管理节点都会向该节点颁发证书。该证书包含一个随机生成的节点 ID，用于在证书通用名称（CN）下标识该节点，以及在组织单位（OU）下标识角色。节点 ID 在当前 swarm 中作为该节点生命周期内的加密安全节点标识。
+Each time a new node joins the swarm, the manager issues a certificate to the
+node. The certificate contains a randomly generated node ID to identify the node
+under the certificate common name (CN) and the role under the organizational
+unit (OU). The node ID serves as the cryptographically secure node identity for
+the lifetime of the node in the current swarm.
 
-下图说明了管理节点和工作节点如何使用最低 TLS 1.2 加密通信。
+The diagram below illustrates how manager nodes and worker nodes encrypt
+communications using a minimum of TLS 1.2.
 
 ![TLS diagram](/engine/swarm/images/tls.webp?w=600)
 
-以下示例显示了来自工作节点证书的信息：
+The example below shows the information from a certificate from a worker node:
 
 ```none
 Certificate:
@@ -33,31 +51,56 @@ Certificate:
 ...snip...
 ```
 
-默认情况下，swarm 中的每个节点每三个月更新一次证书。你可以通过运行 `docker swarm update --cert-expiry <TIME PERIOD>` 命令来配置此间隔。最小轮换值为 1 小时。详情请参阅 [docker swarm update](/reference/cli/docker/swarm/update.md) CLI 参考。
+By default, each node in the swarm renews its certificate every three months.
+You can configure this interval by running the `docker swarm update
+--cert-expiry <TIME PERIOD>` command. The minimum rotation value is 1 hour.
+Refer to the
+[docker swarm update](/reference/cli/docker/swarm/update.md) CLI
+reference for details.
 
-## 轮换 CA 证书
+## Rotating the CA certificate
 
 > [!NOTE]
 >
-> Mirantis Kubernetes Engine (MKE)，前身为 Docker UCP，为 swarm 提供外部证书管理器服务。如果你在 MKE 上运行 swarm，不应该手动轮换 CA 证书。如果需要轮换证书，请联系 Mirantis 支持。
+> Mirantis Kubernetes Engine (MKE), formerly known as Docker UCP, provides an external
+> certificate manager service for the swarm. If you run swarm on MKE, you shouldn't
+> rotate the CA certificates manually. Instead, contact Mirantis support if you need
+> to rotate a certificate.
 
-如果集群 CA 密钥或管理节点被入侵，你可以轮换 swarm 根 CA，这样所有节点将不再信任由旧根 CA 签名的证书。
+In the event that a cluster CA key or a manager node is compromised, you can
+rotate the swarm root CA so that none of the nodes trust certificates
+signed by the old root CA anymore.
 
-运行 `docker swarm ca --rotate` 来生成新的 CA 证书和密钥。如果你愿意，可以传递 `--ca-cert` 和 `--external-ca` 标志来指定根证书并使用 swarm 外部的根 CA。或者，你可以传递 `--ca-cert` 和 `--ca-key` 标志来指定你希望 swarm 使用的确切证书和密钥。
+Run `docker swarm ca --rotate` to generate a new CA certificate and key. If you
+prefer, you can pass the `--ca-cert` and `--external-ca` flags to specify the
+root certificate and to use a root CA external to the swarm. Alternately,
+you can pass the `--ca-cert` and `--ca-key` flags to specify the exact
+certificate and key you would like the swarm to use.
 
-当你执行 `docker swarm ca --rotate` 命令时，会按顺序发生以下事情：
+When you issue the `docker swarm ca --rotate` command, the following things
+happen in sequence:
 
-1.  Docker 生成一个交叉签名证书。这意味着新根 CA 证书的一个版本是由旧根 CA 证书签名的。这个交叉签名证书被用作所有新节点证书的中间证书。这确保了仍然信任旧根 CA 的节点仍然可以验证由新 CA 签名的证书。
+1.  Docker generates a cross-signed certificate. This means that a version of
+    the new root CA certificate is signed with the old root CA certificate.
+    This cross-signed certificate is used as an intermediate certificate for all
+    new node certificates. This ensures that nodes that still trust the old root
+    CA can still validate a certificate signed by the new CA.
 
-2.  Docker 还会通知所有节点立即更新其 TLS 证书。这个过程可能需要几分钟，具体取决于 swarm 中的节点数量。
+2.  Docker also tells all nodes to immediately renew their TLS certificates.
+    This process may take several minutes, depending on the number of nodes in
+    the swarm.
 
-3.  在 swarm 中的每个节点都拥有由新 CA 签名的新 TLS 证书后，Docker 会忘记旧的 CA 证书和密钥材料，并通知所有节点仅信任新的 CA 证书。
+3.  After every node in the swarm has a new TLS certificate signed by the new CA,
+    Docker forgets about the old CA certificate and key material, and tells
+    all the nodes to trust the new CA certificate only.
 
-    这也会导致 swarm 的加入令牌发生变化。之前的加入令牌不再有效。
+    This also causes a change in the swarm's join tokens. The previous
+    join tokens are no longer valid.
 
-从这一点开始，所有新颁发的节点证书都由新的根 CA 签名，并且不包含任何中间证书。
+From this point on, all new node certificates issued are signed with the new
+root CA, and do not contain any intermediates.
 
-## 了解更多
+## Learn More
 
-* 阅读了解[节点](nodes.md)的工作原理。
-* 了解 Swarm 模式[服务](services.md)的工作原理。
+* Read about how [nodes](nodes.md) work.
+* Learn how Swarm mode [services](services.md) work.

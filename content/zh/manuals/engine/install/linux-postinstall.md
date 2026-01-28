@@ -1,11 +1,11 @@
 ---
-description: 了解 Linux 用户推荐的 Docker Engine 安装后步骤，
-  包括如何以非 root 用户身份运行 Docker 等。
+description: Find the recommended Docker Engine post-installation steps for Linux
+  users, including how to run Docker as a non-root user and more.
 keywords: run docker without sudo, docker running as root, docker post install, docker
   post installation, run docker as non root, docker non root user, how to run docker
   in linux, how to run docker linux, how to start docker in linux, run docker on linux
-title: Docker Engine 的 Linux 安装后步骤
-linkTitle: 安装后步骤
+title: Linux post-installation steps for Docker Engine
+linkTitle: Post-installation steps
 weight: 90
 aliases:
 - /engine/installation/linux/docker-ee/linux-postinstall/
@@ -13,130 +13,132 @@ aliases:
 - /install/linux/linux-postinstall/
 ---
 
-这些可选的安装后步骤描述了如何配置您的
-Linux 主机以更好地与 Docker 配合使用。
+These optional post-installation procedures describe how to configure your
+Linux host machine to work better with Docker.
 
-## 以非 root 用户身份管理 Docker
+## Manage Docker as a non-root user
 
-Docker 守护进程绑定到 Unix 套接字，而不是 TCP 端口。默认情况下，Unix 套接字由
-`root` 用户拥有，其他用户只能使用
-`sudo` 访问它。Docker 守护进程始终以 `root` 用户身份运行。
+The Docker daemon binds to a Unix socket, not a TCP port. By default it's the
+`root` user that owns the Unix socket, and other users can only access it using
+`sudo`. The Docker daemon always runs as the `root` user.
 
-如果您不想在 `docker` 命令前加上 `sudo`，请创建一个名为 `docker` 的 Unix
-组并向其添加用户。当 Docker 守护进程启动时，它会
-创建一个可供 `docker` 组成员访问的 Unix 套接字。在某些 Linux
-发行版上，使用包管理器安装 Docker Engine 时，系统会自动创建此组。在这种情况下，您无需
-手动创建该组。
+If you don't want to preface the `docker` command with `sudo`, create a Unix
+group called `docker` and add users to it. When the Docker daemon starts, it
+creates a Unix socket accessible by members of the `docker` group. On some Linux
+distributions, the system automatically creates this group when installing
+Docker Engine using a package manager. In that case, there is no need for you to
+manually create the group.
 
 <!-- prettier-ignore -->
 > [!WARNING]
 >
-> `docker` 组授予用户 root 级别的权限。有关
-> 这如何影响系统安全性的详细信息，请参阅
-> [Docker 守护进程攻击面](../security/_index.md#docker-daemon-attack-surface)。
+> The `docker` group grants root-level privileges to the user. For
+> details on how this impacts security in your system, see
+> [Docker Daemon Attack Surface](../security/_index.md#docker-daemon-attack-surface).
 
 > [!NOTE]
 >
-> 要在没有 root 权限的情况下运行 Docker，请参阅
-> [以非 root 用户身份运行 Docker 守护进程（Rootless 模式）](../security/rootless.md)。
+> To run Docker without root privileges, see
+> [Run the Docker daemon as a non-root user (Rootless mode)](../security/rootless.md).
 
-要创建 `docker` 组并添加您的用户：
+To create the `docker` group and add your user:
 
-1. 创建 `docker` 组。
+1. Create the `docker` group.
 
    ```console
    $ sudo groupadd docker
    ```
 
-2. 将您的用户添加到 `docker` 组。
+2. Add your user to the `docker` group.
 
    ```console
    $ sudo usermod -aG docker $USER
    ```
 
-3. 注销并重新登录，以便重新评估您的组成员资格。
+3. Log out and log back in so that your group membership is re-evaluated.
 
-   > 如果您在虚拟机中运行 Linux，可能需要
-   > 重新启动虚拟机才能使更改生效。
+   > If you're running Linux in a virtual machine, it may be necessary to
+   > restart the virtual machine for changes to take effect.
 
-   您也可以运行以下命令来激活对组的更改：
+   You can also run the following command to activate the changes to groups:
 
    ```console
    $ newgrp docker
    ```
 
-4. 验证您可以在没有 `sudo` 的情况下运行 `docker` 命令。
+4. Verify that you can run `docker` commands without `sudo`.
 
    ```console
    $ docker run hello-world
    ```
 
-   此命令下载一个测试镜像并在容器中运行它。当
-   容器运行时，它会打印一条消息并退出。
+   This command downloads a test image and runs it in a container. When the
+   container runs, it prints a message and exits.
 
-   如果您在将用户添加到 `docker` 组之前最初使用 `sudo` 运行了 Docker CLI 命令，
-   您可能会看到以下错误：
+   If you initially ran Docker CLI commands using `sudo` before adding your user
+   to the `docker` group, you may see the following error:
 
    ```none
    WARNING: Error loading config file: /home/user/.docker/config.json -
    stat /home/user/.docker/config.json: permission denied
    ```
 
-   此错误表明 `~/.docker/` 目录的权限设置不正确，
-   这是由于之前使用了 `sudo` 命令导致的。
+   This error indicates that the permission settings for the `~/.docker/`
+   directory are incorrect, due to having used the `sudo` command earlier.
 
-   要解决此问题，可以删除 `~/.docker/` 目录（它会被自动
-   重新创建，但任何自定义设置都会丢失），或者使用以下命令更改其所有权和
-   权限：
+   To fix this problem, either remove the `~/.docker/` directory (it's recreated
+   automatically, but any custom settings are lost), or change its ownership and
+   permissions using the following commands:
 
    ```console
    $ sudo chown "$USER":"$USER" /home/"$USER"/.docker -R
    $ sudo chmod g+rwx "$HOME/.docker" -R
    ```
 
-## 配置 Docker 使用 systemd 开机自启
+## Configure Docker to start on boot with systemd
 
-许多现代 Linux 发行版使用 [systemd](https://systemd.io/) 来
-管理系统启动时启动哪些服务。在 Debian 和 Ubuntu 上，
-Docker 服务默认在启动时启动。要在使用 systemd 的其他 Linux 发行版上
-自动启动 Docker 和 containerd，请运行
-以下命令：
+Many modern Linux distributions use [systemd](https://systemd.io/) to
+manage which services start when the system boots. On Debian and Ubuntu, the
+Docker service starts on boot by default. To automatically start Docker and
+containerd on boot for other Linux distributions using systemd, run the
+following commands:
 
 ```console
 $ sudo systemctl enable docker.service
 $ sudo systemctl enable containerd.service
 ```
 
-要停止此行为，请改用 `disable`。
+To stop this behavior, use `disable` instead.
 
 ```console
 $ sudo systemctl disable docker.service
 $ sudo systemctl disable containerd.service
 ```
 
-您可以使用 systemd 单元文件在启动时配置 Docker 服务，
-例如添加 HTTP 代理、为 Docker 运行时文件设置不同的目录或分区，
-或其他自定义设置。有关示例，请参阅
-[配置守护进程使用代理](/manuals/engine/daemon/proxy.md#systemd-unit-file)。
+You can use systemd unit files to configure the Docker service on startup,
+for example to add an HTTP proxy, set a different directory or partition for the
+Docker runtime files, or other customizations. For an example, see
+[Configure the daemon to use a proxy](/manuals/engine/daemon/proxy.md#systemd-unit-file).
 
-## 配置默认日志驱动程序
+## Configure default logging driver
 
-Docker 提供[日志驱动程序](/manuals/engine/logging/_index.md)用于
-收集和查看主机上运行的所有容器的日志数据。
-默认的日志驱动程序 `json-file` 将日志数据写入
-主机文件系统上的 JSON 格式文件。随着时间的推移，这些日志文件会增大，
-可能导致磁盘资源耗尽。
+Docker provides [logging drivers](/manuals/engine/logging/_index.md) for
+collecting and viewing log data from all containers running on a host. The
+default logging driver, `json-file`, writes log data to JSON-formatted files on
+the host filesystem. Over time, these log files expand in size, leading to
+potential exhaustion of disk resources.
 
-为避免因日志数据过度使用磁盘而导致的问题，请考虑以下
-选项之一：
+To avoid issues with overusing disk for log data, consider one of the following
+options:
 
-- 配置 `json-file` 日志驱动程序以开启
-  [日志轮转](/manuals/engine/logging/drivers/json-file.md)。
-- 使用默认执行日志轮转的
-  [替代日志驱动程序](/manuals/engine/logging/configure.md#configure-the-default-logging-driver)，
-  例如["local" 日志驱动程序](/manuals/engine/logging/drivers/local.md)。
-- 使用将日志发送到远程日志聚合器的日志驱动程序。
+- Configure the `json-file` logging driver to turn on
+  [log rotation](/manuals/engine/logging/drivers/json-file.md).
+- Use an
+  [alternative logging driver](/manuals/engine/logging/configure.md#configure-the-default-logging-driver)
+  such as the ["local" logging driver](/manuals/engine/logging/drivers/local.md)
+  that performs log rotation by default.
+- Use a logging driver that sends logs to a remote logging aggregator.
 
-## 后续步骤
+## Next steps
 
-- 查看 [Docker 研讨会](/get-started/workshop/_index.md)，了解如何构建镜像并将其作为容器化应用程序运行。
+- Take a look at the [Docker workshop](/get-started/workshop/_index.md) to learn how to build an image and run it as a containerized application.

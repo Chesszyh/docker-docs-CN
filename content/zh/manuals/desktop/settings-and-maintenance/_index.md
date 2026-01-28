@@ -1,6 +1,6 @@
 ---
 build:
   render: never
-title: 设置与维护
+title: Settings and maintenance
 weight: 40
 ---

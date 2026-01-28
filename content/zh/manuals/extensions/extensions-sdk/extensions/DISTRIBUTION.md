@@ -1,50 +1,50 @@
 ---
-title: 打包和发布您的扩展
-description: Docker 扩展分发
+title: Package and release your extension
+description: Docker extension distribution
 keywords: Docker, extensions, sdk, distribution
-aliases:
+aliases: 
  - /desktop/extensions-sdk/extensions/DISTRIBUTION/
 weight: 30
 ---
 
-本页包含有关如何打包和分发扩展的额外信息。
+This page contains additional information on how to package and distribute extensions.
 
-## 打包您的扩展
+## Package your extension
 
-Docker 扩展被打包为 Docker 镜像。整个扩展运行时，包括 UI、后端服务（主机或虚拟机）以及任何必要的二进制文件，都必须包含在扩展镜像中。
-每个扩展镜像必须在其文件系统根目录下包含一个 `metadata.json` 文件，用于定义[扩展的内容](../architecture/metadata.md)。
+Docker extensions are packaged as Docker images. The entire extension runtime including the UI, backend services (host or VM), and any necessary binary must be included in the extension image.
+Every extension image must contain a `metadata.json` file at the root of its filesystem that defines the [contents of the extension](../architecture/metadata.md).
 
-Docker 镜像必须具有多个[镜像标签](labels.md)，提供有关扩展的信息。请参阅如何使用[扩展标签](labels.md)来提供扩展概述信息。
+The Docker image must have several [image labels](labels.md), providing information about the extension. See how to use [extension labels](labels.md) to provide extension overview information.
 
-要打包和发布扩展，您必须构建 Docker 镜像（`docker build`），并将镜像推送到 [Docker Hub](https://hub.docker.com/)（`docker push`），使用特定的标签来管理扩展版本。
+To package and release an extension, you must build a Docker image (`docker build`), and push the image to [Docker Hub](https://hub.docker.com/) (`docker push`) with a specific tag that lets you manage versions of the extension.
 
-## 发布您的扩展
+## Release your extension
 
-Docker 镜像标签必须遵循 semver（语义化版本）约定，以便获取扩展的最新版本，并了解是否有可用的更新。请访问 [semver.org](https://semver.org/) 了解更多关于语义化版本控制的信息。
+Docker image tags must follow semver conventions in order to allow fetching the latest version of the extension, and to know if there are updates available. See [semver.org](https://semver.org/) to learn more about semantic versioning.
 
-扩展镜像必须是多架构镜像，以便用户可以在 ARM/AMD 硬件上安装扩展。这些多架构镜像可以包含 ARM/AMD 特定的二进制文件。Mac 用户将根据其架构自动使用正确的镜像。
-在主机上安装二进制文件的扩展还必须在同一扩展镜像中提供 Windows 二进制文件。请参阅如何为您的扩展[构建多架构镜像](multi-arch.md)。
+Extension images must be multi-arch images so that users can install extensions on ARM/AMD hardware. These multi-arch images can include ARM/AMD specific binaries. Mac users will automatically use the right image based on their architecture.
+Extensions that install binaries on the host must also provide Windows binaries in the same extension image. See how to [build a multi-arch image](multi-arch.md) for your extension.
 
-您可以在代码仓库上实现扩展而不受任何限制。Docker 不需要访问代码仓库即可使用扩展。此外，您可以管理扩展的新版本发布，而不依赖于 Docker Desktop 的版本发布。
+You can implement extensions without any constraints on the code repository. Docker doesn't need access to the code repository in order to use the extension. Also, you can manage new releases of your extension, without any dependency on Docker Desktop releases.
 
-## 新版本和更新
+## New releases and updates
 
-您可以通过将带有新标签的新镜像推送到 Docker Hub 来发布 Docker 扩展的新版本。
+You can release a new version of your Docker extension by pushing a new image with a new tag to Docker Hub.
 
-推送到与扩展对应的镜像仓库的任何新镜像都定义了该扩展的新版本。镜像标签用于标识版本号。扩展版本必须遵循 semver 以便于理解和比较版本。
+Any new image pushed to an image repository corresponding to an extension defines a new version of that extension. Image tags are used to identify version numbers. Extension versions must follow semver to make it easy to understand and compare versions.
 
-Docker Desktop 扫描 Marketplace 中发布的扩展列表以查找新版本，并在用户可以升级特定扩展时向用户发送通知。目前，不属于 Marketplace 的扩展没有自动更新通知。
+Docker Desktop scans the list of extensions published in the marketplace for new versions, and provides notifications to users when they can upgrade a specific extension. Extensions that aren't part of the Marketplace don't have automatic update notifications at the moment.
 
-用户可以下载并安装任何扩展的较新版本，而无需更新 Docker Desktop 本身。
+Users can download and install the newer version of any extension without updating Docker Desktop itself.
 
-## 扩展 API 依赖
+## Extension API dependencies
 
-扩展必须指定其依赖的扩展 API 版本。Docker Desktop 检查扩展所需的版本，并且仅建议安装与当前安装的 Docker Desktop 版本兼容的扩展。用户可能需要更新 Docker Desktop 才能安装最新可用的扩展。
+Extensions must specify the Extension API version they rely on. Docker Desktop checks the extension's required version, and only proposes to install extensions that are compatible with the current Docker Desktop version installed. Users might need to update Docker Desktop in order to install the latest extensions available.
 
-扩展镜像标签必须指定扩展依赖的 API 版本。这允许 Docker Desktop 检查较新版本的扩展镜像，而无需预先下载完整的扩展镜像。
+Extension image labels must specify the API version that the extension relies upon. This allows Docker Desktop to inspect newer versions of extension images without downloading the full extension image upfront.
 
-## 扩展和扩展 SDK 的许可证
+## License on extensions and the extension SDK
 
-[Docker Extension SDK](https://www.npmjs.com/package/@docker/extension-api-client) 采用 Apache 2.0 许可证，可免费使用。
+The [Docker Extension SDK](https://www.npmjs.com/package/@docker/extension-api-client) is licensed under the Apache 2.0 License and is free to use.
 
-对于每个扩展应如何获得许可没有限制，这由您在创建新扩展时决定。
+There is no constraint on how each extension should be licensed, this is up to you to decide when creating a new extension.

@@ -47,5 +47,5 @@ def verify_structure(src_dir, dst_dir):
         return False
 
 if __name__ == "__main__":
-    # Check reference/ vs zh/reference/
-    verify_structure("reference", "zh/reference")
+    # Check manuals/ vs zh/manuals/
+    verify_structure("manuals", "zh/manuals")

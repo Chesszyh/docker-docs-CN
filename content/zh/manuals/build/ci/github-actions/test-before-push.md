@@ -1,15 +1,17 @@
 ---
-title: 使用 GitHub Actions 在推送前测试
+title: Test before push with GitHub Actions
 linkTitle: Test before push
-description: 以下是如何在推送到镜像仓库之前验证镜像的方法
+description: Here's how you can validate an image, before pushing it to a registry
 keywords: ci, github actions, gha, buildkit, buildx, test
 ---
 
-在某些情况下，您可能希望在推送镜像之前验证镜像是否按预期工作。以下工作流实现了几个步骤来实现这一目标：
+In some cases, you might want to validate that the image works as expected
+before pushing it. The following workflow implements several steps to achieve
+this:
 
-1. 构建并导出镜像到 Docker
-2. 测试您的镜像
-3. 多平台构建并推送镜像
+1. Build and export the image to Docker
+2. Test your image
+3. Multi-platform build and push the image
 
 ```yaml
 name: ci
@@ -57,4 +59,7 @@ jobs:
 
 > [!NOTE]
 >
-> 在此工作流中，`linux/amd64` 镜像只构建一次。镜像构建一次后，后续步骤使用第一个 `Build and push` 步骤的内部缓存。第二个 `Build and push` 步骤只构建 `linux/arm64`。
+> The `linux/amd64` image is only built once in this workflow. The image is
+> built once, and the following steps use the internal cache from the first
+> `Build and push` step. The second `Build and push` step only builds
+> `linux/arm64`.

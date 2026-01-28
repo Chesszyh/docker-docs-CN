@@ -1,6 +1,6 @@
 ---
-title: PKG 安装程序
-description: 了解如何使用 PKG 安装程序。同时探索其他配置选项。
+title: PKG installer
+description: Understand how to use the PKG installer. Also explore additional configuration options.
 keywords: pkg, mac, docker desktop, install, deploy, configure, admin, mdm
 tags: [admin]
 weight: 20
@@ -8,42 +8,42 @@ weight: 20
 
 {{< summary-bar feature_name="PKG installer" >}}
 
-PKG 软件包支持各种 MDM（移动设备管理）解决方案，非常适合批量安装，无需个人用户手动设置。借助此软件包，IT 管理员可以确保 Docker Desktop 的标准化、策略驱动安装，提高其组织的效率和软件管理水平。
+The PKG package supports various MDM (Mobile Device Management) solutions, making it ideal for bulk installations and eliminating the need for manual setups by individual users. With this package, IT administrators can ensure standardized, policy-driven installations of Docker Desktop, enhancing efficiency and software management across their organizations.
 
-## 交互式安装
+## Install interactively
 
-1. 在 [Docker Home](http://app.docker.com) 中，选择您的组织。
-2. 选择 **Admin Console**，然后选择 **Enterprise deployment**。
-3. 从 **macOS** 选项卡中，选择 **Download PKG installer** 按钮。
-4. 下载完成后，双击 `Docker.pkg` 运行安装程序。
-5. 按照安装向导上的说明授权安装程序并继续安装。
-   - **Introduction**：选择 **Continue**。
-   - **License**：查看许可协议并选择 **Agree**。
-   - **Destination Select**：此步骤是可选的。建议您保留默认安装目标（通常是 `Macintosh HD`）。选择 **Continue**。
-   - **Installation Type**：选择 **Install**。
-   - **Installation**：使用管理员密码或 Touch ID 进行身份验证。
-   - **Summary**：安装完成后，选择 **Close**。
+1. In [Docker Home](http://app.docker.com), choose your organization.
+2. Select **Admin Console**, then **Enterprise deployment**.
+3. From the **macOS** tab, select the **Download PKG installer** button.
+4. Once downloaded, double-click `Docker.pkg` to run the installer.
+5. Follow the instructions on the installation wizard to authorize the installer and proceed with the installation.
+   - **Introduction**: Select **Continue**.
+   - **License**: Review the license agreement and select **Agree**.
+   - **Destination Select**: This step is optional. It is recommended that you keep the default installation destination (usually `Macintosh HD`). Select **Continue**.
+   - **Installation Type**: Select **Install**.
+   - **Installation**: Authenticate using your administrator password or Touch ID.
+   - **Summary**: When the installation completes, select **Close**.
 
 > [!NOTE]
 >
-> 使用 PKG 安装 Docker Desktop 时，应用内更新会自动禁用。这确保组织可以保持版本一致性并防止未经批准的更新。对于使用 `.dmg` 安装程序安装的 Docker Desktop，应用内更新仍然受支持。
+> When installing Docker Desktop with the PKG, in-app updates are automatically disabled. This ensures organizations can maintain version consistency and prevent unapproved updates. For Docker Desktop installed with the `.dmg` installer, in-app updates remain supported.
 >
-> Docker Desktop 会在有更新可用时通知您。要更新 Docker Desktop，请从 Docker Admin Console 下载最新的安装程序。导航到 **Enterprise deployment** 页面。
+> Docker Desktop notifies you when an update is available. To update Docker Desktop, download the latest installer from the Docker Admin Console. Navigate to the **Enterprise deployment** page.
 >
-> 要了解最新版本，请查看[发行说明](/manuals/desktop/release-notes.md)页面。
+> To keep up to date with new releases, check the [release notes](/manuals/desktop/release-notes.md) page.
 
-## 从命令行安装
+## Install from the command line
 
-1. 在 [Docker Home](http://app.docker.com) 中，选择您的组织。
-2. 选择 **Admin Console**，然后选择 **Enterprise deployment**。
-3. 从 **macOS** 选项卡中，选择 **Download PKG installer** 按钮。
-4. 在终端中，运行以下命令：
+1. In [Docker Home](http://app.docker.com), choose your organization.
+2. Select **Admin Console**, then **Enterprise deployment**.
+3. From the **macOS** tab, select the **Download PKG installer** button.
+4. From your terminal, run the following command:
 
    ```console
    $ sudo installer -pkg "/path/to/Docker.pkg" -target /Applications
    ```
 
-## 其他资源
+## Additional resources
 
-- 了解如何使用 [Intune](use-intune.md) 或 [Jamf Pro](use-jamf-pro.md) 部署 Docker Desktop for Mac
-- 探索如何为您的用户[强制登录](/manuals/security/for-admins/enforce-sign-in/methods.md#plist-method-mac-only)。
+- See how you can deploy Docker Desktop for Mac using [Intune](use-intune.md) or [Jamf Pro](use-jamf-pro.md)
+- Explore how to [Enforce sign-in](/manuals/security/for-admins/enforce-sign-in/methods.md#plist-method-mac-only) for your users.

@@ -1,20 +1,20 @@
 ---
-title: 安装 Docker Scout
-linkTitle: 安装
+title: Install Docker Scout
+linkTitle: Install
 weight: 10
-description: Docker Scout CLI 插件的安装说明
+description: Installation instructions for the Docker Scout CLI plugin
 keywords: scout, cli, install, download
 ---
 
-Docker Scout CLI 插件预装在 Docker Desktop 中。
+The Docker Scout CLI plugin comes pre-installed with Docker Desktop.
 
-如果您运行的是不带 Docker Desktop 的 Docker Engine，
-Docker Scout 不会预装，
-但您可以将其作为独立二进制文件安装。
+If you run Docker Engine without Docker Desktop,
+Docker Scout doesn't come pre-installed,
+but you can install it as a standalone binary.
 
-## 安装脚本
+## Installation script
 
-要安装最新版本的插件，请运行以下命令：
+To install the latest version of the plugin, run the following commands:
 
 ```console
 $ curl -fsSL https://raw.githubusercontent.com/docker/scout-cli/main/install.sh -o install-scout.sh
@@ -23,24 +23,25 @@ $ sh install-scout.sh
 
 > [!NOTE]
 >
-> 在本地运行从互联网下载的脚本之前，请务必先检查它们。
-> 在安装之前，请熟悉该便捷脚本的潜在风险和限制。
+> Always examine scripts downloaded from the internet before running them
+> locally. Before installing, make yourself familiar with potential risks and
+> limitations of the convenience script.
 
-## 手动安装
+## Manual installation
 
 {{< tabs >}}
 {{< tab name="Linux" >}}
 
-1. 从[发布页面](https://github.com/docker/scout-cli/releases)下载最新版本。
-2. 在 `$HOME/.docker` 下创建一个名为 `scout` 的子目录。
+1. Download the latest release from the [releases page](https://github.com/docker/scout-cli/releases).
+2. Create a subdirectory under `$HOME/.docker` called `scout`.
 
    ```console
    $ mkdir -p $HOME/.docker/scout
    ```
 
-3. 解压存档并将 `docker-scout` 二进制文件移动到 `$HOME/.docker/scout` 目录。
-4. 使二进制文件可执行：`chmod +x $HOME/.docker/scout/docker-scout`。
-5. 将 `scout` 子目录作为插件目录添加到您的 `.docker/config.json` 中：
+3. Extract the archive and move the `docker-scout` binary to the `$HOME/.docker/scout` directory.
+4. Make the binary executable: `chmod +x $HOME/.docker/scout/docker-scout`.
+5. Add the `scout` subdirectory to your `.docker/config.json` as a plugin directory:
 
    ```json
    {
@@ -50,35 +51,35 @@ $ sh install-scout.sh
    }
    ```
 
-   将 `<USER>` 替换为您在系统上的用户名。
+   Substitute `<USER>` with your username on the system.
 
    > [!NOTE]
-   > `cliPluginsExtraDirs` 的路径必须是绝对路径。
+   > The path for `cliPluginsExtraDirs` must be an absolute path.
 
 {{< /tab >}}
 {{< tab name="macOS" >}}
 
-1. 从[发布页面](https://github.com/docker/scout-cli/releases)下载最新版本。
-2. 在 `$HOME/.docker` 下创建一个名为 `scout` 的子目录。
+1. Download the latest release from the [releases page](https://github.com/docker/scout-cli/releases).
+2. Create a subdirectory under `$HOME/.docker` called `scout`.
 
    ```console
    $ mkdir -p $HOME/.docker/scout
    ```
 
-3. 解压存档并将 `docker-scout` 二进制文件移动到 `$HOME/.docker/scout` 目录。
-4. 使二进制文件可执行：
+3. Extract the archive and move the `docker-scout` binary to the `$HOME/.docker/scout` directory.
+4. Make the binary executable:
 
    ```console
    $ chmod +x $HOME/.docker/scout/docker-scout
    ```
 
-5. 在 macOS 上授权该二进制文件可执行：
+5. Authorize the binary to be executable on macOS:
 
    ```console
    xattr -d com.apple.quarantine $HOME/.docker/scout/docker-scout
    ```
 
-6. 将 `scout` 子目录作为插件目录添加到您的 `.docker/config.json` 中：
+6. Add the `scout` subdirectory to your `.docker/config.json` as a plugin directory:
 
    ```json
    {
@@ -88,23 +89,23 @@ $ sh install-scout.sh
    }
    ```
 
-   将 `<USER>` 替换为您在系统上的用户名。
+   Substitute `<USER>` with your username on the system.
 
    > [!NOTE]
-   > `cliPluginsExtraDirs` 的路径必须是绝对路径。
+   > The path for `cliPluginsExtraDirs` must be an absolute path.
 
 {{< /tab >}}
 {{< tab name="Windows" >}}
 
-1. 从[发布页面](https://github.com/docker/scout-cli/releases)下载最新版本。
-2. 在 `%USERPROFILE%/.docker` 下创建一个名为 `scout` 的子目录。
+1. Download the latest release from the [releases page](https://github.com/docker/scout-cli/releases).
+2. Create a subdirectory under `%USERPROFILE%/.docker` called `scout`.
 
    ```console
    % mkdir %USERPROFILE%\.docker\scout
    ```
 
-3. 解压存档并将 `docker-scout.exe` 二进制文件移动到 `%USERPROFILE%\.docker\scout` 目录。
-4. 将 `scout` 子目录作为插件目录添加到您的 `.docker\config.json` 中：
+3. Extract the archive and move the `docker-scout.exe` binary to the `%USERPROFILE%\.docker\scout` directory.
+4. Add the `scout` subdirectory to your `.docker\config.json` as a plugin directory:
 
    ```json
    {
@@ -114,18 +115,18 @@ $ sh install-scout.sh
    }
    ```
 
-   将 `<USER>` 替换为您在系统上的用户名。
+   Substitute `<USER>` with your username on the system.
 
    > [!NOTE]
-   > `cliPluginsExtraDirs` 的路径必须是绝对路径。
+   > The path for `cliPluginsExtraDirs` must be an absolute path.
 
 {{< /tab >}}
 {{< /tabs >}}
 
-## 容器镜像
+## Container image
 
-Docker Scout CLI 插件也可以作为[容器镜像](https://hub.docker.com/r/docker/scout-cli)使用。
-使用 `docker/scout-cli` 在不在主机上安装 CLI 插件的情况下运行 `docker scout` 命令。
+The Docker Scout CLI plugin is also available as a [container image](https://hub.docker.com/r/docker/scout-cli).
+Use the `docker/scout-cli` to run `docker scout` commands without installing the CLI plugin on your host.
 
 ```console
 $ docker run -it \
@@ -136,8 +137,8 @@ $ docker run -it \
 
 ## GitHub Action
 
-Docker Scout CLI 插件也可以作为 [GitHub action](https://github.com/docker/scout-action) 使用。
-您可以在 GitHub 工作流中使用它，在每次推送时自动分析镜像并评估策略合规性。
+The Docker Scout CLI plugin is also available as a [GitHub action](https://github.com/docker/scout-action).
+You can use it in your GitHub workflows to automatically analyze images and evaluate policy compliance with each push.
 
-Docker Scout 还与更多 CI/CD 工具集成，例如 Jenkins、GitLab 和 Azure DevOps。
-了解更多关于 Docker Scout 可用[集成](./integrations/_index.md)的信息。
+Docker Scout also integrates with many more CI/CD tools, such as Jenkins, GitLab, and Azure DevOps.
+Learn more about the [integrations](./integrations/_index.md) available for Docker Scout.

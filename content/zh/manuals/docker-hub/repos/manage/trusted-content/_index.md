@@ -1,17 +1,32 @@
 ---
-description: 了解如何管理和贡献受信任的内容。
+description: Learn how to manage and contribute to trusted content.
 keywords: Docker Hub, Hub, trusted content
-title: 受信任的内容
+title: Trusted content
 weight: 100
 aliases:
  - /trusted-content/
 ---
 
-Docker 的受信任内容计划确保容器镜像满足最高的安全性、质量和可靠性标准。这些计划为发布者和贡献者提供了与全球数百万开发者分享其镜像的机会，同时获得对其内容使用情况的宝贵洞察。通过参与，您可以提高内容的可见性，建立信誉，并获得工具来优化其在容器生态系统中的影响力。
+Docker's trusted content programs ensure that container images meet the highest
+standards for security, quality, and reliability. These programs provide
+opportunities for publishers and contributors to share their images with
+millions of developers worldwide while gaining valuable insights into their
+content's usage. By participating, you can enhance your content's visibility,
+build credibility, and access tools to optimize its impact within the container
+ecosystem.
 
-在本节中，了解：
+In this section, learn about:
 
-- [Docker 官方镜像](./official-images.md)：了解如何贡献、提议和维护 Docker 官方镜像，以作为容器化应用程序的可靠基础。
-- [Docker 赞助开源 (DSOS) 计划](dsos-program.md)：了解开源项目如何获得诸如认证徽章、洞察分析以及访问 Docker Scout 等特权，从而在 Docker Hub 上提高可见性和信任度。
-- [Docker 认证发布者 (DVP) 计划](./dvp-program.md)：探索如何加入 DVP 计划，以展示带有认证徽章的受信任高质量镜像，获得搜索结果优先排名，访问洞察分析，并通过漏洞分析增强安全性。
-- [洞察与分析](./insights-analytics.md)：访问有关镜像和扩展使用的详细指标，包括拉取次数、地理位置和客户端数据，以了解用户行为并优化您的内容。
+- [Docker Official Images](./official-images.md): Learn how to contribute,
+  propose, and maintain Docker Official Images to serve as reliable foundations
+  for containerized applications.
+- [Docker-Sponsored Open Source (DSOS) Program](dsos-program.md): Discover how
+  open source projects can gain perks like verified badges, insights, and access
+  to Docker Scout, enhancing visibility and trust on Docker Hub.
+- [Docker Verified Publisher (DVP) Program](./dvp-program.md): Explore how to
+  join the DVP program to showcase trusted, high-quality images with a verified
+  badge, gain priority in search results, access insights, and enhance security
+  through vulnerability analysis.
+- [Insights and analytics](./insights-analytics.md): Access detailed metrics on
+  image and extension usage, including pull counts, geolocation, and client
+  data, to understand user behavior and optimize your content.

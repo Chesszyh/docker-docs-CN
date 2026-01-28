@@ -1,68 +1,97 @@
 ---
-title: 使用 GUI 创建例外
-description: 使用 Docker Scout Dashboard 或 Docker Desktop 为镜像中的漏洞创建例外。
+title: Create an exception using the GUI
+description: Create an exception for a vulnerability in an image using the Docker Scout Dashboard or Docker Desktop.
 keywords: Docker, Docker Scout, Docker Desktop, vulnerability, exception, create, GUI
 ---
 
-Docker Scout Dashboard 和 Docker Desktop 提供了用户友好的界面，用于为容器镜像中发现的漏洞创建[例外](/manuals/scout/explore/exceptions.md)。例外允许您确认已接受的风险或处理镜像分析中的误报。
+The Docker Scout Dashboard and Docker Desktop provide a user-friendly interface
+for creating [exceptions](/manuals/scout/explore/exceptions.md) for
+vulnerabilities found in container images. Exceptions let you acknowledge
+accepted risks or address false positives in image analysis.
 
-## 前提条件
+## Prerequisites
 
-要在 Docker Scout Dashboard 或 Docker Desktop 中创建例外，您需要一个对拥有该镜像的 Docker 组织具有 **Editor**（编辑者）或 **Owner**（所有者）权限的 Docker 帐户。
+To create an in the Docker Scout Dashboard or Docker Desktop, you need a Docker
+account with **Editor** or **Owner** permissions for the Docker organization
+that owns the image.
 
-## 步骤
+## Steps
 
-使用 Docker Scout Dashboard 或 Docker Desktop 为镜像中的漏洞创建例外：
+To create an exception for a vulnerability in an image using the Docker Scout
+Dashboard or Docker Desktop:
 
 {{< tabs >}}
 {{< tab name="Docker Scout Dashboard" >}}
 
-1. 前往[镜像页面](https://scout.docker.com/reports/images)。
-2. 选择包含您要创建例外的漏洞的镜像标签。
-3. 打开 **Image layers**（镜像层）标签页。
-4. 选择包含您要创建例外的漏洞的层。
-5. 在 **Vulnerabilities**（漏洞）标签页中，找到您要创建例外的漏洞。漏洞按软件包分组。找到包含您要创建例外的漏洞的软件包，然后展开该软件包。
-6. 选择漏洞旁边的 **Create exception**（创建例外）按钮。
+1. Go to the [Images page](https://scout.docker.com/reports/images).
+2. Select the image tag that contains the vulnerability you want to create an
+   exception for.
+3. Open the **Image layers** tab.
+4. Select the layer that contains the vulnerability you want to create an
+   exception for.
+5. In the **Vulnerabilities** tab, find the vulnerability you want to create an
+   exception for. Vulnerabilities are grouped by package. Find the package that
+   contains the vulnerability you want to create an exception for, and then
+   expand the package.
+6. Select the **Create exception** button next to the vulnerability.
 
 {{% create_panel.inline %}}
-选择 **Create exception** 按钮会打开 **Create exception** 侧边面板。在此面板中，您可以提供例外的详细信息：
+Selecting the **Create exception** button opens the **Create exception** side panel.
+In this panel, you can provide the details of the exception:
 
-- **Exception type**（例外类型）：例外的类型。目前仅支持以下类型：
+- **Exception type**: The type of exception. The only supported types are:
 
-  - **Accepted risk**（已接受的风险）：由于安全风险较低、修复成本较高、依赖上游修复或类似原因，不处理该漏洞。
-  - **False positive**（误报）：在您的特定用例、配置中，或由于已采取的阻止利用措施，该漏洞不构成安全风险。
+  - **Accepted risk**: The vulnerability is not addressed due to its minimal
+    security risk, high remediation costs, dependence on an upstream fix, or
+    similar.
+  - **False positive**: The vulnerability presents no security risk in your
+    specific use case, configuration, or because of measures in place that
+    block exploitation
 
-    如果您选择 **False positive**，您必须提供该漏洞为何是误报的理由：
+    If you select **False positive**, you must provide a justification for why
+    the vulnerability is a false positive:
 
-- **Additional details**（附加详情）：您想要提供的关于该例外的任何附加信息。
+- **Additional details**: Any additional information that you want to
+  provide about the exception.
 
-- **Scope**（范围）：例外的范围。范围可以是：
+- **Scope**: The scope of the exception. The scope can be:
 
-  - **Image**（镜像）：例外适用于所选镜像。
-  - **All images in repository**（仓库中的所有镜像）：例外适用于该仓库中的所有镜像。
-  - **Specific repository**（特定仓库）：例外适用于指定仓库中的所有镜像。
-  - **All images in my organization**（我的组织中的所有镜像）：例外适用于您组织中的所有镜像。
+  - **Image**: The exception applies to the selected image.
+  - **All images in repository**: The exception applies to all images in the
+    repository.
+  - **Specific repository**: The exception applies to all images in the
+    specified repositories.
+  - **All images in my organization**: The exception applies to all images in
+    your organization.
 
-- **Package scope**（软件包范围）：例外的软件包范围。软件包范围可以是：
+- **Package scope**: The scope of the exception. The package scope can be:
 
-  - **Selected package**（选定的软件包）：例外适用于选定的软件包。
-  - **Any packages**（任何软件包）：例外适用于所有受此 CVE 影响的软件包。
+  - **Selected package**: The exception applies to the selected package.
+  - **Any packages**: The exception applies to all packages vulnerable to this
+    CVE.
 
-填写完详细信息后，选择 **Create**（创建）按钮来创建例外。
+When you've filled in the details, select the **Create** button to create the
+exception.
 
-例外现已创建，并会被纳入您所选镜像的分析结果中。该例外还会列在 Docker Scout Dashboard 中[漏洞页面](https://scout.docker.com/reports/vulnerabilities/exceptions)的 **Exceptions**（例外）标签页中。
+The exception is now created and factored into the analysis results for the
+images that you selected. The exception is also listed on the **Exceptions**
+tab of the [Vulnerabilities page](https://scout.docker.com/reports/vulnerabilities/exceptions)
+in the Docker Scout Dashboard.
 
 {{% /create_panel.inline %}}
 
 {{< /tab >}}
 {{< tab name="Docker Desktop" >}}
 
-1. 在 Docker Desktop 中打开 **Images**（镜像）视图。
-2. 打开 **Hub** 标签页。
-3. 选择包含您要创建例外的漏洞的镜像标签。
-4. 选择包含您要创建例外的漏洞的层。
-5. 在 **Vulnerabilities**（漏洞）标签页中，找到您要创建例外的漏洞。
-6. 选择漏洞旁边的 **Create exception**（创建例外）按钮。
+1. Open the **Images** view in Docker Desktop.
+2. Open the **Hub** tab.
+3. Select the image tag that contains the vulnerability you want to create an
+   exception for.
+4. Select the layer that contains the vulnerability you want to create an
+   exception for.
+5. In the **Vulnerabilities** tab, find the vulnerability you want to create an
+   exception for.
+6. Select the **Create exception** button next to the vulnerability.
 
 {{% create_panel.inline / %}}
 

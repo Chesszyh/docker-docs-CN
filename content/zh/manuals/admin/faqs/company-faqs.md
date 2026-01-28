@@ -1,8 +1,8 @@
 ---
-title: 公司相关常见问题
-linkTitle: 公司
+title: FAQs on companies
+linkTitle: Company
 weight: 30
-description: 公司常见问题
+description: Company FAQs
 keywords: Docker, Docker Hub, SSO FAQs, single sign-on, company, administration, company management
 tags: [FAQ]
 aliases:
@@ -10,72 +10,78 @@ aliases:
 - /faq/admin/company-faqs/
 ---
 
-### 创建公司并将组织添加到公司时，现有订阅会受影响吗？
+### Are existing subscriptions affected when you create a company and add organizations to it?
 
-您可以在组织级别管理订阅和相关的计费详情。
+You can manage subscriptions and related billing details at the organization level.
 
-### 我的一些组织没有 Docker Business 订阅。我还能使用父公司吗？
+### Some of my organizations don’t have a Docker Business subscription. Can I still use a parent company?
 
-可以，但您只能将拥有 Docker Business 订阅的组织添加到公司中。
+Yes, but you can only add organizations with a Docker Business subscription to a company.
 
-### 如果我的某个组织从 Docker Business 降级，但我仍然需要以公司所有者身份进行访问，会发生什么？
+### What happens if one of my organizations downgrades from Docker Business, but I still need access as a company owner?
 
-要访问和管理子组织，该组织必须拥有 Docker Business 订阅。如果组织不包含在此订阅中，组织的所有者必须在公司之外管理该组织。
+To access and manage child organizations, the organization must have a Docker Business subscription. If the organization isn’t included in this subscription, the owner of the organization must manage the organization outside of the company.
 
-### 我的组织在迁移过程中需要准备停机时间吗？
+### Does my organization need to prepare for downtime during the migration process?
 
-不需要，您可以照常进行业务操作。
+No, you can continue with business as usual.
 
-### 我可以添加多少个公司所有者？
+### How many company owners can I add?
 
-您最多可以为单个公司账户添加 10 个公司所有者。
+You can add a maximum of 10 company owners to a single company account.
 
-### 公司所有者会占用订阅席位吗？
+### Do company owners occupy a subscription seat?
 
-公司所有者不会占用席位，除非以下情况之一为真：
+Company owners do not occupy a seat unless one of the following is true:
 
-- 他们被添加为您公司下某个组织的成员
-- SSO 已启用
+- They are added as a member of an organization under your company
+- SSO is enabled
 
-虽然公司所有者在公司内的所有组织中拥有与组织所有者相同的访问权限，但没有必要将他们添加到任何组织中。这样做会导致他们占用一个席位。
+Although company owners have the same access as organization owners across all
+organizations in the company, it's not necessary to add them to any
+organization. Doing so will cause them to occupy a seat.
 
-当您首次创建公司时，您的账户既是公司所有者也是组织所有者。在这种情况下，只要您仍然是组织所有者，您的账户就会占用一个席位。
+When you first create a company, your account is both a company owner and an
+organization owner. In that case, your account will occupy a seat as long as
+you remain an organization owner.
 
-为避免占用席位，请[将另一个用户指派为组织所有者](/manuals/admin/organization/members.md#update-a-member-role)并将您自己从组织中移除。作为公司所有者，您将保留完整的管理访问权限，而无需使用订阅席位。
+To avoid occupying a seat, [assign another user as the organization owner](/manuals/admin/organization/members.md#update-a-member-role) and remove yourself from the organization.
+You'll retain full administrative access as a company owner without using a
+subscription seat.
 
-### 公司所有者在关联/嵌套组织中有哪些权限？
+### What permissions does the company owner have in the associated/nested organizations?
 
-公司所有者可以导航到**组织**页面，在单一位置查看所有嵌套组织。他们还可以查看或编辑组织成员，以及更改单点登录（SSO）和跨域身份管理系统（SCIM，System for Cross-domain Identity Management）设置。对公司设置的更改会影响公司下每个组织中的所有用户。有关更多信息，请参阅[角色和权限](../../security/for-admins/roles-and-permissions.md)。
+Company owners can navigate to the **Organizations** page to view all their nested organizations in a single location. They can also view or edit organization members and change single sign-on (SSO) and System for Cross-domain Identity Management (SCIM) settings. Changes to company settings impact all users in each organization under the company. For more information, see [Roles and permissions](../../security/for-admins/roles-and-permissions.md).
 
-### 公司级别支持哪些功能？
+### What features are supported at the company level?
 
-您可以在公司级别管理域验证、SSO 和 SCIM。以下功能在公司级别不受支持，但您可以在组织级别管理它们：
+You can manage domain verification, SSO, and SCIM at the company level. The following features aren't supported at the company level, but you can manage them at the organization level:
 
-- 镜像访问管理（Image Access Management）
-- 仓库访问管理（Registry Access Management）
-- 用户管理
-- 计费
+- Image Access Management
+- Registry Access Management
+- User management
+- Billing
 
-要查看和管理公司下所有组织的用户，您可以在使用 [Admin Console](https://app.docker.com/admin) 时[在公司级别管理用户](../../admin/company/users.md)。
+To view and manage users across all the organizations under your company, you can [manage users at the company level](../../admin/company/users.md) when you use the [Admin Console](https://app.docker.com/admin).
 
-公司或公司内的组织不支持域审计功能。
+Domain audit isn't supported for companies or organizations within a company.
 
-### 创建公司名称有什么要求？
+### What's required to create a company name?
 
-公司名称必须与其子组织的名称不同。如果子组织需要与公司相同的名称，您应该稍作修改。例如，**Docker Inc**（父公司），**Docker**（子组织）。
+A company name must be unique to that of its child organization. If a child organization requires the same name as a company, you should modify it slightly. For example, **Docker Inc** (parent company), **Docker** (child organization).
 
-### 公司所有者如何将组织添加到公司？
+### How does a company owner add an organization to the company?
 
-您可以在 Admin Console 中将组织添加到公司。有关更多信息，请参阅[将组织添加到公司](../../admin/company/organizations.md#add-organizations-to-a-company.md)。
+You can add organizations to a company in the Admin Console. For more information, see [Add organizations to a company](../../admin/company/organizations.md#add-organizations-to-a-company.md).
 
-### 公司所有者如何管理公司的 SSO/SCIM 设置？
+### How does a company owner manage SSO/SCIM settings for a company?
 
-请参阅您的 [SCIM](scim.md) 和 [SSO](../../security/for-admins/single-sign-on/configure/_index.md) 设置。
+See your [SCIM](scim.md) and [SSO](../../security/for-admins/single-sign-on/configure/_index.md) settings.
 
-### 公司所有者如何在 IdP 中启用组映射？
+### How does a company owner enable group mapping in an IdP?
 
-有关更多信息，请参阅 [SCIM](scim.md) 和[组映射](../../security/for-admins/provisioning/group-mapping.md)。
+See [SCIM](scim.md) and [group mapping](../../security/for-admins/provisioning/group-mapping.md) for more information.
 
-### 公司与组织的定义有什么区别？
+### What's the definition of a company versus an organization?
 
-公司是一起管理的组织集合。组织是一起管理的仓库和团队的集合。
+A company is a collection of organizations that are managed together. An organization is a collection of repositories and teams that are managed together.

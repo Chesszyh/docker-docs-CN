@@ -1,56 +1,57 @@
 ---
-description: 单点登录强制执行常见问题
+description: Single sign-on enforcement FAQs
 keywords: Docker, Docker Hub, SSO FAQs, single sign-on, enforce SSO, SSO enforcement
-title: SSO 和强制执行常见问题
-linkTitle: 强制执行
+title: FAQs for SSO and enforcement
+linkTitle: Enforcement
 tags: [FAQ]
 aliases:
 - /single-sign-on/enforcement-faqs/
 - /faq/security/single-sign-on/enforcement-faqs/
 ---
 
-### 我目前有 Docker Team 订阅。如何启用 SSO？
+### I currently have a Docker Team subscription. How do I enable SSO?
 
-SSO 可用于 Docker Business 订阅。要启用 SSO，您必须首先将订阅升级到 Docker Business 订阅。要了解如何升级现有账户，请参阅[升级您的订阅](../../../subscription/change.md)。
+SSO is available with a Docker Business subscription. To enable SSO, you must first upgrade your subscription to a Docker Business subscription. To learn how to upgrade your existing account, see [Upgrade your subscription](../../../subscription/change.md).
 
-### 启用 SSO 需要 DNS 验证吗？
+### Is DNS verification required to enable SSO?
 
-是的。您必须先验证域名，然后才能将其与 SSO 连接一起使用。
+Yes. You must verify a domain before using it with an SSO connection.
 
-### Docker SSO 是否支持通过命令行进行身份验证？
+### Does Docker SSO support authenticating through the command line?
 
-当强制执行 SSO 时，[密码无法访问 Docker CLI](/security/security-announcements/#deprecation-of-password-logins-on-cli-when-sso-enforced)。您仍然可以使用个人访问令牌 (PAT) 进行身份验证来访问 Docker CLI。
+When SSO is enforced, [passwords are prevented from accessing the Docker CLI](/security/security-announcements/#deprecation-of-password-logins-on-cli-when-sso-enforced). You can still access the Docker CLI using a personal access token (PAT) for authentication.
 
-每个用户必须创建一个 PAT 才能访问 CLI。要了解如何创建 PAT，请参阅[管理访问令牌](/security/for-developers/access-tokens/)。在 SSO 强制执行之前已经使用 PAT 登录的用户仍然可以使用该 PAT 进行身份验证。
+Each user must create a PAT to access the CLI. To learn how to create a PAT, see [Manage access tokens](/security/for-developers/access-tokens/). Users who already used a PAT to sign in before SSO enforcement will still be able to use that PAT to authenticate.
 
-### SSO 如何影响自动化系统和 CI/CD 管道？
+### How does SSO affect automation systems and CI/CD pipelines?
 
-在强制执行 SSO 之前，您必须[创建 PAT](/security/for-developers/access-tokens/)。这些 PAT 用于代替密码登录自动化系统和 CI/CD 管道。
+Before enforcing SSO, you must [create PATs](/security/for-developers/access-tokens/). These PATs are used instead of passwords for signing into automation systems and CI/CD pipelines.
 
-### 在强制执行之前使用个人电子邮件进行身份验证的组织用户会发生什么？
+### What can organization users who authenticated with personal emails prior to enforcement expect?
 
-确保您的用户在其账户上拥有组织电子邮件，以便账户将迁移到使用 SSO 进行身份验证。
+Ensure your users have their organization email on their account, so that the accounts will be migrated to SSO for authentication.
 
-### 我可以启用 SSO 但暂不强制执行吗？
+### Can I enable SSO and hold off on the enforcement option?
 
-是的，您可以选择不强制执行，用户可以选择在登录屏幕上使用 Docker ID（标准电子邮件和密码）或域名验证的电子邮件地址（SSO）。
+Yes, you can choose to not enforce, and users have the option to use either Docker ID (standard email and password) or domain-verified email address (SSO) at the sign-in screen.
 
-### SSO 已强制执行，但用户可以使用用户名和密码登录。为什么会这样？
+### SSO is enforced, but a user can sign in using a username and password. Why is this happening?
 
-不属于您已注册域名但已被邀请加入您组织的访客用户不会通过您的 SSO 身份提供商登录。SSO 强制执行仅要求属于您域名的用户必须通过 SSO IdP。
+Guest users who are not part of your registered domain but have been invited to your organization do not sign in through your SSO Identity Provider. SSO enforcement only requires that users which do belong to your domain, must go through the SSO IdP.
 
-### 是否有办法在生产之前使用 Okta 测试租户测试此功能？
+### Is there a way to test this functionality in a test tenant with Okta before going to production?
 
-是的，您可以创建一个测试组织。公司可以在新组织上设置一个新的 5 席位 Business 订阅进行测试。为此，请确保只启用 SSO，不要强制执行，否则所有域名电子邮件用户将被强制登录到该测试租户。
+Yes, you can create a test organization. Companies can set up a new 5 seat Business subscription on a new organization to test with. To do this, make sure to only enable SSO, not enforce it, or all domain email users will be forced to sign in to that test tenant.
 
-### 登录要求是在运行时还是安装时跟踪的？
+### Is the sign in required tracking at runtime or install time?
 
-对于 Docker Desktop，如果它被配置为需要对组织进行身份验证，则它在运行时跟踪。
+For Docker Desktop, if it's configured to require authentication to the organization, it tracks at runtime.
 
-### 强制执行 SSO 与强制登录有什么区别？
+### What is enforcing SSO versus enforcing sign-in?
 
-强制执行 SSO 和强制登录 Docker Desktop 是不同的功能，您可以单独使用或一起使用。
+Enforcing SSO and enforcing sign-in to Docker Desktop are different features that you can use separately or together.
 
-强制执行 SSO 确保用户使用其 SSO 凭据而不是其 Docker ID 登录。好处之一是 SSO 使您能够更好地管理用户凭据。
+Enforcing SSO ensures that users sign in using their SSO credentials instead of their Docker ID. One of the benefits is that SSO enables you to better manage user credentials.
 
-强制登录 Docker Desktop 确保用户始终登录到作为您组织成员的账户。好处是您组织的安全设置始终应用于用户的会话，并且您的用户始终享受您订阅的好处。有关更多详细信息，请参阅[强制 Desktop 登录](../../../security/for-admins/enforce-sign-in/_index.md#enforcing-sign-in-versus-enforcing-single-sign-on-sso)。
+Enforcing sign-in to Docker Desktop ensures that users always sign in to an account that's a member of your organization. The benefits are that your organization's security settings are always applied to the user's session and your users always receive the benefits of your subscription. For more details, see [Enforce sign-in for Desktop](../../../security/for-admins/enforce-sign-in/_index.md#enforcing-sign-in-versus-enforcing-single-sign-on-sso).
+

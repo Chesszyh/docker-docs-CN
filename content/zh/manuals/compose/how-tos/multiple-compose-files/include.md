@@ -1,5 +1,5 @@
 ---
-description: 如何使用 Docker Compose 的 include 顶级元素
+description: How to use Docker Compose's include top-level element
 keywords: compose, docker, include, compose file
 title: Include
 aliases:
@@ -10,86 +10,86 @@ aliases:
 
 {{% include "compose/include.md" %}}
 
-[`include` 顶级元素](/reference/compose-file/include.md)有助于将负责代码的工程团队直接反映在配置文件的组织中。它还解决了 [`extends`](extends.md) 和 [merge](merge.md) 存在的相对路径问题。
+The [`include` top-level element](/reference/compose-file/include.md) helps to reflect the engineering team responsible for the code directly in the config file's organization. It also solves the relative path problem that [`extends`](extends.md) and [merge](merge.md) present. 
 
-`include` 部分中列出的每个路径都作为单独的 Compose 应用程序模型加载，具有自己的项目目录，用于解析相对路径。
+Each path listed in the `include` section loads as an individual Compose application model, with its own project directory, in order to resolve relative paths.
 
-一旦包含的 Compose 应用程序加载完成，所有资源都会被复制到当前的 Compose 应用程序模型中。
+Once the included Compose application loads, all resources are copied into the current Compose application model.
 
 > [!NOTE]
 >
-> `include` 递归应用，因此声明了自己 `include` 部分的被包含 Compose 文件也会导致那些文件被包含。
+> `include` applies recursively so an included Compose file which declares its own `include` section, causes those files to also be included.
 
-## 示例
+## Example
 
 ```yaml
 include:
-  - my-compose-include.yaml  #声明了 serviceB
+  - my-compose-include.yaml  #with serviceB declared
 services:
   serviceA:
     build: .
     depends_on:
-      - serviceB #直接使用 serviceB，就像它在这个 Compose 文件中声明一样
+      - serviceB #use serviceB directly as if it was declared in this Compose file
 ```
 
-`my-compose-include.yaml` 管理 `serviceB`，其中详细说明了一些副本、用于检查数据的 Web UI、隔离的网络、用于数据持久化的卷等。依赖 `serviceB` 的应用程序不需要了解基础设施细节，并将 Compose 文件作为可以依赖的构建块使用。
+`my-compose-include.yaml` manages `serviceB` which details some replicas, web UI to inspect data, isolated networks, volumes for data persistence, etc. The application relying on `serviceB` doesn’t need to know about the infrastructure details, and consumes the Compose file as a building block it can rely on. 
 
-这意味着管理 `serviceB` 的团队可以重构自己的数据库组件以引入额外的服务，而不会影响任何依赖团队。这也意味着依赖团队不需要在每个运行的 Compose 命令上包含额外的标志。
+This means the team managing `serviceB` can refactor its own database component to introduce additional services without impacting any dependent teams. It also means that the dependent teams don't need to include additional flags on each Compose command they run.
 
 ```yaml
 include:
-  - oci://docker.io/username/my-compose-app:latest # 使用存储为 OCI 工件的 Compose 文件
+  - oci://docker.io/username/my-compose-app:latest # use a Compose file stored as an OCI artifact
 services:
   serviceA:
     build: .
     depends_on:
-      - serviceB
+      - serviceB 
 ```
-`include` 允许你从远程来源引用 Compose 文件，例如 OCI 工件或 Git 仓库。
-这里 `serviceB` 定义在存储在 Docker Hub 上的 Compose 文件中。
+`include` allows you to reference Compose files from remote sources, such as OCI artifacts or Git repositories.  
+Here `serviceB` is defined in a Compose file stored on Docker Hub.
 
-## 对包含的 Compose 文件使用覆盖
+## Using overrides with included Compose files
 
-如果来自 `include` 的任何资源与被包含 Compose 文件的资源冲突，Compose 会报告错误。此规则防止
-与被包含 compose 文件作者定义的资源发生意外冲突。但是，在某些情况下你可能想要自定义
-包含的模型。这可以通过向 include 指令添加覆盖文件来实现：
+Compose reports an error if any resource from `include` conflicts with resources from the included Compose file. This rule prevents
+unexpected conflicts with resources defined by the included compose file author. However, there may be some circumstances where you might want to customize the
+included model. This can be achieved by adding an override file to the include directive:
 
 ```yaml
 include:
-  - path :
+  - path : 
       - third-party/compose.yaml
-      - override.yaml  # 第三方模型的本地覆盖
+      - override.yaml  # local override for third-party model
 ```
 
-此方法的主要限制是你需要为每个 include 维护一个专用的覆盖文件。对于具有多个
-include 的复杂项目，这将导致许多 Compose 文件。
+The main limitation with this approach is that you need to maintain a dedicated override file per include. For complex projects with multiple
+includes this would result in many Compose files.
 
-另一个选项是使用 `compose.override.yaml` 文件。虽然当使用 `include` 的文件声明相同
-资源时冲突会被拒绝，但全局 Compose 覆盖文件可以覆盖生成的合并模型，如以下示例所示：
+The other option is to use a `compose.override.yaml` file. While conflicts will be rejected from the file using `include` when same
+resource is declared, a global Compose override file can override the resulting merged model, as demonstrated in following example:
 
-主 `compose.yaml` 文件：
+Main `compose.yaml` file:
 ```yaml
 include:
-  - team-1/compose.yaml # 声明 service-1
-  - team-2/compose.yaml # 声明 service-2
+  - team-1/compose.yaml # declare service-1
+  - team-2/compose.yaml # declare service-2
 ```
 
-覆盖 `compose.override.yaml` 文件：
+Override `compose.override.yaml` file:
 ```yaml
 services:
   service-1:
-    # 覆盖包含的 service-1 以启用调试器端口
+    # override included service-1 to enable debugger port
     ports:
       - 2345:2345
 
   service-2:
-    # 覆盖包含的 service-2 以使用包含测试数据的本地数据文件夹
+    # override included service-2 to use local data folder containing test data
     volumes:
       - ./data:/data
 ```
 
-结合起来，这允许你受益于第三方可重用组件，并根据你的需要调整 Compose 模型。
+Combined together, this allows you to benefit from third-party reusable components, and adjust the Compose model for your needs.
 
-## 参考信息
+## Reference information
 
-[`include` 顶级元素](/reference/compose-file/include.md)
+[`include` top-level element](/reference/compose-file/include.md)

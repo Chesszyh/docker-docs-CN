@@ -1,9 +1,9 @@
 ---
-description: 了解强制用户登录 Docker Desktop 时会发生什么
+description: Understand what happens when you force users to sign in to Docker Desktop
 toc_max: 2
 keywords: authentication, registry.json, configure, enforce sign-in, docker desktop, security, .plist, registry key, mac, windows
-title: 强制 Docker Desktop 登录
-linkTitle: 强制登录
+title: Enforce sign-in for Docker Desktop
+linkTitle: Enforce sign-in
 tags: [admin]
 aliases:
  - /security/for-admins/configure-sign-in/
@@ -13,39 +13,56 @@ weight: 30
 
 {{< summary-bar feature_name="Enforce sign-in" >}}
 
-默认情况下，您组织的成员可以在不登录的情况下使用 Docker Desktop。当用户不以组织成员身份登录时，他们无法获得[组织订阅的权益](../../../subscription/details.md)，并且可以绕过您组织的 [Docker 安全功能](/manuals/security/for-admins/hardened-desktop/_index.md)。
+By default, members of your organization can use Docker Desktop without signing
+in. When users don’t sign in as a member of your organization, they don’t
+receive the [benefits of your organization’s
+subscription](../../../subscription/details.md) and they can circumvent
+[Docker’s
+security features](/manuals/security/for-admins/hardened-desktop/_index.md) for
+your organization.
 
-根据您公司的设置和偏好，有多种方法可以强制登录：
-- [注册表键方法（仅限 Windows）](methods.md#registry-key-method-windows-only){{< badge color=green text="New" >}}
-- [配置描述文件方法（仅限 Mac）](methods.md#configuration-profiles-method-mac-only){{< badge color=green text="New" >}}
-- [`.plist` 方法（仅限 Mac）](methods.md#plist-method-mac-only){{< badge color=green text="New" >}}
-- [`registry.json` 方法（全平台）](methods.md#registryjson-method-all)
+There are multiple methods for enforcing sign-in, depending on your companies'
+set up and preferences:
+- [Registry key method (Windows only)](methods.md#registry-key-method-windows-only){{< badge color=green text="New" >}}
+- [Configuration profiles method (Mac only)](methods.md#configuration-profiles-method-mac-only){{< badge color=green text="New" >}}
+- [`.plist` method (Mac only)](methods.md#plist-method-mac-only){{< badge color=green text="New" >}}
+- [`registry.json` method (All)](methods.md#registryjson-method-all)
 
-## 如何强制登录？
+## How is sign-in enforced?
 
-当 Docker Desktop 启动并检测到注册表键、`.plist` 文件或 `registry.json` 文件时，会发生以下情况：
+When Docker Desktop starts and it detects a registry key, `.plist` file, or
+`registry.json` file, the following occurs:
 
-- 出现 **Sign in required!** 提示，要求用户以组织成员身份登录才能使用 Docker Desktop。![强制登录提示](../../images/enforce-sign-in.png?w=400)
-- 当用户登录的账户不是组织成员时，他们会自动退出登录且无法使用 Docker Desktop。用户可以选择 **Sign in** 重试。
-- 当用户登录的账户是组织成员时，他们可以使用 Docker Desktop。
-- 当用户退出登录时，会出现 **Sign in required!** 提示，他们将无法继续使用 Docker Desktop。
+- A **Sign in required!** prompt appears requiring the user to sign
+  in as a member of your organization to use Docker Desktop. ![Enforce Sign-in
+  Prompt](../../images/enforce-sign-in.png?w=400)
+- When a user signs in to an account that isn’t a member of your organization,
+  they are automatically signed out and can’t use Docker Desktop. The user
+  can select **Sign in** and try again.
+- When a user signs in to an account that is a member of your organization, they
+ can use Docker Desktop.
+- When a user signs out, the **Sign in required!** prompt appears and they can
+  no longer use Docker Desktop.
 
 > [!NOTE]
 >
-> 强制 Docker Desktop 登录不会影响 Docker CLI 的访问。CLI 访问仅对强制单点登录的组织有影响。
+> Enforcing sign-in for Docker Desktop does not impact accessing the Docker CLI.
+CLI access is only impacted for organizations that enforce single sign-on.
 
-## 强制登录与强制单点登录（SSO）的区别
+## Enforcing sign-in versus enforcing single sign-on (SSO)
 
-[强制 SSO](/manuals/security/for-admins/single-sign-on/connect.md#optional-enforce-sso) 和强制登录是不同的功能。下表提供了使用每种功能时的描述和优势。
+[Enforcing SSO](/manuals/security/for-admins/single-sign-on/connect.md#optional-enforce-sso)
+and enforcing sign-in are different features. The following table provides a
+description and benefits when using each feature.
 
-| 强制类型               | 描述                                                     | 优势                                                                                                                                                                                                                                                 |
-|:----------------------|:--------------------------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 仅强制登录             | 用户必须在使用 Docker Desktop 之前登录。                  | 确保用户获得订阅权益并确保应用安全功能。此外，您可以获得用户活动的洞察。                                                                                                                                                                               |
-| 仅强制单点登录（SSO）  | 如果用户登录，则必须使用 SSO 登录。                       | 集中身份验证并强制执行身份提供商设置的统一策略。                                                                                                                                                                                                       |
-| 同时强制两者           | 用户必须使用 SSO 登录后才能使用 Docker Desktop。          | 确保用户获得订阅权益并确保应用安全功能。此外，您可以获得用户活动的洞察。最后，它集中身份验证并强制执行身份提供商设置的统一策略。                                                                                                                        |
-| 两者都不强制           | 如果用户登录，可以使用 SSO 或其 Docker 凭据。             | 让用户无障碍访问 Docker Desktop，但代价是降低了安全性和洞察能力。                                                                                                                                                                                      |
+| Enforcement                       | Description                                                     | Benefits                                                                                                                                                                                                                                                   |
+|:----------------------------------|:----------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Enforce sign-in only              | Users must sign in before using Docker Desktop.                 | Ensures users receive the benefits of your subscription and ensures security features are applied. In addition, you gain insights into users’ activity.                                                                                                    |
+| Enforce single sign-on (SSO) only | If users sign in, they must sign in using SSO.                  | Centralizes authentication and enforces unified policies set by the identity provider.                                                                                                                                                                     |
+| Enforce both                      | Users must sign in using SSO before using Docker Desktop.       | Ensures users receive the benefits of your subscription and ensures security features are applied. In addition, you gain insights into users’ activity. Finally, it centralizes authentication and enforces unified policies set by the identity provider. |
+| Enforce neither                   | If users sign in, they can use SSO or their Docker credentials. | Lets users access Docker Desktop without barriers, but at the cost of reduced security and insights.                                                                                                                                                  |
 
-## 下一步
+## What's next?
 
-- 要强制登录，请查看[方法](/manuals/security/for-admins/enforce-sign-in/methods.md)指南。
-- 要强制 SSO，请查看[强制 SSO](/manuals/security/for-admins/single-sign-on/connect.md) 步骤。
+- To enforce sign-in, review the [Methods](/manuals/security/for-admins/enforce-sign-in/methods.md) guide.
+- To enforce SSO, review the [Enforce SSO](/manuals/security/for-admins/single-sign-on/connect.md) steps.

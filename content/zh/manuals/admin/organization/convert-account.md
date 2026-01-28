@@ -1,6 +1,6 @@
 ---
-description: 将您的 Docker Hub 用户帐户转换为组织
-title: 将帐户转换为组织
+description: Convert your Docker Hub user account into an organization
+title: Convert an account into an organization
 keywords: docker hub, hub, organization, convert account, migrate account
 weight: 35
 aliases:
@@ -9,63 +9,65 @@ aliases:
 
 {{< summary-bar feature_name="Admin orgs" >}}
 
-您可以将现有的用户帐户转换为组织。如果您需要多个用户访问您的帐户及其关联的仓库，这将非常有用。将其转换为组织可以让您通过[团队](manage-a-team.md)和[角色](roles-and-permissions.md)更好地控制这些用户的权限。
+You can convert an existing user account to an organization. This is useful if you need multiple users to access your account and the repositories that it’s connected to. Converting it to an organization gives you better control over permissions for these users through [teams](manage-a-team.md) and [roles](roles-and-permissions.md).
 
-当您将用户帐户转换为组织时，该帐户将迁移到 Docker Team 订阅。
+When you convert a user account to an organization, the account is migrated to a Docker Team subscription.
 
 > [!IMPORTANT]
 >
-> 一旦将帐户转换为组织，就无法将其还原为用户帐户。
+> Once you convert your account to an organization, you can’t revert it to a user account.
 
-## 前提条件
+## Prerequisites
 
-在将用户帐户转换为组织之前，请确保满足以下要求：
+Before you convert a user account to an organization, ensure that you meet the following requirements:
 
-- 要转换的用户帐户不能是公司或任何团队或组织的成员。您必须将该帐户从所有团队、组织或公司中移除。
+- The user account that you want to convert must not be a member of a company or any teams or organizations. You must remove the account from all teams, organizations, or the company.
 
-    操作方法：
-    1. 导航到 **My Hub**，然后选择您需要离开的组织。
-    1. 在 **Members** 选项卡中找到您的用户名。
-    1. 选择 **More options** 菜单，然后选择 **Leave organization**。
+    To do this:
+    1. Navigate to **My Hub** and then select the organization you need to leave.
+    1. Find your username in the **Members** tab.
+    1. Select the **More options** menu and then select **Leave organization**.
 
-    如果该用户帐户是任何组织或公司的唯一所有者，请将所有者角色分配给另一个用户，然后将自己从组织或公司中移除。
+    If the user account is the sole owner of any organization or company, assign another user the owner role and then remove yourself from the organization or company.
 
--  您必须准备好一个单独的 Docker ID 以在转换期间分配为组织的所有者。
+-  You must have a separate Docker ID ready to assign as the owner of the organization during conversion.
 
-    如果您想将用户帐户转换为组织帐户但没有任何其他用户帐户，则需要创建一个新的用户帐户来将其分配为新组织的所有者。分配所有者角色后，此用户帐户将拥有配置和管理组织的完全管理访问权限。您可以在转换后分配更多用户为所有者角色。
+    If you want to convert your user account into an organization account and you don't have any other user accounts, you need to create a new user account to assign it as the owner of the new organization. With the owner role assigned, this user account has full administrative access to configure and manage the organization. You can assign more users the owner role after the conversion.
 
-## 将帐户转换为组织的影响
+## Effects of converting an account into an organization
 
-请考虑转换帐户的以下影响：
+Consider the following effects of converting your account:
 
-- 此过程会移除帐户的电子邮件地址，组织所有者将改为接收通知电子邮件。转换后，您可以将移除的电子邮件地址重新用于另一个帐户。
+- This process removes the email address for the account, and organization owners will receive notification emails instead. You'll be able to reuse the removed email address for another account after converting.
 
-- 当前订阅将被取消，您的新订阅将开始。
+- The current subscription will cancel and your new subscription will start.
 
-- 仓库命名空间和名称不会改变，但转换帐户会移除所有仓库协作者。转换帐户后，您需要将这些用户添加为团队成员。
+- Repository namespaces and names won't change, but converting your account removes any repository collaborators. Once you convert the account, you'll need to add those users as team members.
 
-- 现有的自动构建将显示为由添加到组织的第一个所有者设置。有关添加第一个所有者的步骤，请参阅[将帐户转换为组织](#将帐户转换为组织)。
+- Existing automated builds will appear as if they were set up by the first owner added to the organization. See [Convert an account into an organization](#convert-an-account-into-an-organization) for steps on adding the first owner.
 
-- 您添加为第一个所有者的用户帐户将拥有配置和管理组织的完全管理访问权限。
+- The user account that you add as the first owner will have full administrative access to configure and manage the organization.
 
-- 要将用户的个人访问令牌（PAT）转移到您转换后的组织，您必须将该用户指定为组织所有者。这将确保与该用户帐户关联的任何 PAT 都会转移给组织所有者。
+- To transfer a user's personal access tokens (PATs) to your converted organization,
+you must designate the user as an organization owner. This will ensure any PATs associated with the user's account are transferred to the organization owner.
 
 > [!TIP]
 >
-> 为了避免在转换帐户或更改所有权时可能中断个人访问令牌的服务，建议使用[组织访问令牌](/manuals/security/for-admins/access-tokens.md)。组织访问令牌与组织关联，而不是与单个用户帐户关联。
+> To avoid potentially disrupting service of personal access tokens when converting an account or changing ownership, it is recommended to use [organization access tokens](/manuals/security/for-admins/access-tokens.md). Organization access tokens are
+associated with an organization, not a single user account.
 
-## 将帐户转换为组织
+## Convert an account into an organization
 
-在将帐户转换为组织之前，请确保您已：
+Before you convert an account into an organization ensure you have:
 
-- 将您的用户帐户从任何公司、团队或组织中移除
-- 在转换帐户之前创建一个新的 Docker ID
+- Removed your user account from any company or teams or organizations
+- Created a new Docker ID before you convert an account
 
-有关详细信息，请参阅[前提条件](#前提条件)部分。
+See the [Prerequisites](#prerequisites) section for details.
 
-1. 登录 [Docker Home](https://app.docker.com/login)。
-1. 选择右上角的头像，然后选择 **Account settings**。
-1. 在 **Settings** 部分，选择 **Convert**。
-1. 查看关于转换用户帐户的警告。此操作无法撤销，并且对您的资产和帐户有重大影响。
-1. 输入 **Username of new owner** 以设置组织所有者。这是将管理组织的用户帐户，也是转换后访问组织设置的唯一方式。您不能使用与要转换的帐户相同的 Docker ID。
-1. 选择 **Confirm**。新所有者会收到通知电子邮件。使用该所有者帐户登录并管理新组织。
+1. Sign in to [Docker Home](https://app.docker.com/login).
+1. Select your avatar in the top-right corner and select **Account settings**.
+1. In the **Settings** section, select **Convert**.
+1. Review the warning displayed about converting a user account. This action cannot be undone and has considerable implications for your assets and the account.
+1. Enter a **Username of new owner** to set an organization owner. This is the user account that will manage the organization, and the only way to access the organization settings after conversion. You cannot use the same Docker ID as the account you are trying to convert.
+1. Select **Confirm**. The new owner receives a notification email. Use that owner account to sign in and manage the new organization.

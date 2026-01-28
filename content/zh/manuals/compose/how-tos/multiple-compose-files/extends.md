@@ -1,7 +1,7 @@
 ---
-description: 了解如何使用 Docker Compose 的 extends 属性在文件和项目之间重用服务配置。
+description: Learn how to reuse service configurations across files and projects using Docker Compose’s extends attribute.
 keywords: fig, composition, compose, docker, orchestration, documentation, docs, compose file modularization
-title: 扩展你的 Compose 文件
+title: Extend your Compose file
 linkTitle: Extend
 weight: 20
 aliases:
@@ -9,27 +9,30 @@ aliases:
 - /compose/multiple-compose-files/extends/
 ---
 
-Docker Compose 的 [`extends` 属性](/reference/compose-file/services.md#extends)
-允许你在不同文件甚至完全不同的项目之间共享通用配置。
+Docker Compose's [`extends` attribute](/reference/compose-file/services.md#extends)
+lets you share common configurations among different files, or even different
+projects entirely.
 
-如果你有多个服务重用一组通用配置选项，扩展服务非常有用。使用 `extends`，你可以在一个地方定义一组通用的
-服务选项，并从任何地方引用它。你可以引用
-另一个 Compose 文件并选择你也想在自己的应用程序中使用的服务，并能够根据自己的需要覆盖某些属性。
+Extending services is useful if you have several services that reuse a common
+set of configuration options. With `extends` you can define a common set of
+service options in one place and refer to it from anywhere. You can refer to
+another Compose file and select a service you want to also use in your own
+application, with the ability to override some attributes for your own needs.
 
 > [!IMPORTANT]
 >
-> 当你使用多个 Compose 文件时，必须确保所有文件中的路径
-都是相对于基础 Compose 文件（即主项目文件夹中的 Compose 文件）的。这是必需的，因为扩展文件
-不需要是有效的 Compose 文件。扩展文件可以包含小的配置片段。
-跟踪服务的哪个片段相对于哪个路径是
-困难且令人困惑的，因此为了使路径更容易理解，所有路径必须
-相对于基础文件定义。
+> When you use multiple Compose files, you must make sure all paths in the files
+are relative to the base Compose file (i.e. the Compose file in your main-project folder). This is required because extend files
+need not be valid Compose files. Extend files can contain small fragments of
+configuration. Tracking which fragment of a service is relative to which path is
+difficult and confusing, so to keep paths easier to understand, all paths must
+be defined relative to the base file. 
 
-## `extends` 属性的工作原理
+## How the `extends` attribute works
 
-### 从另一个文件扩展服务
+### Extending services from another file
 
-以下面的例子为例：
+Take the following example:
 
 ```yaml
 services:
@@ -39,10 +42,11 @@ services:
       service: webapp
 ```
 
-这指示 Compose 仅重用 `common-services.yml` 文件中定义的 `webapp` 服务的属性。`webapp` 服务本身不是最终项目的一部分。
+This instructs Compose to re-use only the properties of the `webapp` service
+defined in the `common-services.yml` file. The `webapp` service itself is not part of the final project.
 
-如果 `common-services.yml`
-如下所示：
+If `common-services.yml`
+looks like this:
 
 ```yaml
 services:
@@ -53,9 +57,11 @@ services:
     volumes:
       - "/data"
 ```
-你得到的结果与直接在 `web` 下定义相同的 `build`、`ports` 和 `volumes` 配置值编写 `compose.yaml` 完全相同。
+You get exactly the same result as if you wrote
+`compose.yaml` with the same `build`, `ports`, and `volumes` configuration
+values defined directly under `web`.
 
-要在从另一个文件扩展服务时将 `webapp` 服务包含在最终项目中，你需要在当前 Compose 文件中显式包含这两个服务。例如（这仅用于说明目的）：
+To include the service `webapp` in the final project when extending services from another file, you need to explicitly include both services in your current Compose file. For example (this is for illustrative purposes only):
 
 ```yaml
 services:
@@ -71,13 +77,13 @@ services:
       service: webapp
 ```
 
-或者，你可以使用 [include](include.md)。
+Alternatively, you can use [include](include.md). 
 
-### 在同一文件中扩展服务
+### Extending services within the same file 
 
-如果你在同一个 Compose 文件中定义服务并从另一个服务扩展，原始服务和扩展的服务都将成为最终配置的一部分。例如：
+If you define services in the same Compose file and extend one service from another, both the original service and the extended service will be part of your final configuration. For example:
 
-```yaml
+```yaml 
 services:
   web:
     build: alpine
@@ -87,9 +93,10 @@ services:
       - DEBUG=1
 ```
 
-### 在同一文件中以及从另一个文件扩展服务
+### Extending services within the same file and from another file
 
-你可以进一步在 `compose.yaml` 中本地定义或重新定义配置：
+You can go further and define, or re-define, configuration locally in
+`compose.yaml`:
 
 ```yaml
 services:
@@ -106,13 +113,14 @@ services:
     cpu_shares: 10
 ```
 
-## 附加示例
+## Additional example
 
-当你有多个具有通用配置的服务时，扩展单个服务非常有用。下面的示例是一个包含两个
-服务的 Compose 应用程序，一个 web 应用程序和一个队列工作器。两个服务使用相同的
-代码库并共享许多配置选项。
+Extending an individual service is useful when you have multiple services that
+have a common configuration. The example below is a Compose app with two
+services, a web application and a queue worker. Both services use the same
+codebase and share many configuration options.
 
-`common.yaml` 文件定义了通用配置：
+The `common.yaml` file defines the common configuration:
 
 ```yaml
 services:
@@ -124,8 +132,8 @@ services:
     cpu_shares: 5
 ```
 
-`compose.yaml` 定义了使用通用
-配置的具体服务：
+The `compose.yaml` defines the concrete services which use the common
+configuration:
 
 ```yaml
 services:
@@ -149,26 +157,27 @@ services:
       - queue
 ```
 
-## 例外和限制
+## Exceptions and limitations
 
-`volumes_from` 和 `depends_on` 永远不会在使用
-`extends` 的服务之间共享。这些例外的存在是为了避免隐式依赖；你总是
-在本地定义 `volumes_from`。这确保在读取当前文件时服务之间的依赖关系是清晰可见的。在本地定义这些也
-确保对引用文件的更改不会破坏任何东西。
+`volumes_from` and `depends_on` are never shared between services using
+`extends`. These exceptions exist to avoid implicit dependencies; you always
+define `volumes_from` locally. This ensures dependencies between services are
+clearly visible when reading the current file. Defining these locally also
+ensures that changes to the referenced file don't break anything.
 
-如果你只需要共享单个服务并且你熟悉
-你要扩展的文件，`extends` 非常有用，这样你可以调整
-配置。但是，当你想重用
-别人的不熟悉的配置并且你不了解其自身
-依赖项时，这不是一个可接受的解决方案。
+`extends` is useful if you only need a single service to be shared and you are
+familiar with the file you're extending to, so you can tweak the
+configuration. But this isn’t an acceptable solution when you want to re-use
+someone else's unfamiliar configurations and you don’t know about its own
+dependencies.
 
-## 相对路径
+## Relative paths
 
-当使用带有指向另一个文件夹的 `file` 属性的 `extends` 时，被扩展服务声明的相对路径
-会被转换，以便在被扩展服务使用时仍然指向
-相同的文件。以下示例说明了这一点：
+When using `extends` with a `file` attribute which points to another folder, relative paths 
+declared by the service being extended are converted so they still point to the
+same file when used by the extending service. This is illustrated in the following example:
 
-基础 Compose 文件：
+Base Compose file:
 ```yaml
 services:
   webapp:
@@ -178,23 +187,24 @@ services:
       service: base
 ```
 
-`commons/compose.yaml` 文件：
+The `commons/compose.yaml` file:
 ```yaml
 services:
   base:
     env_file: ./container.env
 ```
 
-生成的服务引用 `commons` 目录中的原始 `container.env` 文件。这可以通过 `docker compose config` 确认，
-它会检查实际模型：
+The resulting service refers to the original `container.env` file
+within the `commons` directory. This can be confirmed with `docker compose config`
+which inspects the actual model:
 ```yaml
 services:
   webapp:
     image: example
-    env_file:
+    env_file: 
       - ../commons/container.env
 ```
 
-## 参考信息
+## Reference information
 
 - [`extends`](/reference/compose-file/services.md#extends)

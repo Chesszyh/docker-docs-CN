@@ -1,6 +1,6 @@
 ---
 build:
   render: never
-title: 管理
+title: Manage
 weight: 30
 ---

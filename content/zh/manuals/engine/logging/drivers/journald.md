@@ -1,31 +1,40 @@
 ---
 description: Learn how to use the Journald logging driver with Docker Engine
 keywords: journald, systemd-journald, docker, logging, driver
-title: Journald 日志驱动程序
+title: Journald logging driver
 aliases:
   - /engine/reference/logging/journald/
   - /engine/admin/logging/journald/
   - /config/containers/logging/journald/
 ---
 
-`journald` 日志驱动程序将容器日志发送到 [`systemd` journal](https://www.freedesktop.org/software/systemd/man/systemd-journald.service.html)。可以使用 `journalctl` 命令、通过使用 `journal` API 或使用 `docker logs` 命令检索日志条目。
+The `journald` logging driver sends container logs to the
+[`systemd` journal](https://www.freedesktop.org/software/systemd/man/systemd-journald.service.html).
+Log entries can be retrieved using the `journalctl` command, through use of the
+`journal` API, or using the `docker logs` command.
 
-除了日志消息文本本身，`journald` 日志驱动程序还在 journal 中为每条消息存储以下元数据：
+In addition to the text of the log message itself, the `journald` log driver
+stores the following metadata in the journal with each message:
 
-| 字段                                 | 描述                                                                                                                                                  |
+| Field                                | Description                                                                                                                                           |
 | :----------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `CONTAINER_ID`                       | 截断为 12 个字符的容器 ID。                                                                                                                           |
-| `CONTAINER_ID_FULL`                  | 完整的 64 字符容器 ID。                                                                                                                               |
-| `CONTAINER_NAME`                     | 启动时的容器名称。如果你使用 `docker rename` 重命名容器，新名称不会反映在 journal 条目中。                                                            |
-| `CONTAINER_TAG`、`SYSLOG_IDENTIFIER` | 容器标签（[日志标签选项文档](log_tags.md)）。                                                                                                          |
-| `CONTAINER_PARTIAL_MESSAGE`          | 标记日志完整性的字段。改进长日志行的日志记录。                                                                                                        |
-| `IMAGE_NAME`                         | 容器镜像的名称。                                                                                                                                      |
+| `CONTAINER_ID`                       | The container ID truncated to 12 characters.                                                                                                          |
+| `CONTAINER_ID_FULL`                  | The full 64-character container ID.                                                                                                                   |
+| `CONTAINER_NAME`                     | The container name at the time it was started. If you use `docker rename` to rename a container, the new name isn't reflected in the journal entries. |
+| `CONTAINER_TAG`, `SYSLOG_IDENTIFIER` | The container tag ([log tag option documentation](log_tags.md)).                                                                                      |
+| `CONTAINER_PARTIAL_MESSAGE`          | A field that flags log integrity. Improve logging of long log lines.                                                                                  |
+| `IMAGE_NAME`                         | The name of the container image.                                                                                                                      |
 
-## 用法
+## Usage
 
-要将 `journald` 驱动程序用作默认日志驱动程序，请在 `daemon.json` 文件中将 `log-driver` 和 `log-opts` 键设置为适当的值，该文件位于 Linux 主机上的 `/etc/docker/` 或 Windows Server 上的 `C:\ProgramData\docker\config\daemon.json`。有关使用 `daemon.json` 配置 Docker 的更多信息，请参阅 [daemon.json](/reference/cli/dockerd.md#daemon-configuration-file)。
+To use the `journald` driver as the default logging driver, set the `log-driver`
+and `log-opts` keys to appropriate values in the `daemon.json` file, which is
+located in `/etc/docker/` on Linux hosts or
+`C:\ProgramData\docker\config\daemon.json` on Windows Server. For more about
+configuring Docker using `daemon.json`, see
+[daemon.json](/reference/cli/dockerd.md#daemon-configuration-file).
 
-以下示例将日志驱动程序设置为 `journald`：
+The following example sets the log driver to `journald`:
 
 ```json
 {
@@ -33,29 +42,33 @@ aliases:
 }
 ```
 
-重启 Docker 以使更改生效。
+Restart Docker for the changes to take effect.
 
-要为特定容器配置日志驱动程序，请在 `docker run` 命令上使用 `--log-driver` 标志。
+To configure the logging driver for a specific container, use the `--log-driver`
+flag on the `docker run` command.
 
 ```console
 $ docker run --log-driver=journald ...
 ```
 
-## 选项
+## Options
 
-使用 `--log-opt NAME=VALUE` 标志指定额外的 `journald` 日志驱动程序选项。
+Use the `--log-opt NAME=VALUE` flag to specify additional `journald` logging
+driver options.
 
-| 选项           | 必需     | 描述                                                                                                                                                                          |
+| Option         | Required | Description                                                                                                                                                                   |
 | :------------- | :------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `tag`          | 可选     | 指定模板以设置 journald 日志中的 `CONTAINER_TAG` 和 `SYSLOG_IDENTIFIER` 值。有关自定义日志标签格式，请参阅[日志标签选项文档](log_tags.md)。                                    |
-| `labels`       | 可选     | 以逗号分隔的标签键列表，如果为容器指定了这些标签，则应包含在消息中。                                                                                                          |
-| `labels-regex` | 可选     | 与 labels 类似并兼容。用于匹配与日志相关的标签的正则表达式。用于高级[日志标签选项](log_tags.md)。                                                                              |
-| `env`          | 可选     | 以逗号分隔的环境变量键列表，如果为容器指定了这些变量，则应包含在消息中。                                                                                                      |
-| `env-regex`    | 可选     | 与 `env` 类似并兼容。用于匹配与日志相关的环境变量的正则表达式。用于高级[日志标签选项](log_tags.md)。                                                                            |
+| `tag`          | optional | Specify template to set `CONTAINER_TAG` and `SYSLOG_IDENTIFIER` value in journald logs. Refer to [log tag option documentation](log_tags.md) to customize the log tag format. |
+| `labels`       | optional | Comma-separated list of keys of labels, which should be included in message, if these labels are specified for the container.                                                 |
+| `labels-regex` | optional | Similar to and compatible with labels. A regular expression to match logging-related labels. Used for advanced [log tag options](log_tags.md).                                |
+| `env`          | optional | Comma-separated list of keys of environment variables, which should be included in message, if these variables are specified for the container.                               |
+| `env-regex`    | optional | Similar to and compatible with `env`. A regular expression to match logging-related environment variables. Used for advanced [log tag options](log_tags.md).                    |
 
-如果 `label` 和 `env` 选项之间发生冲突，则 `env` 的值优先。每个选项都会向日志消息的属性添加额外字段。
+If a collision occurs between `label` and `env` options, the value of the `env`
+takes precedence. Each option adds additional fields to the attributes of a
+logging message.
 
-以下是记录到 journald 所需的日志选项示例。
+The following is an example of the logging options required to log to journald.
 
 ```console
 $ docker run \
@@ -67,43 +80,57 @@ $ docker run \
     your/application
 ```
 
-此配置还指示驱动程序在负载中包含标签 location 和环境变量 `TEST`。如果省略了 `--env "TEST=false"` 或 `--label location=west` 参数，则相应的键不会在 journald 日志中设置。
+This configuration also directs the driver to include in the payload the label
+location, and the environment variable `TEST`. If the `--env "TEST=false"`
+or `--label location=west` arguments were omitted, the corresponding key would
+not be set in the journald log.
 
-## 关于容器名称的说明
+## Note regarding container names
 
-`CONTAINER_NAME` 字段中记录的值是启动时设置的容器名称。如果你使用 `docker rename` 重命名容器，新名称不会反映在 journal 条目中。Journal 条目继续使用原始名称。
+The value logged in the `CONTAINER_NAME` field is the name of the container that
+was set at startup. If you use `docker rename` to rename a container, the new
+name isn't reflected in the journal entries. Journal entries continue
+to use the original name.
 
-## 使用 `journalctl` 检索日志消息
+## Retrieve log messages with `journalctl`
 
-使用 `journalctl` 命令检索日志消息。你可以应用过滤表达式来限制检索的消息仅包含与特定容器关联的消息：
+Use the `journalctl` command to retrieve log messages. You can apply filter
+expressions to limit the retrieved messages to those associated with a specific
+container:
 
 ```console
 $ sudo journalctl CONTAINER_NAME=webserver
 ```
 
-你可以使用额外的过滤器进一步限制检索的消息。`-b` 标志仅检索自上次系统启动以来生成的消息：
+You can use additional filters to further limit the messages retrieved. The `-b`
+flag only retrieves messages generated since the last system boot:
 
 ```console
 $ sudo journalctl -b CONTAINER_NAME=webserver
 ```
 
-`-o` 标志指定检索的日志消息的格式。使用 `-o json` 以 JSON 格式返回日志消息。
+The `-o` flag specifies the format for the retrieved log messages. Use `-o json`
+to return the log messages in JSON format.
 
 ```console
 $ sudo journalctl -o json CONTAINER_NAME=webserver
 ```
 
-### 查看启用了 TTY 的容器的日志
+### View logs for a container with a TTY enabled
 
-如果在容器上启用了 TTY，你可能会在检索日志消息时在输出中看到 `[10B blob data]`。原因是 `\r` 被附加到行尾，而 `journalctl` 不会自动去除它，除非设置了 `--all`：
+If TTY is enabled on a container you may see `[10B blob data]` in the output
+when retrieving log messages.
+The reason for that is that `\r` is appended to the end of the line and
+`journalctl` doesn't strip it automatically unless `--all` is set:
 
 ```console
 $ sudo journalctl -b CONTAINER_NAME=webserver --all
 ```
 
-## 使用 `journal` API 检索日志消息
+## Retrieve log messages with the `journal` API
 
-此示例使用 `systemd` Python 模块检索容器日志：
+This example uses the `systemd` Python module to retrieve container
+logs:
 
 ```python
 import systemd.journal

@@ -1,6 +1,6 @@
 ---
-title: 洞察与分析
-description: 了解如何访问 Docker Hub 上镜像的使用统计信息
+title: Insights and analytics
+description: Discover how to access usage statistics of your images on Docker Hub
 keywords: docker hub, hub, insights, analytics, api, verified publisher
 aliases:
 - /docker-hub/publish/insights-analytics/
@@ -8,198 +8,239 @@ aliases:
 - /trusted-content/insights-analytics/
 ---
 
-洞察与分析为 Docker Hub 上的 Docker 认证发布者 (DVP) 和 Docker 赞助开源 (DSOS) 镜像提供使用分析。这包括对所需时间跨度内镜像和扩展使用指标的自助访问。您还可以显示按标签或按摘要的镜像拉取次数，并获取按地理位置、云提供商、客户端等的细分。
+Insights and analytics provides usage analytics for Docker Verified
+Publisher (DVP) and Docker-Sponsored Open Source (DSOS) images on Docker Hub. This includes self-serve access to image and extension usage metrics for a desired time span. You can also display the number of image pulls by tag or by digest, and get breakdowns by geolocation, cloud provider, client, and more.
 
 <!-- prettier-ignore -->
 > [!TIP]
 >
-> 前往
-[Docker 认证发布者计划](https://www.docker.com/partners/programs/) 或 [Docker 赞助开源](https://www.docker.com/community/open-source/application/#) 页面
-了解更多关于这些计划的信息。
+> Head to the
+[Docker Verified Publisher Program](https://www.docker.com/partners/programs/) or [Docker-Sponsored Open Source](https://www.docker.com/community/open-source/application/#) pages
+to learn more about the programs.
 
-## 查看镜像的分析数据
+## View the image's analytics data
 
-您可以在以下 URL 的 **Insights and analytics** 仪表板上找到仓库的分析数据：
-`https://hub.docker.com/orgs/{namespace}/insights/images`。仪表板包含使用数据的可视化和一个可以下载 CSV 文件数据的表格。
+You can find analytics data for your repositories on the **Insights and
+analytics** dashboard at the following URL:
+`https://hub.docker.com/orgs/{namespace}/insights/images`. The dashboard contains a
+visualization of the usage data and a table where you can download
+the data as CSV files.
 
-要在图表中查看数据：
+To view data in the chart:
 
-- 选择数据粒度：每周或每月
-- 选择时间间隔：3、6 或 12 个月
-- 在列表中选择一个或多个仓库
+- Select the data granularity: weekly or monthly
+- Select the time interval: 3, 6, or 12 months
+- Select one or more repositories in the list
 
 ![Insights and analytics chart visualization](../../../images/chart.png)
 
 <!-- prettier-ignore -->
 > [!TIP]
 >
-> 将光标悬停在图表上会显示工具提示，显示特定时间点的精确数据。
+> Hovering your cursor over the chart displays a tooltip, showing precise data
+> for points in time.
 
-### 共享分析数据
+### Share analytics data
 
-您可以使用图表上方的 **Share** 图标与他人共享可视化。这是与组织中其他人共享统计数据的便捷方式。
+You can share the visualization with others using the **Share** icon above the chart.
+This is a convenient way to share statistics with others in your organization.
 
 ![Chart share icon](../../../images/chart-share-icon.png)
 
-选择该图标会生成一个复制到剪贴板的链接。该链接保留您所做的显示选择。当有人访问该链接时，**Insights and analytics** 页面会打开并显示与您创建链接时设置的相同配置的图表。
+Selecting the icon generates a link that's copied to your clipboard. The link
+preserves the display selections you made. When someone follows the link, the
+**Insights and analytics** page opens and displays the chart with the same
+configuration as you had set up when creating the link.
 
-## 扩展分析数据
+## Extension analytics data
 
-如果您已在扩展市场发布了 Docker 扩展，您还可以获取有关扩展使用情况的分析，以 CSV 文件形式提供。
-您可以从以下 URL 的 **Insights and analytics** 仪表板下载扩展 CSV 报告：
-`https://hub.docker.com/orgs/{namespace}/insights/extensions`。如果您的 Docker 命名空间包含市场中已知的扩展，您将看到一个 **Extensions** 标签页，列出您扩展的 CSV 文件。
+If you have published Docker Extensions in the Extension marketplace, you can also get analytics about your extension usage, available as CSV files.
+You can download extension CSV reports from the **Insights and analytics** dashboard at the following URL:
+`https://hub.docker.com/orgs/{namespace}/insights/extensions`. If your Docker namespace contains extensions known in the marketplace, you will see an **Extensions** tab listing CSV files for your extension(s).
 
-## 导出分析数据
+## Exporting analytics data
 
-您可以从 Web 仪表板或使用 [DVP 数据 API](/reference/api/hub/dvp.md) 导出分析数据。组织的所有成员都可以访问分析数据。
+You can export the analytics data either from the web dashboard, or using the
+[DVP Data API](/reference/api/hub/dvp.md). All members of an organization have access to the analytics data.
 
-数据以可下载的 CSV 文件形式提供，格式为每周（周一至周日）或每月。每月数据从下一个日历月的第一天开始提供。您可以将此数据导入自己的系统，也可以作为电子表格手动分析。
+The data is available as a downloadable CSV file, in a weekly (Monday through
+Sunday) or monthly format. Monthly data is available from the first day of the
+following calendar month. You can import this data into your own systems, or you
+can analyze it manually as a spreadsheet.
 
-### 导出数据
+### Export data
 
-按照以下步骤使用 Docker Hub 网站导出组织镜像的使用数据：
+Export usage data for your organization's images using the Docker Hub website by following these steps:
 
-1.  登录 [Docker Hub](https://hub.docker.com/) 并选择 **My Hub**。
+1.  Sign in to [Docker Hub](https://hub.docker.com/) and select **My Hub**.
 
-2.  选择您的组织并选择 **Analytics**。
+2.  Choose your organization and select **Analytics**.
 
     ![Organization overview page, with the Insights and Analytics tab](../../../images/organization-tabs.png)
 
-3.  设置要导出分析数据的时间跨度。
+3.  Set the time span for which you want to export analytics data.
 
-    摘要和原始数据的可下载 CSV 文件会出现在右侧。
+    The downloadable CSV files for summary and raw data appear on the right-hand
+    side.
 
     ![Filtering options and download links for analytics data](../../../images/download-analytics-data.png)
 
-### 使用 API 导出数据
+### Export data using the API
 
-HTTP API 端点可在以下位置访问：
-`https://hub.docker.com/api/publisher/analytics/v1`。在 [DVP 数据 API 文档](/reference/api/hub/dvp.md) 中了解如何使用 API 导出数据。
+The HTTP API endpoints are available at:
+`https://hub.docker.com/api/publisher/analytics/v1`. Learn how to export data
+using the API in the [DVP Data API documentation](/reference/api/hub/dvp.md).
 
-## 数据点
+## Data points
 
-以原始或摘要格式导出数据。每种格式包含不同的数据点和不同的结构。
+Export data in either raw or summary format. Each format contains different data
+points and with different structure.
 
-以下部分描述了每种格式的可用数据点。**添加日期** 列显示该字段首次引入的时间。
+The following sections describe the available data points for each format. The
+**Date added** column shows when the field was first introduced.
 
-### 镜像拉取原始数据
+### Image pulls raw data
 
-原始数据格式包含以下数据点。CSV 文件中的每一行代表一次镜像拉取。
+The raw data format contains the following data points. Each row in the CSV file
+represents an image pull.
 
-| 数据点                    | 描述                                                                                                  | 添加日期        |
+| Data point                    | Description                                                                                                  | Date added        |
 | ----------------------------- | ------------------------------------------------------------------------------------------------------------ | ----------------- |
-| Action                        | 请求类型，参见 [操作分类规则][1]。取值为 `pull_by_tag`、`pull_by_digest`、`version_check` 之一。 | 2022年1月1日   |
-| Action day                    | 时间戳的日期部分：`YYYY-MM-DD`。                                                                 | 2022年1月1日   |
-| Country                       | 请求来源国家。                                                                                      | 2022年1月1日   |
-| Digest                        | 镜像摘要。                                                                                                | 2022年1月1日   |
-| HTTP method                   | 请求中使用的 HTTP 方法，详见 [注册表 API 文档][2]。                            | 2022年1月1日   |
-| Host                          | 事件中使用的云服务提供商。                                                                 | 2022年1月1日   |
-| Namespace                     | Docker [组织][3]（镜像命名空间）。                                                  | 2022年1月1日   |
-| Reference                     | 请求中使用的镜像摘要或标签。                                                                     | 2022年1月1日   |
-| Repository                    | Docker [仓库][4]（镜像名称）。                                                         | 2022年1月1日   |
-| Tag（可用时包含） | 仅当请求引用了标签时才可用的标签名称。                                             | 2022年1月1日   |
-| Timestamp                     | 请求的日期和时间：`YYYY-MM-DD 00:00:00`。                                                          | 2022年1月1日   |
-| Type                          | 事件来源的行业。取值为 `business`、`isp`、`hosting`、`education`、`null` 之一。       | 2022年1月1日   |
-| User agent tool               | 用户用于拉取镜像的应用程序（例如，`docker` 或 `containerd`）。                        | 2022年1月1日   |
-| User agent version            | 用于拉取镜像的应用程序版本。                                                        | 2022年1月1日   |
-| Domain                        | 请求来源域名，参见 [隐私](#隐私)。                                                              | 2022年10月11日  |
-| Owner                         | 拥有仓库的组织名称。                                                       | 2022年12月19日 |
+| Action                        | Request type, see [Action classification rules][1]. One of `pull_by_tag`, `pull_by_digest`, `version_check`. | January 1, 2022   |
+| Action day                    | The date part of the timestamp: `YYYY-MM-DD`.                                                                 | January 1, 2022   |
+| Country                       | Request origin country.                                                                                      | January 1, 2022   |
+| Digest                        | Image digest.                                                                                                | January 1, 2022   |
+| HTTP method                   | HTTP method used in the request, see [registry API documentation][2] for details.                            | January 1, 2022   |
+| Host                          | The cloud service provider used in an event.                                                                 | January 1, 2022   |
+| Namespace                     | Docker [organization][3] (image namespace).                                                                  | January 1, 2022   |
+| Reference                     | Image digest or tag used in the request.                                                                     | January 1, 2022   |
+| Repository                    | Docker [repository][4] (image name).                                                                         | January 1, 2022   |
+| Tag (included when available) | Tag name that's only available if the request referred to a tag.                                             | January 1, 2022   |
+| Timestamp                     | Date and time of the request: `YYYY-MM-DD 00:00:00`.                                                          | January 1, 2022   |
+| Type                          | The industry from which the event originates. One of `business`, `isp`, `hosting`, `education`, `null`.       | January 1, 2022   |
+| User agent tool               | The application a user used to pull an image (for example, `docker` or `containerd`).                        | January 1, 2022   |
+| User agent version            | The version of the application used to pull an image.                                                        | January 1, 2022   |
+| Domain                        | Request origin domain, see [Privacy](#privacy).                                                              | October 11, 2022  |
+| Owner                         | The name of the organization that owns the repository.                                                       | December 19, 2022 |
 
-[1]: #镜像拉取操作分类规则
+[1]: #image-pulls-action-classification-rules
 [2]: /registry/spec/api/
 [3]: /admin/organization/orgs/
 [4]: /docker-hub/repos/
 
-### 镜像拉取摘要数据
+### Image pulls summary data
 
-有两个级别的摘要数据可用：
+There are two levels of summary data available:
 
-- 仓库级别，每个命名空间和仓库的摘要
-- 标签或摘要级别，每个命名空间、仓库和引用（标签或摘要）的摘要
+- Repository-level, a summary of every namespace and repository
+- Tag- or digest-level, a summary of every namespace, repository, and reference
+  (tag or digest)
 
-摘要数据格式包含所选时间跨度的以下数据点：
+The summary data formats contain the following data points for the selected time
+span:
 
-| 数据点        | 描述                                             | 添加日期        |
+| Data point        | Description                                             | Date added        |
 | ----------------- | ------------------------------------------------------- | ----------------- |
-| Unique IP address | 唯一 IP 地址数量，参见 [隐私](#隐私)。 | 2022年1月1日   |
-| Pull by tag       | 按摘要或按标签的 GET 请求。                       | 2022年1月1日   |
-| Pull by digest    | 按摘要的 GET 或 HEAD 请求，或按摘要的 HEAD 请求。       | 2022年1月1日   |
-| Version check     | 按标签的 HEAD 请求，后面没有跟随 GET 请求                      | 2022年1月1日   |
-| Owner             | 拥有仓库的组织名称。  | 2022年12月19日 |
+| Unique IP address | Number of unique IP addresses, see [Privacy](#privacy). | January 1, 2022   |
+| Pull by tag       | GET request, by digest or by tag.                       | January 1, 2022   |
+| Pull by digest    | GET or HEAD request by digest, or HEAD by digest.       | January 1, 2022   |
+| Version check     | HEAD by tag, not followed by a GET                      | January 1, 2022   |
+| Owner             | The name of the organization that owns the repository.  | December 19, 2022 |
 
-### 镜像拉取操作分类规则
+### Image pulls action classification rules
 
-操作代表与 `docker pull` 相关联的多个请求事件。拉取按类别分组，以使数据更有意义地理解用户行为和意图。类别包括：
+An action represents the multiple request events associated with a
+`docker pull`. Pulls are grouped by category to make the data more meaningful
+for understanding user behavior and intent. The categories are:
 
-- 版本检查
-- 按标签拉取
-- 按摘要拉取
+- Version check
+- Pull by tag
+- Pull by digest
 
-自动化系统经常检查您镜像的新版本。能够区分 CI 中的"版本检查"与用户的实际镜像拉取，让您更深入地了解用户的行为。
+Automated systems frequently check for new versions of your images. Being able
+to distinguish between "version checks" in CI versus actual image pulls by a
+user grants you more insight into your users' behavior.
 
-下表描述了用于确定拉取意图的规则。要提供反馈或询问有关这些规则的问题，
-[填写 Google 表单](https://forms.gle/nb7beTUQz9wzXy1b6)。
+The following table describes the rules applied for determining intent behind
+pulls. To provide feedback or ask questions about these rules,
+[fill out the Google Form](https://forms.gle/nb7beTUQz9wzXy1b6).
 
-| 起始事件 | 引用 | 后续操作                                                     | 结果操作 | 用例                                                                                                    | 备注                                                                                                                                                                                                                                                                                 |
+| Starting event | Reference | Followed by                                                     | Resulting action | Use case(s)                                                                                                    | Notes                                                                                                                                                                                                                                                                                 |
 | :------------- | :-------- | :-------------------------------------------------------------- | :--------------- | :------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| HEAD           | tag       | 无                                                             | Version check    | 用户本地机器上已存在所有层                                                          | 这类似于当用户本地已存在所有镜像层时按标签拉取的用例，但是它区分了用户意图并据此分类。                                                                                              |
-| GET            | tag       | 无                                                             | Pull by tag      | 用户本地机器上已存在所有层和/或镜像是单架构                          |                                                                                                                                                                                                                                                                                       |
-| GET            | tag       | 按不同摘要的 Get                                         | Pull by tag      | 镜像是多架构                                                                                            | 第二个按摘要的 GET 必须与第一个不同。                                                                                                                                                                                                                                |
-| HEAD           | tag       | 按相同摘要的 GET                                              | Pull by tag      | 镜像是多架构但本地机器上已存在部分或全部镜像层                            | 按标签的 HEAD 发送最新的摘要，后续的 GET 必须是按相同摘要。如果镜像是多架构的，可能会有额外的 GET（参见本表的下一行）。如果用户不想要最新的摘要，则用户执行按摘要的 HEAD。 |
-| HEAD           | tag       | 按相同摘要的 GET，然后按不同摘要的第二个 GET | Pull by tag      | 镜像是多架构                                                                                            | 按标签的 HEAD 发送最新的摘要，后续的 GET 必须是按相同摘要。由于镜像是多架构的，有第二个按不同摘要的 GET。如果用户不想要最新的摘要，则用户执行按摘要的 HEAD。                      |
-| HEAD           | tag       | 按相同摘要的 GET，然后按不同摘要的第二个 GET       | Pull by tag      | 镜像是多架构                                                                                            | 按标签的 HEAD 发送最新的摘要，后续的 GET 必须是按相同摘要。由于镜像是多架构的，有第二个按不同摘要的 GET。如果用户不想要最新的摘要，则用户执行按摘要的 HEAD。                     |
-| GET            | digest    | 无                                                             | Pull by digest   | 用户本地机器上已存在所有层和/或镜像是单架构                          |                                                                                                                                                                                                                                                                                       |
-| HEAD           | digest    | 无                                                             | Pull by digest   | 用户本地机器上已存在所有层                                                    |                                                                                                                                                                                                                                                                                       |
-| GET            | digest    | 按不同摘要的 GET                                         | Pull by digest   | 镜像是多架构                                                                                            | 第二个按摘要的 GET 必须与第一个不同。                                                                                                                                                                                                                            |
-| HEAD           | digest    | 按相同摘要的 GET                                              | Pull by digest   | 镜像是单架构和/或镜像是多架构但本地机器上已存在部分镜像 |                                                                                                                                                                                                                                                                                       |
-| HEAD           | digest    | 按相同摘要的 GET，然后按不同摘要的第二个 GET       | Pull by Digest   | 镜像是多架构                                                                                            |                                                                                                                                                                                                                                                                                       |
+| HEAD           | tag       | N/A                                                             | Version check    | User already has all layers existing on local machine                                                          | This is similar to the use case of a pull by tag when the user already has all the image layers existing locally, however, it differentiates the user intent and classifies accordingly.                                                                                              |
+| GET            | tag       | N/A                                                             | Pull by tag      | User already has all layers existing on local machine and/or the image is single-arch                          |                                                                                                                                                                                                                                                                                       |
+| GET            | tag       | Get by different digest                                         | Pull by tag      | Image is multi-arch                                                                                            | Second GET by digest must be different from the first.                                                                                                                                                                                                                                |
+| HEAD           | tag       | GET by same digest                                              | Pull by tag      | Image is multi-arch but some or all image layers already exist on the local machine                            | The HEAD by tag sends the most current digest, the following GET must be by that same digest. There may occur an additional GET, if the image is multi-arch (see the next row in this table). If the user doesn't want the most recent digest, then the user performs HEAD by digest. |
+| HEAD           | tag       | GET by the same digest, then a second GET by a different digest | Pull by tag      | Image is multi-arch                                                                                            | The HEAD by tag sends the most recent digest, the following GET must be by that same digest. Since the image is multi-arch, there is a second GET by a different digest. If the user doesn't want the most recent digest, then the user performs HEAD by digest.                      |
+| HEAD           | tag       | GET by same digest, then a second GET by different digest       | Pull by tag      | Image is multi-arch                                                                                            | The HEAD by tag sends the most current digest, the following GET must be by that same digest. Since the image is multi-arch, there is a second GET by a different digest. If the user doesn't want the most recent digest, then the user performs HEAD by digest.                     |
+| GET            | digest    | N/A                                                             | Pull by digest   | User already has all layers existing on local machine and/or the image is single-arch                          |                                                                                                                                                                                                                                                                                       |
+| HEAD           | digest    | N/A                                                             | Pull by digest   | User already has all layers existing on their local machine                                                    |                                                                                                                                                                                                                                                                                       |
+| GET            | digest    | GET by different digest                                         | Pull by digest   | Image is multi-arch                                                                                            | The second GET by digest must be different from the first.                                                                                                                                                                                                                            |
+| HEAD           | digest    | GET by same digest                                              | Pull by digest   | Image is single-arch and/or image is multi-arch but some part of the image already exists on the local machine |                                                                                                                                                                                                                                                                                       |
+| HEAD           | digest    | GET by same digest, then a second GET by different digest       | Pull by Digest   | Image is multi-arch                                                                                            |                                                                                                                                                                                                                                                                                       |
 
-### 扩展摘要数据
+### Extension Summary data
 
-有两个级别的扩展摘要数据可用：
+There are two levels of extension summary data available:
 
-- 核心摘要，包含基本的扩展使用信息：扩展安装次数、卸载次数和所有时间的总安装次数
+- Core summary, with basic extension usage information: number of extension installs, uninstalls, and total install all times
 
-核心摘要数据文件包含所选时间跨度的以下数据点：
+The core-summary-data file contains the following data points for the selected time
+span:
 
-| 数据点        | 描述                                             | 添加日期        |
+| Data point        | Description                                             | Date added        |
 | ----------------- | ------------------------------------------------------- | ----------------- |
-| Installs          | 扩展的安装次数                    | 2024年2月1日       |
-| TotalInstalls     | 扩展所有时间的安装次数          | 2024年2月1日       |
-| Uninstalls        | 扩展的卸载次数                  | 2024年2月1日       |
-| TotalUninstalls   | 扩展所有时间的卸载次数        | 2024年2月1日       |
-| Updates           | 扩展的更新次数                     | 2024年2月1日       |
+| Installs          | Number of installs for the extension                    | Feb 1, 2024       |
+| TotalInstalls     | Number of installs for the extension all times          | Feb 1, 2024       |
+| Uninstalls        | Number of uninstalls for the extension                  | Feb 1, 2024       |
+| TotalUninstalls   | Number of uninstalls for the extension all times        | Feb 1, 2024       |
+| Updates           | Number of updates for the extension                     | Feb 1, 2024       |
 
-- 高级摘要，包含高级扩展使用信息：按唯一用户计的安装、卸载次数，按唯一用户计的扩展打开次数。
+- Premium summary, with advanced extension usage information: installs, uninstalls by unique users, extension opening by unique users.
 
-核心摘要数据文件包含所选时间跨度的以下数据点：
+The core-summary-data file contains the following data points for the selected time
+span:
 
-| 数据点        | 描述                                             | 添加日期        |
+| Data point        | Description                                             | Date added        |
 | ----------------- | ------------------------------------------------------- | ----------------- |
-| Installs          | 扩展的安装次数                    | 2024年2月1日       |
-| UniqueInstalls    | 安装扩展的唯一用户数         | 2024年2月1日       |
-| Uninstalls        | 扩展的卸载次数                  | 2024年2月1日       |
-| UniqueUninstalls  | 卸载扩展的唯一用户数       | 2024年2月1日       |
-| Usage             | 扩展标签页的打开次数                 | 2024年2月1日       |
-| UniqueUsers       | 打开扩展标签页的唯一用户数       | 2024年2月1日       |
+| Installs          | Number of installs for the extension                    | Feb 1, 2024       |
+| UniqueInstalls    | Number of unique users installing the extension         | Feb 1, 2024       |
+| Uninstalls        | Number of uninstalls for the extension                  | Feb 1, 2024       |
+| UniqueUninstalls  | Number of unique users uninstalling the extension       | Feb 1, 2024       |
+| Usage             | Number of openings of the extension tab                 | Feb 1, 2024       |
+| UniqueUsers       | Number of unique users openings the extension tab       | Feb 1, 2024       |
 
-## 数据随时间的变化
+## Changes in data over time
 
-洞察与分析服务持续改进，以增加其为发布者带来的价值。某些更改可能包括添加新的数据点或改进现有数据以使其更有用。
+The insights and analytics service is continuously improved to increase the
+value it brings to publishers. Some changes might include adding new data
+points, or improving existing data to make it more useful.
 
-数据集的更改，例如添加或删除的字段，通常仅从字段首次引入的日期开始适用，并向前延续。
+Changes in the dataset, such as added or removed fields, generally only apply
+from the date of when the field was first introduced, and going forward.
 
-请参阅 [数据点](#数据点) 部分中的表格，了解给定数据点从哪个日期开始可用。
+Refer to the tables in the [Data points](#data-points) section to see from which
+date a given data point is available.
 
-## 隐私
+## Privacy
 
-本节包含有关隐私保护措施的信息，确保 Docker Hub 上的内容消费者保持完全匿名。
+This section contains information about privacy-protecting measures that ensures
+consumers of content on Docker Hub remain completely anonymous.
 
 <!-- prettier-ignore -->
 > [!IMPORTANT]
 >
-> Docker 从不在分析数据中共享任何个人身份信息 (PII)。
+> Docker never shares any Personally Identifiable Information (PII) as part of
+> analytics data.
 
-镜像拉取摘要数据集包括唯一 IP 地址计数。此数据点仅包括请求镜像的不同唯一 IP 地址的数量。永远不会共享单个 IP 地址。
+The image pulls summary dataset includes unique IP address count. This data point only
+includes the number of distinct unique IP addresses that request an image.
+Individual IP addresses are never shared.
 
-镜像拉取原始数据集包括用户 IP 域名作为数据点。这是与用于拉取镜像的 IP 地址关联的域名。如果 IP 类型是 `business`，域名代表与该 IP 地址关联的公司或组织（例如，`docker.com`）。对于任何不是 `business` 的其他 IP 类型，域名代表用于发出请求的互联网服务提供商或托管提供商。平均而言，只有约 30% 的拉取被归类为 `business` IP 类型（这在不同发布者和镜像之间有所不同）。
+The image pulls raw dataset includes user IP domains as a data point. This is the domain name
+associated with the IP address used to pull an image. If the IP type is
+`business`, the domain represents the company or organization associated with
+that IP address (for example, `docker.com`). For any other IP type that's not
+`business`, the domain represents the internet service provider or hosting
+provider used to make the request. On average, only about 30% of all pulls
+classify as the `business` IP type (this varies between publishers and images).

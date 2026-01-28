@@ -1,59 +1,92 @@
 ---
-title: 构建垃圾回收
-description: 了解 BuildKit 守护进程中的垃圾回收
+title: Build garbage collection
+description: Learn about garbage collection in the BuildKit daemon
 keywords: build, buildx, buildkit, garbage collection, prune, gc
 aliases:
   - /build/building/cache/garbage-collection/
 ---
 
-虽然 [`docker builder prune`](/reference/cli/docker/builder/prune.md)
-或 [`docker buildx prune`](/reference/cli/docker/buildx/prune.md)
-命令是一次性运行的，但垃圾回收（GC）是定期运行的，并遵循一个有序的清理策略列表。当缓存大小变得过大或缓存过期时，BuildKit 守护进程会清理构建缓存。
+While [`docker builder prune`](/reference/cli/docker/builder/prune.md)
+or [`docker buildx prune`](/reference/cli/docker/buildx/prune.md)
+commands run at once, Garbage Collection (GC) runs periodically and follows an
+ordered list of prune policies. The BuildKit daemon clears the build cache when
+the cache size becomes too big, or when the cache age expires.
 
-对于大多数用户来说，默认的 GC 行为已经足够，不需要任何干预。高级用户，特别是那些处理大规模构建、自管理构建器或受限存储环境的用户，可能会受益于自定义这些设置以更好地适应他们的工作流程需求。以下章节解释了 GC 的工作原理，并提供了通过自定义配置调整其行为的指南。
+For most users, the default GC behavior is sufficient and doesn't require any
+intervention. Advanced users, particularly those working with large-scale
+builds, self-managed builders, or constrained storage environments, might
+benefit from customizing these settings to better align with their workflow
+needs. The following sections explain how GC works and provide guidance on
+tailoring its behavior through custom configuration.
 
-## 垃圾回收策略
+## Garbage collection policies
 
-GC 策略定义了一组规则，用于确定如何管理和清理构建缓存。这些策略包括何时删除缓存条目的标准，例如缓存的使用时间、使用的空间量以及要清理的缓存记录类型。
+GC policies define a set of rules that determine how the build cache is managed
+and cleaned up. These policies include criteria for when to remove cache
+entries, such as the age of the cache, the amount of space being used, and the
+type of cache records to prune.
 
-每个 GC 策略按顺序评估，从最具体的标准开始，如果之前的策略没有释放足够的缓存，则继续执行更广泛的规则。这使得 BuildKit 能够对缓存条目进行优先级排序，在确保系统保持性能和可用性的同时，保留最有价值的缓存。
+Each GC policy is evaluated in sequence, starting with the most specific
+criteria, and proceeds to broader rules if previous policies do not free up
+enough cache. This lets BuildKit prioritize cache entries, preserving the most
+valuable cache while ensuring the system maintains performance and
+availability.
 
-例如，假设你有以下 GC 策略：
+For example, say you have the following GC policies:
 
-1. 查找过去 48 小时内未使用的"过期"缓存记录，并删除记录，直到剩余最多 5GB 的"过期"缓存。
-2. 如果构建缓存大小超过 10GB，则删除记录，直到总缓存大小不超过 10GB。
+1. Find "stale" cache records that haven't been used in the past 48 hours, and
+   delete records until there's maximum 5GB of "stale" cache left.
+2. If the build cache size exceeds 10GB, delete records until the total cache
+   size is no more than 10GB.
 
-第一条规则更具体，优先处理过期缓存记录，并为价值较低的缓存类型设置较低的限制。第二条规则对任何类型的缓存记录施加较高的硬限制。使用这些策略，如果你有 11GB 的构建缓存，其中：
+The first rule is more specific, prioritizing stale cache records and setting a
+lower limit for a less valuable type of cache. The second rule imposes a higher
+hard limit that applies to any type of cache records. With these policies, if
+you have 11GB worth of build cache, where:
 
-- 7GB 是"过期"缓存
-- 4GB 是其他更有价值的缓存
+- 7GB of which is "stale" cache
+- 4GB is other, more valuable cache
 
-GC 清理将删除 5GB 的过期缓存作为第一条策略的一部分，剩余 6GB，这意味着第二条策略不需要清理更多缓存。
+A GC sweep would delete 5GB of stale cache as part of the 1st policy, with a
+remainder of 6GB, meaning the 2nd policy does not need to clear any more cache.
 
-默认的 GC 策略（大致）如下：
+The default GC policies are (approximately):
 
-1. 如果超过 48 小时未使用，则删除可以轻松重新生成的缓存，例如来自本地目录或远程 Git 仓库的构建上下文，以及缓存挂载。
-2. 删除超过 60 天未在构建中使用的缓存。
-3. 删除超过构建缓存大小限制的非共享缓存。非共享缓存记录是指其他资源（通常作为镜像层）未使用的层 blob。
-4. 删除任何超过构建缓存大小限制的构建缓存。
+1. Remove cache that can be easily regenerated, such as build contexts from
+   local directories or remote Git repositories, and cache mounts, if hasn't
+   been used for more than 48 hours.
+2. Remove cache that hasn't been used in a build for more than 60 days.
+3. Remove unshared cache that exceeds the build cache size limit. Unshared
+   cache records refers to layer blobs that are not used by other resources
+   (typically, as image layers).
+4. Remove any build cache that exceeds the build cache size limit.
 
-具体的算法和配置策略的方式因你使用的构建器类型而略有不同。有关更多详细信息，请参阅[配置](#configuration)。
+The precise algorithm and the means of configuring the policies differ slightly
+depending on what kind of builder you're using. Refer to
+[Configuration](#configuration) for more details.
 
-## 配置
+## Configuration
 
 > [!NOTE]
-> 如果你对默认的垃圾回收行为感到满意，不需要微调其设置，可以跳过本节。默认配置适用于大多数用例，不需要额外设置。
+> If you're satisfied with the default garbage collection behavior and don't
+> need to fine-tune its settings, you can skip this section. Default
+> configurations work well for most use cases and require no additional setup.
 
-根据你使用的[构建驱动程序](../builders/drivers/_index.md)类型，你将使用不同的配置文件来更改构建器的 GC 设置：
+Depending on the type of [build driver](../builders/drivers/_index.md) you use,
+you will use different configuration files to change the builder's GC settings:
 
-- 如果你使用 Docker Engine 的默认构建器（`docker` 驱动程序），请使用 [Docker 守护进程配置文件](#docker-daemon-configuration-file)。
-- 如果你使用自定义构建器，请使用 [BuildKit 配置文件](#buildkit-configuration-file)。
+- If you use the default builder for Docker Engine (the `docker` driver), use
+  the [Docker daemon configuration file](#docker-daemon-configuration-file).
+- If you use a custom builder, use a [BuildKit configuration file](#buildkit-configuration-file).
 
-### Docker 守护进程配置文件
+### Docker daemon configuration file
 
-如果你使用默认的 [`docker` 驱动程序](../builders/drivers/docker.md)，GC 在 [`daemon.json` 配置文件](/reference/cli/dockerd.md#daemon-configuration-file)中配置，或者如果你使用 Docker Desktop，则在[**设置 > Docker Engine**](/manuals/desktop/settings-and-maintenance/settings.md)中配置。
+If you're using the default [`docker` driver](../builders/drivers/docker.md),
+GC is configured in the [`daemon.json` configuration file](/reference/cli/dockerd.md#daemon-configuration-file),
+or if you use Docker Desktop, in [**Settings > Docker Engine**](/manuals/desktop/settings-and-maintenance/settings.md).
 
-以下代码片段显示了 Docker Desktop 用户的 `docker` 驱动程序的默认构建器配置：
+The following snippet shows the default builder configuration for the `docker`
+driver for Docker Desktop users:
 
 ```json
 {
@@ -66,14 +99,18 @@ GC 清理将删除 5GB 的过期缓存作为第一条策略的一部分，剩余
 }
 ```
 
-`defaultKeepStorage` 选项配置构建缓存的大小限制，这会影响 GC 策略。`docker` 驱动程序的默认策略工作方式如下：
+The `defaultKeepStorage` option configures the size limit of the build cache,
+which influences the GC policies. The default policies for the `docker` driver
+work as follows:
 
-1. 如果超过 `defaultKeepStorage` 的 13.8%（或最小 512MB），则删除超过 48 小时未使用的临时构建缓存。
-2. 删除超过 60 天未使用的构建缓存。
-3. 删除超过 `defaultKeepStorage` 限制的非共享构建缓存。
-4. 删除任何超过 `defaultKeepStorage` 限制的构建缓存。
+1. Remove ephemeral, unused build cache older than 48 hours if it exceeds 13.8%
+   of `defaultKeepStorage`, or at minimum 512MB.
+2. Remove unused build cache older than 60 days.
+3. Remove unshared build cache that exceeds the `defaultKeepStorage` limit.
+4. Remove any build cache that exceeds the `defaultKeepStorage` limit.
 
-鉴于 Docker Desktop 的 `defaultKeepStorage` 默认值为 20GB，默认 GC 策略解析为：
+Given the Docker Desktop default value for `defaultKeepStorage` of 20GB, the
+default GC policies resolve to:
 
 ```json
 {
@@ -97,16 +134,19 @@ GC 清理将删除 5GB 的过期缓存作为第一条策略的一部分，剩余
 }
 ```
 
-调整 `docker` 驱动程序构建缓存配置的最简单方法是调整 `defaultKeepStorage` 选项：
+The easiest way to tweak the build cache configuration for the `docker` driver
+is to adjust the `defaultKeepStorage` option:
 
-- 如果你觉得 GC 过于激进，请增加限制。
-- 如果你需要保留空间，请减少限制。
+- Increase the limit if you feel like you think the GC is too aggressive.
+- Decrease the limit if you need to preserve space.
 
-如果你需要更多控制，可以直接定义自己的 GC 策略。以下示例定义了一个更保守的 GC 配置，具有以下策略：
+If you need even more control, you can define your own GC policies directly.
+The following example defines a more conservative GC configuration with the
+following policies:
 
-1. 如果构建缓存超过 50GB，则删除超过 1440 小时（即 60 天）未使用的缓存条目。
-2. 如果构建缓存超过 50GB，则删除非共享缓存条目。
-3. 如果构建缓存超过 100GB，则删除任何缓存条目。
+1. Remove unused cache entries older than 1440 hours, or 60 days, if build cache exceeds 50GB.
+2. Remove unshared cache entries if build cache exceeds 50GB.
+3. Remove any cache entries if build cache exceeds 100GB.
 
 ```json
 {
@@ -124,96 +164,127 @@ GC 清理将删除 5GB 的过期缓存作为第一条策略的一部分，剩余
 }
 ```
 
-这里的策略 1 和 2 将 `keepStorage` 设置为 `0`，这意味着它们将回退到由 `defaultKeepStorage` 定义的 50GB 的默认限制。
+Policies 1 and 2 here set `keepStorage` to `0`, which means they'll fall back
+to the default limit of 50GB as defined by `defaultKeepStorage`.
 
-### BuildKit 配置文件
+### BuildKit configuration file
 
-对于 `docker` 以外的构建驱动程序，GC 使用 [`buildkitd.toml`](../buildkit/toml-configuration.md) 配置文件进行配置。此文件使用以下高级配置选项，你可以使用这些选项来调整 BuildKit 应该用于缓存的磁盘空间阈值：
+For build drivers other than `docker`, GC is configured using a
+[`buildkitd.toml`](../buildkit/toml-configuration.md) configuration file. This
+file uses the following high-level configuration options that you can use to
+tweak the thresholds for how much disk space BuildKit should use for cache:
 
-| 选项            | 描述                                                                                                         | 默认值                                         |
-| --------------- | ------------------------------------------------------------------------------------------------------------ | --------------------------------------------- |
-| `reservedSpace` | BuildKit 允许为缓存分配的最小磁盘空间量。低于此阈值的使用量在垃圾回收期间不会被回收。                                   | 总磁盘空间的 10% 或 10GB（取较小者）              |
-| `maxUsedSpace`  | BuildKit 允许使用的最大磁盘空间量。超过此阈值的使用量将在垃圾回收期间被回收。                                          | 总磁盘空间的 60% 或 100GB（取较小者）             |
-| `minFreeSpace`  | 必须保持空闲的磁盘空间量。                                                                                      | 20GB                                          |
+| Option          | Description                                                                                                                                             | Default value                                         |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| `reservedSpace` | The minimum amount of disk space BuildKit is allowed to allocate for cache. Usage below this threshold will not be reclaimed during garbage collection. | 10% of total disk space or 10GB (whichever is lower)  |
+| `maxUsedSpace`  | The maximum amount of disk space that BuildKit is allowed to use. Usage above this threshold will be reclaimed during garbage collection.               | 60% of total disk space or 100GB (whichever is lower) |
+| `minFreeSpace`  | The amount of disk space that must be kept free.                                                                                                        | 20GB                                                  |
 
-你可以将这些选项设置为字节数、单位字符串（例如，`512MB`）或总磁盘大小的百分比。更改这些选项会影响 BuildKit worker 使用的默认 GC 策略。使用默认阈值，GC 策略解析如下：
+You can set these options either as number of bytes, a unit string (for
+example, `512MB`), or as a percentage of the total disk size. Changing these
+options influences the default GC policies used by the BuildKit worker. With
+the default thresholds, the GC policies resolve as follows:
 
 ```toml
-# 全局默认值
+# Global defaults
 [worker.oci]
   gc = true
   reservedSpace = "10GB"
   maxUsedSpace = "100GB"
   minFreeSpace = "20%"
 
-# 策略 1
+# Policy 1
 [[worker.oci.gcpolicy]]
   filters = [ "type==source.local", "type==exec.cachemount", "type==source.git.checkout" ]
   keepDuration = "48h"
   maxUsedSpace = "512MB"
 
-# 策略 2
+# Policy 2
 [[worker.oci.gcpolicy]]
-  keepDuration = "1440h" # 60 天
+  keepDuration = "1440h" # 60 days
   reservedSpace = "10GB"
   maxUsedSpace = "100GB"
 
-# 策略 3
+# Policy 3
 [[worker.oci.gcpolicy]]
   reservedSpace = "10GB"
   maxUsedSpace = "100GB"
 
-# 策略 4
+# Policy 4
 [[worker.oci.gcpolicy]]
   all = true
   reservedSpace = "10GB"
   maxUsedSpace = "100GB"
 ```
 
-实际上，这意味着：
+In practical terms, this means:
 
-- 策略 1：如果构建缓存超过 512MB，BuildKit 会删除过去 48 小时内未使用的本地构建上下文、远程 Git 上下文和缓存挂载的缓存记录。
-- 策略 2：如果磁盘使用量超过 100GB，则删除超过 60 天的非共享构建缓存，确保至少保留 10GB 的磁盘空间用于缓存。
-- 策略 3：如果磁盘使用量超过 100GB，则删除任何非共享缓存，确保至少保留 10GB 的磁盘空间用于缓存。
-- 策略 4：如果磁盘使用量超过 100GB，则删除所有缓存——包括共享和内部记录，确保至少保留 10GB 的磁盘空间用于缓存。
+- Policy 1: If the build cache exceeds 512MB, BuildKit removes cache records
+  for local build contexts, remote Git contexts, and cache mounts that haven’t
+  been used in the last 48 hours.
+- Policy 2: If disk usage exceeds 100GB, unshared build cache older than 60
+  days is removed, ensuring at least 10GB of disk space is reserved for cache.
+- Policy 3: If disk usage exceeds 100GB, any unshared cache is removed,
+  ensuring at least 10GB of disk space is reserved for cache.
+- Policy 4: If disk usage exceeds 100GB, all cache—including shared and
+  internal records—is removed, ensuring at least 10GB of disk space is reserved
+  for cache.
 
-`reservedSpace` 在定义构建缓存大小的下限时具有最高优先级。如果 `maxUsedSpace` 或 `minFreeSpace` 定义了较低的值，最小缓存大小永远不会低于 `reservedSpace`。
+`reservedSpace` has the highest priority in defining the lower limit for build
+cache size. If `maxUsedSpace` or `minFreeSpace` would define a lower value, the
+minimum cache size would never be brought below `reservedSpace`.
 
-如果同时设置了 `reservedSpace` 和 `maxUsedSpace`，GC 清理的结果缓存大小将在这些阈值之间。例如，如果 `reservedSpace` 设置为 10GB，`maxUsedSpace` 设置为 20GB，则 GC 运行后的缓存量将小于 20GB，但至少为 10GB。
+If both `reservedSpace` and `maxUsedSpace` are set, a GC sweep results in a
+cache size between those thresholds. For example, if `reservedSpace` is set to
+10GB, and `maxUsedSpace` is set to 20GB, the resulting amount of cache after a
+GC run is less than 20GB, but at least 10GB.
 
-你还可以定义完全自定义的 GC 策略。自定义策略还允许你定义过滤器，让你可以精确指定给定策略允许清理的缓存条目类型。
+You can also define completely custom GC policies. Custom policies also let you
+define filters, which lets you pinpoint the types of cache entries that a given
+policy is allowed to prune.
 
-#### BuildKit 中的自定义 GC 策略
+#### Custom GC policies in BuildKit
 
-自定义 GC 策略让你可以微调 BuildKit 管理其缓存的方式，并让你可以根据缓存类型、持续时间或磁盘空间阈值等标准完全控制缓存保留。如果你需要完全控制缓存阈值以及缓存记录应如何优先处理，定义自定义 GC 策略是最佳选择。
+Custom GC policies let you fine-tune how BuildKit manages its cache, and gives
+you full control over cache retention based on criteria such as cache type,
+duration, or disk space thresholds. If you need full control over the cache
+thresholds and how cache records should be prioritized, defining custom GC
+policies is the way to go.
 
-要定义自定义 GC 策略，请在 `buildkitd.toml` 中使用 `[[worker.oci.gcpolicy]]` 配置块。每个策略定义将用于该策略的阈值。如果你使用自定义策略，`reservedSpace`、`maxUsedSpace` 和 `minFreeSpace` 的全局值不适用。
+To define a custom GC policy, use the `[[worker.oci.gcpolicy]]` configuration
+block in `buildkitd.toml`. Each policy define the thresholds that will be used
+for that policy. The global values for `reservedSpace`, `maxUsedSpace`, and
+`minFreeSpace` do not apply if you use custom policies.
 
-以下是一个示例配置：
+Here’s an example configuration:
 
 ```toml
-# 自定义 GC 策略 1：删除超过 24 小时未使用的本地上下文
+# Custom GC Policy 1: Remove unused local contexts older than 24 hours
 [[worker.oci.gcpolicy]]
   filters = ["type==source.local"]
   keepDuration = "24h"
   reservedSpace = "5GB"
   maxUsedSpace = "50GB"
 
-# 自定义 GC 策略 2：删除超过 30 天的远程 Git 上下文
+# Custom GC Policy 2: Remove remote Git contexts older than 30 days
 [[worker.oci.gcpolicy]]
   filters = ["type==source.git.checkout"]
   keepDuration = "720h"
   reservedSpace = "5GB"
   maxUsedSpace = "30GB"
 
-# 自定义 GC 策略 3：如果磁盘使用量超过 90GB，则积极清理所有缓存
+# Custom GC Policy 3: Aggressively clean all cache if disk usage exceeds 90GB
 [[worker.oci.gcpolicy]]
   all = true
   reservedSpace = "5GB"
   maxUsedSpace = "90GB"
 ```
 
-除了 `reservedSpace`、`maxUsedSpace` 和 `minFreeSpace` 阈值外，在定义 GC 策略时，你还有两个额外的配置选项：
+In addition to the `reservedSpace`, `maxUsedSpace`, and `minFreeSpace` threshold,
+when defining a GC policy you have two additional configuration options:
 
-- `all`：默认情况下，BuildKit 会排除某些缓存记录在 GC 期间被清理。将此选项设置为 `true` 将允许清理任何缓存记录。
-- `filters`：过滤器让你可以指定 GC 策略允许清理的特定类型的缓存记录。
+- `all`: By default, BuildKit will exclude some cache records from being pruned
+  during GC. Setting this option to `true` will allow any cache records to be
+  pruned.
+- `filters`: Filters let you specify specific types of cache records that a GC
+  policy is allowed to prune.

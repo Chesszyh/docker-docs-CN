@@ -5,28 +5,39 @@ description: >
 keywords: >
   docker, logging, driver, dual logging, dual logging, cache, ring-buffer,
   configuration
-title: 在远程日志驱动程序中使用 docker logs
+title: Use docker logs with remote logging drivers
 aliases:
   - /config/containers/logging/dual-logging/
 ---
 
-## 概述
+## Overview
 
-无论配置了哪种日志驱动程序或插件，你都可以使用 `docker logs` 命令读取容器日志。Docker Engine 使用 [`local`](drivers/local.md) 日志驱动程序作为缓存，用于读取容器的最新日志。这称为双重日志（dual logging）。默认情况下，缓存启用了日志文件轮转，每个容器限制为最多 5 个文件，每个文件最大 20 MB（压缩前）。
+You can use the `docker logs` command to read container logs regardless of the
+configured logging driver or plugin. Docker Engine uses the [`local`](drivers/local.md)
+logging driver to act as cache for reading the latest logs of your containers.
+This is called dual logging. By default, the cache has log-file rotation
+enabled, and is limited to a maximum of 5 files of 20 MB each (before
+compression) per container.
 
-请参阅[配置选项](#configuration-options)部分自定义这些默认值，或参阅[禁用双重日志](#disable-the-dual-logging-cache)部分禁用此功能。
+Refer to the [configuration options](#configuration-options) section to customize
+these defaults, or to the [disable dual logging](#disable-the-dual-logging-cache)
+section to disable this feature.
 
-## 前提条件
+## Prerequisites
 
-如果配置的日志驱动程序不支持读取日志，Docker Engine 会自动启用双重日志。
+Docker Engine automatically enables dual logging if the configured logging
+driver doesn't support reading logs.
 
-以下示例显示了在有和没有双重日志功能时运行 `docker logs` 命令的结果：
+The following examples show the result of running a `docker logs` command with
+and without dual logging availability:
 
-### 没有双重日志功能
+### Without dual logging capability
 
-当容器配置了远程日志驱动程序（如 `splunk`）且禁用了双重日志时，尝试在本地读取容器日志会显示错误：
+When a container is configured with a remote logging driver such as `splunk`, and
+dual logging is disabled, an error is displayed when attempting to read container
+logs locally:
 
-- 步骤 1：配置 Docker 守护进程
+- Step 1: Configure Docker daemon
 
   ```console
   $ cat /etc/docker/daemon.json
@@ -39,24 +50,27 @@ aliases:
   }
   ```
 
-- 步骤 2：启动容器
+- Step 2: Start the container
 
   ```console
   $ docker run -d busybox --name testlog top
   ```
 
-- 步骤 3：读取容器日志
+- Step 3: Read the container logs
 
   ```console
   $ docker logs 7d6ac83a89a0
   Error response from daemon: configured logging driver does not support reading
   ```
 
-### 有双重日志功能
+### With dual logging capability
 
-启用双重日志缓存后，即使日志驱动程序不支持读取日志，也可以使用 `docker logs` 命令读取日志。以下示例显示了一个守护进程配置，使用 `splunk` 远程日志驱动程序作为默认值，并启用了双重日志缓存：
+With the dual logging cache enabled, the `docker logs` command can be used to
+read logs, even if the logging driver doesn't support reading logs. The following
+example shows a daemon configuration that uses the `splunk` remote logging driver
+as a default, with dual logging caching enabled:
 
-- 步骤 1：配置 Docker 守护进程
+- Step 1: Configure Docker daemon
 
   ```console
   $ cat /etc/docker/daemon.json
@@ -68,13 +82,13 @@ aliases:
   }
   ```
 
-- 步骤 2：启动容器
+- Step 2: Start the container
 
   ```console
   $ docker run -d busybox --name testlog top
   ```
 
-- 步骤 3：读取容器日志
+- Step 3: Read the container logs
 
   ```console
   $ docker logs 7d6ac83a89a0
@@ -89,28 +103,41 @@ aliases:
 
 > [!NOTE]
 >
-> 对于支持读取日志的日志驱动程序，如 `local`、`json-file` 和 `journald` 驱动程序，在双重日志功能可用之前和之后的功能没有区别。对于这些驱动程序，在两种场景下都可以使用 `docker logs` 读取日志。
+> For logging drivers that support reading logs, such as the `local`, `json-file`
+> and `journald` drivers, there is no difference in functionality before or after
+> the dual logging capability became available. For these drivers, Logs can be
+> read using `docker logs` in both scenarios.
 
-### 配置选项
+### Configuration options
 
-双重日志缓存接受与 [`local` 日志驱动程序](drivers/local.md)相同的配置选项，但带有 `cache-` 前缀。这些选项可以按容器指定，新容器的默认值可以使用[守护进程配置文件](/reference/cli/dockerd/#daemon-configuration-file)设置。
+The dual logging cache accepts the same configuration options as the
+[`local` logging driver](drivers/local.md), but with a `cache-` prefix. These options
+can be specified per container, and defaults for new containers can be set using
+the [daemon configuration file](/reference/cli/dockerd/#daemon-configuration-file).
 
-默认情况下，缓存启用了日志文件轮转，每个容器限制为最多 5 个文件，每个文件最大 20MB（压缩前）。使用下面描述的配置选项自定义这些默认值。
+By default, the cache has log-file rotation enabled, and is limited to a maximum
+of 5 files of 20MB each (before compression) per container. Use the configuration
+options described below to customize these defaults.
 
-| 选项             | 默认值    | 描述                                                                                                                                              |
+| Option           | Default   | Description                                                                                                                                       |
 | :--------------- | :-------- | :------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `cache-disabled` | `"false"` | 禁用本地缓存。以字符串形式传递的布尔值（`true`、`1`、`0` 或 `false`）。                                                                           |
-| `cache-max-size` | `"20m"`   | 缓存轮转前的最大大小。一个正整数加上表示计量单位的修饰符（`k`、`m` 或 `g`）。                                                                      |
-| `cache-max-file` | `"5"`     | 可以存在的最大缓存文件数。如果轮转日志创建了过多文件，则删除最旧的文件。一个正整数。                                                              |
-| `cache-compress` | `"true"`  | 启用或禁用轮转日志文件的压缩。以字符串形式传递的布尔值（`true`、`1`、`0` 或 `false`）。                                                           |
+| `cache-disabled` | `"false"` | Disable local caching. Boolean value passed as a string (`true`, `1`, `0`, or `false`).                                                           |
+| `cache-max-size` | `"20m"`   | The maximum size of the cache before it is rotated. A positive integer plus a modifier representing the unit of measure (`k`, `m`, or `g`).       |
+| `cache-max-file` | `"5"`     | The maximum number of cache files that can be present. If rotating the logs creates excess files, the oldest file is removed. A positive integer. |
+| `cache-compress` | `"true"`  | Enable or disable compression of rotated log files. Boolean value passed as a string (`true`, `1`, `0`, or `false`).                              |
 
-## 禁用双重日志缓存
+## Disable the dual logging cache
 
-使用 `cache-disabled` 选项禁用双重日志缓存。在只通过远程日志系统读取日志且不需要通过 `docker logs` 读取日志进行调试的情况下，禁用缓存可以节省存储空间。
+Use the `cache-disabled` option to disable the dual logging cache. Disabling the
+cache can be useful to save storage space in situations where logs are only read
+through a remote logging system, and if there is no need to read logs through
+`docker logs` for debugging purposes.
 
-可以为单个容器禁用缓存，也可以在使用[守护进程配置文件](/reference/cli/dockerd/#daemon-configuration-file)时为新容器设置默认禁用缓存。
+Caching can be disabled for individual containers or by default for new containers,
+when using the [daemon configuration file](/reference/cli/dockerd/#daemon-configuration-file).
 
-以下示例使用守护进程配置文件将 [`splunk`](drivers/splunk.md) 日志驱动程序设置为默认值，并禁用缓存：
+The following example uses the daemon configuration file to use the [`splunk`](drivers/splunk.md)
+logging driver as a default, with caching disabled:
 
 ```console
 $ cat /etc/docker/daemon.json
@@ -125,10 +152,17 @@ $ cat /etc/docker/daemon.json
 
 > [!NOTE]
 >
-> 对于支持读取日志的日志驱动程序，如 `local`、`json-file` 和 `journald` 驱动程序，不使用双重日志，禁用该选项没有效果。
+> For logging drivers that support reading logs, such as the `local`, `json-file`
+> and `journald` drivers, dual logging isn't used, and disabling the option has
+> no effect.
 
-## 限制
+## Limitations
 
-- 如果使用发送远程日志的日志驱动程序或插件的容器出现网络问题，则不会向本地缓存写入。
-- 如果由于任何原因（文件系统已满、写入权限被移除）导致写入 `logdriver` 失败，则缓存写入失败并记录在守护进程日志中。不会重试向缓存写入日志条目。
-- 在默认配置中，由于使用环形缓冲区来防止在文件写入缓慢的情况下阻塞容器的 stdio，可能会从缓存中丢失一些日志。管理员必须在守护进程关闭时修复这些问题。
+- If a container using a logging driver or plugin that sends logs remotely
+  has a network issue, no `write` to the local cache occurs.
+- If a write to `logdriver` fails for any reason (file system full, write
+  permissions removed), the cache write fails and is logged in the daemon log.
+  The log entry to the cache isn't retried.
+- Some logs might be lost from the cache in the default configuration because a
+  ring buffer is used to prevent blocking the stdio of the container in case of
+  slow file writes. An admin must repair these while the daemon is shut down.

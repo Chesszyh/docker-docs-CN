@@ -1,6 +1,6 @@
 ---
 build:
   render: never
-title: 管理资源
+title: Manage resources
 weight: 60
 ---

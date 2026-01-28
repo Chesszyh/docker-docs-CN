@@ -1,5 +1,5 @@
 ---
 build:
   render: never
-title: Swarm 工作原理
+title: How swarm works
 ---

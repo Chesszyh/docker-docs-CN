@@ -1,19 +1,27 @@
 ---
 description: Learn how to use the Google Cloud Logging driver with Docker Engine
 keywords: gcplogs, google, docker, logging, driver
-title: Google Cloud Logging 日志驱动程序
+title: Google Cloud Logging driver
 aliases:
   - /engine/admin/logging/gcplogs/
   - /config/containers/logging/gcplogs/
 ---
 
-Google Cloud Logging 驱动程序将容器日志发送到 [Google Cloud Logging](https://cloud.google.com/logging/docs/) Logging。
+The Google Cloud Logging driver sends container logs to
+[Google Cloud Logging](https://cloud.google.com/logging/docs/)
+Logging.
 
-## 用法
+## Usage
 
-要将 `gcplogs` 驱动程序用作默认日志驱动程序，请在 `daemon.json` 文件中将 `log-driver` 和 `log-opt` 键设置为适当的值，该文件位于 Linux 主机上的 `/etc/docker/` 或 Windows Server 上的 `C:\ProgramData\docker\config\daemon.json`。有关使用 `daemon.json` 配置 Docker 的更多信息，请参阅 [daemon.json](/reference/cli/dockerd.md#daemon-configuration-file)。
+To use the `gcplogs` driver as the default logging driver, set the `log-driver`
+and `log-opt` keys to appropriate values in the `daemon.json` file, which is
+located in `/etc/docker/` on Linux hosts or
+`C:\ProgramData\docker\config\daemon.json` on Windows Server. For more about
+configuring Docker using `daemon.json`, see
+[daemon.json](/reference/cli/dockerd.md#daemon-configuration-file).
 
-以下示例将日志驱动程序设置为 `gcplogs` 并设置 `gcp-meta-name` 选项。
+The following example sets the log driver to `gcplogs` and sets the
+`gcp-meta-name` option.
 
 ```json
 {
@@ -24,37 +32,53 @@ Google Cloud Logging 驱动程序将容器日志发送到 [Google Cloud Logging]
 }
 ```
 
-重启 Docker 以使更改生效。
+Restart Docker for the changes to take effect.
 
-你可以使用 `docker run` 的 `--log-driver` 选项为特定容器设置日志驱动程序：
+You can set the logging driver for a specific container by using the
+`--log-driver` option to `docker run`:
 
 ```console
 $ docker run --log-driver=gcplogs ...
 ```
 
-如果 Docker 检测到它正在 Google Cloud 项目中运行，它会从[实例元数据服务](https://cloud.google.com/compute/docs/metadata)发现配置。否则，用户必须使用 `--gcp-project` 日志选项指定要记录到哪个项目，Docker 会尝试从 [Google 应用程序默认凭证](https://developers.google.com/identity/protocols/application-default-credentials)获取凭证。`--gcp-project` 标志优先于从元数据服务器发现的信息，因此在 Google Cloud 项目中运行的 Docker 守护进程可以被覆盖以记录到不同的项目，使用 `--gcp-project`。
+If Docker detects that it's running in a Google Cloud Project, it discovers
+configuration from the
+[instance metadata service](https://cloud.google.com/compute/docs/metadata).
+Otherwise, the user must specify
+which project to log to using the `--gcp-project` log option and Docker
+attempts to obtain credentials from the
+[Google Application Default Credential](https://developers.google.com/identity/protocols/application-default-credentials).
+The `--gcp-project` flag takes precedence over information discovered from the
+metadata server, so a Docker daemon running in a Google Cloud project can be
+overridden to log to a different project using `--gcp-project`.
 
-Docker 从 Google Cloud 元数据服务器获取区域、实例名称和实例 ID 的值。如果元数据服务器不可用，可以通过选项提供这些值。它们不会覆盖元数据服务器的值。
+Docker fetches the values for zone, instance name and instance ID from Google
+Cloud metadata server. Those values can be provided via options if metadata
+server isn't available. They don't override the values from metadata server.
 
-## gcplogs 选项
+## gcplogs options
 
-你可以使用 `--log-opt NAME=VALUE` 标志指定以下额外的 Google Cloud Logging 驱动程序选项：
+You can use the `--log-opt NAME=VALUE` flag to specify these additional Google
+Cloud Logging driver options:
 
-| 选项            | 必需     | 描述                                                                                                                                                         |
+| Option          | Required | Description                                                                                                                                                  |
 | :-------------- | :------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `gcp-project`   | 可选     | 要记录到哪个 Google Cloud 项目。默认从 Google Cloud 元数据服务器发现此值。                                                                                    |
-| `gcp-log-cmd`   | 可选     | 是否记录容器启动时使用的命令。默认为 false。                                                                                                                 |
-| `labels`        | 可选     | 以逗号分隔的标签键列表，如果为容器指定了这些标签，则应包含在消息中。                                                                                         |
-| `labels-regex`  | 可选     | 与 `labels` 类似并兼容。用于匹配与日志相关的标签的正则表达式。用于高级[日志标签选项](log_tags.md)。                                                           |
-| `env`           | 可选     | 以逗号分隔的环境变量键列表，如果为容器指定了这些变量，则应包含在消息中。                                                                                     |
-| `env-regex`     | 可选     | 与 `env` 类似并兼容。用于匹配与日志相关的环境变量的正则表达式。用于高级[日志标签选项](log_tags.md)。                                                          |
-| `gcp-meta-zone` | 可选     | 实例的区域名称。                                                                                                                                             |
-| `gcp-meta-name` | 可选     | 实例名称。                                                                                                                                                   |
-| `gcp-meta-id`   | 可选     | 实例 ID。                                                                                                                                                    |
+| `gcp-project`   | optional | Which Google Cloud project to log to. Defaults to discovering this value from the Google Cloud metadata server.                                                               |
+| `gcp-log-cmd`   | optional | Whether to log the command that the container was started with. Defaults to false.                                                                           |
+| `labels`        | optional | Comma-separated list of keys of labels, which should be included in message, if these labels are specified for the container.                                |
+| `labels-regex`  | optional | Similar to and compatible with `labels`. A regular expression to match logging-related labels. Used for advanced [log tag options](log_tags.md).             |
+| `env`           | optional | Comma-separated list of keys of environment variables, which should be included in message, if these variables are specified for the container.              |
+| `env-regex`     | optional | Similar to and compatible with `env`. A regular expression to match logging-related environment variables. Used for advanced [log tag options](log_tags.md). |
+| `gcp-meta-zone` | optional | Zone name for the instance.                                                                                                                                  |
+| `gcp-meta-name` | optional | Instance name.                                                                                                                                               |
+| `gcp-meta-id`   | optional | Instance ID.                                                                                                                                                 |
 
-如果 `label` 和 `env` 键之间存在冲突，则 `env` 的值优先。这两个选项都会向日志消息的属性添加额外字段。
+If there is collision between `label` and `env` keys, the value of the `env`
+takes precedence. Both options add additional fields to the attributes of a
+logging message.
 
-以下是记录到默认日志目的地（通过查询 Google Cloud 元数据服务器发现）所需的日志选项示例。
+The following is an example of the logging options required to log to the default
+logging destination which is discovered by querying the Google Cloud metadata server.
 
 ```console
 $ docker run \
@@ -67,9 +91,13 @@ $ docker run \
     your/application
 ```
 
-此配置还指示驱动程序在负载中包含标签 `location`、环境变量 `ENV` 以及用于启动容器的命令。
+This configuration also directs the driver to include in the payload the label
+`location`, the environment variable `ENV`, and the command used to start the
+container.
 
-以下示例显示了在 Google Cloud 外部运行时的日志选项。必须为守护进程设置 `GOOGLE_APPLICATION_CREDENTIALS` 环境变量，例如通过 systemd：
+The following example shows logging options for running outside of Google
+Cloud. The `GOOGLE_APPLICATION_CREDENTIALS` environment variable must be set
+for the daemon, for example via systemd:
 
 ```ini
 [Service]

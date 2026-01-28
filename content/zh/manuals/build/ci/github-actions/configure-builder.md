@@ -1,17 +1,21 @@
 ---
-title: 配置您的 GitHub Actions 构建器
+title: Configuring your GitHub Actions builder
 linkTitle: BuildKit configuration
-description: 在使用 GitHub Actions 进行 CI 构建时配置 BuildKit 实例
+description: Configuring BuildKit instances for building in CI with GitHub Actions
 keywords: ci, github actions, gha, buildkit, buildx
 ---
 
-本页包含使用我们的 [Setup Buildx Action](https://github.com/docker/setup-buildx-action) 时配置 BuildKit 实例的说明。
+This page contains instructions on configuring your BuildKit instances when
+using our [Setup Buildx Action](https://github.com/docker/setup-buildx-action).
 
-## 版本固定
+## Version pinning
 
-默认情况下，该 action 将尝试使用 GitHub Runner（构建客户端）上可用的最新版本 [Buildx](https://github.com/docker/buildx) 和最新版本的 [BuildKit](https://github.com/moby/buildkit)（构建服务器）。
+By default, the action will attempt to use the latest version of [Buildx](https://github.com/docker/buildx)
+available on the GitHub Runner (the build client) and the latest release of
+[BuildKit](https://github.com/moby/buildkit) (the build server).
 
-要固定到特定版本的 Buildx，请使用 `version` 输入。例如，要固定到 Buildx v0.10.0：
+To pin to a specific version of Buildx, use the `version` input. For example,
+to pin to Buildx v0.10.0:
 
 ```yaml
 - name: Set up Docker Buildx
@@ -20,7 +24,8 @@ keywords: ci, github actions, gha, buildkit, buildx
     version: v0.10.0
 ```
 
-要固定到特定版本的 BuildKit，请在 `driver-opts` 输入中使用 `image` 选项。例如，要固定到 BuildKit v0.11.0：
+To pin to a specific version of BuildKit, use the `image` option in the
+`driver-opts` input. For example, to pin to BuildKit v0.11.0:
 
 ```yaml
 - name: Set up Docker Buildx
@@ -29,9 +34,11 @@ keywords: ci, github actions, gha, buildkit, buildx
     driver-opts: image=moby/buildkit:v0.11.0
 ```
 
-## BuildKit 容器日志
+## BuildKit container logs
 
-要在使用 `docker-container` 驱动程序时显示 BuildKit 容器日志，您必须[启用步骤调试日志](https://docs.github.com/en/actions/monitoring-and-troubleshooting-workflows/enabling-debug-logging#enabling-step-debug-logging)，或在 [Docker Setup Buildx](https://github.com/marketplace/actions/docker-setup-buildx) action 中设置 `--debug` buildkitd 标志：
+To display BuildKit container logs when using the `docker-container` driver,
+you must either [enable step debug logging](https://docs.github.com/en/actions/monitoring-and-troubleshooting-workflows/enabling-debug-logging#enabling-step-debug-logging),
+or set the `--debug` buildkitd flag in the [Docker Setup Buildx](https://github.com/marketplace/actions/docker-setup-buildx) action:
 
 ```yaml
 name: ci
@@ -47,22 +54,25 @@ jobs:
         uses: docker/setup-buildx-action@v3
         with:
           buildkitd-flags: --debug
-
+      
       - name: Build
         uses: docker/build-push-action@v6
 ```
 
-日志将在作业结束时可用：
+Logs will be available at the end of a job:
 
-![BuildKit 容器日志](images/buildkit-container-logs.png)
+![BuildKit container logs](images/buildkit-container-logs.png)
 
-## BuildKit 守护进程配置
+## BuildKit Daemon configuration
 
-如果您使用的是 [`docker-container` 驱动程序](/manuals/build/builders/drivers/docker-container.md)（默认），您可以通过 `config` 或 `buildkitd-config-inline` 输入为构建器提供 [BuildKit 配置](../../buildkit/toml-configuration.md)：
+You can provide a [BuildKit configuration](../../buildkit/toml-configuration.md)
+to your builder if you're using the [`docker-container` driver](/manuals/build/builders/drivers/docker-container.md)
+(default) with the `config` or `buildkitd-config-inline` inputs:
 
-### 镜像仓库镜像
+### Registry mirror
 
-您可以使用 `buildkitd-config-inline` 输入，通过工作流中的内联块直接配置镜像仓库镜像：
+You can configure a registry mirror using an inline block directly in your
+workflow with the `buildkitd-config-inline` input:
 
 ```yaml
 name: ci
@@ -82,13 +92,16 @@ jobs:
               mirrors = ["mirror.gcr.io"]
 ```
 
-有关使用镜像仓库镜像的更多信息，请参阅[镜像仓库镜像](../../buildkit/configure.md#registry-mirror)。
+For more information about using a registry mirror, see [Registry mirror](../../buildkit/configure.md#registry-mirror).
 
-### 最大并行度
+### Max parallelism
 
-您可以限制 BuildKit 求解器的并行度，这对于低功率机器特别有用。
+You can limit the parallelism of the BuildKit solver which is particularly
+useful for low-powered machines.
 
-您可以像前面的示例一样使用 `buildkitd-config-inline` 输入，或者如果您愿意，也可以使用仓库中的专用 BuildKit 配置文件，通过 `config` 输入：
+You can use the `buildkitd-config-inline` input like the previous example, or you can use
+a dedicated BuildKit config file from your repository if you want with the
+`config` input:
 
 ```toml
 # .github/buildkitd.toml
@@ -112,21 +125,29 @@ jobs:
           config: .github/buildkitd.toml
 ```
 
-## 向构建器追加额外节点
+## Append additional nodes to the builder
 
-Buildx 支持在多台机器上运行构建。这对于在原生节点上构建[多平台镜像](../../building/multi-platform.md)非常有用，可以处理 QEMU 无法处理的更复杂情况。在原生节点上构建通常具有更好的性能，并允许您在多台机器之间分配构建任务。
+Buildx supports running builds on multiple machines. This is useful for building
+[multi-platform images](../../building/multi-platform.md) on native nodes for
+more complicated cases that aren't handled by QEMU. Building on native nodes
+generally has better performance, and allows you to distribute the build across
+multiple machines.
 
-您可以使用 `append` 选项向正在创建的构建器追加节点。它以 YAML 字符串文档的形式接受输入，以消除 GitHub Actions 固有的限制：您只能在输入字段中使用字符串：
+You can append nodes to the builder you're creating using the `append` option.
+It takes input in the form of a YAML string document to remove limitations
+intrinsically linked to GitHub Actions: you can only use strings in the input
+fields:
 
-| 名称              | 类型   | 描述                                                                                                                                                                                                                                                             |
+| Name              | Type   | Description                                                                                                                                                                                                                                                             |
 | ----------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`            | String | [节点名称](/reference/cli/docker/buildx/create.md#node)。如果为空，则是其所属构建器的名称加上索引号后缀。如果您想在工作流的后续步骤中修改/删除节点，设置此值很有用。 |
-| `endpoint`        | String | 要添加到构建器的节点的 [Docker 上下文或端点](/reference/cli/docker/buildx/create.md#description)                                                                                                                                      |
-| `driver-opts`     | List   | 额外的[驱动程序特定选项](/reference/cli/docker/buildx/create.md#driver-opt)列表                                                                                                                                                         |
-| `buildkitd-flags` | String | [buildkitd 守护进程标志](/reference/cli/docker/buildx/create.md#buildkitd-flags)                                                                                                                                                                    |
-| `platforms`       | String | 节点的固定[平台](/reference/cli/docker/buildx/create.md#platform)。如果不为空，值优先于检测到的平台。                                                                                                             |
+| `name`            | String | [Name of the node](/reference/cli/docker/buildx/create.md#node). If empty, it's the name of the builder it belongs to, with an index number suffix. This is useful to set it if you want to modify/remove a node in an underlying step of you workflow. |
+| `endpoint`        | String | [Docker context or endpoint](/reference/cli/docker/buildx/create.md#description) of the node to add to the builder                                                                                                                                      |
+| `driver-opts`     | List   | List of additional [driver-specific options](/reference/cli/docker/buildx/create.md#driver-opt)                                                                                                                                                         |
+| `buildkitd-flags` | String | [Flags for buildkitd](/reference/cli/docker/buildx/create.md#buildkitd-flags) daemon                                                                                                                                                                    |
+| `platforms`       | String | Fixed [platforms](/reference/cli/docker/buildx/create.md#platform) for the node. If not empty, values take priority over the detected ones.                                                                                                             |
 
-以下是使用 [`remote` 驱动程序](/manuals/build/builders/drivers/remote.md)和 [TLS 认证](#tls-authentication)的远程节点示例：
+Here is an example using remote nodes with the [`remote` driver](/manuals/build/builders/drivers/remote.md)
+and [TLS authentication](#tls-authentication):
 
 ```yaml
 name: ci
@@ -160,13 +181,15 @@ jobs:
           BUILDER_NODE_2_AUTH_TLS_KEY: ${{ secrets.LINUXONE_KEY }}
 ```
 
-## 远程构建器的身份验证
+## Authentication for remote builders
 
-以下示例展示了如何使用 SSH 或 TLS 处理远程构建器的身份验证。
+The following examples show how to handle authentication for remote builders,
+using SSH or TLS.
 
-### SSH 身份验证
+### SSH authentication
 
-要能够使用 [`docker-container` 驱动程序](/manuals/build/builders/drivers/docker-container.md)连接到 SSH 端点，您必须在 GitHub Runner 上设置 SSH 私钥和配置：
+To be able to connect to an SSH endpoint using the [`docker-container` driver](/manuals/build/builders/drivers/docker-container.md),
+you have to set up the SSH private key and configuration on the GitHub Runner:
 
 ```yaml
 name: ci
@@ -184,22 +207,25 @@ jobs:
           host: graviton2
           private-key: ${{ secrets.SSH_PRIVATE_KEY }}
           private-key-name: aws_graviton2
-
+      
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         with:
           endpoint: ssh://me@graviton2
 ```
 
-### TLS 身份验证
+### TLS authentication
 
-您还可以使用 remote 驱动程序[设置远程 BuildKit 实例](/manuals/build/builders/drivers/remote.md#example-remote-buildkit-in-docker-container)。为了简化在工作流中的集成，您可以使用环境变量来设置使用 BuildKit 客户端证书进行 `tcp://` 的身份验证：
+You can also [set up a remote BuildKit instance](/manuals/build/builders/drivers/remote.md#example-remote-buildkit-in-docker-container)
+using the remote driver. To ease the integration in your workflow, you can use
+an environment variables that sets up authentication using the BuildKit client
+certificates for the `tcp://`:
 
 - `BUILDER_NODE_<idx>_AUTH_TLS_CACERT`
 - `BUILDER_NODE_<idx>_AUTH_TLS_CERT`
 - `BUILDER_NODE_<idx>_AUTH_TLS_KEY`
 
-`<idx>` 占位符是节点在节点列表中的位置。
+The `<idx>` placeholder is the position of the node in the list of nodes.
 
 ```yaml
 name: ci
@@ -222,9 +248,12 @@ jobs:
           BUILDER_NODE_0_AUTH_TLS_KEY: ${{ secrets.GRAVITON2_KEY }}
 ```
 
-## 独立模式
+## Standalone mode
 
-如果您的 GitHub Runner 上没有安装 Docker CLI，Buildx 二进制文件会直接调用，而不是作为 Docker CLI 插件调用。如果您想在自托管运行器中使用 `kubernetes` 驱动程序，这可能很有用：
+If you don't have the Docker CLI installed on the GitHub Runner, the Buildx
+binary gets invoked directly, instead of calling it as a Docker CLI plugin. This
+can be useful if you want to use the `kubernetes` driver in your self-hosted
+runner:
 
 ```yaml
 name: ci
@@ -238,24 +267,30 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
+      
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         with:
           driver: kubernetes
-
+      
       - name: Build
         run: |
           buildx build .
 ```
 
-## 隔离的构建器
+## Isolated builders
 
-以下示例展示了如何为不同的作业选择不同的构建器。
+The following example shows how you can select different builders for different
+jobs.
 
-这可能有用的一个场景是当您使用 monorepo，并且想要将不同的包指向特定的构建器。例如，某些包可能特别需要资源密集型的构建，需要更多计算能力。或者它们需要配备特定功能或硬件的构建器。
+An example scenario where this might be useful is when you are using a monorepo,
+and you want to pinpoint different packages to specific builders. For example,
+some packages may be particularly resource-intensive to build and require more
+compute. Or they require a builder equipped with a particular capability or
+hardware.
 
-有关远程构建器的更多信息，请参阅 [`remote` 驱动程序](/manuals/build/builders/drivers/remote.md)和[追加构建器节点示例](#append-additional-nodes-to-the-builder)。
+For more information about remote builder, see [`remote` driver](/manuals/build/builders/drivers/remote.md)
+and the [append builder nodes example](#append-additional-nodes-to-the-builder).
 
 ```yaml
 name: ci
@@ -270,17 +305,17 @@ jobs:
       - name: Set up builder1
         uses: docker/setup-buildx-action@v3
         id: builder1
-
+      
       - name: Set up builder2
         uses: docker/setup-buildx-action@v3
         id: builder2
-
+      
       - name: Build against builder1
         uses: docker/build-push-action@v6
         with:
           builder: ${{ steps.builder1.outputs.name }}
           target: mytarget1
-
+      
       - name: Build against builder2
         uses: docker/build-push-action@v6
         with:

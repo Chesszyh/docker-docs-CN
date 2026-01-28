@@ -1,18 +1,29 @@
 ---
-title: YAML 配置
-description: 学习如何在 Gordon 中使用 MCP 服务器
+title: YAML configuration
+description: Learn how to use MCP servers with Gordon
 keywords: ai, mcp, gordon
-aliases:
+aliases: 
  - /desktop/features/gordon/mcp/yaml/
 ---
 
-Docker 与 Anthropic 合作构建了 MCP 服务器[参考实现](https://github.com/modelcontextprotocol/servers/)的容器镜像，这些镜像可在 Docker Hub 的 [mcp 命名空间](https://hub.docker.com/u/mcp)下获取。
+Docker has partnered with Anthropic to build container images for the [reference
+implementations](https://github.com/modelcontextprotocol/servers/) of MCP
+servers available on Docker Hub under [the mcp
+namespace](https://hub.docker.com/u/mcp).
 
-当你在终端中运行 `docker ai` 命令提问时，Gordon 会在你的工作目录中查找 `gordon-mcp.yml` 文件（如果存在），以获取在该上下文中应使用的 MCP 服务器列表。`gordon-mcp.yml` 文件是一个 Docker Compose 文件，它将 MCP 服务器配置为 Compose 服务以供 Gordon 访问。
+When you run the `docker ai` command in your terminal to ask a question, Gordon
+looks in the `gordon-mcp.yml` file in your working directory (if present) for a
+list of MCP servers that should be used when in that context. The
+`gordon-mcp.yml` file is a Docker Compose file that configures MCP servers as
+Compose services for Gordon to access.
 
-以下最小示例展示了如何使用 [mcp-time 服务器](https://hub.docker.com/r/mcp/time)为 Gordon 提供时间功能。有关更多信息，你可以查看[源代码和文档](https://github.com/modelcontextprotocol/servers/tree/main/src/time)。
+The following minimal example shows how you can use the [mcp-time
+server](https://hub.docker.com/r/mcp/time) to provide temporal capabilities to
+Gordon. For more information, you can check out the [source code and
+documentation](https://github.com/modelcontextprotocol/servers/tree/main/src/time).
 
-在你的工作目录中创建 `gordon-mcp.yml` 文件并添加 time 服务器：
+Create the `gordon-mcp.yml` file in your working directory and add the time
+   server:
 
 ```yaml
 services:
@@ -20,22 +31,27 @@ services:
     image: mcp/time
 ```
 
-有了这个文件，你现在可以让 Gordon 告诉你另一个时区的时间：
+With this file present, you can now ask Gordon to tell you the time in
+   another timezone:
 
   ```bash
   $ docker ai 'what time is it now in kiribati?'
-
+  
       • Calling get_current_time
-
+  
     The current time in Kiribati (Tarawa) is 9:38 PM on January 7, 2025.
-
+  
   ```
 
-如你所见，Gordon 找到了 MCP time 服务器并在需要时调用了它的工具。
+As you can see, Gordon found the MCP time server and called its tool when
+needed.
 
-## 高级用法
+## Advanced usage
 
-一些 MCP 服务器需要访问你的文件系统或系统环境变量。Docker Compose 可以帮助解决这个问题。由于 `gordon-mcp.yml` 是一个 Compose 文件，你可以使用常规的 Docker Compose 语法添加绑定挂载，使你的文件系统资源对容器可用：
+Some MCP servers need access to your filesystem or system environment variables.
+Docker Compose can help with this. Since `gordon-mcp.yml` is a Compose file you
+can add bind mounts using the regular Docker Compose syntax, which makes your
+filesystem resources available to the container:
 
 ```yaml
 services:
@@ -47,9 +63,12 @@ services:
       - .:/rootfs
 ```
 
-`gordon-mcp.yml` 文件为 Gordon 添加了文件系统访问功能，由于所有内容都在容器内运行，Gordon 只能访问你指定的目录。
+The `gordon-mcp.yml` file adds filesystem access capabilities to Gordon and
+since everything runs inside a container Gordon only has access to the
+directories you specify.
 
-Gordon 可以处理任意数量的 MCP 服务器。例如，如果你使用 `mcp/fetch` 服务器让 Gordon 访问互联网：
+Gordon can handle any number of MCP servers. For example, if you give Gordon
+access to the internet with the `mcp/fetch` server:
 
 ```yaml
 services:
@@ -63,18 +82,18 @@ services:
       - .:/rootfs
 ```
 
-你现在可以询问这样的问题：
+You can now ask things like:
 
 ```bash
-$ docker ai can you fetch rumpl.dev and write the summary to a file test.txt
+$ docker ai can you fetch rumpl.dev and write the summary to a file test.txt 
 
     • Calling fetch ✔️
     • Calling write_file ✔️
-
+  
   The summary of the website rumpl.dev has been successfully written to the file test.txt in the allowed directory. Let me know if you need further assistance!
 
 
-$ cat test.txt
+$ cat test.txt 
 The website rumpl.dev features a variety of blog posts and articles authored by the site owner. Here's a summary of the content:
 
 1. **Wasmio 2023 (March 25, 2023)**: A recap of the WasmIO 2023 conference held in Barcelona. The author shares their experience as a speaker and praises the organizers for a successful event.
@@ -90,13 +109,26 @@ The website rumpl.dev features a variety of blog posts and articles authored by 
 6. **First (October 11, 2019)**: The inaugural post on the blog, featuring a simple "Hello World" program in Go.
 ```
 
-## 下一步
+## What’s next?
 
-现在你已经学会了如何在 Gordon 中使用 MCP 服务器，以下是一些入门方式：
+Now that you’ve learned how to use MCP servers with Gordon, here are a few ways
+you can get started:
 
-- 实验：尝试将一个或多个经过测试的 MCP 服务器集成到你的 `gordon-mcp.yml` 文件中，探索它们的功能。
-- 探索生态系统：查看 [GitHub 上的参考实现](https://github.com/modelcontextprotocol/servers/)或浏览 [Docker Hub MCP 命名空间](https://hub.docker.com/u/mcp)以获取可能满足你需求的其他服务器。
-- 构建你自己的：如果现有服务器都不能满足你的需求，或者你想更详细地了解它们的工作原理，可以考虑开发自定义 MCP 服务器。使用 [MCP 规范](https://www.anthropic.com/news/model-context-protocol)作为指南。
-- 分享你的反馈：如果你发现与 Gordon 配合良好的新服务器或遇到现有服务器的问题，[分享你的发现以帮助改进生态系统](https://docker.qualtrics.com/jfe/form/SV_9tT3kdgXfAa6cWa)。
+- Experiment: Try integrating one or more of the tested MCP servers into your
+  `gordon-mcp.yml` file and explore their capabilities.
+- Explore the ecosystem: Check out the [reference implementations on
+   GitHub](https://github.com/modelcontextprotocol/servers/) or browse the
+   [Docker Hub MCP namespace](https://hub.docker.com/u/mcp) for additional
+   servers that might suit your needs.
+- Build your own: If none of the existing servers meet your needs, or you’re
+   curious about exploring how they work in more detail, consider developing a
+   custom MCP server. Use the [MCP
+   specification](https://www.anthropic.com/news/model-context-protocol) as a
+   guide.
+- Share your feedback: If you discover new servers that work well with Gordon
+   or encounter issues with existing ones, [share your findings to help improve
+   the ecosystem](https://docker.qualtrics.com/jfe/form/SV_9tT3kdgXfAa6cWa).
 
-通过 MCP 支持，Gordon 提供了强大的可扩展性和灵活性来满足你的特定用例，无论你是添加时间感知、文件管理还是互联网访问。
+With MCP support, Gordon offers powerful extensibility and flexibility to meet
+your specific use cases whether you’re adding temporal awareness, file
+management, or internet access.

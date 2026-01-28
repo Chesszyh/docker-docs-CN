@@ -1,89 +1,90 @@
 ---
-title: Docker 产品发布生命周期
-linkTitle: 发布生命周期
-description: 描述从 Beta 版到正式发布各个阶段的功能生命周期。
+title: Docker's product release lifecycle 
+linkTitle: Release lifecycle
+description: Describes the various stages of feature lifecycle from beta
+  to GA.
 keywords: beta, GA, Early Access,
 params:
   sidebar:
     group: Products
 ---
 
-本页面详细介绍 Docker 的产品发布生命周期以及 Docker 如何定义每个阶段。它还提供有关产品退役流程的信息。功能和产品可能会经历部分或全部这些阶段。
+This page details Docker's product release lifecycle and how Docker defines each stage. It also provides information on the product retirement process. Features and products may progress through some or all of these phases. 
 
 >[!NOTE]
 >
->我们的[订阅服务协议](https://www.docker.com/legal/docker-subscription-service-agreement)管理您对 Docker 的使用，涵盖资格、内容、使用、付款和计费以及保证的详细信息。本文档不是合同，所有 Docker 服务的使用均受 Docker [订阅服务协议](https://www.docker.com/legal/docker-subscription-service-agreement)的约束。
+>Our [Subscription Service Agreement](https://www.docker.com/legal/docker-subscription-service-agreement) governs your use of Docker and covers details of eligibility, content, use, payments and billing, and warranties. This document is not a contract and all use of Docker’s services are subject to Docker’s [Subscription Service Agreement](https://www.docker.com/legal/docker-subscription-service-agreement).
 
-## 生命周期阶段
+## Lifecycle stage
 
-| 生命周期阶段 | 客户可用性 | 支持可用性 | 限制 | 退役 |
+| Lifecycle stage  | Customer availability | Support availability | Limitations | Retirement |
 | --- | --- | ---- | ---| ---|
-|[实验性](#实验性)| 有限可用 | 社区支持 | 软件可能存在限制、错误和/或稳定性问题 | 可能在不通知的情况下停止 |
-|[Beta 版](#beta-版) | 所有用户或参与 Beta 反馈计划的用户 | 社区支持 | 软件可能存在限制、错误和/或稳定性问题 | 可能在不通知的情况下停止 |
-| [早期访问 (EA)](#早期访问-ea) | 所有用户或参与早期访问反馈计划的用户 | 完整支持 | 软件可能存在限制、错误和/或稳定性问题。这些限制将被记录在文档中。| 遵循[退役流程](#退役流程) |
-| [正式发布 (GA)](#正式发布-ga) | 所有用户 | 完整支持 | 对于支持的用例几乎没有限制 | 遵循[退役流程](#退役流程) |
+|[Experimental](#experimental)| Limited availability | Community support |Software may have limitations, bugs and/or stability concerns | Can be discontinued without notice |
+|[Beta](#beta) | All or those involved in a Beta Feedback Program | Community support | Software may have limitations, bugs and/or stability concerns | Can be discontinued without notice |
+| [Early Access (EA)](#early-access-ea) | All or those involved in an Early Access Feedback Program | Full | Software may have limitations, bugs and/or stability concerns.  These limitations will be documented. | Follows the [retirement process](#retirement-process) |
+| [General Availability (GA)](#general-availability-ga) | All | Full | Few or no limitations for supported use cases | Follows the [retirement process](#retirement-process) |
 
-### 实验性
+### Experimental
 
-实验性功能是 Docker 当前正在试验的功能。访问实验性功能的客户有机会测试、验证未来功能并提供反馈。这有助于我们将精力集中在为客户提供最大价值的领域。
+Experimental offerings are features that Docker is currently experimenting with. Customers who access experimental features have the opportunity to test, validate, and provide feedback on future functionality. This helps us focus our efforts on what provides the most value to our customers.
 
-**客户可用性：** 实验性功能的可用性有限。部分用户可能无法访问任何实验性功能，也可能访问一个或多个实验性功能。
+**Customer availability:** Availability of experimental features is limited. A portion of users may have access to none, one or many experimental features. 
 
-**支持：** 实验性功能的支持通过社区支持渠道和论坛提供尽力而为的服务。
+**Support:** Support for experimental features is best effort via Community support channels and forums.
 
-**限制：** 实验性功能可能存在潜在的重大限制，如功能限制、性能限制和 API 限制。功能和编程接口可能随时更改，恕不另行通知。
+**Limitations:** Experimental features may have potentially significant limitations such as functional limitations, performance limitations, and API limitations. Features and programmatic interfaces may change at any time without notice.
 
-**退役：** 在实验期间，Docker 将决定是否继续在其生命周期内提供某项功能。我们保留在任何时间点更改实验性产品或功能范围或停止提供的权利，恕不另行通知，如我们的[订阅服务协议](https://www.docker.com/legal/docker-subscription-service-agreement)所述。
+**Retirement:** During the experimental period, Docker will determine whether to continue an offering through its lifecycle. We reserve the right to change the scope of or discontinue an Experimental product or feature at any point in time without notice, as outlined in our [Subscription Service Agreement](https://www.docker.com/legal/docker-subscription-service-agreement).
 
-### Beta 版
+### Beta
 
-Beta 版是潜在未来产品或功能的初始版本。参与我们 Beta 计划的客户有机会测试、验证未来功能并提供反馈。这有助于我们将精力集中在为客户提供最大价值的领域。
+Beta offerings are initial releases of potential future products or features. Customers who participate in our beta programs have the opportunity to test, validate, and provide feedback on future functionality. This helps us focus our efforts on what provides the most value to our customers.
 
-**客户可用性：** 参与 Beta 版本需要通过邀请或使用产品中明确标识的 Beta 功能。Beta 邀请可能是公开的或私密的。
+**Customer availability:** Participation in beta releases is by invitation or via use of clearly identified beta features in product. Beta invitations may be public or private.
 
-**支持：** Beta 功能的支持通过社区支持渠道和论坛提供尽力而为的服务。
+**Support:** Support for beta features is best effort via Community support channels and forums.
 
-**限制：** Beta 版本可能存在潜在的重大限制，如功能限制、性能限制和 API 限制。功能和编程接口可能随时更改，恕不另行通知。
+**Limitations:** Beta releases may have potentially significant limitations such as functional limitations, performance limitations, and API limitations. Features and programmatic interfaces may change at any time without notice.
 
-**退役：** 在 Beta 期间，Docker 将决定是否继续在其生命周期内提供某项功能。我们保留在任何时间点更改 Beta 产品或功能范围或停止提供的权利，恕不另行通知，如我们的[订阅服务协议](https://www.docker.com/legal/docker-subscription-service-agreement)所述。
+**Retirement:** During the beta period, Docker will determine whether to continue an offering through its lifecycle. We reserve the right to change the scope of or discontinue a Beta product or feature at any point in time without notice, as outlined in our [Subscription Service Agreement](https://www.docker.com/legal/docker-subscription-service-agreement).
 
-### 早期访问 (EA)
+### Early Access (EA)
 
-早期访问功能是可能存在潜在功能限制的产品或功能，作为增量发布策略的一部分为特定用户群体启用。它们已准备好向全世界发布，只需进行一些微调。
+Early Access offerings are products or features that may have potential feature limitations and are enabled for specific user groups as part of an incremental roll-out strategy. They are ready to be released to the world, pending some fine tuning.
 
-**客户可用性：** 早期访问功能可以向所有客户或特定用户群体发布，作为现有功能的补充或替代。
+**Customer availability:** Early Access functionality can be rolled out to all customers or specific segments of users in addition to or in place of existing functionality.
 
-**支持：** 早期访问功能提供与正式发布功能和产品相同级别的支持。
+**Support:** Early Access offerings are provided with the same level of support as General Availability features and products.
 
-**限制：** 早期访问版本可能存在潜在的重大限制，如功能限制、性能限制和 API 限制，但这些限制将被记录在文档中。对功能和编程接口的重大变更将遵循下文概述的[退役流程](#退役流程)。
+**Limitations:** Early Access releases may have potentially significant limitations such as functional limitations, performance limitations, and API limitations, though these limitations will be documented. Breaking changes to features and programmatic interfaces will follow the [retirement process](#retirement-process) outlined below.
 
-**退役：** 如果我们在正式发布之前退役早期访问产品，我们将努力遵循下文概述的[退役流程](#退役流程)。
+**Retirement:** In the event we retire an Early Access product before General Availability, we will strive to follow the [retirement process](#retirement-process) outlined below.
 
-### 正式发布 (GA)
+### General Availability (GA)
 
-正式发布功能是完全功能性的产品或功能，对所有 Docker 客户公开可用。
+General Availability offerings are fully functional products or features that are openly accessible to all Docker customers.
 
-**客户可用性：** 所有 Docker 用户都可以根据其订阅级别访问正式发布功能。
+**Customer availability:** All Docker users have access to GA offerings according to their subscription levels.
 
-**限制：** 正式发布的功能和产品对于支持的用例几乎没有限制。
+**Limitations:** General Availability features and products will have few or no limitations for supported use cases.
 
-**支持：** 所有正式发布功能都得到完整支持，如我们的[支持页面](https://www.docker.com/support/)所述。
+**Support:** All GA offerings are fully supported, as described in our [support page](https://www.docker.com/support/).
 
-**退役：** 正式发布功能遵循下文概述的[退役流程](#退役流程)。
+**Retirement:** General Availability offerings follow the [retirement process](#retirement-process) outlined below.
 
 
-## 退役流程
+## Retirement process
 
-退役或弃用功能的决定遵循严格的流程，包括了解需求、使用情况、功能退役的影响，最重要的是客户反馈。我们的目标是将资源投入到能为最多客户增加最大价值的领域。
+The decision to retire or deprecate features follows a rigorous process including understanding the demand, use, impact of feature retirement and, most importantly, customer feedback. Our goal is to invest resources in areas that will add the most value for the most customers
 
-Docker 致力于在与客户互动时保持清晰、透明和主动，特别是关于我们平台的变更。为此，我们将尽最大努力遵循以下退役功能的指导原则：
+Docker is committed to being clear, transparent, and proactive when interacting with our customers, especially about changes to our platform. To that end, we will make best efforts to follow these guidelines when retiring functionality:
 
-- **提前通知：** 对于主要功能或产品的退役，我们将尝试至少提前 6 个月通知客户。
-- **可行的替代方案：** Docker 将努力在退役功能时为客户提供可行的替代方案。这些可能是 Docker 的替代产品或第三方提供商推荐的替代方案。在可能和适当的情况下，Docker 将自动将客户迁移到退役功能的替代方案。
-- **持续支持：** Docker 承诺在功能退役日期之前提供持续支持。
+- **Advance notice:** For retirement of major features or products, we will attempt to notify customers at least 6 months in advance.
+- **Viable alternatives:**  Docker will strive to provide viable alternatives to our customers when retiring functionality. These may be alternative offerings from Docker or recommended alternatives from 3rd party providers. Where possible and appropriate, Docker will automatically migrate customers to alternatives for retired functionality.
+- **Continued support:** Docker commits to providing continued support for functionality until its retirement date.
 
-在特殊情况下，我们可能需要加快功能退役的时间表，例如保护我们平台的完整性或客户和其他人的安全所必需的重要变更。在这些情况下，重要的是这些变更尽快发生。
+We may need to accelerate the timeline for retirement of functionality in extenuating circumstances, such as essential changes necessary to protect the integrity of our platform or the security of our customers and others. In these cases, it is important that those changes occur as quickly as possible.
 
-同样，集成的第三方软件或服务可能需要因第三方决定更改或退役其解决方案而退役。在这些情况下，退役的节奏将超出我们的控制范围。
+Similarly, integrated third party software or services may need to be retired due to the third-party decision to change or retire their solution. In these situations, the pace of retirement will be out of our control.
 
-但是，即使在这些情况下，我们也会尽可能提前通知。
+However, even under these circumstances, we will provide as much advance notice as possible.

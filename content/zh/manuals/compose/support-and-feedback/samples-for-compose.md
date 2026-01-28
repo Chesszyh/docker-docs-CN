@@ -1,24 +1,28 @@
 ---
-description: 与 Compose 相关的示例汇总
+description: Summary of samples related to Compose
 keywords: documentation, docs, docker, compose, samples
-title: 使用 Compose 的示例应用
-linkTitle: 示例应用
+title: Sample apps with Compose
+linkTitle: Sample apps
 weight: 30
 aliases:
 - /compose/samples-for-compose/
 ---
 
-以下示例展示了如何使用 Docker Compose 的各个方面。作为前提条件，如果您尚未安装，请确保先[安装 Docker Compose](/manuals/compose/install/_index.md)。
+The following samples show the various aspects of how to work with Docker
+Compose. As a prerequisite, be sure to [install Docker Compose](/manuals/compose/install/_index.md)
+if you have not already done so.
 
-## 这些示例涵盖的关键概念
+## Key concepts these samples cover
 
-这些示例应该能帮助您：
+The samples should help you to:
 
-- 使用 [Compose 文件](/reference/compose-file/_index.md)基于 Docker 镜像定义服务
-- 理解 `compose.yaml` 和 [Dockerfile](/reference/dockerfile/) 之间的关系
-- 学习如何从 Compose 文件调用应用程序服务
-- 学习如何将应用程序和服务部署到 [swarm](/manuals/engine/swarm/_index.md)
+- Define services based on Docker images using
+  [Compose files](/reference/compose-file/_index.md)
+- Understand the relationship between `compose.yaml` and
+  [Dockerfiles](/reference/dockerfile/)
+- Learn how to make calls to your application services from Compose files
+- Learn how to deploy applications and services to a [swarm](/manuals/engine/swarm/_index.md)
 
-## Awesome Compose 示例
+## Awesome Compose samples
 
-Awesome Compose 示例提供了如何使用 Docker Compose 集成不同框架和技术的起点。所有示例都可在 [Awesome-compose GitHub 仓库](https://github.com/docker/awesome-compose)中获取，并且可以使用 `docker compose up` 直接运行。
+The Awesome Compose samples provide a starting point on how to integrate different frameworks and technologies using Docker Compose. All samples are available in the [Awesome-compose GitHub repo](https://github.com/docker/awesome-compose) and are ready to run with `docker compose up`.

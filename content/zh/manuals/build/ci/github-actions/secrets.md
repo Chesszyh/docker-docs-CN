@@ -1,23 +1,27 @@
 ---
-title: 在 GitHub Actions 中使用密钥
+title: Using secrets with GitHub Actions
 linkTitle: Build secrets
-description: 在 GitHub Actions 中使用密钥挂载的示例
+description: Example using secret mounts with GitHub Actions
 keywords: ci, github actions, gha, buildkit, buildx, secret
 tags: [Secrets]
 ---
 
-构建密钥是敏感信息，如密码或 API 令牌，在构建过程中被使用。Docker Build 支持两种形式的密钥：
+A build secret is sensitive information, such as a password or API token, consumed as part of the build process.
+Docker Build supports two forms of secrets:
 
-- [密钥挂载](#secret-mounts)将密钥作为文件添加到构建容器中（默认位于 `/run/secrets` 下）。
-- [SSH 挂载](#ssh-mounts)将 SSH 代理套接字或密钥添加到构建容器中。
+- [Secret mounts](#secret-mounts) add secrets as files in the build container
+  (under `/run/secrets` by default).
+- [SSH mounts](#ssh-mounts) add SSH agent sockets or keys into the build container.
 
-本页展示如何在 GitHub Actions 中使用密钥。有关密钥的一般介绍，请参阅[构建密钥](../../building/secrets.md)。
+This page shows how to use secrets with GitHub Actions.
+For an introduction to secrets in general, see [Build secrets](../../building/secrets.md).
 
-## 密钥挂载
+## Secret mounts
 
-以下示例使用并暴露 GitHub 在您的工作流中提供的 [`GITHUB_TOKEN` 密钥](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#about-the-github_token-secret)。
+In the following example uses and exposes the [`GITHUB_TOKEN` secret](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#about-the-github_token-secret)
+as provided by GitHub in your workflow.
 
-首先，创建一个使用该密钥的 `Dockerfile`：
+First, create a `Dockerfile` that uses the secret:
 
 ```dockerfile
 # syntax=docker/dockerfile:1
@@ -25,7 +29,8 @@ FROM alpine
 RUN --mount=type=secret,id=github_token,env=GITHUB_TOKEN ...
 ```
 
-在此示例中，密钥名称是 `github_token`。以下工作流使用 `secrets` 输入暴露此密钥：
+In this example, the secret name is `github_token`. The following workflow
+exposes this secret using the `secrets` input:
 
 ```yaml
 name: ci
@@ -54,14 +59,16 @@ jobs:
 
 > [!NOTE]
 >
-> 您还可以使用 `secret-files` 输入将密钥文件暴露给构建：
+> You can also expose a secret file to the build with the `secret-files` input:
 >
 > ```yaml
 > secret-files: |
 >   "MY_SECRET=./secret.txt"
 > ```
 
-如果您使用 [GitHub secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets) 并需要处理多行值，您需要将键值对放在引号之间：
+If you're using [GitHub secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
+and need to handle multi-line value, you will need to place the key-value pair
+between quotes:
 
 ```yaml
 secrets: |
@@ -78,7 +85,7 @@ secrets: |
   "JSON_SECRET={""key1"":""value1"",""key2"":""value2""}"
 ```
 
-| 键               | 值                                  |
+| Key              | Value                               |
 | ---------------- | ----------------------------------- |
 | `MYSECRET`       | `***********************`           |
 | `GIT_AUTH_TOKEN` | `abcdefghi,jklmno=0123456789`       |
@@ -89,13 +96,16 @@ secrets: |
 
 > [!NOTE]
 >
-> 引号符号需要双重转义。
+> Double escapes are needed for quote signs.
 
-## SSH 挂载
+## SSH mounts
 
-SSH 挂载允许您使用 SSH 服务器进行身份验证。例如，执行 `git clone` 或从私有仓库获取应用程序包。
+SSH mounts let you authenticate with SSH servers.
+For example to perform a `git clone`,
+or to fetch application packages from a private repository.
 
-以下 Dockerfile 示例使用 SSH 挂载从私有 GitHub 仓库获取 Go 模块。
+The following Dockerfile example uses an SSH mount
+to fetch Go modules from a private GitHub repository.
 
 ```dockerfile {collapse=1}
 # syntax=docker/dockerfile:1
@@ -137,9 +147,15 @@ RUN --mount=type=bind,target=. \
     go build ...
 ```
 
-要构建此 Dockerfile，您必须指定一个 SSH 挂载，供构建器在带有 `--mount=type=ssh` 的步骤中使用。
+To build this Dockerfile, you must specify an SSH mount that the builder can
+use in the steps with `--mount=type=ssh`.
 
-以下 GitHub Action 工作流使用 `MrSquaare/ssh-setup-action` 第三方 action 在 GitHub 运行器上引导 SSH 设置。该 action 创建由 GitHub Action 密钥 `SSH_GITHUB_PPK` 定义的私钥，并将其添加到 `SSH_AUTH_SOCK` 的 SSH 代理套接字文件中。构建步骤中的 SSH 挂载默认假定 `SSH_AUTH_SOCK`，因此无需显式指定 SSH 代理套接字的 ID 或路径。
+The following GitHub Action workflow uses the `MrSquaare/ssh-setup-action`
+third-party action to bootstrap SSH setup on the GitHub runner. The action
+creates a private key defined by the GitHub Action secret `SSH_GITHUB_PPK` and
+adds it to the SSH agent socket file at `SSH_AUTH_SOCK`. The SSH mount in the
+build step assume `SSH_AUTH_SOCK` by default, so there's no need to specify the
+ID or path for the SSH agent socket explicitly.
 
 {{< tabs >}}
 {{< tab name="`docker/build-push-action`" >}}

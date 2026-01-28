@@ -1,26 +1,27 @@
 ---
-description: 使用 prune 命令删除未使用的资源来释放磁盘空间
+description: Free up disk space by removing unused resources with the prune command
 keywords: pruning, prune, images, volumes, containers, networks, disk, administration,
   garbage collection
-title: 清理未使用的 Docker 对象
+title: Prune unused Docker objects
 aliases:
 - /engine/admin/pruning/
 - /config/pruning/
 ---
 
-Docker 对清理未使用的对象（通常称为"垃圾回收"）采取保守的方法，
-例如镜像、容器、卷和网络。这些对象通常不会被删除，除非你明确要求
-Docker 这样做。这可能导致 Docker 使用额外的磁盘空间。对于每种类型的
-对象，Docker 提供了一个 `prune` 命令。此外，你可以使用 `docker
-system prune` 一次性清理多种类型的对象。本主题展示
-如何使用这些 `prune` 命令。
+Docker takes a conservative approach to cleaning up unused objects (often
+referred to as "garbage collection"), such as images, containers, volumes, and
+networks. These objects are generally not removed unless you explicitly ask
+Docker to do so. This can cause Docker to use extra disk space. For each type of
+object, Docker provides a `prune` command. In addition, you can use `docker
+system prune` to clean up multiple types of objects at once. This topic shows
+how to use these `prune` commands.
 
-## 清理镜像
+## Prune images
 
-`docker image prune` 命令允许你清理未使用的镜像。默认情况下，
-`docker image prune` 只清理_悬空_镜像。悬空镜像
-是指没有标签且没有被任何容器引用的镜像。要删除
-悬空镜像：
+The `docker image prune` command allows you to clean up unused images. By
+default, `docker image prune` only cleans up _dangling_ images. A dangling image
+is one that isn't tagged, and isn't referenced by any container. To remove
+dangling images:
 
 ```console
 $ docker image prune
@@ -29,8 +30,8 @@ WARNING! This will remove all dangling images.
 Are you sure you want to continue? [y/N] y
 ```
 
-要删除所有未被现有容器使用的镜像，使用 `-a`
-标志：
+To remove all images which aren't used by existing containers, use the `-a`
+flag:
 
 ```console
 $ docker image prune -a
@@ -39,28 +40,29 @@ WARNING! This will remove all images without at least one container associated t
 Are you sure you want to continue? [y/N] y
 ```
 
-默认情况下，会提示你确认是否继续。要跳过提示，使用 `-f` 或
-`--force` 标志。
+By default, you are prompted to continue. To bypass the prompt, use the `-f` or
+`--force` flag.
 
-你可以使用 `--filter` 标志和过滤表达式来限制清理哪些镜像。例如，只考虑创建时间超过 24
-小时的镜像：
+You can limit which images are pruned using filtering expressions with the
+`--filter` flag. For example, to only consider images created more than 24
+hours ago:
 
 ```console
 $ docker image prune -a --filter "until=24h"
 ```
 
-还有其他可用的过滤表达式。请参阅
-[`docker image prune` 参考](/reference/cli/docker/image/prune.md)
-了解更多示例。
+Other filtering expressions are available. See the
+[`docker image prune` reference](/reference/cli/docker/image/prune.md)
+for more examples.
 
-## 清理容器
+## Prune containers
 
-当你停止一个容器时，它不会自动删除，除非你启动它时
-使用了 `--rm` 标志。要查看 Docker 主机上的所有容器，包括
-已停止的容器，使用 `docker ps -a`。你可能会惊讶于存在多少容器，
-特别是在开发系统上！已停止容器的可写层
-仍然占用磁盘空间。要清理这些，你可以使用 `docker container
-prune` 命令。
+When you stop a container, it isn't automatically removed unless you started it
+with the `--rm` flag. To see all containers on the Docker host, including
+stopped containers, use `docker ps -a`. You may be surprised how many containers
+exist, especially on a development system! A stopped container's writable layers
+still take up disk space. To clean this up, you can use the `docker container
+prune` command.
 
 ```console
 $ docker container prune
@@ -69,26 +71,26 @@ WARNING! This will remove all stopped containers.
 Are you sure you want to continue? [y/N] y
 ```
 
-默认情况下，会提示你确认是否继续。要跳过提示，使用 `-f` 或
-`--force` 标志。
+By default, you're prompted to continue. To bypass the prompt, use the `-f` or
+`--force` flag.
 
-默认情况下，所有已停止的容器都会被删除。你可以使用
-`--filter` 标志限制范围。例如，以下命令只删除
-停止时间超过 24 小时的容器：
+By default, all stopped containers are removed. You can limit the scope using
+the `--filter` flag. For instance, the following command only removes
+stopped containers older than 24 hours:
 
 ```console
 $ docker container prune --filter "until=24h"
 ```
 
-还有其他可用的过滤表达式。请参阅
-[`docker container prune` 参考](/reference/cli/docker/container/prune.md)
-了解更多示例。
+Other filtering expressions are available. See the
+[`docker container prune` reference](/reference/cli/docker/container/prune.md)
+for more examples.
 
-## 清理卷
+## Prune volumes
 
-卷可以被一个或多个容器使用，并占用 Docker
-主机上的空间。卷永远不会自动删除，因为这样做可能会销毁
-数据。
+Volumes can be used by one or more containers, and take up space on the Docker
+host. Volumes are never removed automatically, because to do so could destroy
+data.
 
 ```console
 $ docker volume prune
@@ -97,27 +99,27 @@ WARNING! This will remove all volumes not used by at least one container.
 Are you sure you want to continue? [y/N] y
 ```
 
-默认情况下，会提示你确认是否继续。要跳过提示，使用 `-f` 或
-`--force` 标志。
+By default, you are prompted to continue. To bypass the prompt, use the `-f` or
+`--force` flag.
 
-默认情况下，所有未使用的卷都会被删除。你可以使用
-`--filter` 标志限制范围。例如，以下命令只删除
-没有标记 `keep` 标签的卷：
+By default, all unused volumes are removed. You can limit the scope using
+the `--filter` flag. For instance, the following command only removes
+volumes which aren't labelled with the `keep` label:
 
 ```console
 $ docker volume prune --filter "label!=keep"
 ```
 
-还有其他可用的过滤表达式。请参阅
-[`docker volume prune` 参考](/reference/cli/docker/volume/prune.md)
-了解更多示例。
+Other filtering expressions are available. See the
+[`docker volume prune` reference](/reference/cli/docker/volume/prune.md)
+for more examples.
 
-## 清理网络
+## Prune networks
 
-Docker 网络不会占用太多磁盘空间，但它们会创建 `iptables`
-规则、桥接网络设备和路由表条目。要清理这些东西，
-你可以使用 `docker network prune` 来清理没有被
-任何容器使用的网络。
+Docker networks don't take up much disk space, but they do create `iptables`
+rules, bridge network devices, and routing table entries. To clean these things
+up, you can use `docker network prune` to clean up networks which aren't used
+by any containers.
 
 ```console
 $ docker network prune
@@ -126,26 +128,26 @@ WARNING! This will remove all networks not used by at least one container.
 Are you sure you want to continue? [y/N] y
 ```
 
-默认情况下，会提示你确认是否继续。要跳过提示，使用 `-f` 或
-`--force` 标志。
+By default, you're prompted to continue. To bypass the prompt, use the `-f` or
+`--force` flag.
 
-默认情况下，所有未使用的网络都会被删除。你可以使用
-`--filter` 标志限制范围。例如，以下命令只删除
-创建时间超过 24 小时的网络：
+By default, all unused networks are removed. You can limit the scope using
+the `--filter` flag. For instance, the following command only removes
+networks older than 24 hours:
 
 ```console
 $ docker network prune --filter "until=24h"
 ```
 
-还有其他可用的过滤表达式。请参阅
-[`docker network prune` 参考](/reference/cli/docker/network/prune.md)
-了解更多示例。
+Other filtering expressions are available. See the
+[`docker network prune` reference](/reference/cli/docker/network/prune.md)
+for more examples.
 
-## 清理所有内容
+## Prune everything
 
-`docker system prune` 命令是一个快捷方式，可以清理镜像、容器
-和网络。默认情况下不会清理卷，你必须为 `docker system prune` 指定
-`--volumes` 标志才能清理卷。
+The `docker system prune` command is a shortcut that prunes images, containers,
+and networks. Volumes aren't pruned by default, and you must specify the
+`--volumes` flag for `docker system prune` to prune volumes.
 
 ```console
 $ docker system prune
@@ -159,7 +161,7 @@ WARNING! This will remove:
 Are you sure you want to continue? [y/N] y
 ```
 
-要同时清理卷，添加 `--volumes` 标志：
+To also prune volumes, add the `--volumes` flag:
 
 ```console
 $ docker system prune --volumes
@@ -174,17 +176,17 @@ WARNING! This will remove:
 Are you sure you want to continue? [y/N] y
 ```
 
-默认情况下，会提示你确认是否继续。要跳过提示，使用 `-f` 或
-`--force` 标志。
+By default, you're prompted to continue. To bypass the prompt, use the `-f` or
+`--force` flag.
 
-默认情况下，所有未使用的容器、网络和镜像都会被删除。你可以
-使用 `--filter` 标志限制范围。例如，以下命令
-删除创建时间超过 24 小时的项目：
+By default, all unused containers, networks, and images are removed. You can
+limit the scope using the `--filter` flag. For instance, the following command
+removes items older than 24 hours:
 
 ```console
 $ docker system prune --filter "until=24h"
 ```
 
-还有其他可用的过滤表达式。请参阅
-[`docker system prune` 参考](/reference/cli/docker/system/prune.md)
-了解更多示例。
+Other filtering expressions are available. See the
+[`docker system prune` reference](/reference/cli/docker/system/prune.md)
+for more examples.

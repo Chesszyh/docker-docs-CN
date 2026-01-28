@@ -1,85 +1,92 @@
 ---
-title: Docker Scout 快速入门
-linkTitle: 快速入门
+title: Docker Scout quickstart
+linkTitle: Quickstart
 weight: 20
 keywords: scout, supply chain, vulnerabilities, packages, cves, scan, analysis, analyze
-description: 学习如何开始使用 Docker Scout 分析镜像并修复漏洞
+description: Learn how to get started with Docker Scout to analyze images and fix vulnerabilities
 ---
 
-Docker Scout 分析镜像内容并生成详细的软件包和检测到的漏洞报告。
-它可以为您提供如何修复镜像分析发现的问题的建议。
+Docker Scout analyzes image contents and generates a detailed report of packages
+and vulnerabilities that it detects. It can provide you with
+suggestions for how to remediate issues discovered by image analysis.
 
-本指南以一个存在漏洞的容器镜像为例，向您展示如何使用 Docker
-Scout 识别和修复漏洞、比较不同时间的镜像版本，以及与团队分享结果。
+This guide takes a vulnerable container image and shows you how to use Docker
+Scout to identify and fix the vulnerabilities, compare image versions over time,
+and share the results with your team.
 
-## 步骤 1：设置
+## Step 1: Setup
 
-[这个示例项目](https://github.com/docker/scout-demo-service)包含
-一个存在漏洞的 Node.js 应用程序，您可以用它来跟随操作。
+[This example project](https://github.com/docker/scout-demo-service) contains
+a vulnerable Node.js application that you can use to follow along.
 
-1. 克隆其仓库：
+1. Clone its repository:
 
    ```console
    $ git clone https://github.com/docker/scout-demo-service.git
    ```
 
-2. 进入目录：
+2. Move into the directory:
 
    ```console
    $ cd scout-demo-service
    ```
 
-3. 确保您已登录到 Docker 账户，
-   可以通过运行 `docker login` 命令或在 Docker Desktop 中点击登录。
+3. Make sure you're signed in to your Docker account,
+   either by running the `docker login` command or by signing in with Docker Desktop.
 
-4. 构建镜像并推送到 `<ORG_NAME>/scout-demo:v1`，
-   其中 `<ORG_NAME>` 是您推送到的 Docker Hub 命名空间。
+4. Build the image and push it to a `<ORG_NAME>/scout-demo:v1`,
+   where `<ORG_NAME>` is the Docker Hub namespace you push to.
 
    ```console
    $ docker build --push -t <ORG_NAME>/scout-demo:v1 .
    ```
 
-## 步骤 2：启用 Docker Scout
+## Step 2: Enable Docker Scout
 
-Docker Scout 默认分析所有本地镜像。要分析远程仓库中的镜像，您需要先启用它。
-您可以从 Docker Hub、Docker Scout 仪表板和 CLI 中执行此操作。
-[在概述指南中了解如何操作](/scout)。
+Docker Scout analyzes all local images by default. To analyze images in
+remote repositories, you need to enable it first.
+You can do this from Docker Hub, the Docker Scout Dashboard, and CLI.
+[Find out how in the overview guide](/scout).
 
-1. 使用 `docker login` 命令或 Docker Desktop 中的**登录**按钮登录您的 Docker 账户。
+1. Sign in to your Docker account with the `docker login` command or use the
+   **Sign in** button in Docker Desktop.
 
-2. 接下来，使用 `docker scout enroll` 命令为您的组织注册 Docker Scout。
+2. Next, enroll your organization with Docker Scout, using the `docker scout enroll` command.
 
    ```console
    $ docker scout enroll <ORG_NAME>
    ```
 
-3. 使用 `docker scout repo enable` 命令为您的镜像仓库启用 Docker Scout。
+3. Enable Docker Scout for your image repository with the `docker scout repo enable` command.
 
    ```console
    $ docker scout repo enable --org <ORG_NAME> <ORG_NAME>/scout-demo
    ```
 
-## 步骤 3：分析镜像漏洞
+## Step 3: Analyze image vulnerabilities
 
-构建后，使用 `docker scout` CLI 命令查看 Docker Scout 检测到的漏洞。
+After building, use the `docker scout` CLI command to see vulnerabilities
+detected by Docker Scout.
 
-本指南的示例应用程序使用了存在漏洞的 Express 版本。
-以下命令显示了您刚构建的镜像中影响 Express 的所有 CVE：
+The example application for this guide uses a vulnerable version of Express.
+The following command shows all CVEs affecting Express in the image you just
+built:
 
 ```console
 $ docker scout cves --only-package express
 ```
 
-Docker Scout 默认分析您最近构建的镜像，
-因此在这种情况下无需指定镜像名称。
+Docker Scout analyzes the image you built most recently by default,
+so there's no need to specify the name of the image in this case.
 
-在 [`CLI 参考文档`](/reference/cli/docker/scout/cves)中了解更多关于 `docker scout cves` 命令的信息。
+Learn more about the `docker scout cves` command in the
+[`CLI reference documentation`](/reference/cli/docker/scout/cves).
 
-## 步骤 4：修复应用程序漏洞
+## Step 4: Fix application vulnerabilities
 
-经过 Docker Scout 分析后，发现了一个高危漏洞 CVE-2022-24999，由过时版本的 **express** 软件包引起。
+After the Docker Scout analysis, a high vulnerability CVE-2022-24999 was found, caused by an outdated version of the **express** package.
 
-express 软件包的 4.17.3 版本修复了该漏洞。因此，更新 `package.json` 文件到新版本：
+The version 4.17.3 of the express package fixes the vulnerability. Therefore, update the `package.json` file to the new version:
 
    ```diff
       "dependencies": {
@@ -87,14 +94,14 @@ express 软件包的 4.17.3 版本修复了该漏洞。因此，更新 `package.
    +    "express": "4.17.3"
       }
    ```
-
-使用新标签重新构建镜像并推送到您的 Docker Hub 仓库：
+   
+Rebuild the image with a new tag and push it to your Docker Hub repository:
 
    ```console
    $ docker build --push -t <ORG_NAME>/scout-demo:v2 .
    ```
 
-再次运行 `docker scout` 命令并验证高危漏洞 CVE-2022-24999 不再存在：
+Run the `docker scout` command again and verify that HIGH CVE-2022-24999 is no longer present:
 
 ```console
 $ docker scout cves --only-package express
@@ -106,16 +113,16 @@ $ docker scout cves --only-package express
 
   ## Overview
 
-                      │                  Analyzed Image
+                      │                  Analyzed Image                   
   ────────────────────┼───────────────────────────────────────────────────
-    Target            │  mobywhale/scout-demo:v2
-      digest          │  ef68417b2866
-      platform        │ linux/arm64
-      provenance      │ https://github.com/docker/scout-demo-service.git
-                      │  7c3a06793fc8f97961b4a40c73e0f7ed85501857
-      vulnerabilities │    0C     0H     0M     0L
-      size            │ 19 MB
-      packages        │ 1
+    Target            │  mobywhale/scout-demo:v2                   
+      digest          │  ef68417b2866                                     
+      platform        │ linux/arm64                                       
+      provenance      │ https://github.com/docker/scout-demo-service.git  
+                      │  7c3a06793fc8f97961b4a40c73e0f7ed85501857         
+      vulnerabilities │    0C     0H     0M     0L                        
+      size            │ 19 MB                                             
+      packages        │ 1                                                 
 
 
   ## Packages and Vulnerabilities
@@ -124,27 +131,28 @@ $ docker scout cves --only-package express
 
 ```
 
-## 步骤 5：评估策略合规性
+## Step 5: Evaluate policy compliance
 
-虽然根据特定软件包检查漏洞可能很有用，
-但这并不是改善供应链行为的最有效方式。
+While inspecting vulnerabilities based on specific packages can be useful,
+it isn't the most effective way to improve your supply chain conduct.
 
-Docker Scout 还支持策略评估，
-这是一个用于检测和修复镜像问题的更高级别概念。
-策略是一组可自定义的规则，让组织跟踪镜像是否符合其供应链要求。
+Docker Scout also supports policy evaluation,
+a higher-level concept for detecting and fixing issues in your images.
+Policies are a set of customizable rules that let organizations track whether
+images are compliant with their supply chain requirements.
 
-因为策略规则特定于每个组织，
-您必须指定要评估的组织的策略。
-使用 `docker scout config` 命令配置您的 Docker 组织。
+Because policy rules are specific to each organization,
+you must specify which organization's policy you're evaluating against.
+Use the `docker scout config` command to configure your Docker organization.
 
 ```console
 $ docker scout config organization <ORG_NAME>
     ✓ Successfully set organization to <ORG_NAME>
 ```
 
-现在您可以运行 `quickview` 命令来获取
-您刚构建的镜像的合规状态概览。
-镜像将根据默认策略配置进行评估。您将看到类似以下的输出：
+Now you can run the `quickview` command to get an overview
+of the compliance status for the image you just built.
+The image is evaluated against the default policy configurations. You'll see output similar to the following:
 
 ```console
 $ docker scout quickview
@@ -162,23 +170,24 @@ Policy status  FAILED  (2/6 policies met, 2 missing data)
   ?      │ Supply chain attestations                    │    No data
 ```
 
-状态列中的感叹号表示策略违规。
-问号表示没有足够的元数据来完成评估。
-勾号表示合规。
+Exclamation marks in the status column indicate a violated policy.
+Question marks indicate that there isn't enough metadata to complete the evaluation.
+A check mark indicates compliance.
 
-## 步骤 6：改善合规性
+## Step 6: Improve compliance
 
-`quickview` 命令的输出显示还有改进空间。
-一些策略无法成功评估（`No data`），
-因为镜像缺少来源（provenance）和 SBOM 证明。
-镜像在一些评估项上也未通过检查。
+The output of the `quickview` command shows that there's room for improvement.
+Some of the policies couldn't evaluate successfully (`No data`)
+because the image lacks provenance and SBOM attestations.
+The image also failed the check on a few of the evaluations.
 
-策略评估不仅仅是检查漏洞。
-以 `Default non-root user` 策略为例。
-该策略通过确保镜像默认不以 `root` 超级用户运行来帮助提高运行时安全性。
+Policy evaluation does more than just check for vulnerabilities.
+Take the `Default non-root user` policy for example.
+This policy helps improve runtime security by ensuring that
+images aren't set to run as the `root` superuser by default.
 
-要解决此策略违规，编辑 Dockerfile 添加 `USER`
-指令，指定非 root 用户：
+To address this policy violation, edit the Dockerfile by adding a `USER`
+instruction, specifying a non-root user:
 
 ```diff
   CMD ["node","/app/app.js"]
@@ -186,87 +195,88 @@ Policy status  FAILED  (2/6 policies met, 2 missing data)
 + USER appuser
 ```
 
-此外，为了获得更完整的策略评估结果，
-您的镜像应该附加 SBOM 和来源证明。
-Docker Scout 使用来源证明来确定镜像是如何构建的，
-以便提供更好的评估结果。
+Additionally, to get a more complete policy evaluation result,
+your image should have SBOM and provenance attestations attached to it.
+Docker Scout uses the provenance attestations to determine how the image was
+built so that it can provide a better evaluation result.
 
-在构建带有证明的镜像之前，
-您必须启用 [containerd 镜像存储](/manuals/desktop/features/containerd.md)
-（或使用 `docker-container` 驱动创建自定义构建器）。
-传统镜像存储不支持清单列表，
-而来源证明正是通过清单列表附加到镜像的。
+Before you can build an image with attestations,
+you must enable the [containerd image store](/manuals/desktop/features/containerd.md)
+(or create a custom builder using the `docker-container` driver).
+The classic image store doesn't support manifest lists,
+which is how the provenance attestations are attached to an image.
 
-在 Docker Desktop 中打开**设置**。在**常规**部分，确保
-**使用 containerd 拉取和存储镜像**选项已勾选，然后选择**应用**。
-请注意，更改镜像存储会暂时隐藏非活动镜像存储的镜像和容器，
-直到您切换回来。
+Open **Settings** in Docker Desktop. Under the **General** section, make sure
+that the **Use containerd for pulling and storing images** option is checked, then select **Apply**.
+Note that changing image stores temporarily hides images and containers of the
+inactive image store until you switch back.
 
-启用 containerd 镜像存储后，使用新的 `v3` 标签重新构建镜像。
-这次，添加 `--provenance=true` 和 `--sbom=true` 标志。
+With the containerd image store enabled, rebuild the image with a new `v3` tag.
+This time, add the `--provenance=true` and `--sbom=true` flags.
 
 ```console
 $ docker build --provenance=true --sbom=true --push -t <ORG_NAME>/scout-demo:v3 .
 ```
 
-## 步骤 7：在仪表板中查看
+## Step 7: View in Dashboard
 
-推送带有证明的更新镜像后，是时候通过不同的视角查看结果了：Docker Scout 仪表板。
+After pushing the updated image with attestations, it's time to view the
+results through a different lens: the Docker Scout Dashboard.
 
-1. 打开 [Docker Scout 仪表板](https://scout.docker.com/)。
-2. 使用您的 Docker 账户登录。
-3. 在左侧导航中选择**镜像**。
+1. Open the [Docker Scout Dashboard](https://scout.docker.com/).
+2. Sign in with your Docker account.
+3. Select **Images** in the left-hand navigation.
 
-镜像页面列出了您启用了 Scout 的仓库。
+The images page lists your Scout-enabled repositories.
 
-在行中的任意位置（链接除外）选择您要查看的镜像行，打开**镜像详情**侧边栏。
+Select the row for the image you want to view, anywhere in the row except on a link, to open the **Image details** sidebar.
 
-侧边栏显示仓库最后推送标签的合规概览。
+The sidebar shows a compliance overview for the last pushed tag of a repository.
 
 > [!NOTE]
 >
-> 如果策略结果尚未出现，请尝试刷新页面。
-> 如果这是您第一次使用 Docker Scout 仪表板，
-> 结果可能需要几分钟才能出现。
+> If policy results haven't appeared yet, try refreshing the page.
+> It might take a few minutes before the results appear if this is your
+> first time using the Docker Scout Dashboard.
 
-返回镜像列表并选择镜像版本，可在**最新镜像**列中找到。
-然后，在页面右上角，选择**更新基础镜像**按钮来检查策略。
+Go back to the image list and select the image version, available in the **Most recent image** column.
+Then, at the top right of the page, select the **Update base image** button to inspect the policy.
 
-此策略检查您使用的基础镜像是否是最新的。
-它当前处于不合规状态，
-因为示例镜像使用了旧版本的 `alpine` 作为基础镜像。
+This policy checks whether base images you use are up-to-date.
+It currently has a non-compliant status,
+because the example image uses an old version `alpine` as a base image.
 
-关闭**基础镜像的推荐修复**模态框。在策略列表中，选择策略名称旁边的**查看修复**按钮，了解有关违规的详细信息以及如何解决的建议。
+Close the **Recommended fixes for base image** modal. In the policy listing, select **View fixes** button, next to the policy name for details about the violation, and recommendations on how to address it.
 
-在这种情况下，建议的操作是启用
-[Docker Scout 的 GitHub 集成](./integrations/source-code-management/github.md)，
-它有助于自动保持基础镜像的更新。
+In this case, the recommended action is to enable
+[Docker Scout's GitHub integration](./integrations/source-code-management/github.md),
+which helps keep your base images up-to-date automatically.
 
 > [!TIP]
 >
-> 您无法为本指南中使用的演示应用启用此集成。
-> 您可以随意将代码推送到您拥有的 GitHub 仓库，
-> 并在那里尝试该集成！
+> You can't enable this integration for the demo app used in this guide.
+> Feel free to push the code to a GitHub repository that you own,
+> and try out the integration there!
 
-## 总结
+## Summary
 
-本快速入门指南初步介绍了 Docker Scout
-支持软件供应链管理的一些方式：
+This quickstart guide has scratched the surface on some of the ways
+Docker Scout can support software supply chain management:
 
-- 如何为您的仓库启用 Docker Scout
-- 分析镜像漏洞
-- 策略和合规性
-- 修复漏洞和改善合规性
+- How to enable Docker Scout for your repositories
+- Analyzing images for vulnerabilities
+- Policy and compliance
+- Fixing vulnerabilities and improving compliance
 
-## 下一步
+## What's next?
 
-还有很多内容可以探索，从第三方集成、
-策略自定义到实时运行时环境监控。
+There's lots more to discover, from third-party integrations,
+to policy customization, and runtime environment monitoring in real-time.
 
-查看以下章节：
+Check out the following sections:
 
-- [镜像分析](/manuals/scout/explore/analysis.md)
-- [数据来源](/scout/advisory-db-sources)
-- [Docker Scout 仪表板](/scout/dashboard)
-- [集成](./integrations/_index.md)
-- [策略评估](./policy/_index.md)
+- [Image analysis](/manuals/scout/explore/analysis.md)
+- [Data sources](/scout/advisory-db-sources)
+- [Docker Scout Dashboard](/scout/dashboard)
+- [Integrations](./integrations/_index.md)
+- [Policy evaluation](./policy/_index.md)

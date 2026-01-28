@@ -51,24 +51,31 @@ aliases:
 - /linux/
 ---
 
-Docker Engine 是一种开源容器化技术，用于构建和容器化您的应用程序。Docker Engine 作为客户端-服务器应用程序运行，包含：
+Docker Engine is an open source containerization technology for building and
+containerizing your applications. Docker Engine acts as a client-server
+application with:
 
-- 一个带有长期运行的守护进程
-  [`dockerd`](/reference/cli/dockerd) 的服务器。
-- 一组 API，指定程序可以用来与 Docker 守护进程通信和指示的接口。
-- 一个命令行界面 (CLI) 客户端
-  [`docker`](/reference/cli/docker/)。
+- A server with a long-running daemon process
+  [`dockerd`](/reference/cli/dockerd).
+- APIs which specify interfaces that programs can use to talk to and instruct
+  the Docker daemon.
+- A command line interface (CLI) client
+  [`docker`](/reference/cli/docker/).
 
-CLI 使用 [Docker API](/reference/api/engine/_index.md) 通过脚本或直接 CLI 命令来控制或与 Docker 守护进程交互。许多其他 Docker 应用程序使用底层 API 和 CLI。守护进程创建和管理 Docker 对象，例如镜像、容器、网络和卷。
+The CLI uses [Docker APIs](/reference/api/engine/_index.md) to control or interact with the Docker
+daemon through scripting or direct CLI commands. Many other Docker applications
+use the underlying API and CLI. The daemon creates and manages Docker objects,
+such as images, containers, networks, and volumes.
 
-有关更多详细信息，请参阅
-[Docker 架构](/get-started/docker-overview.md#docker-architecture)。
+For more details, see
+[Docker Architecture](/get-started/docker-overview.md#docker-architecture).
 
 {{< grid >}}
 
-## 许可
+## Licensing
 
-Docker Engine 使用 Apache License, Version 2.0 许可。有关完整的许可文本，请参阅
-[LICENSE](https://github.com/moby/moby/blob/master/LICENSE)。
+The Docker Engine is licensed under the Apache License, Version 2.0. See
+[LICENSE](https://github.com/moby/moby/blob/master/LICENSE) for the full license
+text. 
 
-但是，对于通过 Docker Desktop 获取的 Docker Engine 的商业使用，如果是在大型企业（员工超过 250 人或年收入超过 1000 万美元）中使用，则需要[付费订阅](https://www.docker.com/pricing/)。
+However, for commercial use of Docker Engine obtained via Docker Desktop within larger enterprises (exceeding 250 employees OR with annual revenue surpassing $10 million USD), a [paid subscription](https://www.docker.com/pricing/) is required.

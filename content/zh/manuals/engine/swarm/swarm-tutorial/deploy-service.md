@@ -1,16 +1,19 @@
 ---
 description: Deploy a service to the swarm
 keywords: tutorial, cluster management, swarm mode, get started
-title: 部署服务到 swarm
+title: Deploy a service to the swarm
 weight: 30
 notoc: true
 ---
 
-[创建 swarm](create-swarm.md) 后，你可以将服务部署到 swarm。在本教程中，你还[添加了工作节点](add-nodes.md)，但这不是部署服务的必要条件。
+After you [create a swarm](create-swarm.md), you can deploy a service to the
+swarm. For this tutorial, you also [added worker nodes](add-nodes.md), but that
+is not a requirement to deploy a service.
 
-1.  打开终端并 ssh 到运行管理节点的机器。例如，本教程使用名为 `manager1` 的机器。
+1.  Open a terminal and ssh into the machine where you run your manager node.
+    For example, the tutorial uses a machine named `manager1`.
 
-2.  运行以下命令：
+2.  Run the following command:
 
     ```console
     $ docker service create --replicas 1 --name helloworld alpine ping docker.com
@@ -18,12 +21,13 @@ notoc: true
     9uk4639qpg7npwf3fn2aasksr
     ```
 
-    * `docker service create` 命令创建服务。
-    * `--name` 标志将服务命名为 `helloworld`。
-    * `--replicas` 标志指定期望状态为 1 个运行实例。
-    * 参数 `alpine ping docker.com` 将服务定义为执行命令 `ping docker.com` 的 Alpine Linux 容器。
+    * The `docker service create` command creates the service.
+    * The `--name` flag names the service `helloworld`.
+    * The `--replicas` flag specifies the desired state of 1 running instance.
+    * The arguments `alpine ping docker.com` define the service as an Alpine
+    Linux container that executes the command `ping docker.com`.
 
-3.  运行 `docker service ls` 查看正在运行的服务列表：
+3.  Run `docker service ls` to see the list of running services:
 
     ```console
     $ docker service ls
@@ -32,8 +36,8 @@ notoc: true
     9uk4639qpg7n  helloworld  1/1    alpine  ping docker.com
     ```
 
-## 下一步
+## Next steps
 
-现在你可以检查服务了。
+Now you're ready to inspect the service.
 
-{{< button text="检查服务" url="inspect-service.md" >}}
+{{< button text="Inspect the service" url="inspect-service.md" >}}

@@ -1,8 +1,8 @@
 ---
-title: 多平台构建
-linkTitle: 多平台
+title: Multi-platform builds
+linkTitle: Multi-platform
 weight: 40
-description: 介绍什么是多平台构建以及如何使用 Docker Buildx 执行它们。
+description: Introduction to what multi-platform builds are and how to execute them using Docker Buildx.
 keywords: build, buildx, buildkit, multi-platform, cross-platform, cross-compilation, emulation, QEMU, ARM, x86, Windows, Linux, macOS
 aliases:
 - /build/buildx/multiplatform-images/
@@ -12,48 +12,83 @@ aliases:
 - /build/guide/multi-platform/
 ---
 
-多平台构建（multi-platform build）是指针对多个不同操作系统或 CPU 架构组合的单次构建调用。在构建镜像时，这让你可以创建一个可以在多个平台上运行的单一镜像，例如 `linux/amd64`、`linux/arm64` 和 `windows/amd64`。
+A multi-platform build refers to a single build invocation that targets
+multiple different operating system or CPU architecture combinations. When
+building images, this lets you create a single image that can run on multiple
+platforms, such as `linux/amd64`, `linux/arm64`, and `windows/amd64`.
 
-## 为什么需要多平台构建？
+## Why multi-platform builds?
 
-Docker 通过将应用程序及其依赖项打包到容器中来解决"在我的机器上可以工作"的问题。这使得在不同环境（如开发、测试和生产环境）中运行相同的应用程序变得容易。
+Docker solves the "it works on my machine" problem by packaging applications
+and their dependencies into containers. This makes it easy to run the same
+application on different environments, such as development, testing, and
+production.
 
-但容器化本身只解决了部分问题。容器共享主机内核，这意味着容器内运行的代码必须与主机架构兼容。这就是为什么你不能在 arm64 主机上运行 `linux/amd64` 容器（不使用模拟），或者在 Linux 主机上运行 Windows 容器。
+But containerization by itself only solves part of the problem. Containers
+share the host kernel, which means that the code that's running inside the
+container must be compatible with the host's architecture. This is why you
+can't run a `linux/amd64` container on an arm64 host (without using emulation),
+or a Windows container on a Linux host.
 
-多平台构建通过将同一应用程序的多个变体打包到单个镜像中来解决这个问题。这使你能够在不同类型的硬件上运行相同的镜像，例如运行 x86-64 的开发机器或云中基于 ARM 的 Amazon EC2 实例，而无需模拟。
+Multi-platform builds solve this problem by packaging multiple variants of the
+same application into a single image. This enables you to run the same image on
+different types of hardware, such as development machines running x86-64 or
+ARM-based Amazon EC2 instances in the cloud, without the need for emulation.
 
-### 单平台镜像和多平台镜像的区别
+### Difference between single-platform and multi-platform images
 
-多平台镜像的结构与单平台镜像不同。单平台镜像包含一个指向单个配置和单组层的清单。多平台镜像包含一个清单列表，指向多个清单，每个清单指向不同的配置和层集。
+Multi-platform images have a different structure than single-platform images.
+Single-platform images contain a single manifest that points to a single
+configuration and a single set of layers. Multi-platform images contain a
+manifest list, pointing to multiple manifests, each of which points to a
+different configuration and set of layers.
 
-![多平台镜像结构](/build/images/single-vs-multiplatform-image.svg)
+![Multi-platform image structure](/build/images/single-vs-multiplatform-image.svg)
 
-当你将多平台镜像推送到注册表时，注册表会存储清单列表和所有单独的清单。当你拉取镜像时，注册表返回清单列表，Docker 会根据主机架构自动选择正确的变体。例如，如果你在基于 ARM 的 Raspberry Pi 上运行多平台镜像，Docker 会选择 `linux/arm64` 变体。如果你在 x86-64 笔记本电脑上运行相同的镜像，Docker 会选择 `linux/amd64` 变体（如果你使用的是 Linux 容器）。
+When you push a multi-platform image to a registry, the registry stores the
+manifest list and all the individual manifests. When you pull the image, the
+registry returns the manifest list, and Docker automatically selects the
+correct variant based on the host's architecture. For example, if you run a
+multi-platform image on an ARM-based Raspberry Pi, Docker selects the
+`linux/arm64` variant. If you run the same image on an x86-64 laptop, Docker
+selects the `linux/amd64` variant (if you're using Linux containers).
 
-## 前提条件
+## Prerequisites
 
-要构建多平台镜像，你首先需要确保你的 Docker 环境已设置为支持它。有两种方法可以做到这一点：
+To build multi-platform images, you first need to make sure that your Docker
+environment is set up to support it. There are two ways you can do that:
 
-- 你可以从"经典"镜像存储切换到 containerd 镜像存储。
-- 你可以创建并使用自定义构建器。
+- You can switch from the "classic" image store to the containerd image store.
+- You can create and use a custom builder.
 
-Docker 引擎的"经典"镜像存储不支持多平台镜像。切换到 containerd 镜像存储可确保你的 Docker 引擎可以推送、拉取和构建多平台镜像。
+The "classic" image store of the Docker Engine does not support multi-platform
+images. Switching to the containerd image store ensures that your Docker Engine
+can push, pull, and build multi-platform images.
 
-创建使用支持多平台的驱动程序（如 `docker-container` 驱动程序）的自定义构建器，将让你无需切换到不同的镜像存储即可构建多平台镜像。但是，你仍然无法将构建的多平台镜像加载到 Docker 引擎镜像存储中。不过，你可以使用 `docker build --push` 直接将它们推送到容器注册表。
+Creating a custom builder that uses a driver with multi-platform support,
+such as the `docker-container` driver, will let you build multi-platform images
+without switching to a different image store. However, you still won't be able
+to load the multi-platform images you build into your Docker Engine image
+store. But you can push them to a container registry directly with `docker
+build --push`.
 
 {{< tabs >}}
-{{< tab name="containerd 镜像存储" >}}
+{{< tab name="containerd image store" >}}
 
-启用 containerd 镜像存储的步骤取决于你使用的是 Docker Desktop 还是独立的 Docker Engine：
+The steps for enabling the containerd image store depends on whether you're
+using Docker Desktop or Docker Engine standalone:
 
-- 如果你使用 Docker Desktop，在 [Docker Desktop 设置](/manuals/desktop/features/containerd.md)中启用 containerd 镜像存储。
+- If you're using Docker Desktop, enable the containerd image store in the
+  [Docker Desktop settings](/manuals/desktop/features/containerd.md).
 
-- 如果你使用独立的 Docker Engine，使用[守护程序配置文件](/manuals/engine/storage/containerd.md)启用 containerd 镜像存储。
+- If you're using Docker Engine standalone, enable the containerd image store
+  using the [daemon configuration file](/manuals/engine/storage/containerd.md).
 
 {{< /tab >}}
-{{< tab name="自定义构建器" >}}
+{{< tab name="Custom builder" >}}
 
-要创建自定义构建器，使用 `docker buildx create` 命令创建一个使用 `docker-container` 驱动程序的构建器。
+To create a custom builder, use the `docker buildx create` command to create a
+builder that uses the `docker-container` driver.
 
 ```console
 $ docker buildx create \
@@ -63,66 +98,92 @@ $ docker buildx create \
 ```
 
 > [!NOTE]
-> 使用 `docker-container` 驱动程序的构建不会自动加载到你的 Docker 引擎镜像存储中。有关更多信息，请参阅[构建驱动程序](/manuals/build/builders/drivers/_index.md)。
+> Builds with the `docker-container` driver aren't automatically loaded to your
+> Docker Engine image store. For more information, see [Build
+> drivers](/manuals/build/builders/drivers/_index.md).
 
 {{< /tab >}}
 {{< /tabs >}}
 
-如果你使用独立的 Docker Engine 并且需要使用模拟构建多平台镜像，你还需要安装 QEMU，请参阅[手动安装 QEMU](#手动安装-qemu)。
+If you're using Docker Engine standalone and you need to build multi-platform
+images using emulation, you also need to install QEMU, see [Install QEMU
+manually](#install-qemu-manually).
 
-## 构建多平台镜像
+## Build multi-platform images
 
-触发构建时，使用 `--platform` 标志定义构建输出的目标平台，例如 `linux/amd64` 和 `linux/arm64`：
+When triggering a build, use the `--platform` flag to define the target
+platforms for the build output, such as `linux/amd64` and `linux/arm64`:
 
 ```console
 $ docker buildx build --platform linux/amd64,linux/arm64 .
 ```
 
-## 策略
+## Strategies
 
-你可以使用三种不同的策略构建多平台镜像，具体取决于你的用例：
+You can build multi-platform images using three different strategies,
+depending on your use case:
 
-1. 使用 [QEMU](#qemu) 进行模拟
-2. 使用具有[多个原生节点](#多个原生节点)的构建器
-3. 使用多阶段构建进行[交叉编译](#交叉编译)
+1. Using emulation, via [QEMU](#qemu)
+2. Use a builder with [multiple native nodes](#multiple-native-nodes)
+3. Use [cross-compilation](#cross-compilation) with multi-stage builds
 
 ### QEMU
 
-使用 QEMU 进行模拟构建多平台镜像是最简单的入门方式，前提是你的构建器已经支持它。使用模拟不需要修改你的 Dockerfile，BuildKit 会自动检测可用于模拟的架构。
+Building multi-platform images under emulation with QEMU is the easiest way to
+get started if your builder already supports it. Using emulation requires no
+changes to your Dockerfile, and BuildKit automatically detects the
+architectures that are available for emulation.
 
 > [!NOTE]
 >
-> 使用 QEMU 进行模拟可能比原生构建慢得多，特别是对于编译和压缩或解压缩等计算密集型任务。
+> Emulation with QEMU can be much slower than native builds, especially for
+> compute-heavy tasks like compilation and compression or decompression.
 >
-> 如果可能，请改用[多个原生节点](#多个原生节点)或[交叉编译](#交叉编译)。
+> Use [multiple native nodes](#multiple-native-nodes) or
+> [cross-compilation](#cross-compilation) instead, if possible.
 
-Docker Desktop 默认支持在模拟下运行和构建多平台镜像。不需要配置，因为构建器使用 Docker Desktop 虚拟机中捆绑的 QEMU。
+Docker Desktop supports running and building multi-platform images under
+emulation by default. No configuration is necessary as the builder uses the
+QEMU that's bundled within the Docker Desktop VM.
 
-#### 手动安装 QEMU
+#### Install QEMU manually
 
-如果你使用 Docker Desktop 之外的构建器，例如在 Linux 上使用 Docker Engine 或使用自定义远程构建器，你需要在主机操作系统上安装 QEMU 并注册可执行类型。安装 QEMU 的前提条件是：
+If you're using a builder outside of Docker Desktop, such as if you're using
+Docker Engine on Linux, or a custom remote builder, you need to install QEMU
+and register the executable types on the host OS. The prerequisites for
+installing QEMU are:
 
-- Linux 内核版本 4.8 或更高
-- `binfmt-support` 版本 2.1.7 或更高
-- QEMU 二进制文件必须静态编译并使用 `fix_binary` 标志注册
+- Linux kernel version 4.8 or later
+- `binfmt-support` version 2.1.7 or later
+- The QEMU binaries must be statically compiled and registered with the
+  `fix_binary` flag
 
-使用 [`tonistiigi/binfmt`](https://github.com/tonistiigi/binfmt) 镜像通过单个命令在主机上安装 QEMU 并注册可执行类型：
+Use the [`tonistiigi/binfmt`](https://github.com/tonistiigi/binfmt) image to
+install QEMU and register the executable types on the host with a single
+command:
 
 ```console
 $ docker run --privileged --rm tonistiigi/binfmt --install all
 ```
 
-这会安装 QEMU 二进制文件并将它们注册到 [`binfmt_misc`](https://en.wikipedia.org/wiki/Binfmt_misc)，使 QEMU 能够执行非原生文件格式以进行模拟。
+This installs the QEMU binaries and registers them with
+[`binfmt_misc`](https://en.wikipedia.org/wiki/Binfmt_misc), enabling QEMU to
+execute non-native file formats for emulation.
 
-一旦在主机操作系统上安装了 QEMU 并注册了可执行类型，它们就可以在容器内透明地工作。你可以通过检查 `/proc/sys/fs/binfmt_misc/qemu-*` 中的标志是否包含 `F` 来验证你的注册。
+Once QEMU is installed and the executable types are registered on the host OS,
+they work transparently inside containers. You can verify your registration by
+checking if `F` is among the flags in `/proc/sys/fs/binfmt_misc/qemu-*`.
 
-### 多个原生节点
+### Multiple native nodes
 
-使用多个原生节点可以为 QEMU 无法处理的更复杂情况提供更好的支持，并且性能也更好。
+Using multiple native nodes provide better support for more complicated cases
+that QEMU can't handle, and also provides better performance.
 
-你可以使用 `--append` 标志向构建器添加额外的节点。
+You can add additional nodes to a builder using the `--append` flag.
 
-以下命令从名为 `node-amd64` 和 `node-arm64` 的 Docker 上下文创建多节点构建器。此示例假设你已经添加了这些上下文。
+The following command creates a multi-node builder from Docker contexts named
+`node-amd64` and `node-arm64`. This example assumes that you've already added
+those contexts.
 
 ```console
 $ docker buildx create --use --name mybuild node-amd64
@@ -131,9 +192,16 @@ $ docker buildx create --append --name mybuild node-arm64
 $ docker buildx build --platform linux/amd64,linux/arm64 .
 ```
 
-虽然这种方法比模拟有优势，但管理多节点构建器会引入设置和管理构建器集群的一些开销。或者，你可以使用 Docker Build Cloud，这是一项在 Docker 基础设施上提供托管多节点构建器的服务。使用 Docker Build Cloud，你可以获得原生的多平台 ARM 和 X86 构建器，而无需承担维护它们的负担。使用云构建器还提供额外的好处，例如共享构建缓存。
+While this approach has advantages over emulation, managing multi-node builders
+introduces some overhead of setting up and managing builder clusters.
+Alternatively, you can use Docker Build Cloud, a service that provides managed
+multi-node builders on Docker's infrastructure. With Docker Build Cloud, you
+get native multi-platform ARM and X86 builders without the burden of
+maintaining them. Using cloud builders also provides additional benefits, such
+as a shared build cache.
 
-注册 Docker Build Cloud 后，将构建器添加到你的本地环境并开始构建。
+After signing up for Docker Build Cloud, add the builder to your local
+environment and start building.
 
 ```console
 $ docker buildx create --driver cloud <ORG>/<BUILDER_NAME>
@@ -145,13 +213,22 @@ $ docker build \
   --push .
 ```
 
-有关更多信息，请参阅 [Docker Build Cloud](/manuals/build-cloud/_index.md)。
+For more information, see [Docker Build Cloud](/manuals/build-cloud/_index.md).
 
-### 交叉编译
+### Cross-compilation
 
-根据你的项目，如果你使用的编程语言对交叉编译有良好的支持，你可以利用多阶段构建从构建器的原生架构为目标平台构建二进制文件。特殊的构建参数（如 `BUILDPLATFORM` 和 `TARGETPLATFORM`）会自动在你的 Dockerfile 中可用。
+Depending on your project, if the programming language you use has good support
+for cross-compilation, you can leverage multi-stage builds to build binaries
+for target platforms from the native architecture of the builder. Special build
+arguments, such as `BUILDPLATFORM` and `TARGETPLATFORM`, are automatically
+available for use in your Dockerfile.
 
-在以下示例中，`FROM` 指令被固定到构建器的原生平台（使用 `--platform=$BUILDPLATFORM` 选项）以防止模拟启动。然后预定义的 `$BUILDPLATFORM` 和 `$TARGETPLATFORM` 构建参数在 `RUN` 指令中被插值。在这种情况下，这些值只是用 `echo` 打印到标准输出，但这说明了如何将它们传递给编译器进行交叉编译。
+In the following example, the `FROM` instruction is pinned to the native
+platform of the builder (using the `--platform=$BUILDPLATFORM` option) to
+prevent emulation from kicking in. Then the pre-defined `$BUILDPLATFORM` and
+`$TARGETPLATFORM` build arguments are interpolated in a `RUN` instruction. In
+this case, the values are just printed to stdout with `echo`, but this
+illustrates how you would pass them to the compiler for cross-compilation.
 
 ```dockerfile
 # syntax=docker/dockerfile:1
@@ -163,33 +240,35 @@ FROM alpine
 COPY --from=build /log /log
 ```
 
-## 示例
+## Examples
 
-以下是一些多平台构建的示例：
+Here are some examples of multi-platform builds:
 
-- [使用模拟的简单多平台构建](#使用模拟的简单多平台构建)
-- [使用 Docker Build Cloud 的多平台 Neovim 构建](#使用-docker-build-cloud-的多平台-neovim-构建)
-- [交叉编译 Go 应用程序](#交叉编译-go-应用程序)
+- [Simple multi-platform build using emulation](#simple-multi-platform-build-using-emulation)
+- [Multi-platform Neovim build using Docker Build Cloud](#multi-platform-neovim-build-using-docker-build-cloud)
+- [Cross-compiling a Go application](#cross-compiling-a-go-application)
 
-### 使用模拟的简单多平台构建
+### Simple multi-platform build using emulation
 
-此示例演示如何使用 QEMU 模拟构建简单的多平台镜像。该镜像包含一个打印容器架构的单个文件。
+This example demonstrates how to build a simple multi-platform image using
+emulation with QEMU. The image contains a single file that prints the
+architecture of the container.
 
-前提条件：
+Prerequisites:
 
-- Docker Desktop，或安装了 [QEMU](#手动安装-qemu) 的 Docker Engine
-- 已启用 containerd 镜像存储
+- Docker Desktop, or Docker Engine with [QEMU installed](#install-qemu-manually)
+- containerd image store enabled
 
-步骤：
+Steps:
 
-1. 创建一个空目录并导航到该目录：
+1. Create an empty directory and navigate to it:
 
    ```console
    $ mkdir multi-platform
    $ cd multi-platform
    ```
 
-2. 创建一个打印容器架构的简单 Dockerfile：
+2. Create a simple Dockerfile that prints the architecture of the container:
 
    ```dockerfile
    # syntax=docker/dockerfile:1
@@ -197,41 +276,45 @@ COPY --from=build /log /log
    RUN uname -m > /arch
    ```
 
-3. 为 `linux/amd64` 和 `linux/arm64` 构建镜像：
+3. Build the image for `linux/amd64` and `linux/arm64`:
 
    ```console
    $ docker build --platform linux/amd64,linux/arm64 -t multi-platform .
    ```
 
-4. 运行镜像并打印架构：
+4. Run the image and print the architecture:
 
    ```console
    $ docker run --rm multi-platform cat /arch
    ```
 
-   - 如果你在 x86-64 机器上运行，你应该看到 `x86_64`。
-   - 如果你在 ARM 机器上运行，你应该看到 `aarch64`。
+   - If you're running on an x86-64 machine, you should see `x86_64`.
+   - If you're running on an ARM machine, you should see `aarch64`.
 
-### 使用 Docker Build Cloud 的多平台 Neovim 构建
+### Multi-platform Neovim build using Docker Build Cloud
 
-此示例演示如何使用 Docker Build Cloud 运行多平台构建，为 `linux/amd64` 和 `linux/arm64` 平台编译和导出 [Neovim](https://github.com/neovim/neovim) 二进制文件。
+This example demonstrates how run a multi-platform build using Docker Build
+Cloud to compile and export [Neovim](https://github.com/neovim/neovim) binaries
+for the `linux/amd64` and `linux/arm64` platforms.
 
-Docker Build Cloud 提供托管的多节点构建器，支持原生多平台构建而无需模拟，使编译等 CPU 密集型任务更快。
+Docker Build Cloud provides managed multi-node builders that support native
+multi-platform builds without the need for emulation, making it much faster to
+do CPU-intensive tasks like compilation.
 
-前提条件：
+Prerequisites:
 
-- 你已[注册 Docker Build Cloud 并创建了构建器](/manuals/build-cloud/setup.md)
+- You've [signed up for Docker Build Cloud and created a builder](/manuals/build-cloud/setup.md)
 
-步骤：
+Steps:
 
-1. 创建一个空目录并导航到该目录：
+1. Create an empty directory and navigate to it:
 
    ```console
    $ mkdir docker-build-neovim
    $ cd docker-build-neovim
    ```
 
-2. 创建一个构建 Neovim 的 Dockerfile。
+2. Create a Dockerfile that builds Neovim.
 
    ```dockerfile
    # syntax=docker/dockerfile:1
@@ -248,12 +331,12 @@ Docker Build Cloud 提供托管的多节点构建器，支持原生多平台构�
        unzip
    ADD https://github.com/neovim/neovim.git#stable .
    RUN make CMAKE_BUILD_TYPE=RelWithDebInfo
-
+   
    FROM scratch
    COPY --from=build /work/build/bin/nvim /
    ```
 
-3. 使用 Docker Build Cloud 为 `linux/amd64` 和 `linux/arm64` 构建镜像：
+3. Build the image for `linux/amd64` and `linux/arm64` using Docker Build Cloud:
 
    ```console
    $ docker build \
@@ -262,43 +345,53 @@ Docker Build Cloud 提供托管的多节点构建器，支持原生多平台构�
       --output ./bin .
    ```
 
-   此命令使用云构建器构建镜像并将二进制文件导出到 `bin` 目录。
+   This command builds the image using the cloud builder and exports the
+   binaries to the `bin` directory.
 
-4. 验证两个平台的二进制文件都已构建。你应该看到 `linux/amd64` 和 `linux/arm64` 的 `nvim` 二进制文件。
+4. Verify that the binaries are built for both platforms. You should see the
+   `nvim` binary for both `linux/amd64` and `linux/arm64`.
 
    ```console
    $ tree ./bin
    ./bin
    ├── linux_amd64
-   │   └── nvim
+   │   └── nvim
    └── linux_arm64
        └── nvim
-
+   
    3 directories, 2 files
    ```
 
-### 交叉编译 Go 应用程序
+### Cross-compiling a Go application
 
-此示例演示如何使用多阶段构建为多个平台交叉编译 Go 应用程序。该应用程序是一个简单的 HTTP 服务器，监听端口 8080 并返回容器的架构。此示例使用 Go，但相同的原则适用于支持交叉编译的其他编程语言。
+This example demonstrates how to cross-compile a Go application for multiple
+platforms using multi-stage builds. The application is a simple HTTP server
+that listens on port 8080 and returns the architecture of the container.
+This example uses Go, but the same principles apply to other programming
+languages that support cross-compilation.
 
-使用 Docker 构建进行交叉编译的工作原理是利用一系列预定义的（在 BuildKit 中）构建参数，这些参数为你提供有关构建器和构建目标平台的信息。你可以使用这些预定义的参数将平台信息传递给编译器。
+Cross-compilation with Docker builds works by leveraging a series of
+pre-defined (in BuildKit) build arguments that give you information about
+platforms of the builder and the build targets. You can use these pre-defined
+arguments to pass the platform information to the compiler.
 
-在 Go 中，你可以使用 `GOOS` 和 `GOARCH` 环境变量指定要构建的目标平台。
+In Go, you can use the `GOOS` and `GOARCH` environment variables to specify the
+target platform to build for.
 
-前提条件：
+Prerequisites:
 
-- Docker Desktop 或 Docker Engine
+- Docker Desktop or Docker Engine
 
-步骤：
+Steps:
 
-1. 创建一个空目录并导航到该目录：
+1. Create an empty directory and navigate to it:
 
    ```console
    $ mkdir go-server
    $ cd go-server
    ```
 
-2. 创建一个构建 Go 应用程序的基础 Dockerfile：
+2. Create a base Dockerfile that builds the Go application:
 
    ```dockerfile
    # syntax=docker/dockerfile:1
@@ -306,22 +399,33 @@ Docker Build Cloud 提供托管的多节点构建器，支持原生多平台构�
    WORKDIR /app
    ADD https://github.com/dvdksn/buildme.git#eb6279e0ad8a10003718656c6867539bd9426ad8 .
    RUN go build -o server .
-
+   
    FROM alpine
    COPY --from=build /app/server /server
    ENTRYPOINT ["/server"]
    ```
 
-   这个 Dockerfile 还不能使用交叉编译构建多平台。如果你尝试使用 `docker build` 构建这个 Dockerfile，构建器会尝试使用模拟为指定平台构建镜像。
+   This Dockerfile can't build multi-platform with cross-compilation yet. If
+   you were to try to build this Dockerfile with `docker build`, the builder
+   would attempt to use emulation to build the image for the specified
+   platforms.
 
-3. 要添加交叉编译支持，更新 Dockerfile 以使用预定义的 `BUILDPLATFORM` 和 `TARGETPLATFORM` 构建参数。当你使用 `docker build` 的 `--platform` 标志时，这些参数会自动在 Dockerfile 中可用。
+3. To add cross-compilation support, update the Dockerfile to use the
+   pre-defined `BUILDPLATFORM` and `TARGETPLATFORM` build arguments. These
+   arguments are automatically available in the Dockerfile when you use the
+   `--platform` flag with `docker build`.
 
-   - 使用 `--platform=$BUILDPLATFORM` 选项将 `golang` 镜像固定到构建器的平台。
-   - 为 Go 编译阶段添加 `ARG` 指令，使 `TARGETOS` 和 `TARGETARCH` 构建参数在此阶段的命令中可用。
-   - 将 `GOOS` 和 `GOARCH` 环境变量设置为 `TARGETOS` 和 `TARGETARCH` 的值。Go 编译器使用这些变量进行交叉编译。
+   - Pin the `golang` image to the platform of the builder using the
+     `--platform=$BUILDPLATFORM` option.
+   - Add `ARG` instructions for the Go compilation stages to make the
+     `TARGETOS` and `TARGETARCH` build arguments available to the commands in
+     this stage.
+   - Set the `GOOS` and `GOARCH` environment variables to the values of
+     `TARGETOS` and `TARGETARCH`. The Go compiler uses these variables to do
+     cross-compilation.
 
    {{< tabs >}}
-   {{< tab name="更新后的 Dockerfile" >}}
+   {{< tab name="Updated Dockerfile" >}}
 
    ```dockerfile
    # syntax=docker/dockerfile:1
@@ -331,14 +435,14 @@ Docker Build Cloud 提供托管的多节点构建器，支持原生多平台构�
    WORKDIR /app
    ADD https://github.com/dvdksn/buildme.git#eb6279e0ad8a10003718656c6867539bd9426ad8 .
    RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -o server .
-
+   
    FROM alpine
    COPY --from=build /app/server /server
    ENTRYPOINT ["/server"]
    ```
 
    {{< /tab >}}
-   {{< tab name="旧 Dockerfile" >}}
+   {{< tab name="Old Dockerfile" >}}
 
    ```dockerfile
    # syntax=docker/dockerfile:1
@@ -346,14 +450,14 @@ Docker Build Cloud 提供托管的多节点构建器，支持原生多平台构�
    WORKDIR /app
    ADD https://github.com/dvdksn/buildme.git#eb6279e0ad8a10003718656c6867539bd9426ad8 .
    RUN go build -o server .
-
+   
    FROM alpine
    COPY --from=build /app/server /server
    ENTRYPOINT ["/server"]
    ```
 
    {{< /tab >}}
-   {{< tab name="差异" >}}
+   {{< tab name="Diff" >}}
 
    ```diff
    # syntax=docker/dockerfile:1
@@ -365,7 +469,7 @@ Docker Build Cloud 提供托管的多节点构建器，支持原生多平台构�
    ADD https://github.com/dvdksn/buildme.git#eb6279e0ad8a10003718656c6867539bd9426ad8 .
    -RUN go build -o server .
    +RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -o server .
-
+   
    FROM alpine
    COPY --from=build /app/server /server
    ENTRYPOINT ["/server"]
@@ -374,14 +478,19 @@ Docker Build Cloud 提供托管的多节点构建器，支持原生多平台构�
    {{< /tab >}}
    {{< /tabs >}}
 
-4. 为 `linux/amd64` 和 `linux/arm64` 构建镜像：
+4. Build the image for `linux/amd64` and `linux/arm64`:
 
    ```console
    $ docker build --platform linux/amd64,linux/arm64 -t go-server .
    ```
 
-此示例展示了如何使用 Docker 构建为多个平台交叉编译 Go 应用程序。如何进行交叉编译的具体步骤可能因你使用的编程语言而异。请查阅你的编程语言文档以了解更多关于为不同平台进行交叉编译的信息。
+This example has shown how to cross-compile a Go application for multiple
+platforms with Docker builds. The specific steps on how to do cross-compilation
+may vary depending on the programming language you're using. Consult the
+documentation for your programming language to learn more about cross-compiling
+for different platforms.
 
 > [!TIP]
-> 你可能还想查看 [xx - Dockerfile 交叉编译辅助工具](https://github.com/tonistiigi/xx)。
-> `xx` 是一个包含实用脚本的 Docker 镜像，可以使 Docker 构建的交叉编译更容易。
+> You may also want to consider checking out
+> [xx - Dockerfile cross-compilation helpers](https://github.com/tonistiigi/xx).
+> `xx` is a Docker image containing utility scripts that make cross-compiling with Docker builds easier.

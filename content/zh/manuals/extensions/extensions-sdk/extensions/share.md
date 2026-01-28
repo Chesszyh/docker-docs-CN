@@ -1,38 +1,38 @@
 ---
-title: 分享您的扩展
-description: 使用分享链接分享您的扩展
+title: Share your extension
+description: Share your extension with a share link
 keywords: Docker, extensions, share
-aliases:
+aliases: 
  - /desktop/extensions-sdk/extensions/share/
 weight: 40
 ---
 
-一旦您的扩展镜像可以在 Docker Hub 上访问，任何有权访问该镜像的人都可以安装该扩展。
+Once your extension image is accessible on Docker Hub, anyone with access to the image can install the extension.
 
-用户可以在终端中输入 `docker extension install my/awesome-extension:latest` 来安装您的扩展。
+People can install your extension by typing `docker extension install my/awesome-extension:latest` in to the terminal.
 
-但是，此选项在安装前不提供扩展的预览。
+However, this option doesn't provide a preview of the extension before it's installed.
 
-## 创建分享 URL
+## Create a share URL
 
-Docker 允许您使用 URL 分享您的扩展。
+Docker lets you share your extensions using a URL.
 
-当用户导航到此 URL 时，它会打开 Docker Desktop 并以与 Marketplace 中扩展相同的方式显示您的扩展预览。从预览中，用户可以选择**安装**。
+When people navigate to this URL, it opens Docker Desktop and displays a preview of your extension in the same way as an extension in the Marketplace. From the preview, users can then select **Install**.
 
-![导航到扩展链接](images/open-share.png)
+![Navigate to extension link](images/open-share.png)
 
-要生成此链接，您可以：
+To generate this link you can either:
 
-- 运行以下命令：
+- Run the following command:
 
   ```console
   $ docker extension share my/awesome-extension:0.0.1
   ```
 
-- 在本地安装扩展后，导航到**管理**选项卡并选择**分享**。
+- Once you have installed your extension locally, navigate to the **Manage** tab and select **Share**.
 
-  ![分享按钮](images/list-preview.png)
+  ![Share button](images/list-preview.png)
 
 > [!NOTE]
 >
-> 扩展描述或截图等预览是使用[扩展标签](labels.md)创建的。
+> Previews of the extension description or screenshots, for example, are created using [extension labels](labels.md).

@@ -1,79 +1,99 @@
 ---
 description: Getting Started tutorial for Docker Engine Swarm mode
 keywords: tutorial, cluster management, swarm mode, docker engine, get started
-title: Swarm 模式入门
+title: Getting started with Swarm mode
 toc_max: 4
 ---
 
-本教程向你介绍 Docker 引擎 Swarm 模式的功能。在开始之前，你可能需要先熟悉[关键概念](../key-concepts.md)。
+This tutorial introduces you to the features of Docker Engine Swarm mode. You
+may want to familiarize yourself with the [key concepts](../key-concepts.md)
+before you begin.
 
-本教程将指导你完成：
+The tutorial guides you through:
 
-* 以 swarm 模式初始化 Docker 引擎集群
-* 向 swarm 添加节点
-* 将应用程序服务部署到 swarm
-* 在一切运行后管理 swarm
+* Initializing a cluster of Docker Engines in swarm mode
+* Adding nodes to the swarm
+* Deploying application services to the swarm
+* Managing the swarm once you have everything running
 
-本教程使用在终端窗口命令行中输入的 Docker 引擎 CLI 命令。
+This tutorial uses Docker Engine CLI commands entered on the command line of a
+terminal window.
 
-如果你对 Docker 完全陌生，请参阅[关于 Docker 引擎](../../_index.md)。
+If you are brand new to Docker, see [About Docker Engine](../../_index.md).
 
-## 设置
+## Set up
 
-要运行本教程，你需要：
+To run this tutorial, you need:
 
-* [三台可以通过网络通信且已安装 Docker 的 Linux 主机](#three-networked-host-machines)
-* [管理节点机器的 IP 地址](#the-ip-address-of-the-manager-machine)
-* [主机之间开放的端口](#open-protocols-and-ports-between-the-hosts)
+* [Three Linux hosts which can communicate over a network, with Docker installed](#three-networked-host-machines)
+* [The IP address of the manager machine](#the-ip-address-of-the-manager-machine)
+* [Open ports between the hosts](#open-protocols-and-ports-between-the-hosts)
 
-### 三台联网的主机
+### Three networked host machines
 
-本教程需要三台已安装 Docker 且可以通过网络通信的 Linux 主机。这些可以是物理机、虚拟机、Amazon EC2 实例，或以其他方式托管。查看[部署到 Swarm](/guides/swarm-deploy.md#prerequisites) 了解主机的一种可能设置方式。
+This tutorial requires three Linux hosts which have Docker installed and can
+communicate over a network. These can be physical machines, virtual machines,
+Amazon EC2 instances, or hosted in some other way. Check out
+[Deploy to Swarm](/guides/swarm-deploy.md#prerequisites) for one possible set-up for the hosts.
 
-其中一台机器是管理节点（称为 `manager1`），另外两台是工作节点（`worker1` 和 `worker2`）。
+One of these machines is a manager (called `manager1`) and two of them are
+workers (`worker1` and `worker2`).
 
 > [!NOTE]
 >
-> 你也可以按照许多教程步骤来测试单节点 swarm，在这种情况下你只需要一台主机。多节点命令将无法工作，但你可以初始化 swarm、创建服务并扩展它们。
+> You can follow many of the tutorial steps to test single-node swarm as well, in which case you need only one host. Multi-node commands do not work, but you can initialize a swarm, create services, and scale them.
 
-#### 在 Linux 机器上安装 Docker 引擎
+#### Install Docker Engine on Linux machines
 
-如果你使用基于 Linux 的物理计算机或云提供的计算机作为主机，只需按照你的平台的 [Linux 安装说明](../../install/_index.md)进行操作。启动三台机器，然后你就准备好了。你可以在 Linux 机器上测试单节点和多节点 swarm 场景。
+If you are using Linux based physical computers or cloud-provided computers as
+hosts, simply follow the [Linux install instructions](../../install/_index.md)
+for your platform. Spin up the three machines, and you are ready. You can test both
+single-node and multi-node swarm scenarios on Linux machines.
 
-### 管理节点机器的 IP 地址
+### The IP address of the manager machine
 
-IP 地址必须分配给主机操作系统可用的网络接口。swarm 中的所有节点都需要通过该 IP 地址连接到管理节点。
+The IP address must be assigned to a network interface available to the host
+operating system. All nodes in the swarm need to connect to the manager at
+the IP address.
 
-因为其他节点通过管理节点的 IP 地址联系管理节点，所以你应该使用固定 IP 地址。
+Because other nodes contact the manager node on its IP address, you should use a
+fixed IP address.
 
-你可以在 Linux 或 macOS 上运行 `ifconfig` 来查看可用网络接口的列表。
+You can run `ifconfig` on Linux or macOS to see a list of the
+available network interfaces.
 
-本教程使用 `manager1`：`192.168.99.100`。
+The tutorial uses `manager1` : `192.168.99.100`.
 
-### 主机之间开放的协议和端口
+### Open protocols and ports between the hosts
 
-以下端口必须可用。在某些系统上，这些端口默认是开放的。
+The following ports must be available. On some systems, these ports are open by default.
 
-* 端口 `2377` TCP 用于与管理节点之间以及管理节点之间的通信
-* 端口 `7946` TCP/UDP 用于覆盖网络节点发现
-* 端口 `4789` UDP（可配置）用于覆盖网络流量
+* Port `2377` TCP for communication with and between manager nodes
+* Port `7946` TCP/UDP for overlay network node discovery
+* Port `4789` UDP (configurable) for overlay network traffic
 
-如果你计划创建加密的覆盖网络（`--opt encrypted`），你还需要确保允许 IP 协议 50（IPSec ESP）流量。
+If you plan on creating an overlay network with encryption (`--opt encrypted`),
+you also need to ensure IP protocol 50 (IPSec ESP) traffic is allowed.
 
-端口 `4789` 是 Swarm 数据路径端口的默认值，也称为 VXLAN 端口。重要的是要防止任何不受信任的流量到达此端口，因为 VXLAN 不提供身份验证。此端口应该只对受信任的网络开放，永远不要在边界防火墙上开放。
+Port `4789` is the default value for the Swarm data path port, also known as the VXLAN port.
+It is important to prevent any untrusted traffic from reaching this port, as VXLAN does not
+provide authentication. This port should only be opened to a trusted network, and never at a
+perimeter firewall.
 
-如果 Swarm 流量经过的网络不是完全受信任的，强烈建议使用加密的覆盖网络。如果专门使用加密的覆盖网络，建议进行一些额外的加固：
+If the network which Swarm traffic traverses is not fully trusted, it is strongly suggested that
+encrypted overlay networks be used. If encrypted overlay networks are in exclusive use, some
+additional hardening is suggested:
 
-* [自定义默认入口网络](../networking.md)以使用加密
-* 仅在数据路径端口上接受加密数据包：
+* [Customize the default ingress network](../networking.md) to use encryption
+* Only accept encrypted packets on the Data Path Port:
 
 ```bash
 # Example iptables rule (order and other tools may require customization)
 iptables -I INPUT -m udp --dport 4789 -m policy --dir in --pol none -j DROP
 ```
 
-## 下一步
+## Next steps
 
-接下来，你将创建一个 swarm。
+Next, you'll create a swarm. 
 
-{{< button text="创建 swarm" url="create-swarm.md" >}}
+{{< button text="Create a swarm" url="create-swarm.md" >}}

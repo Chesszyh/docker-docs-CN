@@ -1,21 +1,24 @@
 ---
-title: 从扩展后端使用 Docker socket
-linkTitle: 使用 Docker socket
-description: Docker 扩展元数据
+title: Use the Docker socket from the extension backend
+linkTitle: Use the Docker socket
+description: Docker extension metadata
 keywords: Docker, extensions, sdk, metadata
-aliases:
+aliases: 
  - /desktop/extensions-sdk/guides/use-docker-socket-from-backend/
 ---
 
-扩展可以使用 SDK 直接从前端调用 Docker 命令。
+Extensions can invoke Docker commands directly from the frontend with the SDK. 
 
-在某些情况下，从后端与 Docker Engine 交互也很有用。
+In some cases, it is useful to also interact with Docker Engine from the backend. 
 
-扩展后端容器可以挂载 Docker socket，并使用它从扩展后端逻辑与 Docker Engine 交互。了解更多关于 [Docker Engine socket](/reference/cli/dockerd/#examples) 的信息。
+Extension backend containers can mount the Docker socket and use it to
+interact with Docker Engine from the extension backend logic. Learn more about the [Docker Engine socket](/reference/cli/dockerd/#examples)
 
-但是，当从位于 Desktop 虚拟机中的扩展容器挂载 Docker socket 时，您需要挂载虚拟机内部的 Docker socket，而不是从主机文件系统挂载 `/var/run/docker.sock`（从主机使用 Docker socket 可能导致容器中的权限问题）。
+However, when mounting the Docker socket from an extension container that lives in the Desktop virtual machine, you want
+to mount the Docker socket from inside the VM, and not mount `/var/run/docker.sock` from the host filesystem (using
+the Docker socket from the host can lead to permission issues in containers).
 
-为此，您可以使用 `/var/run/docker.sock.raw`。Docker Desktop 会挂载位于 Desktop 虚拟机中的 socket，而不是来自主机的 socket。
+In order to do so, you can use `/var/run/docker.sock.raw`. Docker Desktop mounts the socket that lives in the Desktop VM, and not from the host.
 
 ```yaml
 services:

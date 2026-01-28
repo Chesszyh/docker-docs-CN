@@ -1,39 +1,44 @@
 ---
-description: 了解如何向 Docker Hub 上的仓库添加内容。
+description: Learn how to add content to a repository on Docker Hub.
 keywords: Docker Hub, Hub, repository content, push
-title: 推送镜像到仓库
-linkTitle: 推送镜像
+title: Push images to a repository
+linkTitle: Push images
 weight: 30
 ---
 
-要向 Docker Hub 上的仓库添加内容，您需要为 Docker 镜像打标签，然后将其推送到您的仓库。此过程使您可以与他人共享您的镜像或在不同环境中使用它们。
+To add content to a repository on Docker Hub, you need to tag your Docker image
+and then push it to your repository. This process lets you share your
+images with others or use them in different environments.
 
-1. 为您的 Docker 镜像打标签。
+1. Tag your Docker image.
 
-   `docker tag` 命令为您的 Docker 镜像分配一个标签，其中包括您的 Docker Hub 命名空间和仓库名称。一般语法是：
+   The `docker tag` command assigns a tag to your Docker image, which includes
+   your Docker Hub namespace and the repository name. The general syntax is:
 
    ```console
    $ docker tag [SOURCE_IMAGE[:TAG]] [NAMESPACE/REPOSITORY[:TAG]]
    ```
 
-   示例：
+   Example:
 
-   如果您的本地镜像名为 `my-app`，并且您想使用标签 `v1.0` 将其标记为仓库 `my-namespace/my-repo`，请运行：
+   If your local image is called `my-app` and you want to tag it for the
+   repository `my-namespace/my-repo` with the tag `v1.0`, run:
 
    ```console
    $ docker tag my-app my-namespace/my-repo:v1.0
    ```
 
-2. 将镜像推送到 Docker Hub。
+2. Push the image to Docker Hub.
 
-   使用 `docker push` 命令将您打好标签的镜像上传到 Docker Hub 上指定的仓库。
+   Use the `docker push` command to upload your tagged image to the specified
+   repository on Docker Hub.
 
-   示例：
+   Example:
 
    ```console
    $ docker push my-namespace/my-repo:v1.0
    ```
 
-   此命令将标记为 `v1.0` 的镜像推送到 `my-namespace/my-repo` 仓库。
+   This command pushes the image tagged `v1.0` to the `my-namespace/my-repo` repository.
 
-3. 在 Docker Hub 上验证镜像。
+3. Verify the image on Docker Hub.

@@ -1,7 +1,7 @@
 ---
-title: 创建您的组织
+title: Create your organization
 weight: 10
-description: 了解如何创建组织。
+description: Learn how to create an organization.
 keywords: Docker, docker, registry, teams, organizations, plans, Dockerfile, Docker
   Hub, docs, documentation
 aliases:
@@ -10,123 +10,163 @@ aliases:
 
 {{< summary-bar feature_name="Admin orgs" >}}
 
-本节介绍如何创建组织。在开始之前：
+This section describes how to create an organization. Before you begin:
 
-- 您需要一个 [Docker ID](/accounts/create-account/)
-- 查看 [Docker 订阅和功能](../../subscription/details.md)以确定为您的组织选择哪种订阅
+- You need a [Docker ID](/accounts/create-account/)
+- Review the [Docker subscriptions and features](../../subscription/details.md) to determine what subscription to choose for your organization
 
-## 创建组织
+## Create an organization
 
-有多种方式可以创建组织。您可以：
-- 使用 Docker Hub 中的 **Create Organization** 选项创建新组织
-- 将现有用户帐户转换为组织
+There are multiple ways to create an organization. You can either:
+- Create a new organization using the **Create Organization** option in Docker Hub
+- Convert an existing user account to an organization
 
-以下部分包含如何创建新组织的说明。有关将现有用户帐户转换为组织的前提条件和详细说明，请参阅[将帐户转换为组织](/manuals/admin/organization/convert-account.md)。
+The following section contains instructions on how to create a new organization. For prerequisites and
+detailed instructions on converting an existing user account to an organization, see
+[Convert an account into an organization](/manuals/admin/organization/convert-account.md).
 
 {{< tabs >}}
 {{< tab name="Admin Console" >}}
 
-要创建组织：
+To create an organization:
 
-1. 登录 [Docker Home](https://app.docker.com/) 并导航到组织列表底部。
-1. 选择 **Create new organization**。
-1. 为您的组织选择订阅、账单周期，并指定您需要的席位数量。有关 Team 和 Business 订阅提供的功能详细信息，请参阅 [Docker 定价](https://www.docker.com/pricing/)。
-1. 选择 **Continue to profile**。
-1. 选择 **Create an organization** 创建新组织。
-1. 输入 **Organization namespace**。这是您组织在 Docker Hub 中的官方唯一名称。创建组织后无法更改名称。
+1. Sign in to [Docker Home](https://app.docker.com/) and navigate to the bottom
+of the organization list.
+1. Select **Create new organization**.
+1. Choose a subscription for your organization, a billing cycle, and specify how many seats you need. See [Docker Pricing](https://www.docker.com/pricing/) for details on the features offered in the Team and Business subscription.
+1. Select **Continue to profile**.
+1. Select **Create an organization** to create a new one.
+1. Enter an **Organization namespace**. This is the official, unique name for
+your organization in Docker Hub. It's not possible to change the name of the
+organization after you've created it.
 
    > [!NOTE]
    >
-   > 您不能为组织和您的 Docker ID 使用相同的名称。如果您想使用您的 Docker ID 作为组织名称，则必须先[将您的帐户转换为组织](/manuals/admin/organization/convert-account.md)。
+   > You can't use the same name for the organization and your Docker ID. If you want to use your Docker ID as the organization name, then you must first [convert your account into an organization](/manuals/admin/organization/convert-account.md).
 
-1. 输入您的 **Company name**。这是您公司的全名。Docker 会在您的组织页面和您发布的任何公共镜像的详细信息中显示公司名称。您可以随时通过导航到组织的 **Settings** 页面来更新公司名称。
-1. 选择 **Continue to billing** 继续。
-1. 输入您组织的账单信息并选择 **Continue to payment** 继续到账单门户。
-1. 提供您的付款详细信息并选择 **Purchase**。
+1. Enter your **Company name**. This is the full name of your company. Docker
+displays the company name on your organization page and in the details of any
+public images you publish. You can update the company name anytime by navigating
+to your organization's **Settings** page.
+1. Select **Continue to billing** to continue.
+1. Enter your organization's billing information and select **Continue to payment** to continue to the billing portal.
+1. Provide your payment details and select **Purchase**.
 
-您现在已创建了一个组织。
+You've now created an organization.
 
 {{< /tab >}}
 {{< tab name="Docker Hub" >}}
 
 {{% include "hub-org-management.md" %}}
 
-1. 使用您的 Docker ID、电子邮件地址或社交提供商登录 [Docker Hub](https://hub.docker.com/)。
-1. 选择 **My Hub**，选择帐户下拉菜单，然后选择 **Create Organization** 创建新组织。
-1. 为您的组织选择订阅、账单周期，并指定您需要的席位数量。有关 Team 和 Business 订阅提供的功能详细信息，请参阅 [Docker 定价](https://www.docker.com/pricing/)。
-1. 选择 **Continue to profile**。
-1. 输入 **Organization namespace**。这是您组织在 Docker Hub 中的官方唯一名称。创建组织后无法更改名称。
+1. Sign in to [Docker Hub](https://hub.docker.com/) using your Docker ID, your email address, or your social provider.
+1. Select **My Hub**, select the account drop-down, and then **Create Organization** to create a new organization.
+1. Choose a subscription for your organization, a billing cycle, and specify how many seats you need. See [Docker Pricing](https://www.docker.com/pricing/) for details on the features offered in the Team and Business subscription.
+1. Select **Continue to profile**.
+1. Enter an **Organization namespace**. This is the official, unique name for
+your organization in Docker Hub. It's not possible to change the name of the
+organization after you've created it.
 
    > [!NOTE]
    >
-   > 您不能为组织和您的 Docker ID 使用相同的名称。如果您想使用您的 Docker ID 作为组织名称，则必须先[将您的帐户转换为组织](/manuals/admin/organization/convert-account.md)。
+   > You can't use the same name for the organization and your Docker ID. If you want to use your Docker ID as the organization name, then you must first [convert your account into an organization](/manuals/admin/organization/convert-account.md).
 
-1. 输入您的 **Company name**。这是您公司的全名。Docker 会在您的组织页面和您发布的任何公共镜像的详细信息中显示公司名称。您可以随时通过导航到组织的 **Settings** 页面来更新公司名称。
-1. 选择 **Continue to billing** 继续。
-1. 输入您组织的账单信息并选择 **Continue to payment** 继续到账单门户。
-1. 提供您的卡详细信息并选择 **Purchase**。
+1. Enter your **Company name**. This is the full name of your company. Docker
+displays the company name on your organization page and in the details of any
+public images you publish. You can update the company name anytime by navigating
+to your organization's **Settings** page.
+1. Select **Continue to billing** to continue.
+1. Enter your organization's billing information and select **Continue to payment** to continue to the billing portal.
+1. Provide your card details and select **Purchase**.
 
-您现在已创建了一个组织。
+You've now created an organization.
 
 {{< /tab >}}
 {{< /tabs >}}
 
-## 查看组织
+## View an organization
 
 {{< tabs >}}
 {{< tab name="Admin Console" >}}
 
-要在 Admin Console 中查看组织：
+To view an organization in the Admin Console:
 
-1. 登录 [Docker Home](https://app.docker.com) 并选择您的组织。
-1. 从左侧导航菜单中选择 **Admin Console**。
+1. Sign in to [Docker Home](https://app.docker.com) and select your
+organization.
+1. From the left-hand navigation menu, select **Admin Console**.
 
-Admin Console 包含许多选项，让您可以配置您的组织。
+The Admin Console contains many options that let you to
+configure your organization.
 
 {{< /tab >}}
 {{< tab name="Docker Hub" >}}
 
 {{% include "hub-org-management.md" %}}
 
-要查看组织：
+To view an organization:
 
-1. 使用属于组织中任何团队成员的用户帐户登录 [Docker Hub](https://hub.docker.com)。
+1. Sign in to [Docker Hub](https://hub.docker.com) with a user account that is a member of any team in the organization.
 
       > [!NOTE]
       >
-      > 您不能*直接*登录到组织。如果您通过[转换用户帐户](/manuals/admin/organization/convert-account.md)创建组织，这一点尤其重要，因为转换意味着您将失去登录该"帐户"的能力，因为它已不存在。要查看组织，您需要使用转换期间分配的新所有者帐户或作为成员添加的其他帐户登录。如果登录后看不到组织，则表示您既不是该组织的成员也不是所有者。组织管理员需要将您添加为组织成员。
+      > You can't *directly* sign in to an organization. This is especially
+      > important to note if you create an organization by
+      [converting a user account](/manuals/admin/organization/convert-account.md), as conversion means you lose the ability to log into that
+      > "account", since it no longer exists. To view the organization you
+      > need to sign in with the new owner account assigned during the
+      > conversion or another account that was added as a member. If you
+      > don't see the organization after logging in,
+      > then you are neither a member or an owner of it. An organization
+      > administrator needs to add you as a member of the organization.
 
-1. 在顶部导航栏中选择 **My Hub**，然后从列表中选择您的组织。
+1. Select **My Hub** in the top navigation bar, then choose your
+   organization from the list.
 
-组织落地页显示各种选项，让您可以配置您的组织。
+The organization landing page displays various options that let you to
+configure your organization.
 
-- **Members**：显示团队成员列表。您可以使用 **Invite members** 按钮邀请新成员。有关详细信息，请参阅[管理成员](./members.md)。
-- **Teams**：显示现有团队列表以及每个团队的成员数量。有关详细信息，请参阅[创建团队](./manage-a-team.md)。
-- **Repositories**：显示与组织关联的仓库列表。有关使用仓库的详细信息，请参阅[仓库](../../docker-hub/repos/_index.md)。
-- **Activity**：显示审计日志，即组织和仓库级别发生的活动的时间顺序列表。它为组织所有者提供所有团队成员活动的报告。有关详细信息，请参阅[审计日志](./activity-logs.md)。
-- **Settings**：显示有关您组织的信息，并允许您查看和更改仓库隐私设置、配置组织权限（如[镜像访问管理](/manuals/security/for-admins/hardened-desktop/image-access-management.md)）、配置通知设置以及[停用](/manuals/admin/organization/deactivate-account.md#deactivate-an-organization)。您还可以更新显示在组织落地页上的组织名称和公司名称。您必须是所有者才能访问组织的 **Settings** 页面。
-- **Billing**：显示有关您现有 [Docker 订阅](../../subscription/_index.md)的信息，包括席位数量和下次付款到期日期。有关如何访问组织的账单历史记录和付款方式，请参阅[查看账单历史记录](../../billing/history.md)。
+- **Members**: Displays a list of team members. You
+  can invite new members using the **Invite members** button. See [Manage members](./members.md) for details.
+- **Teams**: Displays a list of existing teams and the number of
+  members in each team. See [Create a team](./manage-a-team.md) for details.
+- **Repositories**: Displays a list of repositories associated with the
+  organization. See [Repositories](../../docker-hub/repos/_index.md) for detailed information about
+  working with repositories.
+- **Activity** Displays the audit logs, a chronological list of activities that
+  occur at organization and repository levels. It provides the org owners a
+  report of all their team member activities. See [Audit logs](./activity-logs.md) for
+  details.
+- **Settings**: Displays information about your
+  organization, and you to view and change your repository privacy
+  settings, configure org permissions such as
+  [Image Access Management](/manuals/security/for-admins/hardened-desktop/image-access-management.md), configure notification settings, and [deactivate](/manuals/admin/organization/deactivate-account.md#deactivate-an-organization) You can also update your organization name and company name that appear on your organization landing page. You must be an owner to access the
+   organization's **Settings** page.
+- **Billing**: Displays information about your existing
+[Docker subscription](../../subscription/_index.md), including the number of seats and next payment due date. For how to access the billing history and payment methods for your organization, see [View billing history](../../billing/history.md).
 
 {{< /tab >}}
 {{< /tabs >}}
 
-## 合并组织
+## Merge organizations
 
 > [!WARNING]
 >
-> 如果您要合并组织，建议在账单周期*结束*时进行。当您合并组织并降级另一个组织时，您将失去降级组织的席位。Docker 不提供降级退款。
+> If you are merging organizations, it is recommended to do so at the *end* of
+> your billing cycle. When you merge an organization and downgrade another, you
+> will lose seats on your downgraded organization. Docker does not offer
+> refunds for downgrades.
 
-如果您有多个组织想要合并为一个，请完成以下操作：
+If you have multiple organizations that you want to merge into one, complete the following:
 
-1. 根据次要组织的席位数量，为您要保留的主要组织帐户[购买额外席位](../../subscription/manage-seats.md)。
-1. 手动将用户添加到主要组织并从次要组织中移除现有用户。
-1. 手动迁移您的数据，包括所有仓库。
-1. 完成所有用户和数据的迁移后，将次要帐户[降级](../../subscription/change.md)为免费订阅。请注意，Docker 不提供账单周期中途降级组织的退款。
+1. Based on the number of seats from the secondary organization, [purchase additional seats](../../subscription/manage-seats.md) for the primary organization account that you want to keep.
+1. Manually add users to the primary organization and remove existing users from the secondary organization.
+1. Manually move over your data, including all repositories.
+1. Once you're done moving all of your users and data, [downgrade](../../subscription/change.md) the secondary account to a free subscription. Note that Docker does not offer refunds for downgrading organizations mid-billing cycle.
 
 > [!TIP]
 >
-> 如果您的组织拥有带采购订单的 Docker Business 订阅，请联系支持部门或您在 Docker 的客户经理。
+> If your organization has a Docker Business subscription with a purchase order, contact Support or your Account Manager at Docker.
 
-## 更多资源
+## More resources
 
-- [视频：Docker Hub 组织](https://www.youtube.com/watch?v=WKlT1O-4Du8)
+- [Video: Docker Hub Organizations](https://www.youtube.com/watch?v=WKlT1O-4Du8)

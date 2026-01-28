@@ -1,41 +1,60 @@
 ---
-title: 通过策略强制使用 Docker Hardened Image
-linktitle: 强制镜像使用
-description: 了解如何将镜像策略与 Docker Scout 配合用于 Docker Hardened Images。
+title: Enforce Docker Hardened Image usage with policies
+linktitle: Enforce image usage
+description: Learn how to use image policies with Docker Scout for Docker Hardened Images.
 weight: 50
 keywords: docker scout policies, enforce image compliance, container security policy, image provenance, vulnerability policy check
 ---
 
 {{< summary-bar feature_name="Docker Hardened Images" >}}
 
-镜像 Docker Hardened Image（DHI）仓库会自动启用 [Docker Scout](/scout/)，让您无需额外设置即可开始为镜像强制执行安全和合规策略。使用 Docker Scout 策略，您可以定义和应用规则，确保仅在您的环境中使用经过批准的安全镜像（如基于 DHI 的镜像）。
+Mirroring a Docker Hardened Image (DHI) repository automatically enables [Docker
+Scout](/scout/), allowing you to start enforcing security and compliance policies for your
+images without additional setup. Using Docker Scout policies, you can define and
+apply rules that ensure only approved and secure images, such as those based on
+DHIs, are used across your environments.
 
-通过 Docker Scout 内置的策略评估功能，您可以实时监控镜像合规性，将检查集成到 CI/CD 工作流中，并维护镜像安全和来源的一致标准。
+With policy evaluation built into Docker Scout, you can monitor image compliance
+in real time, integrate checks into your CI/CD workflows, and maintain
+consistent standards for image security and provenance.
 
-## 查看现有策略
+## View existing policies
 
-要查看应用于镜像 DHI 仓库的当前策略：
+To see the current policies applied to a mirrored DHI repository:
 
-1. 在 [Docker Hub](https://hub.docker.com) 中前往镜像的 DHI 仓库。
-2. 选择 **View on Scout**。
+1. Go to the mirrored DHI repository in [Docker Hub](https://hub.docker.com).
+2. Select **View on Scout**.
 
-   这将打开 [Docker Scout 仪表板](https://scout.docker.com)，您可以在其中查看当前活动的策略以及您的镜像是否符合策略标准。
+   This opens the [Docker Scout dashboard](https://scout.docker.com), where you
+   can see which policies are currently active and whether your images meet the
+   policy criteria.
 
-Docker Scout 会在推送新镜像时自动评估策略合规性。每个策略都包含合规结果和指向受影响镜像及层的链接。
+Docker Scout automatically evaluates policy compliance when new images are
+pushed. Each policy includes a compliance result and a link to the affected
+images and layers.
 
-## 为基于 DHI 的镜像创建策略
+## Create policies for your DHI-based images
 
-为确保使用 Docker Hardened Images 构建的镜像保持安全，您可以为自己的仓库创建符合您要求的 Docker Scout 策略。这些策略有助于强制执行安全标准，例如防止高危漏洞、要求使用最新的基础镜像或验证关键元数据的存在。
+To ensure that the images you build using Docker Hardened Images remain secure,
+you can create Docker Scout policies tailored to your requirements for your own
+repositories. These policies help enforce security standards such as preventing
+high-severity vulnerabilities, requiring up-to-date base images, or validating
+the presence of key metadata.
 
-策略在镜像推送到仓库时进行评估，使您能够跟踪合规性、获得偏差通知，并将策略检查集成到 CI/CD 流水线中。
+Policies evaluate images when they are pushed to a repository, allowing you to
+track compliance, get notified of deviations, and integrate policy checks into
+your CI/CD pipeline.
 
-### 示例：为基于 DHI 的镜像创建策略
+### Example: Create a policy for DHI-based images
 
-此示例展示了如何创建一个策略，要求组织中的所有镜像使用 Docker Hardened Images 作为其基础镜像。这确保了您的应用构建在安全、最小化且生产就绪的镜像上。
+This example shows how to create a policy that requires all images in your
+organization to use Docker Hardened Images as their base. This ensures that
+your applications are built on secure, minimal, and production-ready images.
 
-#### 步骤 1：在 Dockerfile 中使用 DHI 基础镜像
+#### Step 1: Use a DHI base image in your Dockerfile
 
-创建一个使用 Docker Hardened Image 镜像仓库作为基础的 Dockerfile。例如：
+Create a Dockerfile that uses a Docker Hardened Image mirrored repository as the
+base. For example:
 
 ```dockerfile
 # Dockerfile
@@ -44,9 +63,10 @@ FROM ORG_NAME/dhi-python:3.13-alpine3.21
 ENTRYPOINT ["python", "-c", "print('Hello from a DHI-based image')"]
 ```
 
-#### 步骤 2：构建并推送镜像
+#### Step 2: Build and push the image
 
-打开终端并导航到包含 Dockerfile 的目录。然后，构建并将镜像推送到您的 Docker Hub 仓库：
+Open a terminal and navigate to the directory containing your Dockerfile. Then,
+build and push the image to your Docker Hub repository:
 
 ```console
 $ docker build \
@@ -54,9 +74,10 @@ $ docker build \
   -t YOUR_ORG/my-dhi-app:v1 .
 ```
 
-#### 步骤 3：启用 Docker Scout
+#### Step 3: Enable Docker Scout
 
-要为您的组织和仓库启用 Docker Scout，请在终端中运行以下命令：
+To enable Docker Scout for your organization and the repository, run the
+following commands in your terminal:
 
 ```console
 $ docker login
@@ -64,23 +85,26 @@ $ docker scout enroll YOUR_ORG
 $ docker scout repo enable --org YOUR_ORG YOUR_ORG/my-dhi-app
 ```
 
-#### 步骤 4：创建策略
+#### Step 4: Create a policy
 
-1. 前往 [Docker Scout 仪表板](https://scout.docker.com)。
-2. 选择您的组织并导航到 **Policies**。
-3. 选择 **Add policy**。
-4. 为 **Approved Base Images Policy** 选择 **Configure**。
-5. 为策略指定一个合规的名称，例如 **Approved DHI Base Images**。
-6. 在 **Approved base image sources** 中，删除默认项。
-7. 在 **Approved base image sources** 中，添加批准的基础镜像源。对于此示例，使用通配符（`*`）允许所有镜像的 DHI 仓库，`docker.io/ORG_NAME/dhi-*`。将 `ORG_NAME` 替换为您的组织名称。
-8. 选择 **Save policy**。
+1. Go to the [Docker Scout dashboard](https://scout.docker.com).
+2. Select your organization and navigate to **Policies**.
+3. Select **Add policy**.
+4. Select **Configure** for **Approved Base Images Policy**.
+5. Give the policy a compliant name, such as **Approved DHI Base Images**.
+6. In **Approved base image sources**, delete the default item.
+7. In **Approved base image sources**, add approved base image sources. For this
+   example, use the wildcard (`*`) to allow all mirrored DHI repositories,
+   `docker.io/ORG_NAME/dhi-*`. Replace `ORG_NAME` with your organization name.
+8. Select **Save policy**.
 
-#### 步骤 4：评估策略合规性
+#### Step 4: Evaluate policy compliance
 
-1. 前往 [Docker Scout 仪表板](https://scout.docker.com)。
-2. 选择您的组织并导航到 **Images**。
-3. 找到您的镜像 `YOUR_ORG/my-dhi-app:v1`，并选择 **Compliance** 列中的链接。
+1. Go to the [Docker Scout dashboard](https://scout.docker.com).
+2. Select your organization and navigate to **Images**.
+3. Find your image, `YOUR_ORG/my-dhi-app:v1`, and select the link in the **Compliance** column.
 
-这将显示您镜像的策略合规结果，包括它是否满足 **Approved DHI Base Images** 策略的要求。
+This shows the policy compliance results for your image, including whether it
+meets the requirements of the **Approved DHI Base Images** policy.
 
-您现在可以[在 CI 中评估策略合规性](/scout/policy/ci/)。
+You can now [evaluate policy compliance in your CI](/scout/policy/ci/).

@@ -1,94 +1,164 @@
 ---
-title: 使用 Docker Configs 存储配置数据
+title: Store configuration data using Docker Configs
 description: How to store configuration data separate from the runtime
 keywords: swarm, configuration, configs
 ---
 
-## 关于 configs
+## About configs
 
-Docker swarm 服务的 configs 允许您将非敏感信息（如配置文件）存储在服务镜像或运行容器之外。这使您可以保持镜像尽可能通用，而无需将配置文件绑定挂载到容器中或使用环境变量。
+Docker swarm service configs  allow you to store non-sensitive information,
+such as configuration files, outside a service's image or running containers.
+This allows you to keep your images as generic as possible, without the need to
+bind-mount configuration files into the containers or use environment variables.
 
-Configs 的工作方式与 [secrets](secrets.md) 类似，只是它们不是静态加密的，并且直接挂载到容器的文件系统中，而不使用 RAM 磁盘。Configs 可以随时添加到服务或从服务中移除，服务可以共享 config。您甚至可以将 configs 与环境变量或标签结合使用，以获得最大的灵活性。Config 值可以是通用字符串或二进制内容（大小最多 500 kb）。
+Configs operate in a similar way to [secrets](secrets.md), except that they are
+not encrypted at rest and are mounted directly into the container's filesystem
+without the use of RAM disks. Configs can be added or removed from a service at
+any time, and services can share a config. You can even use configs in
+conjunction with environment variables or labels, for maximum flexibility.
+Config values can be generic strings or binary content (up to 500 kb in size).
 
 > [!NOTE]
 >
-> Docker configs 仅适用于 swarm 服务，不适用于独立容器。要使用此功能，请考虑将您的容器调整为以规模为 1 的服务运行。
+> Docker configs are only available to swarm services, not to
+> standalone containers. To use this feature, consider adapting your container
+> to run as a service with a scale of 1.
 
-Linux 和 Windows 服务都支持 Configs。
+Configs are supported on both Linux and Windows services.
 
-### Windows 支持
+### Windows support
 
-Docker 包含对 Windows 容器上 configs 的支持，但实现方面存在差异，这些差异在下面的示例中有所说明。请记住以下显著差异：
+Docker includes support for configs on Windows containers, but there are differences
+in the implementations, which are called out in the examples below. Keep the
+following notable differences in mind:
 
-- 具有自定义目标的 Config 文件不会直接绑定挂载到 Windows 容器中，因为 Windows 不支持非目录文件绑定挂载。相反，容器的 configs 都挂载在容器内的 `C:\ProgramData\Docker\internal\configs`（这是一个不应被应用程序依赖的实现细节）中。符号链接用于从那里指向容器内 config 的所需目标。默认目标是 `C:\ProgramData\Docker\configs`。
+- Config files with custom targets are not directly bind-mounted into Windows
+  containers, since Windows does not support non-directory file bind-mounts.
+  Instead, configs for a container are all mounted in
+  `C:\ProgramData\Docker\internal\configs` (an implementation detail which
+  should not be relied upon by applications) within the container. Symbolic
+  links are used to point from there to the desired target of the config within
+  the container. The default target is `C:\ProgramData\Docker\configs`.
 
-- 当创建使用 Windows 容器的服务时，configs 不支持指定 UID、GID 和 mode 的选项。Configs 目前只能由容器内的管理员和具有 `system` 访问权限的用户访问。
+- When creating a service which uses Windows containers, the options to specify
+  UID, GID, and mode are not supported for configs. Configs are currently only
+  accessible by administrators and users with `system` access within the
+  container.
 
-- 在 Windows 上，使用 `config://<config-name>` 格式的 `--credential-spec` 创建或更新服务。这会在容器启动前直接将 gMSA 凭据文件传递给节点。工作节点上不会将 gMSA 凭据写入磁盘。有关更多信息，请参阅[将服务部署到 swarm](services.md#gmsa-for-swarm)。
+- On Windows, create or update a service using `--credential-spec` with the
+  `config://<config-name>` format.  This passes the gMSA credentials file
+  directly to nodes before a container starts. No gMSA credentials are written
+  to disk on worker nodes. For more information, refer to
+  [Deploy services to a swarm](services.md#gmsa-for-swarm).
 
-## Docker 如何管理 configs
+## How Docker manages configs
 
-当您向 swarm 添加 config 时，Docker 通过双向 TLS 连接将 config 发送到 swarm 管理节点。Config 存储在加密的 Raft 日志中。整个 Raft 日志在其他管理节点之间复制，确保 configs 与 swarm 管理数据的其余部分具有相同的高可用性保证。
+When you add a config to the swarm, Docker sends the config to the swarm manager
+over a mutual TLS connection. The config is stored in the Raft log, which is
+encrypted. The entire Raft log is replicated across the other managers, ensuring
+the same high availability guarantees for configs as for the rest of the swarm
+management data.
 
-当您授予新创建或正在运行的服务对 config 的访问权限时，config 将作为文件挂载到容器中。Linux 容器中挂载点的位置默认为 `/<config-name>`。在 Windows 容器中，configs 都挂载到 `C:\ProgramData\Docker\configs`，并创建符号链接到所需位置，默认为 `C:\<config-name>`。
+When you grant a newly-created or running service access to a config, the config
+is mounted as a file in the container. The location of the mount point within
+the container defaults to `/<config-name>` in Linux containers. In Windows
+containers, configs are all mounted into `C:\ProgramData\Docker\configs` and
+symbolic links are created to the desired location, which defaults to
+`C:\<config-name>`.
 
-您可以使用数字 ID 或用户或组的名称设置 config 的所有权（`uid` 和 `gid`）。您还可以指定文件权限（`mode`）。对于 Windows 容器，这些设置会被忽略。
+You can set the ownership (`uid` and `gid`) for the config, using either the
+numerical ID or the name of the user or group. You can also specify the file
+permissions (`mode`). These settings are ignored for Windows containers.
 
-- 如果未设置，config 由运行容器命令的用户（通常是 `root`）和该用户的默认组（通常也是 `root`）拥有。
-- 如果未设置，config 具有全局可读权限（mode `0444`），除非在容器内设置了 `umask`，在这种情况下 mode 会受到该 `umask` 值的影响。
+- If not set, the config is owned by the user running the container
+  command (often `root`) and that user's default group (also often `root`).
+- If not set, the config has world-readable permissions (mode `0444`), unless a
+  `umask` is set within the container, in which case the mode is impacted by
+  that `umask` value.
 
-您可以随时更新服务以授予其对额外 configs 的访问权限或撤销其对给定 config 的访问权限。
+You can update a service to grant it access to additional configs or revoke its
+access to a given config at any time.
 
-只有当节点是 swarm 管理节点或正在运行已被授予对 config 访问权限的服务任务时，节点才能访问 configs。当容器任务停止运行时，共享给它的 configs 会从该容器的内存文件系统中卸载并从节点的内存中刷新。
+A node only has access to configs if the node is a swarm manager or if it is
+running service tasks which have been granted access to the config. When a
+container task stops running, the configs shared to it are unmounted from the
+in-memory filesystem for that container and flushed from the node's memory.
 
-如果节点在运行具有 config 访问权限的任务容器时失去与 swarm 的连接，任务容器仍然可以访问其 configs，但在节点重新连接到 swarm 之前无法接收更新。
+If a node loses connectivity to the swarm while it is running a task container
+with access to a config, the task container still has access to its configs, but
+cannot receive updates until the node reconnects to the swarm.
 
-您可以随时添加或检查单个 config，或列出所有 configs。您无法移除正在运行的服务正在使用的 config。请参阅[轮换 config](configs.md#example-rotate-a-config) 了解如何在不中断正在运行的服务的情况下移除 config。
+You can add or inspect an individual config at any time, or list all
+configs. You cannot remove a config that a running service is
+using. See [Rotate a config](configs.md#example-rotate-a-config) for a way to
+remove a config without disrupting running services.
 
-为了更轻松地更新或回滚 configs，请考虑在 config 名称中添加版本号或日期。通过控制 config 在给定容器内的挂载点，这变得更加容易。
+To update or roll back configs more easily, consider adding a version
+number or date to the config name. This is made easier by the ability to control
+the mount point of the config within a given container.
 
-要更新堆栈，请对 Compose 文件进行更改，然后重新运行 `docker stack deploy -c <new-compose-file> <stack-name>`。如果您在该文件中使用新的 config，您的服务将开始使用它们。请记住，配置是不可变的，因此您无法更改现有服务的文件。相反，您创建一个新的 config 来使用不同的文件。
+To update a stack, make changes to your Compose file, then re-run `docker
+stack deploy -c <new-compose-file> <stack-name>`. If you use a new config in
+that file, your services start using them. Keep in mind that configurations
+are immutable, so you can't change the file for an existing service.
+Instead, you create a new config to use a different file
 
-您可以运行 `docker stack rm` 来停止应用并删除堆栈。这会移除由具有相同堆栈名称的 `docker stack deploy` 创建的任何 config。这会移除_所有_ configs，包括那些未被服务引用的以及在 `docker service update --config-rm` 之后保留的。
+You can run `docker stack rm` to stop the app and take down the stack. This
+removes any config that was created by `docker stack deploy` with the same stack
+name. This removes _all_ configs, including those not referenced by services and
+those remaining after a `docker service update --config-rm`.
 
-## 阅读更多关于 `docker config` 命令的信息
+## Read more about `docker config` commands
 
-使用这些链接阅读特定命令，或继续查看[关于将 configs 与服务一起使用的示例](#advanced-example-use-configs-with-a-nginx-service)。
+Use these links to read about specific commands, or continue to the
+[example about using configs with a service](#advanced-example-use-configs-with-a-nginx-service).
 
 - [`docker config create`](/reference/cli/docker/config/create.md)
 - [`docker config inspect`](/reference/cli/docker/config/inspect.md)
 - [`docker config ls`](/reference/cli/docker/config/ls.md)
 - [`docker config rm`](/reference/cli/docker/config/rm.md)
 
-## 示例
+## Examples
 
-本节包含逐步深入的示例，说明如何使用 Docker configs。
+This section includes graduated examples which illustrate how to use
+Docker configs.
 
 > [!NOTE]
 >
-> 这些示例为了简单起见使用单引擎 swarm 和未扩展的服务。示例使用 Linux 容器，但 Windows 容器也支持 configs。
+> These examples use a single-engine swarm and unscaled services for
+> simplicity. The examples use Linux containers, but Windows containers also
+> support configs.
 
-### 在 compose 文件中定义和使用 configs
+### Defining and using configs in compose files
 
-`docker stack` 命令支持在 Compose 文件中定义 configs。但是，`docker compose` 不支持 `configs` 键。有关详细信息，请参阅 [Compose 文件参考](/reference/compose-file/legacy-versions.md)。
+The `docker stack` command supports defining configs in a Compose file.
+However, the `configs` key is not supported for `docker compose`. See
+[the Compose file reference](/reference/compose-file/legacy-versions.md) for details.
 
-### 简单示例：开始使用 configs
+### Simple example: Get started with configs
 
-这个简单的示例展示了 configs 如何仅用几个命令就能工作。有关实际示例，请继续查看[高级示例：将 configs 与 Nginx 服务一起使用](#advanced-example-use-configs-with-a-nginx-service)。
+This simple example shows how configs work in just a few commands. For a
+real-world example, continue to
+[Advanced example: Use configs with a Nginx service](#advanced-example-use-configs-with-a-nginx-service).
 
-1.  向 Docker 添加一个 config。`docker config create` 命令读取标准输入，因为最后一个参数（表示要从中读取 config 的文件）设置为 `-`。
+1.  Add a config to Docker. The `docker config create` command reads standard
+    input because the last argument, which represents the file to read the
+    config from, is set to `-`.
 
     ```console
     $ echo "This is a config" | docker config create my-config -
     ```
 
-2.  创建一个 `redis` 服务并授予其对 config 的访问权限。默认情况下，容器可以在 `/my-config` 访问 config，但您可以使用 `target` 选项自定义容器上的文件名。
+2.  Create a `redis` service and grant it access to the config. By default,
+    the container can access the config at `/my-config`, but
+    you can customize the file name on the container using the `target` option.
 
     ```console
     $ docker service create --name redis --config my-config redis:alpine
     ```
 
-3.  使用 `docker service ps` 验证任务正在运行且没有问题。如果一切正常，输出类似于：
+3.  Verify that the task is running without issues using `docker service ps`. If
+    everything is working, the output looks similar to this:
 
     ```console
     $ docker service ps redis
@@ -97,7 +167,12 @@ Docker 包含对 Windows 容器上 configs 的支持，但实现方面存在差�
     bkna6bpn8r1a  redis.1  redis:alpine  ip-172-31-46-109  Running        Running 8 seconds ago
     ```
 
-4.  使用 `docker ps` 获取 `redis` 服务任务容器的 ID，以便您可以使用 `docker container exec` 连接到容器并读取 config 数据文件的内容，该文件默认对所有人可读，并且与 config 的名称相同。下面的第一个命令说明了如何找到容器 ID，第二个和第三个命令使用 shell 自动补全来完成此操作。
+4.  Get the ID of the `redis` service task container using `docker ps`, so that
+    you can use `docker container exec` to connect to the container and read the contents
+    of the config data file, which defaults to being readable by all and has the
+    same name as the name of the config. The first command below illustrates
+    how to find the container ID, and the second and third commands use shell
+    completion to do this automatically.
 
     ```console
     $ docker ps --filter name=redis -q
@@ -113,7 +188,8 @@ Docker 包含对 Windows 容器上 configs 的支持，但实现方面存在差�
     This is a config
     ```
 
-5.  尝试移除 config。移除失败，因为 `redis` 服务正在运行并且可以访问该 config。
+5.  Try removing the config. The removal fails because the `redis` service is
+    running and has access to the config.
 
     ```console
 
@@ -129,13 +205,16 @@ Docker 包含对 Windows 容器上 configs 的支持，但实现方面存在差�
     in use by the following service: redis
     ```
 
-6.  通过更新服务从正在运行的 `redis` 服务中移除对 config 的访问权限。
+6.  Remove access to the config from the running `redis` service by updating the
+    service.
 
     ```console
     $ docker service update --config-rm my-config redis
     ```
 
-7.  再次重复步骤 3 和 4，验证服务不再可以访问该 config。容器 ID 不同，因为 `service update` 命令重新部署了服务。
+7.  Repeat steps 3 and 4 again, verifying that the service no longer has access
+    to the config. The container ID is different, because the
+    `service update` command redeploys the service.
 
     ```none
     $ docker container exec -it $(docker ps --filter name=redis -q) cat /my-config
@@ -143,7 +222,7 @@ Docker 包含对 Windows 容器上 configs 的支持，但实现方面存在差�
     cat: can't open '/my-config': No such file or directory
     ```
 
-8.  停止并移除服务，并从 Docker 中移除 config。
+8.  Stop and remove the service, and remove the config from Docker.
 
     ```console
     $ docker service rm redis
@@ -151,13 +230,15 @@ Docker 包含对 Windows 容器上 configs 的支持，但实现方面存在差�
     $ docker config rm my-config
     ```
 
-### 简单示例：在 Windows 服务中使用 configs
+### Simple example: Use configs in a Windows service
 
-这是一个非常简单的示例，展示了如何在 Docker for Windows 上运行 Windows 容器的 Microsoft IIS 服务中使用 configs。这是一个将网页存储在 config 中的简单示例。
+This is a very simple example which shows how to use configs with a Microsoft
+IIS service running on Docker for Windows running Windows containers on
+Microsoft Windows 10.  It is a naive example that stores the webpage in a config.
 
-此示例假设您已安装 PowerShell。
+This example assumes that you have PowerShell installed.
 
-1.  将以下内容保存到名为 `index.html` 的新文件中。
+1.  Save the following into a new file `index.html`.
 
     ```html
     <html lang="en">
@@ -167,20 +248,20 @@ Docker 包含对 Windows 容器上 configs 的支持，但实现方面存在差�
       </body>
     </html>
     ```
-
-2.  如果您还没有这样做，请初始化或加入 swarm。
+ 
+2.  If you have not already done so, initialize or join the swarm.
 
     ```powershell
     docker swarm init
     ```
 
-3.  将 `index.html` 文件保存为名为 `homepage` 的 swarm config。
+3.  Save the `index.html` file as a swarm config named `homepage`.
 
     ```powershell
     docker config create homepage index.html
     ```
 
-4.  创建一个 IIS 服务并授予其对 `homepage` config 的访问权限。
+4.  Create an IIS service and grant it access to the `homepage` config.
 
     ```powershell
     docker service create
@@ -190,9 +271,10 @@ Docker 包含对 Windows 容器上 configs 的支持，但实现方面存在差�
         microsoft/iis:nanoserver
     ```
 
-5.  在 `http://localhost:8000/` 访问 IIS 服务。它应该提供第一步中的 HTML 内容。
+5.  Access the IIS service at `http://localhost:8000/`. It should serve
+    the HTML content from the first step.
 
-6.  移除服务和 config。
+6.  Remove the service and the config.
 
     ```powershell
     docker service rm my-iis
@@ -200,11 +282,13 @@ Docker 包含对 Windows 容器上 configs 的支持，但实现方面存在差�
     docker config rm homepage
     ```
 
-### 示例：使用模板化 config
+### Example: Use a templated config
 
-要创建内容将使用模板引擎生成的配置，请使用 `--template-driver` 参数并将引擎名称指定为其参数。模板将在创建容器时渲染。
+To create a configuration in which the content will be generated using a
+template engine, use the `--template-driver` parameter and specify the engine
+name as its argument. The template will be rendered when container is created.
 
-1.  将以下内容保存到名为 `index.html.tmpl` 的新文件中。
+1.  Save the following into a new file `index.html.tmpl`.
 
     ```html
     <html lang="en">
@@ -215,13 +299,15 @@ Docker 包含对 Windows 容器上 configs 的支持，但实现方面存在差�
     </html>
     ```
 
-2.  将 `index.html.tmpl` 文件保存为名为 `homepage` 的 swarm config。提供参数 `--template-driver` 并指定 `golang` 作为模板引擎。
+2.  Save the `index.html.tmpl` file as a swarm config named `homepage`. Provide
+    parameter `--template-driver` and specify `golang` as template engine.
 
     ```console
     $ docker config create --template-driver golang homepage index.html.tmpl
     ```
 
-3.  创建一个运行 Nginx 的服务，该服务可以访问环境变量 HELLO 和 config。
+3.  Create a service that runs Nginx and has access to the environment variable
+    HELLO and to the config.
 
     ```console
     $ docker service create \
@@ -232,7 +318,8 @@ Docker 包含对 Windows 容器上 configs 的支持，但实现方面存在差�
          nginx:alpine
     ```
 
-4.  验证服务是否正常运行：您可以访问 Nginx 服务器，并且正在提供正确的输出。
+4.  Verify that the service is operational: you can reach the Nginx server, and
+    that the correct output is being served.
 
     ```console
     $ curl http://0.0.0.0:3000
@@ -245,21 +332,35 @@ Docker 包含对 Windows 容器上 configs 的支持，但实现方面存在差�
     </html>
     ```
 
-### 高级示例：将 configs 与 Nginx 服务一起使用
+### Advanced example: Use configs with a Nginx service
 
-此示例分为两部分。[第一部分](#generate-the-site-certificate)完全关于生成站点证书，并不直接涉及 Docker configs，但它为[第二部分](#configure-the-nginx-container)做好准备，在第二部分中，您将站点证书和 Nginx 配置作为一系列 secrets 和 config 存储和使用。该示例展示了如何设置 config 的选项，例如容器内的目标位置和文件权限（`mode`）。
+This example is divided into two parts.
+[The first part](#generate-the-site-certificate) is all about generating
+the site certificate and does not directly involve Docker configs at all, but
+it sets up [the second part](#configure-the-nginx-container), where you store
+and use the site certificate as a series of secrets and the Nginx configuration
+as a config. The example shows how to set options on the config, such as the
+target location within the container and the file permissions (`mode`).
 
-#### 生成站点证书
+#### Generate the site certificate
 
-为您的站点生成根 CA 和 TLS 证书及密钥。对于生产站点，您可能需要使用 `Let's Encrypt` 等服务来生成 TLS 证书和密钥，但此示例使用命令行工具。此步骤有点复杂，但只是一个设置步骤，以便您有东西存储为 Docker secret。如果您想跳过这些子步骤，您可以[使用 Let's Encrypt](https://letsencrypt.org/getting-started/) 生成站点密钥和证书，将文件命名为 `site.key` 和 `site.crt`，然后跳到[配置 Nginx 容器](#configure-the-nginx-container)。
+Generate a root CA and TLS certificate and key for your site. For production
+sites, you may want to use a service such as `Let’s Encrypt` to generate the
+TLS certificate and key, but this example uses command-line tools. This step
+is a little complicated, but is only a set-up step so that you have
+something to store as a Docker secret. If you want to skip these sub-steps,
+you can [use Let's Encrypt](https://letsencrypt.org/getting-started/) to
+generate the site key and certificate, name the files `site.key` and
+`site.crt`, and skip to
+[Configure the Nginx container](#configure-the-nginx-container).
 
-1.  生成根密钥。
+1.  Generate a root key.
 
     ```console
     $ openssl genrsa -out "root-ca.key" 4096
     ```
 
-2.  使用根密钥生成 CSR。
+2.  Generate a CSR using the root key.
 
     ```console
     $ openssl req \
@@ -268,7 +369,9 @@ Docker 包含对 Windows 容器上 configs 的支持，但实现方面存在差�
               -subj '/C=US/ST=CA/L=San Francisco/O=Docker/CN=Swarm Secret Example CA'
     ```
 
-3.  配置根 CA。编辑一个名为 `root-ca.cnf` 的新文件，并将以下内容粘贴到其中。这会限制根 CA 只能签署叶证书，而不能签署中间 CA。
+3.  Configure the root CA. Edit a new file called `root-ca.cnf` and paste
+    the following contents into it. This constrains the root CA to only sign
+    leaf certificates and not intermediate CAs.
 
     ```none
     [root_ca]
@@ -277,7 +380,7 @@ Docker 包含对 Windows 容器上 configs 的支持，但实现方面存在差�
     subjectKeyIdentifier=hash
     ```
 
-4.  签署证书。
+4.  Sign the certificate.
 
     ```console
     $ openssl x509 -req -days 3650 -in "root-ca.csr" \
@@ -286,20 +389,23 @@ Docker 包含对 Windows 容器上 configs 的支持，但实现方面存在差�
                    root_ca
     ```
 
-5.  生成站点密钥。
+5.  Generate the site key.
 
     ```console
     $ openssl genrsa -out "site.key" 4096
     ```
 
-6.  生成站点证书并使用站点密钥签名。
+6.  Generate the site certificate and sign it with the site key.
 
     ```console
     $ openssl req -new -key "site.key" -out "site.csr" -sha256 \
               -subj '/C=US/ST=CA/L=San Francisco/O=Docker/CN=localhost'
     ```
 
-7.  配置站点证书。编辑一个名为 `site.cnf` 的新文件，并将以下内容粘贴到其中。这会限制站点证书，使其只能用于验证服务器，而不能用于签署证书。
+7.  Configure the site certificate. Edit a new file called `site.cnf` and
+    paste the following contents into it. This constrains the site
+    certificate so that it can only be used to authenticate a server and
+    can't be used to sign certificates.
 
     ```none
     [server]
@@ -311,7 +417,7 @@ Docker 包含对 Windows 容器上 configs 的支持，但实现方面存在差�
     subjectKeyIdentifier=hash
     ```
 
-8.  签署站点证书。
+8.  Sign the site certificate.
 
     ```console
     $ openssl x509 -req -days 750 -in "site.csr" -sha256 \
@@ -319,13 +425,18 @@ Docker 包含对 Windows 容器上 configs 的支持，但实现方面存在差�
         -out "site.crt" -extfile "site.cnf" -extensions server
     ```
 
-9.  `site.csr` 和 `site.cnf` 文件不是 Nginx 服务所需的，但如果您想生成新的站点证书，则需要它们。保护好 `root-ca.key` 文件。
+9.  The `site.csr` and `site.cnf` files are not needed by the Nginx service, but
+    you need them if you want to generate a new site certificate. Protect
+    the `root-ca.key` file.
 
-#### 配置 Nginx 容器
+#### Configure the Nginx container
 
-1.  创建一个非常基本的 Nginx 配置，通过 HTTPS 提供静态文件。TLS 证书和密钥存储为 Docker secrets，以便可以轻松轮换。
+1.  Produce a very basic Nginx configuration that serves static files over HTTPS.
+    The TLS certificate and key are stored as Docker secrets so that they
+    can be rotated easily.
 
-    在当前目录中，创建一个名为 `site.conf` 的新文件，内容如下：
+    In the current directory, create a new file called `site.conf` with the
+    following contents:
 
     ```none
     server {
@@ -341,7 +452,10 @@ Docker 包含对 Windows 容器上 configs 的支持，但实现方面存在差�
     }
     ```
 
-2.  创建两个 secrets，分别代表密钥和证书。您可以将任何小于 500 KB 的文件存储为 secret。这允许您将密钥和证书与使用它们的服务解耦。在这些示例中，secret 名称和文件名相同。
+2.  Create two secrets, representing the key and the certificate. You can store
+    any file as a secret as long as it is smaller than 500 KB. This allows you
+    to decouple the key and certificate from the services that use them.
+    In these examples, the secret name and the file name are the same.
 
     ```console
     $ docker secret create site.key site.key
@@ -349,13 +463,14 @@ Docker 包含对 Windows 容器上 configs 的支持，但实现方面存在差�
     $ docker secret create site.crt site.crt
     ```
 
-3.  将 `site.conf` 文件保存在 Docker config 中。第一个参数是 config 的名称，第二个参数是要从中读取的文件。
+3.  Save the `site.conf` file in a Docker config. The first parameter is the
+    name of the config, and the second parameter is the file to read it from.
 
     ```console
     $ docker config create site.conf site.conf
     ```
 
-    列出 configs：
+    List the configs:
 
     ```console
     $ docker config ls
@@ -365,7 +480,9 @@ Docker 包含对 Windows 容器上 configs 的支持，但实现方面存在差�
     ```
 
 
-4.  创建一个运行 Nginx 的服务，该服务可以访问两个 secrets 和 config。将 mode 设置为 `0440`，以便文件只能由其所有者和该所有者的组读取，而不是全局可读。
+4.  Create a service that runs Nginx and has access to the two secrets and the
+    config. Set the mode to `0440` so that the file is only readable by its
+    owner and that owner's group, not the world.
 
     ```console
     $ docker service create \
@@ -378,13 +495,13 @@ Docker 包含对 Windows 容器上 configs 的支持，但实现方面存在差�
          sh -c "exec nginx -g 'daemon off;'"
     ```
 
-    在运行的容器中，现在存在以下三个文件：
+    Within the running containers, the following three files now exist:
 
     - `/run/secrets/site.key`
     - `/run/secrets/site.crt`
     - `/etc/nginx/conf.d/site.conf`
 
-5.  验证 Nginx 服务正在运行。
+5.  Verify that the Nginx service is running.
 
     ```console
     $ docker service ls
@@ -398,7 +515,8 @@ Docker 包含对 Windows 容器上 configs 的支持，但实现方面存在差�
     nginx.1.9ls3yo9ugcls  nginx:latest  moby  Running        Running 3 minutes ago
     ```
 
-6.  验证服务是否正常运行：您可以访问 Nginx 服务器，并且正在使用正确的 TLS 证书。
+6.  Verify that the service is operational: you can reach the Nginx
+    server, and that the correct TLS certificate is being used.
 
     ```console
     $ curl --cacert root-ca.crt https://0.0.0.0:3000
@@ -471,7 +589,9 @@ Docker 包含对 Windows 容器上 configs 的支持，但实现方面存在差�
         Verify return code: 0 (ok)
     ```
 
-7.  除非您要继续下一个示例，否则在运行此示例后通过移除 `nginx` 服务以及存储的 secrets 和 config 进行清理。
+7.  Unless you are going to continue to the next example, clean up after running
+    this example by removing the `nginx` service and the stored secrets and
+    config.
 
     ```console
     $ docker service rm nginx
@@ -481,13 +601,20 @@ Docker 包含对 Windows 容器上 configs 的支持，但实现方面存在差�
     $ docker config rm site.conf
     ```
 
-您现在已经配置了一个 Nginx 服务，其配置与其镜像解耦。您可以使用完全相同的镜像但使用不同的配置来运行多个站点，而无需构建自定义镜像。
+You have now configured a Nginx service with its configuration decoupled from
+its image. You could run multiple sites with exactly the same image but
+separate configurations, without the need to build a custom image at all.
 
-### 示例：轮换 config
+### Example: Rotate a config
 
-要轮换 config，首先保存一个与当前使用的 config 名称不同的新 config。然后重新部署服务，移除旧 config 并在容器内的相同挂载点添加新 config。此示例基于前面的示例，通过轮换 `site.conf` 配置文件来说明。
+To rotate a config, you first save a new config with a different name than the
+one that is currently in use. You then redeploy the service, removing the old
+config and adding the new config at the same mount point within the container.
+This example builds upon the previous one by rotating the `site.conf`
+configuration file.
 
-1.  在本地编辑 `site.conf` 文件。在 `index` 行添加 `index.php`，然后保存文件。
+1.  Edit the `site.conf` file locally. Add `index.php` to the `index` line, and
+    save the file.
 
     ```none
     server {
@@ -503,13 +630,13 @@ Docker 包含对 Windows 容器上 configs 的支持，但实现方面存在差�
     }
     ```
 
-2.  使用新的 `site.conf` 创建一个名为 `site-v2.conf` 的新 Docker config。
+2.  Create a new Docker config using the new `site.conf`, called `site-v2.conf`.
 
     ```bah
     $ docker config create site-v2.conf site.conf
     ```
 
-3.  更新 `nginx` 服务以使用新 config 而不是旧 config。
+3.  Update the `nginx` service to use the new config instead of the old one.
 
     ```console
     $ docker service update \
@@ -518,13 +645,16 @@ Docker 包含对 Windows 容器上 configs 的支持，但实现方面存在差�
       nginx
     ```
 
-4.  使用 `docker service ps nginx` 验证 `nginx` 服务是否已完全重新部署。完成后，您可以移除旧的 `site.conf` config。
+4.  Verify that the `nginx` service is fully re-deployed, using
+    `docker service ps nginx`. When it is, you can remove the old `site.conf`
+    config.
 
     ```console
     $ docker config rm site.conf
     ```
 
-5.  要清理，您可以移除 `nginx` 服务，以及 secrets 和 configs。
+5.  To clean up, you can remove the `nginx` service, as well as the secrets and
+    configs.
 
     ```console
     $ docker service rm nginx
@@ -534,4 +664,5 @@ Docker 包含对 Windows 容器上 configs 的支持，但实现方面存在差�
     $ docker config rm site-v2.conf
     ```
 
-您现在已经更新了 `nginx` 服务的配置，而无需重建其镜像。
+You have now updated your `nginx` service's configuration without the need to
+rebuild its image.

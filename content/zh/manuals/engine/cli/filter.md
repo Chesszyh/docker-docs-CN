@@ -9,21 +9,23 @@ aliases:
   - /config/filter/
 ---
 
-您可以使用 `--filter` 标志来限定命令的范围。使用过滤时，命令只包含与您指定的模式匹配的条目。
+You can use the `--filter` flag to scope your commands. When filtering, the
+commands only include entries that match the pattern you specify.
 
-## 使用过滤器
+## Using filters
 
-`--filter` 标志需要一个由运算符分隔的键值对。
+The `--filter` flag expects a key-value pair separated by an operator.
 
 ```console
 $ docker COMMAND --filter "KEY=VALUE"
 ```
 
-键表示您要过滤的字段。
-值是指定字段必须匹配的模式。
-运算符可以是等于 (`=`) 或不等于 (`!=`)。
+The key represents the field that you want to filter on.
+The value is the pattern that the specified field must match.
+The operator can be either equals (`=`) or not equals (`!=`).
 
-例如，命令 `docker images --filter reference=alpine` 过滤 `docker images` 命令的输出，只打印 `alpine` 镜像。
+For example, the command `docker images --filter reference=alpine` filters the
+output of the `docker images` command to only print `alpine` images.
 
 ```console
 $ docker images
@@ -40,14 +42,18 @@ alpine       3.21      a8cbb8c69ee7   40 minutes ago   8.67MB
 alpine       latest    7144f7bab3d4   40 minutes ago   11.7MB
 ```
 
-可用的字段（在本例中为 `reference`）取决于您运行的命令。
-一些过滤器期望精确匹配。其他过滤器处理部分匹配。一些过滤器允许您使用正则表达式。
+The available fields (`reference` in this case) depend on the command you run.
+Some filters expect an exact match. Others handle partial matches. Some filters
+let you use regular expressions.
 
-请参阅每个命令的 [CLI 参考说明](#reference)，以了解每个命令支持的过滤功能。
+Refer to the [CLI reference description](#reference) for each command to learn
+about the supported filtering capabilities for each command.
 
-## 组合过滤器
+## Combining filters
 
-您可以通过传递多个 `--filter` 标志来组合多个过滤器。以下示例展示了如何打印所有匹配 `alpine:latest` 或 `busybox` 的镜像 - 这是一个逻辑 `OR`。
+You can combine multiple filters by passing multiple `--filter` flags. The
+following example shows how to print all images that match `alpine:latest` or
+`busybox` - a logical `OR`.
 
 ```console
 $ docker images
@@ -65,26 +71,29 @@ busybox      uclibc    3e516f71d880   2 hours ago   2.4MB
 busybox      glibc     7338d0c72c65   2 hours ago   6.09MB
 ```
 
-### 多个否定过滤器
+### Multiple negated filters
 
-一些命令支持对[标签](/manuals/engine/manage-resources/labels.md)使用否定过滤器。
-否定过滤器只考虑不匹配指定模式的结果。
-以下命令清理所有未标记为 `foo` 的容器。
+Some commands support negated filters on [labels](/manuals/engine/manage-resources/labels.md).
+Negated filters only consider results that don't match the specified patterns.
+The following command prunes all containers that aren't labeled `foo`.
 
 ```console
 $ docker container prune --filter "label!=foo"
 ```
 
-在组合多个否定标签过滤器时有一个注意事项。多个否定过滤器创建一个单一的否定约束 - 一个逻辑 `AND`。以下命令清理除了同时标记为 `foo` 和 `bar` 的容器之外的所有容器。
-标记为 `foo` 或 `bar`（但不是同时标记两者）的容器将被清理。
+There's a catch in combining multiple negated label filters. Multiple negated
+filters create a single negative constraint - a logical `AND`. The following 
+command prunes all containers except those labeled both `foo` and `bar`.
+Containers labeled either `foo` or `bar`, but not both, will be pruned.
 
 ```console
 $ docker container prune --filter "label!=foo" --filter "label!=bar"
 ```
 
-## 参考
+## Reference
 
-有关过滤命令的更多信息，请参阅支持 `--filter` 标志的命令的 CLI 参考说明：
+For more information about filtering commands, refer to the CLI reference
+description for commands that support the `--filter` flag:
 
 - [`docker config ls`](/reference/cli/docker/config/ls.md)
 - [`docker container prune`](/reference/cli/docker/container/prune.md)

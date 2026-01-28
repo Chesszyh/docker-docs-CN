@@ -1,36 +1,42 @@
 ---
-title: 内置工具
-description: 如何使用 Gordon 的内置工具
+title: Built-in tools
+description: How to use Gordon's built-in tools
 keywords: ai, mcp, gordon
 aliases:
  - /desktop/features/gordon/mcp/built-in-tools/
 ---
 
-Gordon 配备了一个集成工具箱，提供对各种系统工具和功能的访问。这些工具通过允许 Gordon 与 Docker Engine、Kubernetes、Docker Scout 的安全扫描以及其他开发者实用工具进行交互来扩展其功能。本文档涵盖了可用的工具、它们的配置和使用模式。
+Gordon comes with an integrated toolbox providing access to various system tools
+and capabilities. These tools extend Gordon's functionality by allowing it to
+interact with the Docker Engine, Kubernetes, Docker Scout's security scanning,
+and other developer utilities. This documentation covers the available tools,
+their configuration, and usage patterns.
 
-## 配置
+## Configuration
 
-工具可以在工具箱中全局配置，使它们可以在整个 Gordon 界面中访问，包括 Docker Desktop 和 CLI。
+Tools can be configured globally in the toolbox, making them accessible
+throughout the Gordon interfaces, including both Docker Desktop and the CLI.
 
-配置方法：
+To configure:
 
-1. 在 Docker Desktop 的 **Ask Gordon** 视图中，选择输入区域左下角的 `Toolbox` 按钮。
+1. On the **Ask Gordon** view in Docker Desktop, select the `Toolbox` button in the bottom left of the input area.
 
-   ![带有工具箱按钮的 Gordon 页面](../images/gordon.png)
+   ![Gordon page with the toolbox button](../images/gordon.png)
 
-2. 要启用或禁用工具，请在左侧菜单中选择它并选择切换开关。
+2. To enable or disable a tool, select it in the left-menu and select the toggle.
 
-   ![Gordon 的工具箱](../images/toolbox.png)
+   ![Gordon's Toolbox](../images/toolbox.png)
 
-   有关可用 Docker 工具的更多信息，请参阅[参考](#参考)。
+   For more information on the available Docker tools, see [Reference](#reference).
 
-## 使用示例
+## Usage examples
 
-本节提供了使用 Gordon 工具进行常见操作的面向任务的示例。
+This section provides task-oriented examples for common operations with Gordon
+tools.
 
-### 管理 Docker 容器
+### Managing Docker containers
 
-#### 列出和监控容器
+#### List and monitor containers
 
 ```console
 # List all running containers
@@ -43,7 +49,7 @@ $ docker ai "List all containers using more than 1GB of memory"
 $ docker ai "Show me logs from my running api-container from the last hour"
 ```
 
-#### 管理容器生命周期
+#### Manage container lifecycle
 
 ```console
 # Run a new container
@@ -56,7 +62,7 @@ $ docker ai "Stop my database container"
 $ docker ai "Remove all stopped containers"
 ```
 
-### 处理 Docker 镜像
+### Working with Docker images
 
 ```console
 # List available images
@@ -72,7 +78,7 @@ $ docker ai "Build an image from my current directory and tag it as myapp:latest
 $ docker ai "Remove all my unused images"
 ```
 
-### 管理 Docker 卷
+### Managing Docker volumes
 
 ```console
 # List volumes
@@ -85,7 +91,7 @@ $ docker ai "Create a new volume called postgres-data"
 $ docker ai "Create a backup of my postgres container data to a new volume"
 ```
 
-### Kubernetes 操作
+### Kubernetes operations
 
 ```console
 # Create a deployment
@@ -98,7 +104,7 @@ $ docker ai "Show me all deployments in the default namespace"
 $ docker ai "Show me logs from the auth-service pod"
 ```
 
-### 安全分析
+### Security analysis
 
 
 ```console
@@ -109,7 +115,7 @@ $ docker ai "Scan my application for security vulnerabilities"
 $ docker ai "Give me recommendations for improving the security of my nodejs-app image"
 ```
 
-### 开发工作流程
+### Development workflows
 
 ```console
 # Analyze and commit changes
@@ -119,107 +125,109 @@ $ docker ai "Look at my local changes, create multiple commits with sensible com
 $ docker ai "Show me the status of my current branch compared to main"
 ```
 
-## 参考
+## Reference
 
-本节提供了 Gordon 工具箱中内置工具的完整列表。
+This section provides a comprehensive listing of the built-in tools you can find
+in Gordon's toolbox.
 
-### Docker 工具
+### Docker tools
 
-用于与 Docker 容器、镜像和卷交互的工具。
+Tools to interact with your Docker containers, images, and volumes.
 
-#### 容器管理
+#### Container management
 
-| 名称          | 描述                            |
+| Name          | Description                            |
 |---------------|----------------------------------------|
-| `docker`      | 访问 Docker CLI               |
-| `list_builds` | 列出 Docker 守护进程中的构建   |
-| `build_logs`  | 显示构建日志。                   |
+| `docker`      | Access to the Docker CLI               |
+| `list_builds` | List the builds in the Docker daemon   |
+| `build_logs`  | Show the build logs.                   |
 
-#### 卷管理
+#### Volume management
 
-| 工具 | 描述 |
+| Tool | Description |
 |------|-------------|
-| `list_volumes` | 列出所有 Docker 卷 |
-| `remove_volume` | 删除 Docker 卷 |
-| `create_volume` | 创建新的 Docker 卷 |
+| `list_volumes` | List all Docker volumes |
+| `remove_volume` | Remove a Docker volume |
+| `create_volume` | Create a new Docker volume |
 
-#### 镜像管理
+#### Image management
 
-| 工具 | 描述 |
+| Tool | Description |
 |------|-------------|
-| `list_images` | 列出所有 Docker 镜像 |
-| `remove_images` | 删除 Docker 镜像 |
-| `pull_image` | 从注册表拉取镜像 |
-| `push_image` | 推送镜像到注册表 |
-| `build_image` | 构建 Docker 镜像 |
-| `tag_image` | 标记 Docker 镜像 |
-| `inspect` | 检查 Docker 对象 |
+| `list_images` | List all Docker images |
+| `remove_images` | Remove Docker images |
+| `pull_image` | Pull an image from a registry |
+| `push_image` | Push an image to a registry |
+| `build_image` | Build a Docker image |
+| `tag_image` | Tag a Docker image |
+| `inspect` | Inspect a Docker object |
 
-### Kubernetes 工具
+### Kubernetes tools
 
-用于与 Kubernetes 集群交互的工具
+Tools to interact with your Kubernetes cluster
 
-#### Pod
+#### Pods
 
-| 工具 | 描述 |
+| Tool | Description |
 |------|-------------|
-| `list_pods` | 列出集群中的所有 Pod |
-| `get_pod_logs` | 获取特定 Pod 的日志 |
+| `list_pods` | List all pods in the cluster |
+| `get_pod_logs` | Get logs from a specific pod |
 
-#### 部署管理
+#### Deployment management
 
 
-| 工具 | 描述 |
+| Tool | Description |
 |------|-------------|
-| `list_deployments` | 列出所有部署 |
-| `create_deployment` | 创建新部署 |
-| `expose_deployment` | 将部署暴露为服务 |
-| `remove_deployment` | 删除部署 |
+| `list_deployments` | List all deployments |
+| `create_deployment` | Create a new deployment |
+| `expose_deployment` | Expose a deployment as a service |
+| `remove_deployment` | Remove a deployment |
 
-#### 服务管理
+#### Service management
 
-| 工具 | 描述 |
+| Tool | Description |
 |------|-------------|
-| `list_services` | 列出所有服务 |
-| `remove_service` | 删除服务 |
+| `list_services` | List all services |
+| `remove_service` | Remove a service |
 
-#### 集群信息
+#### Cluster information
 
-| 工具 | 描述 |
+| Tool | Description |
 |------|-------------|
-| `list_namespaces` | 列出所有命名空间 |
-| `list_nodes` | 列出集群中的所有节点 |
+| `list_namespaces` | List all namespaces |
+| `list_nodes` | List all nodes in the cluster |
 
-### Docker Scout 工具
+### Docker Scout tools
 
-由 Docker Scout 提供支持的安全分析工具。
+Security analysis tools powered by Docker Scout.
 
-| 工具 | 描述 |
+| Tool | Description |
 |------|-------------|
-| `search_for_cves` | 使用 Docker Scout CVEs 分析 Docker 镜像、项目目录或其他制品的漏洞，搜索 CVE |
-| `get_security_recommendations` | 使用 Docker Scout 分析 Docker 镜像、项目目录或其他制品，获取基础镜像更新建议。 |
+| `search_for_cves` | Analyze a Docker image, a project directory, or other artifacts for vulnerabilities using Docker Scout CVEs.search for cves |
+| `get_security_recommendations` | Analyze a Docker image, a project directory, or other artifacts for base image update recommendations using Docker Scout. |
 
-### 开发者工具
+### Developer tools
 
-通用开发实用工具。
+General-purpose development utilities.
 
-| 工具 | 描述 |
+| Tool | Description |
 |------|-------------|
-| `fetch` | 从 URL 获取内容 |
-| `get_command_help` | 获取 CLI 命令的帮助 |
-| `run_command` | 执行 shell 命令 |
-| `filesystem` | 执行文件系统操作 |
-| `git` | 执行 git 命令 |
+| `fetch` | Retrieve content from a URL |
+| `get_command_help` | Get help for CLI commands |
+| `run_command` | Execute shell commands |
+| `filesystem` | Perform filesystem operations |
+| `git` | Execute git commands |
 
-### AI 模型工具
+### AI model tools
 
-| 工具 | 描述 |
+| Tool | Description |
 |------|-------------|
-| `list_models` | 列出所有可用的 Docker 模型 |
-| `pull_model` | 下载 Docker 模型 |
-| `run_model` | 使用提示词查询模型 |
-| `remove_model` | 删除 Docker 模型 |
+| `list_models` | List all available Docker models |
+| `pull_model` | Download an Docker model |
+| `run_model` | Query a model with a prompt |
+| `remove_model` | Remove an Docker model |
 
 ### Docker MCP Catalog
 
-如果你启用了 [MCP Toolkit 功能](../../mcp-catalog-and-toolkit/_index.md)，你已启用和配置的所有工具都可供 Gordon 使用。
+If you have enabled the [MCP Toolkit feature](../../mcp-catalog-and-toolkit/_index.md), 
+all the tools you have enabled and configured are available for Gordon to use.

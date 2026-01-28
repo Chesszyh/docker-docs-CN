@@ -1,43 +1,52 @@
 ---
-description: 了解 Docker Hub 中的仓库个人设置
+description: Learn about personal repository settings in Docker Hub
 keywords: Docker Hub, Hub, repositories, settings
-title: 仓库的个人设置
-linkTitle: 个人设置
+title: Personal settings for repositories
+linkTitle: Personal settings
 toc_max: 3
 weight: 50
 ---
 
-对于您的账户，您可以设置仓库的个人设置，包括默认仓库隐私和自动构建通知。
+For your account, you can set personal settings for repositories, including
+default repository privacy and autobuild notifications.
 
-## 默认仓库隐私
+## Default repository privacy
 
-在 Docker Hub 中创建新仓库时，您可以指定仓库可见性。您也可以随时在 Docker Hub 中更改可见性。
+When creating a new repository in Docker Hub, you are able to specify the
+repository visibility. You can also change the visibility at any time in Docker Hub.
 
-当您使用 `docker push` 命令推送到尚不存在的仓库时，默认设置非常有用。在这种情况下，Docker Hub 会使用您的默认仓库隐私设置自动创建仓库。
+The default setting is useful if you use the `docker push` command to push to a
+repository that doesn't exist yet. In this case, Docker Hub automatically
+creates the repository with your default repository privacy.
 
-### 配置默认仓库隐私
+### Configure default repository privacy
 
-1. 登录 [Docker Hub](https://hub.docker.com)。
-2. 选择 **My Hub** > **Settings** > **Default privacy**。
-3. 为任何新创建的仓库选择 **Default privacy**（默认隐私）。
+1. Sign in to [Docker Hub](https://hub.docker.com).
+2. Select **My Hub** > **Settings** > **Default privacy**.
+3. Select the **Default privacy** for any new repository created.
 
-   - **Public**（公开）：所有新仓库都会出现在 Docker Hub 搜索结果中，任何人都可以拉取。
-   - **Private**（私有）：所有新仓库不会出现在 Docker Hub 搜索结果中，只有您和协作者可以访问。此外，如果仓库是在组织的命名空间中创建的，则具有适用角色或权限的人可以访问该仓库。
+   - **Public**: All new repositories appear in Docker Hub search results and can be
+     pulled by everyone.
+   - **Private**: All new repositories don't appear in Docker Hub search results
+     and are only accessible to you and collaborators. In addition, if the
+     repository is created in an organization's namespace, then the repository
+     is accessible to those with applicable roles or permissions.
 
-4. 选择 **Save**。
+4. Select **Save**.
 
-## 自动构建通知
+## Autobuild notifications
 
-您可以为所有使用自动构建的仓库发送通知到您的电子邮件。
+You can send notifications to your email for all your repositories using
+autobuilds.
 
-### 配置自动构建通知
+### Configure autobuild notifications
 
-1. 登录 [Docker Hub](https://hub.docker.com)。
-2. 选择 **My Hub** > **Repositories** > **Settings** > **Notifications**。
-3. 选择要通过电子邮件接收的通知。
+1. Sign in to [Docker Hub](https://hub.docker.com).
+2. Select **My Hub** > **Repositories** > **Settings** > **Notifications**.
+3. Select the notifications to receive by email.
 
-   - **Off**（关闭）：无通知。
-   - **Only failures**（仅失败）：仅通知构建失败。
-   - **Everything**（全部）：通知成功和失败的构建。
+   - **Off**: No notifications.
+   - **Only failures**: Only notifications about failed builds.
+   - **Everything**: Notifications for successful and failed builds.
 
-4. 选择 **Save**。
+4. Select **Save**.

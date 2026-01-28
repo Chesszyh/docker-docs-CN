@@ -1,31 +1,37 @@
 ---
-title: 调用主机二进制文件
-description: 使用扩展 SDK 从前端添加对主机二进制文件的调用。
+title: Invoke host binaries
+description: Add invocations to host binaries from the frontend with the extension
+  SDK.
 keywords: Docker, extensions, sdk, build
 aliases:
  - /desktop/extensions-sdk/guides/invoke-host-binaries/
 ---
 
-在某些情况下，您的扩展可能需要从主机调用某些命令。例如，您可能想要调用云提供商的 CLI 来创建新资源，或者调用扩展提供的工具的 CLI，甚至是您想在主机上运行的 shell 脚本。
+In some cases, your extension may need to invoke some command from the host. For example, you
+might want to invoke the CLI of your cloud provider to create a new resource, or the CLI of a tool your extension
+provides, or even a shell script that you want to run on the host. 
 
-您可以通过使用扩展 SDK 从容器中执行 CLI 来实现。但是此 CLI 需要访问主机的文件系统，如果它在容器中运行，这既不容易也不快速。
+You could do that by executing the CLI from a container with the extension SDK. But this CLI needs to access the host's filesystem, which isn't easy nor fast if it runs in a container.
 
-然而，主机二进制文件可以从作为扩展一部分附带并部署到主机的扩展可执行文件（如二进制文件、shell 脚本）中调用。由于扩展可以在多个平台上运行，这意味着您需要为要支持的所有平台附带可执行文件。
+However host binaries invoke from the extension executables (as binaries, shell scripts)
+shipped as part of your extension and deployed to the host. As extensions can run on multiple platforms, this
+means that you need to ship the executables for all the platforms you want to support.
 
-了解更多关于扩展[架构](../architecture/_index.md)的信息。
+Learn more about extensions [architecture](../architecture/_index.md).
 
 > [!NOTE]
 >
-> 只有作为扩展一部分附带的可执行文件才能使用 SDK 调用。
+> Only executables shipped as part of the extension can be invoked with the SDK. 
 
-在此示例中，CLI 是一个简单的 `Hello world` 脚本，必须使用参数调用并返回字符串。
+In this example, the CLI is a simple `Hello world` script that must be invoked with a parameter and returns a 
+string.
 
-## 将可执行文件添加到扩展
+## Add the executables to the extension
 
 {{< tabs >}}
 {{< tab name="Mac and Linux" >}}
 
-在文件 `binaries/unix/hello.sh` 中为 macOS 和 Linux 创建一个 `bash` 脚本，内容如下：
+Create a `bash` script for macOS and Linux, in the file `binaries/unix/hello.sh` with the following content:
 
 ```bash
 #!/bin/sh
@@ -35,7 +41,7 @@ echo "Hello, $1!"
 {{< /tab >}}
 {{< tab name="Windows" >}}
 
-在另一个文件 `binaries/windows/hello.cmd` 中为 Windows 创建一个 `batch script`，内容如下：
+Create a `batch script` for Windows in another file `binaries/windows/hello.cmd` with the following content:
 
 ```bash
 @echo off
@@ -45,7 +51,8 @@ echo "Hello, %1!"
 {{< /tab >}}
 {{< /tabs >}}
 
-然后更新 `Dockerfile` 以将 `binaries` 文件夹复制到扩展的容器文件系统中，并使文件可执行。
+Then update the `Dockerfile` to copy the `binaries` folder into the extension's container filesystem and make the
+files executable.
 
 ```dockerfile
 # Copy the binaries into the right folder
@@ -54,10 +61,11 @@ COPY --chmod=0755 binaries/unix/hello.sh /linux/hello.sh
 COPY --chmod=0755 binaries/unix/hello.sh /darwin/hello.sh
 ```
 
-## 从 UI 调用可执行文件
+## Invoke the executable from the UI
 
-在您的扩展中，使用 Docker Desktop Client 对象通过 `ddClient.extension.host.cli.exec()` 函数[调用扩展提供的 shell 脚本](../dev/api/backend.md#invoke-an-extension-binary-on-the-host)。
-在此示例中，二进制文件返回一个字符串作为结果，通过 `result?.stdout` 获取，在扩展视图渲染后立即获得。
+In your extension, use the Docker Desktop Client object to [invoke the shell script](../dev/api/backend.md#invoke-an-extension-binary-on-the-host)
+provided by the extension with the `ddClient.extension.host.cli.exec()` function.
+In this example, the binary returns a string as result, obtained by `result?.stdout`, as soon as the extension view is rendered.
 
 {{< tabs group="framework" >}}
 {{< tab name="React" >}}
@@ -80,7 +88,7 @@ export function App() {
     };
     run();
   }, [ddClient]);
-
+    
   return (
     <div>
       {hello}
@@ -94,31 +102,32 @@ export function App() {
 
 > [!IMPORTANT]
 >
-> 我们还没有 Vue 的示例。[填写表单](https://docs.google.com/forms/d/e/1FAIpQLSdxJDGFJl5oJ06rG7uqtw1rsSBZpUhv_s9HHtw80cytkh2X-Q/viewform?usp=pp_url&entry.1333218187=Vue)
-> 让我们知道您是否需要 Vue 示例。
+> We don't have an example for Vue yet. [Fill out the form](https://docs.google.com/forms/d/e/1FAIpQLSdxJDGFJl5oJ06rG7uqtw1rsSBZpUhv_s9HHtw80cytkh2X-Q/viewform?usp=pp_url&entry.1333218187=Vue)
+> and let us know if you'd like a sample with Vue.
 
 {{< /tab >}}
 {{< tab name="Angular" >}}
 
 > [!IMPORTANT]
 >
-> 我们还没有 Angular 的示例。[填写表单](https://docs.google.com/forms/d/e/1FAIpQLSdxJDGFJl5oJ06rG7uqtw1rsSBZpUhv_s9HHtw80cytkh2X-Q/viewform?usp=pp_url&entry.1333218187=Angular)
-> 让我们知道您是否需要 Angular 示例。
+> We don't have an example for Angular yet. [Fill out the form](https://docs.google.com/forms/d/e/1FAIpQLSdxJDGFJl5oJ06rG7uqtw1rsSBZpUhv_s9HHtw80cytkh2X-Q/viewform?usp=pp_url&entry.1333218187=Angular)
+> and let us know if you'd like a sample with Angular.
 
 {{< /tab >}}
 {{< tab name="Svelte" >}}
 
 > [!IMPORTANT]
 >
-> 我们还没有 Svelte 的示例。[填写表单](https://docs.google.com/forms/d/e/1FAIpQLSdxJDGFJl5oJ06rG7uqtw1rsSBZpUhv_s9HHtw80cytkh2X-Q/viewform?usp=pp_url&entry.1333218187=Svelte)
-> 让我们知道您是否需要 Svelte 示例。
+> We don't have an example for Svelte yet. [Fill out the form](https://docs.google.com/forms/d/e/1FAIpQLSdxJDGFJl5oJ06rG7uqtw1rsSBZpUhv_s9HHtw80cytkh2X-Q/viewform?usp=pp_url&entry.1333218187=Svelte)
+> and let us know if you'd like a sample with Svelte.
 
 {{< /tab >}}
 {{< /tabs >}}
 
-## 配置元数据文件
+## Configure the metadata file
 
-主机二进制文件必须在 `metadata.json` 文件中指定，以便 Docker Desktop 在安装扩展时将它们复制到主机上。一旦扩展被卸载，复制的二进制文件也会被删除。
+The host binaries must be specified in the `metadata.json` file so that Docker Desktop copies them on to the host when installing
+the extension. Once the extension is uninstalled, the binaries that were copied are removed as well.
 
 ```json
 {
@@ -152,4 +161,4 @@ export function App() {
 }
 ```
 
-`path` 必须引用容器内二进制文件的路径。
+The `path` must reference the path of the binary inside the container.

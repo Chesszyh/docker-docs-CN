@@ -1,7 +1,7 @@
 ---
-description: 了解如何在单个容器中运行多个进程
+description: Learn how to run more than one process in a single container
 keywords: docker, supervisor, process management
-title: 在容器中运行多个进程
+title: Run multiple processes in a container
 weight: 20
 aliases:
   - /articles/using_supervisord/
@@ -11,15 +11,33 @@ aliases:
   - /config/containers/multi-service_container/
 ---
 
-容器的主运行进程是 `Dockerfile` 末尾的 `ENTRYPOINT` 和/或 `CMD`。最佳实践是通过每个容器使用一个服务来分离关注点。该服务可能会派生出多个进程（例如，Apache Web 服务器会启动多个工作进程）。拥有多个进程是可以的，但为了充分利用 Docker 的优势，应避免让一个容器负责整体应用程序的多个方面。您可以使用用户定义的网络和共享卷来连接多个容器。
+A container's main running process is the `ENTRYPOINT` and/or `CMD` at the
+end of the `Dockerfile`. It's best practice to separate areas of concern by
+using one service per container. That service may fork into multiple
+processes (for example, Apache web server starts multiple worker processes).
+It's ok to have multiple processes, but to get the most benefit out of Docker,
+avoid one container being responsible for multiple aspects of your overall
+application. You can connect multiple containers using user-defined networks and
+shared volumes.
 
-容器的主进程负责管理它启动的所有进程。在某些情况下，主进程设计不够完善，在容器退出时无法优雅地处理子进程的"回收"（停止）。如果您的进程属于这种情况，可以在运行容器时使用 `--init` 选项。`--init` 标志会在容器中插入一个微型 init 进程作为主进程，并在容器退出时处理所有进程的回收。以这种方式处理进程优于使用完整的 init 进程（如 `sysvinit` 或 `systemd`）来处理容器内的进程生命周期。
+The container's main process is responsible for managing all processes that it
+starts. In some cases, the main process isn't well-designed, and doesn't handle
+"reaping" (stopping) child processes gracefully when the container exits. If
+your process falls into this category, you can use the `--init` option when you
+run the container. The `--init` flag inserts a tiny init-process into the
+container as the main process, and handles reaping of all processes when the
+container exits. Handling such processes this way is superior to using a
+full-fledged init process such as `sysvinit` or `systemd` to handle process
+lifecycle within your container.
 
-如果您需要在一个容器中运行多个服务，可以通过几种不同的方式来实现。
+If you need to run more than one service within a container, you can achieve
+this in a few different ways.
 
-## 使用包装脚本
+## Use a wrapper script
 
-将所有命令放入一个包装脚本中，包含测试和调试信息。将包装脚本作为您的 `CMD` 运行。以下是一个简单的示例。首先是包装脚本：
+Put all of your commands in a wrapper script, complete with testing and
+debugging information. Run the wrapper script as your `CMD`. The following is a
+naive example. First, the wrapper script:
 
 ```bash
 #!/bin/bash
@@ -37,7 +55,7 @@ wait -n
 exit $?
 ```
 
-然后是 Dockerfile：
+Next, the Dockerfile:
 
 ```dockerfile
 # syntax=docker/dockerfile:1
@@ -48,9 +66,11 @@ COPY my_wrapper_script.sh my_wrapper_script.sh
 CMD ./my_wrapper_script.sh
 ```
 
-## 使用 Bash 作业控制
+## Use Bash job controls
 
-如果您有一个需要首先启动并保持运行的主进程，但临时需要运行一些其他进程（可能是为了与主进程交互），那么您可以使用 bash 的作业控制。首先是包装脚本：
+If you have one main process that needs to start first and stay running but you
+temporarily need to run some other processes (perhaps to interact with the main
+process) then you can use bash's job control. First, the wrapper script:
 
 ```bash
 #!/bin/bash
@@ -82,11 +102,16 @@ COPY my_wrapper_script.sh my_wrapper_script.sh
 CMD ./my_wrapper_script.sh
 ```
 
-## 使用进程管理器
+## Use a process manager
 
-使用像 `supervisord` 这样的进程管理器。这比其他选项更复杂，因为它需要您将 `supervisord` 及其配置打包到镜像中（或基于包含 `supervisord` 的镜像），以及它管理的不同应用程序。然后启动 `supervisord`，它会为您管理进程。
+Use a process manager like `supervisord`. This is more involved than the other
+options, as it requires you to bundle `supervisord` and its configuration into
+your image (or base your image on one that includes `supervisord`), along with
+the different applications it manages. Then you start `supervisord`, which
+manages your processes for you.
 
-以下 Dockerfile 示例展示了这种方法。该示例假设以下文件存在于构建上下文的根目录：
+The following Dockerfile example shows this approach. The example assumes that
+these files exist at the root of the build context:
 
 - `supervisord.conf`
 - `my_first_process`
@@ -103,7 +128,8 @@ COPY my_second_process my_second_process
 CMD ["/usr/bin/supervisord"]
 ```
 
-如果您想确保两个进程的 `stdout` 和 `stderr` 输出到容器日志，可以在 `supervisord.conf` 文件中添加以下内容：
+If you want to make sure both processes output their `stdout` and `stderr` to
+the container logs, you can add the following to the `supervisord.conf` file:
 
 ```ini
 [supervisord]

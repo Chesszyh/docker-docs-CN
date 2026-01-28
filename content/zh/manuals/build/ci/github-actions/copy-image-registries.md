@@ -1,11 +1,12 @@
 ---
-title: 使用 GitHub Actions 在镜像仓库之间复制镜像
+title: Copy image between registries with GitHub Actions
 linkTitle: Copy image between registries
-description: 使用 GitHub Actions 构建多平台镜像并在镜像仓库之间复制
+description: Build multi-platform images and copy them between registries with GitHub Actions
 keywords: ci, github actions, gha, buildkit, buildx, registry
 ---
 
-使用 Buildx 构建的[多平台镜像](../../building/multi-platform.md)可以使用 [`buildx imagetools create` 命令](/reference/cli/docker/buildx/imagetools/create.md)从一个镜像仓库复制到另一个镜像仓库：
+[Multi-platform images](../../building/multi-platform.md) built using Buildx can
+be copied from one registry to another using the [`buildx imagetools create` command](/reference/cli/docker/buildx/imagetools/create.md):
 
 ```yaml
 name: ci
@@ -32,7 +33,7 @@ jobs:
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
-
+      
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 

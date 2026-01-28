@@ -1,245 +1,274 @@
 ---
-title: Build 发布说明
+title: Build release notes
 weight: 120
-description: 了解最新的 Buildx 版本的发布说明，包括新特性、错误修复和重大变更
+description: Learn about the new features, bug fixes, and breaking changes for the newest Buildx release
 keywords: build, buildx, buildkit, release notes
 tags: [Release notes]
 toc_max: 2
 ---
 
-本页面包含有关 [Docker Buildx](https://github.com/docker/buildx) 中的新功能、改进和错误修复的信息。
+This page contains information about the new features, improvements, and bug
+fixes in [Docker Buildx](https://github.com/docker/buildx).
 
 ## 0.24.0
 
 {{< release-date date="2025-05-21" >}}
 
-此版本的完整发布说明可[在 GitHub 上](https://github.com/docker/buildx/releases/tag/v0.24.0)获得。
+The full release notes for this release are available
+[on GitHub](https://github.com/docker/buildx/releases/tag/v0.24.0).
 
-### 增强功能
+### Enhancements
 
-- 在 Bake 的 `variable` 块中添加了新的 `type` 属性，以允许对变量进行显式类型定义。[docker/buildx#3167](https://github.com/docker/buildx/pull/3167), [docker/buildx#3189](https://github.com/docker/buildx/pull/3189), [docker/buildx#3198](https://github.com/docker/buildx/pull/3198)
-- 在 `history export` 命令中添加了新的 `--finalize` 标志，以便在导出之前完成构建跟踪。[docker/buildx#3152](https://github.com/docker/buildx/pull/3152)
-- Compose 兼容性已更新至 v2.6.3。[docker/buildx#3191](https://github.com/docker/buildx/pull/3191), [docker/buildx#3171](https://github.com/docker/buildx/pull/3171)
+- New `type` attribute added to the `variable` block in Bake to allow explicit typing of variables. [docker/buildx#3167](https://github.com/docker/buildx/pull/3167), [docker/buildx#3189](https://github.com/docker/buildx/pull/3189), [docker/buildx#3198](https://github.com/docker/buildx/pull/3198)
+- New `--finalize` flag added to the `history export` command to finalize build traces before exporting. [docker/buildx#3152](https://github.com/docker/buildx/pull/3152)
+- Compose compatibility has been updated to v2.6.3. [docker/buildx#3191](https://github.com/docker/buildx/pull/3191), [docker/buildx#3171](https://github.com/docker/buildx/pull/3171)
 
-### 错误修复
+### Bug fixes
 
-- 修复了某些构建在完成后可能会留下临时文件的问题。[docker/buildx#3133](https://github.com/docker/buildx/pull/3133)
-- 修复了在启用 containerd-snapshotter 时使用 Docker 构建返回错误镜像 ID 的问题。[docker/buildx#3136](https://github.com/docker/buildx/pull/3136)
-- 修复了在使用 Bake 的空 `call` 定义时可能发生的 panic。[docker/buildx#3168](https://github.com/docker/buildx/pull/3168)
-- 修复了在 Windows 上使用 Bake 时可能出现的格式错误的 Dockerfile 路径。[docker/buildx#3141](https://github.com/docker/buildx/pull/3141)
-- 修复了 `ls` 命令的 JSON 输出中当前构建器不可用的问题。[docker/buildx#3179](https://github.com/docker/buildx/pull/3179)
-- 修复了 OTEL 上下文未传播到 Docker 守护进程的问题。[docker/buildx#3146](https://github.com/docker/buildx/pull/3146)
+- Fix issue where some builds may leave behind temporary files after completion. [docker/buildx#3133](https://github.com/docker/buildx/pull/3133)
+- Fix wrong image ID returned when building with Docker when containerd-snapshotter is enabled. [docker/buildx#3136](https://github.com/docker/buildx/pull/3136)
+- Fix possible panic when using empty `call` definition with Bake. [docker/buildx#3168](https://github.com/docker/buildx/pull/3168)
+- Fix possible malformed Dockerfile path with Bake on Windows. [docker/buildx#3141](https://github.com/docker/buildx/pull/3141)
+- Fix current builder not being available in JSON output for `ls` command. [docker/buildx#3179](https://github.com/docker/buildx/pull/3179)
+- Fix OTEL context not being propagated to Docker daemon. [docker/buildx#3146](https://github.com/docker/buildx/pull/3146)
 
 ## 0.23.0
 
 {{< release-date date="2025-04-15" >}}
 
-此版本的完整发布说明可[在 GitHub 上](https://github.com/docker/buildx/releases/tag/v0.23.0)获得。
+The full release notes for this release are available
+[on GitHub](https://github.com/docker/buildx/releases/tag/v0.23.0).
 
-### 新功能
+### New
 
-- 新的 `buildx history export` 命令允许将构建记录导出为可以导入到 [Docker Desktop](/desktop/) 的捆绑包。[docker/buildx#3073](https://github.com/docker/buildx/pull/3073)
+- New `buildx history export` command allows exporting the build record into a bundle that can be imported to [Docker Desktop](/desktop/). [docker/buildx#3073](https://github.com/docker/buildx/pull/3073)
 
-### 增强功能
+### Enhancements
 
-- 新的 `--local` 和 `--filter` 标志允许在 `buildx history ls` 中过滤历史记录。[docker/buildx#3091](https://github.com/docker/buildx/pull/3091)
-- Compose 兼容性已更新至 v2.6.0。[docker/buildx#3080](https://github.com/docker/buildx/pull/3080), [docker/buildx#3105](https://github.com/docker/buildx/pull/3105)
-- 在独立模式下支持 CLI 环境变量。[docker/buildx#3087](https://github.com/docker/buildx/pull/3087)
+- New `--local` and `--filter` flags allow filtering history records in `buildx history ls`. [docker/buildx#3091](https://github.com/docker/buildx/pull/3091)
+- Compose compatibility has been updated to v2.6.0. [docker/buildx#3080](https://github.com/docker/buildx/pull/3080), [docker/buildx#3105](https://github.com/docker/buildx/pull/3105)
+- Support CLI environment variables in standalone mode. [docker/buildx#3087](https://github.com/docker/buildx/pull/3087)
 
-### 错误修复
+### Bug fixes
 
-- 修复了 Bake 的 `--print` 输出产生带有未转义变量的输出，从而可能导致后续构建错误的问题。[docker/buildx#3097](https://github.com/docker/buildx/pull/3097)
-- 修复了 `additional_contexts` 字段在指向另一个服务时无法正常工作的问题。[docker/buildx#3090](https://github.com/docker/buildx/pull/3090)
-- 修复了空验证块导致 Bake HCL 解析器崩溃的问题。[docker/buildx#3101](https://github.com/docker/buildx/pull/3101)
+- Fix `--print` output for Bake producing output with unescaped variables that could cause build errors later. [docker/buildx#3097](https://github.com/docker/buildx/pull/3097)
+- Fix `additional_contexts` field not working correctly when pointing to another service. [docker/buildx#3090](https://github.com/docker/buildx/pull/3090)
+- Fix empty validation block crashing the Bake HCL parser. [docker/buildx#3101](https://github.com/docker/buildx/pull/3101)
 
 ## 0.22.0
 
 {{< release-date date="2025-03-18" >}}
 
-此版本的完整发布说明可[在 GitHub 上](https://github.com/docker/buildx/releases/tag/v0.22.0)获得。
+The full release notes for this release are available
+[on GitHub](https://github.com/docker/buildx/releases/tag/v0.22.0).
 
-### 新功能
+### New
 
-- 新的命令 `buildx history import` 允许您将构建记录导入到 Docker Desktop，以便在 [Build UI](/desktop/use-desktop/builds/) 中进行进一步调试。此命令需要安装 [Docker Desktop](/desktop/)。[docker/buildx#3039](https://github.com/docker/buildx/pull/3039)
+- New command `buildx history import` lets you import build records into Docker Desktop for further debugging in the [Build UI](/desktop/use-desktop/builds/). This command requires [Docker Desktop](/desktop/) to be installed. [docker/buildx#3039](https://github.com/docker/buildx/pull/3039)
 
-### 增强功能
+### Enhancements
 
-- 历史记录现在可以通过 `history inspect`、`history logs` 和 `history open` 命令中与最新记录的偏移量来打开（例如 `^1`）。[docker/buildx#3049](https://github.com/docker/buildx/pull/3049), [docker/buildx#3055](https://github.com/docker/buildx/pull/3055)
-- Bake 现在支持在使用 `--set` 进行覆盖时使用 `+=` 运算符进行追加。[docker/buildx#3031](https://github.com/docker/buildx/pull/3031)
-- 如果可用，Docker 容器驱动程序会将 GPU 设备添加到容器中。[docker/buildx#3063](https://github.com/docker/buildx/pull/3063)
-- 现在可以在使用 Bake 进行覆盖时设置注释。[docker/buildx#2997](https://github.com/docker/buildx/pull/2997)
-- NetBSD 二进制文件现在已包含在发行版中。[docker/buildx#2901](https://github.com/docker/buildx/pull/2901)
-- 如果节点启动失败，`inspect` 和 `create` 命令现在会返回错误。[docker/buildx#3062](https://github.com/docker/buildx/pull/3062)
+- History records can now be opened by offset from the latest in `history inspect`, `history logs` and `history open` commands (e.g. `^1`). [docker/buildx#3049](https://github.com/docker/buildx/pull/3049), [docker/buildx#3055](https://github.com/docker/buildx/pull/3055)
+- Bake now supports the `+=` operator to append when using `--set` for overrides. [docker/buildx#3031](https://github.com/docker/buildx/pull/3031)
+- Docker container driver adds GPU devices to the container if available. [docker/buildx#3063](https://github.com/docker/buildx/pull/3063)
+- Annotations can now be set when using overrides with Bake. [docker/buildx#2997](https://github.com/docker/buildx/pull/2997)
+- NetBSD binaries are now included in the release. [docker/buildx#2901](https://github.com/docker/buildx/pull/2901)
+- The `inspect` and `create` commands now return an error if a node fails to boot. [docker/buildx#3062](https://github.com/docker/buildx/pull/3062)
 
-### 错误修复
+### Bug fixes
 
-- 修复了在启用 containerd 镜像存储时使用 Docker 驱动程序重复推送的问题。[docker/buildx#3023](https://github.com/docker/buildx/pull/3023)
-- 修复了 `imagetools create` 命令推送多个标签的问题。现在只有最终清单按标签推送。[docker/buildx#3024](https://github.com/docker/buildx/pull/3024)
+- Fix double pushing with Docker driver when the containerd image store is enabled. [docker/buildx#3023](https://github.com/docker/buildx/pull/3023)
+- Fix multiple tags being pushed for `imagetools create` command. Now only the final manifest pushes by tag. [docker/buildx#3024](https://github.com/docker/buildx/pull/3024)
 
 ## 0.21.0
 
 {{< release-date date="2025-02-19" >}}
 
-此版本的完整发布说明可[在 GitHub 上](https://github.com/docker/buildx/releases/tag/v0.21.0)获得。
+The full release notes for this release are available
+[on GitHub](https://github.com/docker/buildx/releases/tag/v0.21.0).
 
-### 新功能
+### New
 
-- 新的命令 `buildx history trace` 允许您在基于 Jaeger UI 的查看器中检查构建的跟踪，并将一个跟踪与另一个进行比较。[docker/buildx#2904](https://github.com/docker/buildx/pull/2904)
+- New command `buildx history trace` lets you inspect traces of a build in a Jaeger UI-based viewer and compare one trace with another. [docker/buildx#2904](https://github.com/docker/buildx/pull/2904)
 
-### 增强功能
+### Enhancements
 
-- 历史检查命令 `buildx history inspect` 现在支持使用 `--format` 标志进行自定义格式化，以及用于机器可读输出的 JSON 格式。[docker/buildx#2964](https://github.com/docker/buildx/pull/2964)
-- 在 build 和 bake 中支持 CDI 设备授权。[docker/buildx#2994](https://github.com/docker/buildx/pull/2994)
-- 支持的 CDI 设备现在显示在构建器检查中。[docker/buildx#2983](https://github.com/docker/buildx/pull/2983)
-- 当使用 [GitHub Cache 后端 `type=gha`](cache/backends/gha.md) 时，版本 2 或 API 的 URL 现在从环境中读取并发送到 BuildKit。版本 2 后端需要 BuildKit v0.20.0 或更高版本。[docker/buildx#2983](https://github.com/docker/buildx/pull/2983), [docker/buildx#3001](https://github.com/docker/buildx/pull/3001)
+- The history inspection command `buildx history inspect` now supports custom formatting with `--format` flag and JSON formatting for machine-readable output. [docker/buildx#2964](https://github.com/docker/buildx/pull/2964) 
+- Support for CDI device entitlement in build and bake. [docker/buildx#2994](https://github.com/docker/buildx/pull/2994)
+- Supported CDI devices are now shown in the builder inspection. [docker/buildx#2983](https://github.com/docker/buildx/pull/2983)
+- When using [GitHub Cache backend `type=gha`](cache/backends/gha.md), the URL for the Version 2 or API is now read from the environment and sent to BuildKit. Version 2 backend requires BuildKit v0.20.0 or later. [docker/buildx#2983](https://github.com/docker/buildx/pull/2983), [docker/buildx#3001](https://github.com/docker/buildx/pull/3001)
 
-### 错误修复
+### Bug fixes
 
-- 避免了在使用 `--progress=rawjson` 时出现不必要的警告和提示。[docker/buildx#2957](https://github.com/docker/buildx/pull/2957)
-- 修复了调试 shell 有时在 `--on=error` 上无法正常工作的问题。[docker/buildx#2958](https://github.com/docker/buildx/pull/2958)
-- 修复了在 Bake 定义中使用未知变量时可能出现的 panic 错误。[docker/buildx#2960](https://github.com/docker/buildx/pull/2960)
-- 修复了 `buildx ls` 命令的 JSON 格式输出中无效的重复输出。[docker/buildx#2970](https://github.com/docker/buildx/pull/2970)
-- 修复了 bake 处理包含多个注册表引用的 CSV 字符串的缓存导入问题。[docker/buildx#2944](https://github.com/docker/buildx/pull/2944)
-- 修复了拉取 BuildKit 镜像时的错误可能被忽略的问题。[docker/buildx#2988](https://github.com/docker/buildx/pull/2988)
-- 修复了调试 shell 上暂停进度的竞争问题。[docker/buildx#3003](https://github.com/docker/buildx/pull/3003)
+- Avoid unnecessary warnings and prompts when using `--progress=rawjson`. [docker/buildx#2957](https://github.com/docker/buildx/pull/2957)
+- Fix regression with debug shell sometimes not working correctly on `--on=error`. [docker/buildx#2958](https://github.com/docker/buildx/pull/2958)
+- Fix possible panic errors when using an unknown variable in the Bake definition. [docker/buildx#2960](https://github.com/docker/buildx/pull/2960)
+- Fix invalid duplicate output on JSON format formatting of `buildx ls` command. [docker/buildx#2970](https://github.com/docker/buildx/pull/2970)
+- Fix bake handling cache imports with CSV string containing multiple registry references. [docker/buildx#2944](https://github.com/docker/buildx/pull/2944)
+- Fix issue where error from pulling BuildKit image could be ignored. [docker/buildx#2988](https://github.com/docker/buildx/pull/2988)
+- Fix race on pausing progress on debug shell. [docker/buildx#3003](https://github.com/docker/buildx/pull/3003)
 
 ## 0.20.1
 
 {{< release-date date="2025-01-23" >}}
 
-此版本的完整发布说明可[在 GitHub 上](https://github.com/docker/buildx/releases/tag/v0.20.1)获得。
+The full release notes for this release are available
+[on GitHub](https://github.com/docker/buildx/releases/tag/v0.20.1).
 
-### 错误修复
+### Bug fixes
 
-- 修复了 `bake --print` 输出在遗漏证明的某些属性后的问题。[docker/buildx#2937](https://github.com/docker/buildx/pull/2937)
-- 修复了允许缓存导入和导出值使用逗号分隔的镜像引用字符串。[docker/buildx#2944](https://github.com/docker/buildx/pull/2944)
+- Fix `bake --print` output after missing some attributes for attestations. [docker/buildx#2937](https://github.com/docker/buildx/pull/2937)
+- Fix allowing comma-separated image reference strings for cache import and export values. [docker/buildx#2944](https://github.com/docker/buildx/pull/2944)
 
 ## 0.20.0
 
 {{< release-date date="2025-01-20" >}}
 
-此版本的完整发布说明可[在 GitHub 上](https://github.com/docker/buildx/releases/tag/v0.20.0)获得。
+The full release notes for this release are available
+[on GitHub](https://github.com/docker/buildx/releases/tag/v0.20.0).
 
 > [!NOTE]
 >
-> 此版本的 buildx 默认启用 `buildx bake` 命令的文件系统授权检查。如果您的 Bake 定义需要读取或写入当前工作目录之外的文件，您需要使用 `--allow fs=<path|*>` 允许访问这些路径。在终端上，您也可以通过提供的提示交互式地批准这些路径。或者，您可以通过设置 `BUILDX_BAKE_ENTITLEMENTS_FS=0` 来禁用这些检查。此验证在 Buildx v0.19.0+ 中会产生警告，但从当前版本开始会产生错误。有关更多信息，请参阅 [参考文档](/reference/cli/docker/buildx/bake.md#allow)。
+> This version of buildx enables filesystem entitlement checks for `buildx bake`
+> command by default. If your Bake definition needs to read or write files
+> outside your current working directory, you need to allow access to these
+> paths with `--allow fs=<path|*>`. On the terminal, you can also interactively
+> approve these paths with the provided prompt. Optionally, you can disable
+> these checks by setting `BUILDX_BAKE_ENTITLEMENTS_FS=0`. This validation
+> produced a warning in Buildx v0.19.0+, but starting from current release it
+> produces an error. For more information, see the [reference documentation](/reference/cli/docker/buildx/bake.md#allow).
 
-### 新功能
+### New
 
-- 添加了新的 `buildx history` 命令，允许处理已完成和正在运行的构建的构建记录。您可以使用这些命令列出、检查、删除您的构建，重播已完成构建的日志，并在 Docker Desktop Build UI 中快速打开您的构建以进行进一步调试。这是此命令的早期版本，我们期望在未来的版本中添加更多功能。[#2891](https://github.com/docker/buildx/pull/2891), [#2925](https://github.com/docker/buildx/pull/2925)
+- New `buildx history` command has been added that allows working with build records of completed and running builds. You can use these commands to list, inspect, remove your builds, replay the logs of already completed builds, and quickly open your builds in Docker Desktop Build UI for further debugging. This is an early version of this command and we expect to add more features in the future releases. [#2891](https://github.com/docker/buildx/pull/2891), [#2925](https://github.com/docker/buildx/pull/2925)
 
-### 增强功能
+### Enhancements
 
-- Bake：定义现在支持新对象表示法，用于以前需要 CSV 字符串作为输入的字段（`attest`, `output`, `cache-from`, `cache-to`, `secret`, `ssh`）。[docker/buildx#2758](https://github.com/docker/buildx/pull/2758), [docker/buildx#2848](https://github.com/docker/buildx/pull/2848), [docker/buildx#2871](https://github.com/docker/buildx/pull/2871), [docker/buildx#2814](https://github.com/docker/buildx/pull/2814)
-- Bake：文件系统授权现在默认为错误。要禁用此行为，您可以设置 `BUILDX_BAKE_ENTITLEMENTS_FS=0`。[docker/buildx#2875](https://github.com/docker/buildx/pull/2875)
-- Bake：从远程文件推断 Git 身份验证令牌到构建请求。[docker/buildx#2905](https://github.com/docker/buildx/pull/2905)
-- Bake：添加对 `--list` 标志的支持以列出目标和变量。[docker/buildx#2900](https://github.com/docker/buildx/pull/2900), [docker/buildx#2907](https://github.com/docker/buildx/pull/2907)
-- Bake：更新默认定义文件的查找顺序，以便稍后加载带有 "override" 后缀的文件。[docker/buildx#2886](https://github.com/docker/buildx/pull/2886)
+- Bake: Definition now supports new object notation for the fields that previously required CSV strings as inputs (`attest`, `output`, `cache-from`, `cache-to`, `secret`, `ssh`). [docker/buildx#2758](https://github.com/docker/buildx/pull/2758), [docker/buildx#2848](https://github.com/docker/buildx/pull/2848), [docker/buildx#2871](https://github.com/docker/buildx/pull/2871), [docker/buildx#2814](https://github.com/docker/buildx/pull/2814)
+- Bake: Filesystem entitlements now error by default. To disable this behavior, you can set `BUILDX_BAKE_ENTITLEMENTS_FS=0`. [docker/buildx#2875](https://github.com/docker/buildx/pull/2875)
+- Bake: Infer Git authentication token from remote files to build request. [docker/buildx#2905](https://github.com/docker/buildx/pull/2905)
+- Bake: Add support for `--list` flag to list targets and variables. [docker/buildx#2900](https://github.com/docker/buildx/pull/2900), [docker/buildx#2907](https://github.com/docker/buildx/pull/2907)
+- Bake: Update lookup order for default definition files to load the files with "override" suffix later. [docker/buildx#2886](https://github.com/docker/buildx/pull/2886)
 
-### 错误修复
+### Bug fixes
 
-- Bake：修复默认 SSH 套接字的授权检查。[docker/buildx#2898](https://github.com/docker/buildx/pull/2898)
-- Bake：修复组的默认目标中缺少默认目标的问题。[docker/buildx#2863](https://github.com/docker/buildx/pull/2863)
-- Bake：修复来自目标平台的命名上下文匹配。[docker/buildx#2877](https://github.com/docker/buildx/pull/2877)
-- 修复安静进度模式缺少文档的问题。[docker/buildx#2899](https://github.com/docker/buildx/pull/2899)
-- 修复加载层时缺少最后进度的问题。[docker/buildx#2876](https://github.com/docker/buildx/pull/2876)
-- 在创建构建器之前验证 BuildKit 配置。[docker/buildx#2864](https://github.com/docker/buildx/pull/2864)
+- Bake: Fix entitlements check for default SSH socket. [docker/buildx#2898](https://github.com/docker/buildx/pull/2898)
+- Bake: Fix missing default target in group's default targets. [docker/buildx#2863](https://github.com/docker/buildx/pull/2863)
+- Bake: Fix named context from target platform matching. [docker/buildx#2877](https://github.com/docker/buildx/pull/2877)
+- Fix missing documentation for quiet progress mode. [docker/buildx#2899](https://github.com/docker/buildx/pull/2899)
+- Fix missing last progress from loading layers. [docker/buildx#2876](https://github.com/docker/buildx/pull/2876)
+- Validate BuildKit configuration before creating a builder. [docker/buildx#2864](https://github.com/docker/buildx/pull/2864)
 
-### 打包
+### Packaging
 
-- Compose 兼容性已更新至 v2.4.7。[docker/buildx#2893](https://github.com/docker/buildx/pull/2893), [docker/buildx#2857](https://github.com/docker/buildx/pull/2857), [docker/buildx#2829](https://github.com/docker/buildx/pull/2829)
+- Compose compatibility has been updated to v2.4.7. [docker/buildx#2893](https://github.com/docker/buildx/pull/2893), [docker/buildx#2857](https://github.com/docker/buildx/pull/2857), [docker/buildx#2829](https://github.com/docker/buildx/pull/2829)
 
 ## 0.19.1
 
 {{< release-date date="2024-11-27" >}}
 
-此版本的完整发布说明可[在 GitHub 上](https://github.com/docker/buildx/releases/tag/v0.19.1)获得。
+The full release notes for this release are available
+[on GitHub](https://github.com/docker/buildx/releases/tag/v0.19.1).
 
-### 错误修复
+### Bug fixes
 
-- 撤销了 v0.19.0 中的更改，该更改为 Bake 定义中以前需要 CSV 字符串的字段添加了新的对象表示法。此增强功能被撤销是因为在某些边缘情况下发现了向后不兼容的问题。此功能现已推迟到 v0.20.0 版本。[docker/buildx#2824](https://github.com/docker/buildx/pull/2824)
+- Reverted the change in v0.19.0 that added new object notation for the fields
+  that previously required CSV strings in Bake definition. This enhancement was
+  reverted because of backwards incompatibility issues were discovered in some
+  edge cases. This feature has now been postponed to the v0.20.0 release.
+  [docker/buildx#2824](https://github.com/docker/buildx/pull/2824)
 
 ## 0.19.0
 
 {{< release-date date="2024-11-27" >}}
 
-此版本的完整发布说明可[在 GitHub 上](https://github.com/docker/buildx/releases/tag/v0.19.0)获得。
+The full release notes for this release are available
+[on GitHub](https://github.com/docker/buildx/releases/tag/v0.19.0).
 
-### 新功能
+### New
 
-- Bake 现在要求您在构建需要读取或写入当前工作目录之外的文件时允许文件系统授权。
+- Bake now requires you to allow filesystem entitlements when your build needs
+  to read or write files outside of your current working directory.
   [docker/buildx#2796](https://github.com/docker/buildx/pull/2796),
   [docker/buildx#2812](https://github.com/docker/buildx/pull/2812).
 
-  要允许文件系统授权，请使用 `docker buildx bake` 命令的 `--allow fs.read=<path>` 标志。
+  To allow filesystem entitlements, use the `--allow fs.read=<path>` flag for
+  the `docker buildx bake` command.
 
-  此功能目前仅在使用本地 Bake 定义时报告警告，但从 v0.20 版本开始将产生错误。要在当前版本中启用错误，您可以设置 `BUILDX_BAKE_ENTITLEMENTS_FS=1`。
+  This feature currently only reports a warning when using a local Bake
+  definition, but will start to produce an error starting from the v0.20
+  release. To enable the error in the current release, you can set
+  `BUILDX_BAKE_ENTITLEMENTS_FS=1`.
 
-### 增强功能
+### Enhancements
 
-- Bake 定义现在支持新对象表示法，用于以前需要 CSV 字符串作为输入的字段。[docker/buildx#2758](https://github.com/docker/buildx/pull/2758)
+- Bake definition now supports new object notation for the fields that previously required CSV strings as inputs. [docker/buildx#2758](https://github.com/docker/buildx/pull/2758)
 
   > [!NOTE]
-  > 此增强功能因错误在 [v0.19.1](#0191) 中被撤销。
+  > This enhancement was reverted in [v0.19.1](#0191) due to a bug.
 
-- Bake 定义现在允许对变量定义验证条件。[docker/buildx#2794](https://github.com/docker/buildx/pull/2794)
-- 元数据文件值现在可以包含 JSON 数组值。[docker/buildx#2777](https://github.com/docker/buildx/pull/2777)
-- 改进了使用不正确格式的标签时的错误消息。[docker/buildx#2778](https://github.com/docker/buildx/pull/2778)
-- FreeBSD 和 OpenBSD 工件现在已包含在发行版中。[docker/buildx#2774](https://github.com/docker/buildx/pull/2774), [docker/buildx#2775](https://github.com/docker/buildx/pull/2775), [docker/buildx#2781](https://github.com/docker/buildx/pull/2781)
+- Bake definition now allows defining validation conditions to variables. [docker/buildx#2794](https://github.com/docker/buildx/pull/2794)
+- Metadata file values can now contain JSON array values. [docker/buildx#2777](https://github.com/docker/buildx/pull/2777)
+- Improved error messages when using an incorrect format for labels. [docker/buildx#2778](https://github.com/docker/buildx/pull/2778)
+- FreeBSD and OpenBSD artifacts are now included in the release. [docker/buildx#2774](https://github.com/docker/buildx/pull/2774), [docker/buildx#2775](https://github.com/docker/buildx/pull/2775), [docker/buildx#2781](https://github.com/docker/buildx/pull/2781)
 
-### 错误修复
+### Bug fixes
 
-- 修复了打印包含空 Compose 网络的 Bake 定义的问题。[docker/buildx#2790](https://github.com/docker/buildx/pull/2790)。
+- Fixed an issue with printing Bake definitions containing empty Compose networks. [docker/buildx#2790](https://github.com/docker/buildx/pull/2790).
 
-### 打包
+### Packaging
 
-- Compose 支持已更新至 v2.4.4。[docker/buildx#2806](https://github.com/docker/buildx/pull/2806) [docker/buildx#2780](https://github.com/docker/buildx/pull/2780)。
+- Compose support has been updated to v2.4.4. [docker/buildx#2806](https://github.com/docker/buildx/pull/2806) [docker/buildx#2780](https://github.com/docker/buildx/pull/2780).
 
 ## 0.18.0
 
 {{< release-date date="2024-10-31" >}}
 
-此版本的完整发布说明可[在 GitHub 上](https://github.com/docker/buildx/releases/tag/v0.18.0)获得。
+The full release notes for this release are available
+[on GitHub](https://github.com/docker/buildx/releases/tag/v0.18.0).
 
-### 新功能
+### New
 
-- `docker buildx inspect` 命令现在显示使用 TOML 文件设置的 BuildKit 守护进程配置选项。[docker/buildx#2684](https://github.com/docker/buildx/pull/2684)
-- `docker buildx ls` 命令输出现在默认更紧凑，通过压缩平台列表实现。可以使用新的 `--no-trunc` 选项获取完整列表。[docker/buildx#2138](https://github.com/docker/buildx/pull/2138), [docker/buildx#2717](https://github.com/docker/buildx/pull/2717)
-- `docker buildx prune` 命令现在支持新的 `--max-used-space` 和 `--min-free-space` 过滤器，适用于 BuildKit v0.17.0+ 构建器。[docker/buildx#2766](https://github.com/docker/buildx/pull/2766)
+- The `docker buildx inspect` command now displays BuildKit daemon configuration options set with a TOML file. [docker/buildx#2684](https://github.com/docker/buildx/pull/2684)
+- The `docker buildx ls` command output is now more compact by default by compacting the platform list. A new `--no-trunc` option can be used for the full list. [docker/buildx#2138](https://github.com/docker/buildx/pull/2138), [docker/buildx#2717](https://github.com/docker/buildx/pull/2717)
+- The `docker buildx prune` command now supports new `--max-used-space` and `--min-free-space` filters with BuildKit v0.17.0+ builders. [docker/buildx#2766](https://github.com/docker/buildx/pull/2766)
 
-### 增强功能
+### Enhancements
 
-- 允许使用 [`BUILDX_CPU_PROFILE`](/manuals/build/building/variables.md#buildx_cpu_profile) 和 [`BUILDX_MEM_PROFILE`](/manuals/build/building/variables.md#buildx_mem_profile) 环境变量使用 `pprof` 捕获 CPU 和内存分析。[docker/buildx#2746](https://github.com/docker/buildx/pull/2746)
-- 增加了标准输入的最大 Dockerfile 大小。[docker/buildx#2716](https://github.com/docker/buildx/pull/2716), [docker/buildx#2719](https://github.com/docker/buildx/pull/2719)
-- 减少了内存分配。[docker/buildx#2724](https://github.com/docker/buildx/pull/2724), [docker/buildx#2713](https://github.com/docker/buildx/pull/2713)
-- `docker buildx bake` 的 `--list-targets` 和 `--list-variables` 标志不再需要初始化构建器。[docker/buildx#2763](https://github.com/docker/buildx/pull/2763)
+- Allow capturing of CPU and memory profiles with `pprof` using the [`BUILDX_CPU_PROFILE`](/manuals/build/building/variables.md#buildx_cpu_profile) and [`BUILDX_MEM_PROFILE`](/manuals/build/building/variables.md#buildx_mem_profile) environment variables. [docker/buildx#2746](https://github.com/docker/buildx/pull/2746)
+- Maximum Dockerfile size from standard input has increased. [docker/buildx#2716](https://github.com/docker/buildx/pull/2716), [docker/buildx#2719](https://github.com/docker/buildx/pull/2719)
+- Memory allocations have been reduced. [docker/buildx#2724](https://github.com/docker/buildx/pull/2724), [docker/buildx#2713](https://github.com/docker/buildx/pull/2713)
+- The `--list-targets` and `--list-variables` flags for `docker buildx bake` no longer require initialization of the builder. [docker/buildx#2763](https://github.com/docker/buildx/pull/2763)
 
-### 错误修复
+### Bug fixes
 
-- 检查警告现在打印有问题的 Dockerfile 的完整文件路径（相对于当前工作目录）。[docker/buildx#2672](https://github.com/docker/buildx/pull/2672)
-- `--check` 和 `--call` 选项的后备镜像已更新为正确的引用。[docker/buildx#2705](https://github.com/docker/buildx/pull/2705)
-- 修复了构建详细信息链接在实验模式下未显示的问题。[docker/buildx#2722](https://github.com/docker/buildx/pull/2722)
-- 修复了 Bake 的无效目标链接验证问题。[docker/buildx#2700](https://github.com/docker/buildx/pull/2700)
-- 修复了运行无效命令时缺少错误消息的问题。[docker/buildx#2741](https://github.com/docker/buildx/pull/2741)
-- 修复了 `--call` 请求中本地状态可能出现的错误警告。[docker/buildx#2754](https://github.com/docker/buildx/pull/2754)
-- 修复了在 Bake 中使用链接目标时可能出现的授权问题。[docker/buildx#2701](https://github.com/docker/buildx/pull/2701)
-- 修复了使用 `sudo` 运行 Buildx 后访问本地状态时可能出现的权限问题。[docker/buildx#2745](https://github.com/docker/buildx/pull/2745)
+- Check warnings now print the full filepath to the offending Dockerfile, relative to the current working directory. [docker/buildx#2672](https://github.com/docker/buildx/pull/2672)
+- Fallback images for the `--check` and `--call` options have been updated to correct references. [docker/buildx#2705](https://github.com/docker/buildx/pull/2705)
+- Fix issue with the build details link not showing in experimental mode. [docker/buildx#2722](https://github.com/docker/buildx/pull/2722)
+- Fix validation issue with invalid target linking for Bake. [docker/buildx#2700](https://github.com/docker/buildx/pull/2700)
+- Fix missing error message when running an invalid command. [docker/buildx#2741](https://github.com/docker/buildx/pull/2741)
+- Fix possible false warnings for local state in `--call` requests. [docker/buildx#2754](https://github.com/docker/buildx/pull/2754)
+- Fix potential issues with entitlements when using linked targets in Bake. [docker/buildx#2701](https://github.com/docker/buildx/pull/2701)
+- Fix possible permission issues when accessing local state after running Buildx with `sudo`. [docker/buildx#2745](https://github.com/docker/buildx/pull/2745)
 
-### 打包
+### Packaging
 
-- Compose 兼容性已更新至 v2.4.1。[docker/buildx#2760](https://github.com/docker/buildx/pull/2760)
+- Compose compatibility has been updated to v2.4.1. [docker/buildx#2760](https://github.com/docker/buildx/pull/2760)
 
 ## 0.17.1
 
 {{< release-date date="2024-09-13" >}}
 
-此版本的完整发布说明可[在 GitHub 上](https://github.com/docker/buildx/releases/tag/v0.17.1)获得。
+The full release notes for this release are available
+[on GitHub](https://github.com/docker/buildx/releases/tag/v0.17.1).
 
-### 错误修复
+### Bug fixes
 
-- 如果在 [BuildKit 配置文件](/manuals/build/buildkit/toml-configuration.md)中设置了授权，则不再在为 `docker-container` 和 `kubernetes` 驱动程序创建构建器时自动设置 `network.host` 授权标志。[docker/buildx#2685]
-- 当 `docker buildx bake --print` 为空时，不再打印 `network` 字段。[docker/buildx#2689]
-- 修复 WSL2 下的遥测套接字路径。[docker/buildx#2698]
+- Do not set `network.host` entitlement flag automatically on builder creation
+  for the `docker-container` and `kubernetes` drivers if the entitlement is set
+  in the [BuildKit configuration file](/manuals/build/buildkit/toml-configuration.md). [docker/buildx#2685]
+- Do not print the `network` field with `docker buildx bake --print` when empty. [docker/buildx#2689]
+- Fix telemetry socket path under WSL2. [docker/buildx#2698]
 
 [docker/buildx#2685]: https://github.com/docker/buildx/pull/2685
 [docker/buildx#2689]: https://github.com/docker/buildx/pull/2689
@@ -249,34 +278,35 @@ toc_max: 2
 
 {{< release-date date="2024-09-10" >}}
 
-此版本的完整发布说明可[在 GitHub 上](https://github.com/docker/buildx/releases/tag/v0.17.0)获得。
+The full release notes for this release are available
+[on GitHub](https://github.com/docker/buildx/releases/tag/v0.17.0).
 
-### 新功能
+### New
 
-- 向 Bake 添加了 `basename`、`dirname` 和 `sanitize` 函数。[docker/buildx#2649]
-- 启用对 Bake 授权的支持，以允许在构建期间进行特权操作。[docker/buildx#2666]
+- Add `basename`, `dirname` and `sanitize` functions to Bake. [docker/buildx#2649]
+- Enable support for Bake entitlements to allow privileged operations during builds. [docker/buildx#2666]
 
-### 增强功能
+### Enhancements
 
-- 引入 Bake 命令的 CLI 指标跟踪。[docker/buildx#2610]
-- 向所有构建命令添加 `--debug`。以前，它仅在顶级 `docker` 和 `docker buildx` 命令中可用。[docker/buildx#2660]
-- 允许从 stdin 进行多节点构建器的构建。[docker/buildx#2656]
-- 改进 `kubernetes` 驱动程序初始化。[docker/buildx#2606]
-- 在使用 Bake 构建多个目标时，在错误消息中包含目标名称。[docker/buildx#2651]
-- 优化指标处理，以减少进度跟踪期间的性能开销。[docker/buildx#2641]
-- 完成规则检查后显示警告数量。[docker/buildx#2647]
-- 跳过前端方法的构建引用和来源元数据。[docker/buildx#2650]
-- 添加对在 Bake 文件（HCL 和 JSON）中设置网络模式的支持。[docker/buildx#2671]
-- 当与 `--call` 标志一起设置时，支持 `--metadata-file` 标志。[docker/buildx#2640]
-- 对多个 Bake 目标使用的本地上下文使用共享会话。[docker/buildx#2615], [docker/buildx#2607], [docker/buildx#2663]
+- Introduce CLI metrics tracking for Bake commands. [docker/buildx#2610]
+- Add `--debug` to all build commands. Previously, it was only available on the top-level `docker` and `docker buildx` commands. [docker/buildx#2660]
+- Allow builds from stdin for multi-node builders. [docker/buildx#2656]
+- Improve `kubernetes` driver initialization. [docker/buildx#2606]
+- Include target name in the error message when building multiple targets with Bake. [docker/buildx#2651]
+- Optimize metrics handling to reduce performance overhead during progress tracking. [docker/buildx#2641]
+- Display the number of warnings after completing a rule check. [docker/buildx#2647]
+- Skip build ref and provenance metadata for frontend methods. [docker/buildx#2650]
+- Add support for setting network mode in Bake files (HCL and JSON). [docker/buildx#2671]
+- Support the `--metadata-file` flag when set along the `--call` flag. [docker/buildx#2640]
+- Use shared session for local contexts used by multiple Bake targets. [docker/buildx#2615], [docker/buildx#2607], [docker/buildx#2663]
 
-### 错误修复
+### Bug fixes
 
-- 改进内存管理以避免不必要的分配。[docker/buildx#2601]
+- Improve memory management to avoid unnecessary allocations. [docker/buildx#2601]
 
-### 打包更新
+### Packaging updates
 
-- Compose 支持已更新至 v2.1.6。[docker/buildx#2547]
+- Compose support has been updated to v2.1.6. [docker/buildx#2547]
 
 [docker/buildx#2547]: https://github.com/docker/buildx/pull/2547/
 [docker/buildx#2601]: https://github.com/docker/buildx/pull/2601/
@@ -300,218 +330,228 @@ toc_max: 2
 
 {{< release-date date="2024-07-25" >}}
 
-此版本的完整发布说明可[在 GitHub 上](https://github.com/docker/buildx/releases/tag/v0.16.2)获得。
+The full release notes for this release are available
+[on GitHub](https://github.com/docker/buildx/releases/tag/v0.16.2).
 
-### 错误修复
+### Bug fixes
 
-- 修复了将本地缓存导出到 NFS 卷时可能出现的“错误的文件描述符”错误 [docker/buildx#2629](https://github.com/docker/buildx/pull/2629/)
+- Fix possible "bad file descriptor" error when exporting local cache to NFS volume [docker/buildx#2629](https://github.com/docker/buildx/pull/2629/)
 
 ## 0.16.1
 
 {{< release-date date="2024-07-18" >}}
 
-此版本的完整发布说明可[在 GitHub 上](https://github.com/docker/buildx/releases/tag/v0.16.1)获得。
+The full release notes for this release are available
+[on GitHub](https://github.com/docker/buildx/releases/tag/v0.16.1).
 
-### 错误修复
+### Bug fixes
 
-- 修复了 `buildx bake --print` 命令中由于数据竞争可能导致的 panic [docker/buildx#2603](https://github.com/docker/buildx/pull/2603/)
-- 改进关于使用 `--debug` 标志检查构建警告的消息 [docker/buildx#2612](https://github.com/docker/buildx/pull/2612/)
+- Fix possible panic due to data race in `buildx bake --print` command [docker/buildx#2603](https://github.com/docker/buildx/pull/2603/)
+- Improve messaging about using `--debug` flag to inspect build warnings [docker/buildx#2612](https://github.com/docker/buildx/pull/2612/)
 
 ## 0.16.0
 
 {{< release-date date="2024-07-11" >}}
 
-此版本的完整发布说明可[在 GitHub 上](https://github.com/docker/buildx/releases/tag/v0.16.0)获得。
+The full release notes for this release are available
+[on GitHub](https://github.com/docker/buildx/releases/tag/v0.16.0).
 
-### 新功能
+### New
 
-- Bake 命令现在支持 `--call` 和 `--check` 标志以及目标定义中的 `call` 属性，用于选择自定义前端方法。[docker/buildx#2556](https://github.com/docker/buildx/pull/2556/), [docker/buildx#2576](https://github.com/docker/buildx/pull/2576/)
-- {{< badge color=violet text=Experimental >}} Bake 现在支持 `--list-targets` 和 `--list-variables` 标志，用于检查项目的定义和可能的配置选项。[docker/buildx#2556](https://github.com/docker/buildx/pull/2556/)
-- Bake 定义变量和目标支持新的 `description` 属性，用于定义基于文本的描述，可以使用例如 `--list-targets` 和 `--list-variables` 进行检查。[docker/buildx#2556](https://github.com/docker/buildx/pull/2556/)
-- Bake 现在支持打印构建检查违规的警告。[docker/buildx#2501](https://github.com/docker/buildx/pull/2501/)
+- Bake command now supports `--call` and `--check` flags and `call` attribute in target definitions for selecting custom frontend methods. [docker/buildx#2556](https://github.com/docker/buildx/pull/2556/), [docker/buildx#2576](https://github.com/docker/buildx/pull/2576/)
+- {{< badge color=violet text=Experimental >}} Bake now supports `--list-targets` and `--list-variables` flags for inspecting the definition and possible configuration options for your project. [docker/buildx#2556](https://github.com/docker/buildx/pull/2556/)
+- Bake definition variables and targets supports new `description` attribute for defining text-based description that can be inspected using e.g. `--list-targets` and `--list-variables`. [docker/buildx#2556](https://github.com/docker/buildx/pull/2556/)
+- Bake now supports printing warnings for build check violations. [docker/buildx#2501](https://github.com/docker/buildx/pull/2501/)
 
-### 增强功能
+### Enhancements
 
-- 构建命令现在确保多节点构建对每个节点使用相同的构建引用。[docker/buildx#2572](https://github.com/docker/buildx/pull/2572/)
-- 避免重复请求并提高远程驱动程序的性能。[docker/buildx#2501](https://github.com/docker/buildx/pull/2501/)
-- 现在可以通过设置 `BUILDX_METADATA_WARNINGS=1` 环境变量将构建警告保存到元数据文件。[docker/buildx#2551](https://github.com/docker/buildx/pull/2551/), [docker/buildx#2521](https://github.com/docker/buildx/pull/2521/), [docker/buildx#2550](https://github.com/docker/buildx/pull/2550/)
-- 改进未检测到警告时 `--check` 标志的消息。[docker/buildx#2549](https://github.com/docker/buildx/pull/2549/)
+- The build command now ensures that multi-node builds use the same build reference for each node. [docker/buildx#2572](https://github.com/docker/buildx/pull/2572/)
+- Avoid duplicate requests and improve the performance of remote driver. [docker/buildx#2501](https://github.com/docker/buildx/pull/2501/)
+- Build warnings can now be saved to the metadata file by setting the `BUILDX_METADATA_WARNINGS=1` environment variable. [docker/buildx#2551](https://github.com/docker/buildx/pull/2551/), [docker/buildx#2521](https://github.com/docker/buildx/pull/2521/), [docker/buildx#2550](https://github.com/docker/buildx/pull/2550/)
+- Improve message of the `--check` flag when no warnings are detected. [docker/buildx#2549](https://github.com/docker/buildx/pull/2549/)
 
-### 错误修复
+### Bug fixes
 
-- 修复了构建期间对多类型注释的支持。[docker/buildx#2522](https://github.com/docker/buildx/pull/2522/)
-- 修复了一个回归，即由于增量传输重用，切换项目时可能会发生效率低下的文件传输。[docker/buildx#2558](https://github.com/docker/buildx/pull/2558/)
-- 修复了链式 Bake 目标的错误默认加载。[docker/buildx#2583](https://github.com/docker/buildx/pull/2583/)
-- 修复了 Bake 中不正确的 `COMPOSE_PROJECT_NAME` 处理。[docker/buildx#2579](https://github.com/docker/buildx/pull/2579/)
-- 修复了对多节点构建的索引注释支持。[docker/buildx#2546](https://github.com/docker/buildx/pull/2546/)
-- 修复了从远程上下文捕获构建的来源元数据。[docker/buildx#2560](https://github.com/docker/buildx/pull/2560/)
+- Fix support for multi-type annotations during build. [docker/buildx#2522](https://github.com/docker/buildx/pull/2522/)
+- Fix a regression where possible inefficient transfer of files would occur when switching projects due to incremental transfer reuse. [docker/buildx#2558](https://github.com/docker/buildx/pull/2558/)
+- Fix incorrect default load for chained Bake targets. [docker/buildx#2583](https://github.com/docker/buildx/pull/2583/)
+- Fix incorrect `COMPOSE_PROJECT_NAME` handling in Bake. [docker/buildx#2579](https://github.com/docker/buildx/pull/2579/)
+- Fix index annotations support for multi-node builds. [docker/buildx#2546](https://github.com/docker/buildx/pull/2546/)
+- Fix capturing provenance metadata for builds from remote context. [docker/buildx#2560](https://github.com/docker/buildx/pull/2560/)
 
-### 打包更新
+### Packaging updates
 
-- Compose 支持已更新至 v2.1.3。[docker/buildx#2547](https://github.com/docker/buildx/pull/2547/)
+- Compose support has been updated to v2.1.3. [docker/buildx#2547](https://github.com/docker/buildx/pull/2547/)
 
 ## 0.15.1
 
 {{< release-date date="2024-06-18" >}}
 
-此版本的完整发布说明可[在 GitHub 上](https://github.com/docker/buildx/releases/tag/v0.15.1)获得。
+The full release notes for this release are available
+[on GitHub](https://github.com/docker/buildx/releases/tag/v0.15.1).
 
-### 错误修复
+### Bug fixes
 
-- 修复了使用 `--check` 时某些验证请求缺少构建错误和退出代码的问题。[docker/buildx#2518](https://github.com/docker/buildx/pull/2518/)
-- 更新 `--check` 的后备镜像至 Dockerfile v1.8.1。[docker/buildx#2538](https://github.com/docker/buildx/pull/2538/)
+- Fix missing build error and exit code for some validation requests with `--check`. [docker/buildx#2518](https://github.com/docker/buildx/pull/2518/)
+- Update fallback image for `--check` to Dockerfile v1.8.1. [docker/buildx#2538](https://github.com/docker/buildx/pull/2538/)
 
 ## 0.15.0
 
 {{< release-date date="2024-06-11" >}}
 
-此版本的完整发布说明可[在 GitHub 上](https://github.com/docker/buildx/releases/tag/v0.15.0)获得。
+The full release notes for this release are available
+[on GitHub](https://github.com/docker/buildx/releases/tag/v0.15.0).
 
-### 新功能
+### New
 
-- 新的 `--call` 选项允许设置构建的评估方法，取代了以前的实验性 `--print` 标志。[docker/buildx#2498](https://github.com/docker/buildx/pull/2498/), [docker/buildx#2487](https://github.com/docker/buildx/pull/2487/), [docker/buildx#2513](https://github.com/docker/buildx/pull/2513/)
+- New `--call` option allows setting evaluation method for a build, replacing the previous experimental `--print` flag. [docker/buildx#2498](https://github.com/docker/buildx/pull/2498/), [docker/buildx#2487](https://github.com/docker/buildx/pull/2487/), [docker/buildx#2513](https://github.com/docker/buildx/pull/2513/)
 
-  除了默认的 `build` 方法外，Dockerfile 前端还实现了以下方法：
+  In addition to the default `build` method, the following methods are implemented by Dockerfile frontend:
 
-  - [`--call=check`](/reference/cli/docker/buildx/build.md#check): 运行构建配置的验证例程。有关构建检查的更多信息，请参阅 [构建检查](/manuals/build/checks.md)
-  - [`--call=outline`](/reference/cli/docker/buildx/build.md#call-outline): 显示当前构建将使用的配置，包括您的构建将使用的所有构建参数、密钥、SSH 挂载等。
-  - [`--call=targets`](/reference/cli/docker/buildx/build.md#call-targets): 显示所有可用目标及其描述。
+  - [`--call=check`](/reference/cli/docker/buildx/build.md#check): Run validation routines for your build configuration. For more information about build checks, see [Build checks](/manuals/build/checks.md)
+  - [`--call=outline`](/reference/cli/docker/buildx/build.md#call-outline): Show configuration that would be used by current build, including all build arguments, secrets, SSH mounts, etc., that your build would use.
+  - [`--call=targets`](/reference/cli/docker/buildx/build.md#call-targets): Show all available targets and their descriptions.
 
-- `docker buildx imagetools create` 命令添加了新的 `--prefer-index` 标志，用于控制从单个单平台镜像清单创建镜像的行为。[docker/buildx#2482](https://github.com/docker/buildx/pull/2482/)
-- [`kubernetes` 驱动程序](/manuals/build/builders/drivers/kubernetes.md) 现在支持 `timeout` 选项用于配置部署超时。[docker/buildx#2492](https://github.com/docker/buildx/pull/2492/)
-- 为构建警告类型添加了新的指标定义。[docker/buildx#2482](https://github.com/docker/buildx/pull/2482/), [docker/buildx#2507](https://github.com/docker/buildx/pull/2507/)
-- [`buildx prune`](/reference/cli/docker/buildx/prune.md) 和 [`buildx du`](/reference/cli/docker/buildx/du.md) 命令现在支持否定和前缀过滤器。[docker/buildx#2473](https://github.com/docker/buildx/pull/2473/)
-- 使用 Bake 构建 Compose 文件现在支持传递 SSH 转发配置。[docker/buildx#2445](https://github.com/docker/buildx/pull/2445/)
-- 修复了使用自定义 TLS 证书配置 `kubernetes` 驱动程序的问题。[docker/buildx#2454](https://github.com/docker/buildx/pull/2454/)
-- 修复了加载节点时并发访问 kubeconfig 的问题。[docker/buildx#2497](https://github.com/docker/buildx/pull/2497/)
+- New `--prefer-index` flag has been added to the `docker buildx imagetools create` command to control the behavior of creating image out of one single-platform image manifest. [docker/buildx#2482](https://github.com/docker/buildx/pull/2482/)
+- The [`kubernetes` driver](/manuals/build/builders/drivers/kubernetes.md) now supports a `timeout` option for configuring deployment timeout. [docker/buildx#2492](https://github.com/docker/buildx/pull/2492/)
+- New metrics definitions have been added for build warning types. [docker/buildx#2482](https://github.com/docker/buildx/pull/2482/), [docker/buildx#2507](https://github.com/docker/buildx/pull/2507/)
+- The [`buildx prune`](/reference/cli/docker/buildx/prune.md) and [`buildx du`](/reference/cli/docker/buildx/du.md) commands now support negative and prefix filters. [docker/buildx#2473](https://github.com/docker/buildx/pull/2473/)
+- Building Compose files with Bake now supports passing SSH forwarding configuration. [docker/buildx#2445](https://github.com/docker/buildx/pull/2445/)
+- Fix issue with configuring the `kubernetes` driver with custom TLS certificates. [docker/buildx#2454](https://github.com/docker/buildx/pull/2454/)
+- Fix concurrent kubeconfig access when loading nodes. [docker/buildx#2497](https://github.com/docker/buildx/pull/2497/)
 
-### 打包更新
+### Packaging updates
 
-- Compose 支持已更新至 v2.1.2。[docker/buildx#2502](https://github.com/docker/buildx/pull/2502/), [docker/buildx#2425](https://github.com/docker/buildx/pull/2425/)
+- Compose support has been updated to v2.1.2. [docker/buildx#2502](https://github.com/docker/buildx/pull/2502/), [docker/buildx#2425](https://github.com/docker/buildx/pull/2425/)
 
 ## 0.14.0
 
 {{< release-date date="2024-04-18" >}}
 
-此版本的完整发布说明可[在 GitHub 上](https://github.com/docker/buildx/releases/tag/v0.14.0)获得。
+The full release notes for this release are available
+[on GitHub](https://github.com/docker/buildx/releases/tag/v0.14.0).
 
-### 增强功能
+### Enhancements
 
-- 添加对 `--print=lint`（实验性）的支持。
+- Add support for `--print=lint` (experimental).
   [docker/buildx#2404](https://github.com/docker/buildx/pull/2404),
   [docker/buildx#2406](https://github.com/docker/buildx/pull/2406)
-- 修复了前端中自定义实现打印子请求的 JSON 格式化。
+- Fix JSON formatting for custom implementations of print sub-requests in frontends.
   [docker/buildx#2374](https://github.com/docker/buildx/pull/2374)
-- 使用 `--metadata-file` 构建时现在会设置来源记录。
+- Provenance records are now set when building with `--metadata-file`.
   [docker/buildx#2280](https://github.com/docker/buildx/pull/2280)
-- 为远程定义添加 [Git 身份验证支持](./bake/remote-definition.md#remote-definition-in-a-private-repository)。
+- Add [Git authentication support](./bake/remote-definition.md#remote-definition-in-a-private-repository) for remote definitions.
   [docker/buildx#2363](https://github.com/docker/buildx/pull/2363)
-- 为 `docker-container`、`remote` 和 `kubernetes` 驱动程序添加了新的 `default-load` 驱动程序选项，以默认将构建结果加载到 Docker 引擎镜像存储。
+- New `default-load` driver option for the `docker-container`, `remote`, and `kubernetes` drivers to load build results to the Docker Engine image store by default.
   [docker/buildx#2259](https://github.com/docker/buildx/pull/2259)
-- 向 [`kubernetes` 驱动程序](/manuals/build/builders/drivers/kubernetes.md)添加 `requests.ephemeral-storage`、`limits.ephemeral-storage` 和 `schedulername` 选项。
+- Add `requests.ephemeral-storage`, `limits.ephemeral-storage` and `schedulername` options to the [`kubernetes` driver](/manuals/build/builders/drivers/kubernetes.md).
   [docker/buildx#2370](https://github.com/docker/buildx/pull/2370),
   [docker/buildx#2415](https://github.com/docker/buildx/pull/2415)
-- 为 `docker-bake.hcl` 文件添加 `indexof` 函数。
+- Add `indexof` function for `docker-bake.hcl` files.
   [docker/buildx#2384](https://github.com/docker/buildx/pull/2384)
-- Buildx 的 OpenTelemetry 指标现在测量构建期间图像源操作的空闲时间、图像导出、运行操作和图像传输的持续时间。
+- OpenTelemetry metrics for Buildx now measure durations of idle time, image exports, run operations, and image transfers for image source operations during build.
   [docker/buildx#2316](https://github.com/docker/buildx/pull/2316),
   [docker/buildx#2317](https://github.com/docker/buildx/pull/2317),
   [docker/buildx#2323](https://github.com/docker/buildx/pull/2323),
   [docker/buildx#2271](https://github.com/docker/buildx/pull/2271)
-- 关联到 `desktop-linux` 上下文的 OpenTelemetry 端点的构建进度指标不再需要 Buildx 处于实验模式 (`BUILDX_EXPERIMENTAL=1`)。
+- Build progress metrics to the OpenTelemetry endpoint associated with the `desktop-linux` context no longer requires Buildx in experimental mode (`BUILDX_EXPERIMENTAL=1`).
   [docker/buildx#2344](https://github.com/docker/buildx/pull/2344)
 
-### 错误修复
+### Bug fixes
 
-- 修复了与多个 Bake 文件定义一起使用时，`--load` 和 `--push` 错误地覆盖输出的问题。
+- Fix `--load` and `--push` incorrectly overriding outputs when used with multiple Bake file definitions.
   [docker/buildx#2336](https://github.com/docker/buildx/pull/2336)
-- 修复了启用实验模式时从 stdin 构建的问题。
+- Fix build from stdin with experimental mode enabled.
   [docker/buildx#2394](https://github.com/docker/buildx/pull/2394)
-- 修复了委托跟踪可能重复的问题。
+- Fix an issue where delegated traces could be duplicated.
   [docker/buildx#2362](https://github.com/docker/buildx/pull/2362)
 
-### 打包更新
+### Packaging updates
 
-- Compose 支持已更新至 [v2.26.1](https://github.com/docker/compose/releases/tag/v2.26.1)
-  (通过 [`compose-go` v2.0.2](https://github.com/compose-spec/compose-go/releases/tag/v2.0.2))。
+- Compose support has been updated to [v2.26.1](https://github.com/docker/compose/releases/tag/v2.26.1)
+  (via [`compose-go` v2.0.2](https://github.com/compose-spec/compose-go/releases/tag/v2.0.2)).
   [docker/buildx#2391](https://github.com/docker/buildx/pull/2391)
 
 ## 0.13.1
 
 {{< release-date date="2024-03-13" >}}
 
-此版本的完整发布说明可[在 GitHub 上](https://github.com/docker/buildx/releases/tag/v0.13.1)获得。
+The full release notes for this release are available
+[on GitHub](https://github.com/docker/buildx/releases/tag/v0.13.1).
 
-### 错误修复
+### Bug fixes
 
-- 修复了使用远程驱动程序连接到 `docker-container://` 和 `kube-pod://` 样式 URL 的问题。[docker/buildx#2327](https://github.com/docker/buildx/pull/2327)
-- 修复了当目标已定义非镜像输出时使用 `--push` 与 Bake 的处理问题。[docker/buildx#2330](https://github.com/docker/buildx/pull/2330)
+- Fix connecting to `docker-container://` and `kube-pod://` style URLs with remote driver. [docker/buildx#2327](https://github.com/docker/buildx/pull/2327)
+- Fix handling of `--push` with Bake when a target has already defined a non-image output. [docker/buildx#2330](https://github.com/docker/buildx/pull/2330)
 
 ## 0.13.0
 
 {{< release-date date="2024-03-06" >}}
 
-此版本的完整发布说明可[在 GitHub 上](https://github.com/docker/buildx/releases/tag/v0.13.0)获得。
+The full release notes for this release are available
+[on GitHub](https://github.com/docker/buildx/releases/tag/v0.13.0).
 
-### 新功能
+### New
 
-- 新的 `docker buildx dial-stdio` 命令用于直接联系配置的构建器实例的 BuildKit 守护进程。[docker/buildx#2112](https://github.com/docker/buildx/pull/2112)
-- 现在可以使用 `remote` 驱动程序和 npipe 连接创建 Windows 容器构建器。[docker/buildx#2287](https://github.com/docker/buildx/pull/2287)
-- Windows 上现在支持 Npipe URL 方案。[docker/buildx#2250](https://github.com/docker/buildx/pull/2250)
-- {{< badge color=violet text=Experimental >}} Buildx 现在可以导出构建持续时间和传输大小的 OpenTelemetry 指标。[docker/buildx#2235](https://github.com/docker/buildx/pull/2235), [docker/buildx#2258](https://github.com/docker/buildx/pull/2258) [docker/buildx#2225](https://github.com/docker/buildx/pull/2225) [docker/buildx#2224](https://github.com/docker/buildx/pull/2224) [docker/buildx#2155](https://github.com/docker/buildx/pull/2155)
+- New `docker buildx dial-stdio` command for directly contacting BuildKit daemon of the configured builder instance. [docker/buildx#2112](https://github.com/docker/buildx/pull/2112)
+- Windows container builders can now be created using the `remote` driver and npipe connections. [docker/buildx#2287](https://github.com/docker/buildx/pull/2287)
+- Npipe URL scheme is now supported on Windows. [docker/buildx#2250](https://github.com/docker/buildx/pull/2250)
+- {{< badge color=violet text=Experimental >}} Buildx can now export OpenTelemetry metrics for build duration and transfer sizes. [docker/buildx#2235](https://github.com/docker/buildx/pull/2235), [docker/buildx#2258](https://github.com/docker/buildx/pull/2258) [docker/buildx#2225](https://github.com/docker/buildx/pull/2225) [docker/buildx#2224](https://github.com/docker/buildx/pull/2224) [docker/buildx#2155](https://github.com/docker/buildx/pull/2155)
 
-### 增强功能
+### Enhancements
 
-- Bake 命令现在支持定义 `shm-size` 和 `ulimit` 值。[docker/buildx#2279](https://github.com/docker/buildx/pull/2279), [docker/buildx#2242](https://github.com/docker/buildx/pull/2242)
-- 更好地处理使用远程驱动程序连接到不健康节点的情况。[docker/buildx#2130](https://github.com/docker/buildx/pull/2130)
-- 使用 `docker-container` 和 `kubernetes` 驱动程序的构建器现在默认允许 `network.host` 授权（允许访问容器网络）。[docker/buildx#2266](https://github.com/docker/buildx/pull/2266)
-- 构建现在可以使用单个命令使用多个输出（需要 BuildKit v0.13+）。[docker/buildx#2290](https://github.com/docker/buildx/pull/2290), [docker/buildx#2302](https://github.com/docker/buildx/pull/2302)
-- 默认 Git 存储库路径现在通过配置的跟踪分支查找。[docker/buildx#2146](https://github.com/docker/buildx/pull/2146)
-- 修复了在 Bake 中使用链接目标时可能出现的缓存失效问题。[docker/buildx#2265](https://github.com/docker/buildx/pull/2265)
-- 修复了 WSL 中 Git 存储库路径清理的问题。[docker/buildx#2167](https://github.com/docker/buildx/pull/2167)
-- 现在可以使用单个命令删除多个构建器。[docker/buildx#2140](https://github.com/docker/buildx/pull/2140)
-- 通过 Unix 套接字进行新的取消信号处理。[docker/buildx#2184](https://github.com/docker/buildx/pull/2184) [docker/buildx#2289](https://github.com/docker/buildx/pull/2289)
-- Compose 规范支持已更新至 v2.0.0-rc.8。[docker/buildx#2205](https://github.com/docker/buildx/pull/2205)
-- `docker buildx create` 的 `--config` 标志已重命名为 `--buildkitd-config`。[docker/buildx#2268](https://github.com/docker/buildx/pull/2268)
-- `docker buildx build` 的 `--metadata-file` 标志现在也可以返回构建引用，可用于进一步的构建调试，例如在 Docker Desktop 中。[docker/buildx#2263](https://github.com/docker/buildx/pull/2263)
-- `docker buildx bake` 命令现在为所有目标共享相同的身份验证提供程序，以提高性能。[docker/buildx#2147](https://github.com/docker/buildx/pull/2147)
-- `docker buildx imagetools inspect` 命令现在显示 DSSE 签名的 SBOM 和来源证明。[docker/buildx#2194](https://github.com/docker/buildx/pull/2194)
-- `docker buildx ls` 命令现在支持 `--format` 选项以控制输出。[docker/buildx#1787](https://github.com/docker/buildx/pull/1787)
-- `docker-container` 驱动程序现在支持用于定义 BuildKit 容器重启策略的驱动程序选项。[docker/buildx#1271](https://github.com/docker/buildx/pull/1271)
-- 如果它们相对于当前的 Git 存储库，从 Buildx 导出的 VCS 属性现在包括本地目录子路径。[docker/buildx#2156](https://github.com/docker/buildx/pull/2156)
-- `--add-host` 标志现在允许 IPv6 地址使用 `=` 分隔符。[docker/buildx#2121](https://github.com/docker/buildx/pull/2121)
+- Bake command now supports defining `shm-size` and `ulimit` values. [docker/buildx#2279](https://github.com/docker/buildx/pull/2279), [docker/buildx#2242](https://github.com/docker/buildx/pull/2242)
+- Better handling of connecting to unhealthy nodes with remote driver. [docker/buildx#2130](https://github.com/docker/buildx/pull/2130)
+- Builders using the `docker-container` and `kubernetes` drivers now allow `network.host` entitlement by default (allowing access to the container's network). [docker/buildx#2266](https://github.com/docker/buildx/pull/2266)
+- Builds can now use multiple outputs with a single command (requires BuildKit v0.13+). [docker/buildx#2290](https://github.com/docker/buildx/pull/2290), [docker/buildx#2302](https://github.com/docker/buildx/pull/2302)
+- Default Git repository path is now found via configured tracking branch. [docker/buildx#2146](https://github.com/docker/buildx/pull/2146)
+- Fix possible cache invalidation when using linked targets in Bake. [docker/buildx#2265](https://github.com/docker/buildx/pull/2265)
+- Fixes for Git repository path sanitization in WSL. [docker/buildx#2167](https://github.com/docker/buildx/pull/2167)
+- Multiple builders can now be removed with a single command. [docker/buildx#2140](https://github.com/docker/buildx/pull/2140)
+- New cancellation signal handling via Unix socket. [docker/buildx#2184](https://github.com/docker/buildx/pull/2184) [docker/buildx#2289](https://github.com/docker/buildx/pull/2289)
+- The Compose spec support has been updated to v2.0.0-rc.8. [docker/buildx#2205](https://github.com/docker/buildx/pull/2205)
+- The `--config` flag for `docker buildx create` was renamed to `--buildkitd-config`. [docker/buildx#2268](https://github.com/docker/buildx/pull/2268)
+- The `--metadata-file` flag for `docker buildx build` can now also return build reference that can be used for further build debugging, for example, in Docker Desktop. [docker/buildx#2263](https://github.com/docker/buildx/pull/2263)
+- The `docker buildx bake` command now shares the same authentication provider for all targets for improved performance. [docker/buildx#2147](https://github.com/docker/buildx/pull/2147)
+- The `docker buildx imagetools inspect` command now shows DSSE-signed SBOM and Provenance attestations. [docker/buildx#2194](https://github.com/docker/buildx/pull/2194)
+- The `docker buildx ls` command now supports `--format` options for controlling the output. [docker/buildx#1787](https://github.com/docker/buildx/pull/1787)
+- The `docker-container` driver now supports driver options for defining restart policy for BuildKit container. [docker/buildx#1271](https://github.com/docker/buildx/pull/1271)
+- VCS attributes exported from Buildx now include the local directory sub-paths if they're relative to the current Git repository. [docker/buildx#2156](https://github.com/docker/buildx/pull/2156)
+- `--add-host` flag now permits a `=` separator for IPv6 addresses. [docker/buildx#2121](https://github.com/docker/buildx/pull/2121)
 
-### 错误修复
+### Bug fixes
 
-- 修复了使用 `--progress=rawjson` 导出进度时的额外输出 [docker/buildx#2252](https://github.com/docker/buildx/pull/2252)
-- 修复了 Windows 上可能出现的控制台警告。[docker/buildx#2238](https://github.com/docker/buildx/pull/2238)
-- 修复了使用包含许多配置的 Bake 时可能出现的配置合并顺序不一致问题。[docker/buildx#2237](https://github.com/docker/buildx/pull/2237)
-- 修复了 `docker buildx imagetools create` 命令中可能出现的 panic。[docker/buildx#2230](https://github.com/docker/buildx/pull/2230)
+- Fix additional output when exporting progress with `--progress=rawjson` [docker/buildx#2252](https://github.com/docker/buildx/pull/2252)
+- Fix possible console warnings on Windows. [docker/buildx#2238](https://github.com/docker/buildx/pull/2238)
+- Fix possible inconsistent configuration merge order when using Bake with many configurations. [docker/buildx#2237](https://github.com/docker/buildx/pull/2237)
+- Fix possible panic in the `docker buildx imagetools create` command. [docker/buildx#2230](https://github.com/docker/buildx/pull/2230)
 
 ## 0.12.1
 
 {{< release-date date="2024-01-12" >}}
 
-此版本的完整发布说明可[在 GitHub 上](https://github.com/docker/buildx/releases/tag/v0.12.1)获得。
+The full release notes for this release are available
+[on GitHub](https://github.com/docker/buildx/releases/tag/v0.12.1).
 
-### 错误修复和增强功能
+### Bug fixes and enhancements
 
-- 修复了某些 `--driver-opt` 值的不正确验证，这可能导致 panic 并存储损坏的状态。
+- Fix incorrect validation of some `--driver-opt` values that could cause a panic and corrupt state to be stored.
   [docker/buildx#2176](https://github.com/docker/buildx/pull/2176)
 
 ## 0.12.0
 
 {{< release-date date="2023-11-16" >}}
 
-此版本的完整发布说明可[在 GitHub 上](https://github.com/docker/buildx/releases/tag/v0.12.0)获得。
+The full release notes for this release are available
+[on GitHub](https://github.com/docker/buildx/releases/tag/v0.12.0).
 
-### 新功能
+### New
 
-- `buildx build` 的新 `--annotation` 标志，以及 Bake 文件中的 `annotations` 键，允许您向构建结果添加 OCI 注释。
+- New `--annotation` flag for the `buildx build`, and an `annotations` key in the Bake file, that lets you add OCI Annotations to build results.
   [#2020](https://github.com/docker/buildx/pull/2020),
   [#2098](https://github.com/docker/buildx/pull/2098)
-- 新的实验性调试功能，包括新的 `debug` 命令和交互式调试控制台。
-  此功能目前需要设置 `BUILDX_EXPERIMENTAL=1`。
+- New experimental debugging features, including a new `debug` command and an interactive debugging console.
+  This feature currently requires setting `BUILDX_EXPERIMENTAL=1`.
   [#2006](https://github.com/docker/buildx/pull/2006),
   [#1896](https://github.com/docker/buildx/pull/1896),
   [#1970](https://github.com/docker/buildx/pull/1970),
@@ -519,74 +559,74 @@ toc_max: 2
   [#2026](https://github.com/docker/buildx/pull/2026),
   [#2086](https://github.com/docker/buildx/pull/2086)
 
-### 错误修复和增强功能
+### Bug fixes and enhancements
 
-- 特殊的 `host-gateway` IP 映射现在可以在构建期间与 `--add-host` 标志一起使用。
+- The special `host-gateway` IP mapping can now be used with the `--add-host` flag during build.
   [#1894](https://github.com/docker/buildx/pull/1894),
   [#2083](https://github.com/docker/buildx/pull/2083)
-- Bake 现在允许在从远程定义构建时添加本地源文件。
+- Bake now allows adding local source files when building from remote definition.
   [#1838](https://github.com/docker/buildx/pull/1838)
-- 将构建结果上传到 Docker 的状态现在交互式地显示在进度条上。
+- The status of uploading build results to Docker is now shown interactively on progress bar.
   [#1994](https://github.com/docker/buildx/pull/1994)
-- 改进了引导多节点构建集群时的错误处理。
+- Error handling has been improved when bootstrapping multi-node build clusters.
   [#1869](https://github.com/docker/buildx/pull/1869)
-- `buildx imagetools create` 命令现在允许在注册表中创建新镜像时添加注释。
+- The `buildx imagetools create` command now allows adding annotation when creating new images in the registry.
   [#1965](https://github.com/docker/buildx/pull/1965)
-- 现在可以使用 Docker 和远程驱动程序从 buildx 进行 OpenTelemetry 构建跟踪委托。
+- OpenTelemetry build trace delegation from buildx is now possible with Docker and Remote driver.
   [#2034](https://github.com/docker/buildx/pull/2034)
-- Bake 命令现在在进度条上显示加载构建定义的所有文件。
+- Bake command now shows all files where the build definition was loaded from on the progress bar.
   [#2076](https://github.com/docker/buildx/pull/2076)
-- Bake 文件现在允许在多个定义文件中定义相同的属性。
+- Bake files now allow the same attributes to be defined in multiple definition files.
   [#1062](https://github.com/docker/buildx/pull/1062)
-- 使用带有远程定义的 Bake 命令现在允许此定义使用本地 Dockerfile。
+- Using the Bake command with a remote definition now allows this definition to use local Dockerfiles.
   [#2015](https://github.com/docker/buildx/pull/2015)
-- Docker 容器驱动程序现在显式设置 BuildKit 配置路径，以确保为主线和无根镜像从同一位置加载配置。
+- Docker container driver now explicitly sets BuildKit config path to make sure configurations are loaded from same location for both mainline and rootless images.
   [#2093](https://github.com/docker/buildx/pull/2093)
-- 提高检测 BuildKit 实例何时完成启动的性能。
+- Improve performance of detecting when BuildKit instance has completed booting.
   [#1934](https://github.com/docker/buildx/pull/1934)
-- 容器驱动程序现在接受许多新的驱动程序选项，用于定义 BuildKit 容器的资源限制。
+- Container driver now accepts many new driver options for defining the resource limits for BuildKit container.
   [#2048](https://github.com/docker/buildx/pull/2048)
-- 检查命令格式已改进。
+- Inspection commands formatting has been improved.
   [#2068](https://github.com/docker/buildx/pull/2068)
-- 改进了有关驱动程序功能的错误消息。
+- Error messages about driver capabilities have been improved.
   [#1998](https://github.com/docker/buildx/pull/1998)
-- 改进了在没有目标的情况下调用 Bake 命令时的错误。
+- Improve errors when invoking Bake command without targets.
   [#2100](https://github.com/docker/buildx/pull/2100)
-- 允许在独立模式下运行时使用环境变量启用调试日志。
+- Allow enabling debug logs with environment variables when running in standalone mode.
   [#1821](https://github.com/docker/buildx/pull/1821)
-- 当使用 Docker 驱动程序时，默认镜像解析模式已更新为首选本地 Docker 镜像以实现向后兼容性。
+- When using Docker driver the default image resolve mode has been updated to prefer local Docker images for backward compatibility.
   [#1886](https://github.com/docker/buildx/pull/1886)
-- Kubernetes 驱动程序现在允许为 BuildKit 部署和 Pod 设置自定义注释和标签。
+- Kubernetes driver now allows setting custom annotations and labels to the BuildKit deployments and pods.
   [#1938](https://github.com/docker/buildx/pull/1938)
-- Kubernetes 驱动程序现在允许通过端点配置设置身份验证令牌。
+- Kubernetes driver now allows setting authentication token with endpoint configuration.
   [#1891](https://github.com/docker/buildx/pull/1891)
-- 修复了 Bake 中链接目标可能导致构建失败或目标本地源多次上传的可能问题。
+- Fix possible issue with chained targets in Bake that could result in build failing or local source for a target uploaded multiple times.
   [#2113](https://github.com/docker/buildx/pull/2113)
-- 修复了使用 Bake 命令的矩阵功能时访问全局目标属性的问题。
+- Fix issue when accessing global target properties when using the matrix feature of the Bake command.
   [#2106](https://github.com/docker/buildx/pull/2106)
-- 修复了某些构建标志的格式验证
+- Fixes for formatting validation of certain build flags
   [#2040](https://github.com/docker/buildx/pull/2040)
-- 修复了在启动构建器节点时不必要地锁定某些命令的问题。
+- Fixes to avoid locking certain commands unnecessarily while booting builder nodes.
   [#2066](https://github.com/docker/buildx/pull/2066)
-- 修复了多个构建尝试并行引导同一构建器实例的情况。
+- Fix cases where multiple builds try to bootstrap the same builder instance in parallel.
   [#2000](https://github.com/docker/buildx/pull/2000)
-- 修复了在某些情况下上传构建结果到 Docker 时错误可能被丢弃的情况。
+- Fix cases where errors on uploading build results to Docker could be dropped in some cases.
   [#1927](https://github.com/docker/buildx/pull/1927)
-- 修复了基于构建输出检测缺少证明支持的功能。
+- Fix detecting capabilities for missing attestation support based on build output.
   [#1988](https://github.com/docker/buildx/pull/1988)
-- 修复了 Bake 远程定义中用于加载的构建不显示在构建历史记录中的问题。
+- Fix the build for loading in Bake remote definition to not show up in build history records.
   [#1961](https://github.com/docker/buildx/pull/1961),
   [#1954](https://github.com/docker/buildx/pull/1954)
-- 修复了使用 Bake 定义配置文件的 Compose 文件进行构建时的错误。
+- Fix errors when building Compose files using the that define profiles with Bake.
   [#1903](https://github.com/docker/buildx/pull/1903)
-- 修复了进度条上可能的时间校正错误。
+- Fix possible time correction errors on progress bar.
   [#1968](https://github.com/docker/buildx/pull/1968)
-- 修复了将自定义 cgroup parent 传递给使用新控制器接口的构建的问题。
+- Fix passing custom cgroup parent to builds that used the new controller interface.
   [#1913](https://github.com/docker/buildx/pull/1913)
 
-### 打包
+### Packaging
 
-- Compose 支持已更新至 1.20，在使用 Bake 命令时启用“包含”功能。
+- Compose support has been updated to 1.20, enabling "include" functionality when using the Bake command.
   [#1971](https://github.com/docker/buildx/pull/1971),
   [#2065](https://github.com/docker/buildx/pull/2065),
   [#2094](https://github.com/docker/buildx/pull/2094)
@@ -595,98 +635,111 @@ toc_max: 2
 
 {{< release-date date="2023-07-18" >}}
 
-此版本的完整发布说明可[在 GitHub 上](https://github.com/docker/buildx/releases/tag/v0.11.2)获得。
+The full release notes for this release are available
+[on GitHub](https://github.com/docker/buildx/releases/tag/v0.11.2).
 
-### 错误修复和增强功能
+### Bug fixes and enhancements
 
-- 修复了导致 buildx 无法从实例存储读取 `KUBECONFIG` 路径的回归。
+- Fix a regression that caused buildx to not read the `KUBECONFIG` path from the instance store.
   [docker/buildx#1941](https://github.com/docker/buildx/pull/1941)
-- 修复了结果处理构建错误地显示在构建历史记录中的回归。
+- Fix a regression with result handle builds showing up in the build history incorrectly.
   [docker/buildx#1954](https://github.com/docker/buildx/pull/1954)
 
 ## 0.11.1
 
 {{< release-date date="2023-07-05" >}}
 
-此版本的完整发布说明可[在 GitHub 上](https://github.com/docker/buildx/releases/tag/v0.11.1)获得。
+The full release notes for this release are available
+[on GitHub](https://github.com/docker/buildx/releases/tag/v0.11.1).
 
-### 错误修复和增强功能
+### Bug fixes and enhancements
 
-- 修复了 bake 中配置文件中的服务无法加载的回归。
+- Fix a regression for bake where services in profiles would not be loaded.
   [docker/buildx#1903](https://github.com/docker/buildx/pull/1903)
-- 修复了 `--cgroup-parent` 选项在构建期间无效的回归。
+- Fix a regression where `--cgroup-parent` option had no effect during build.
   [docker/buildx#1913](https://github.com/docker/buildx/pull/1913)
-- 修复了有效 docker 上下文可能导致 buildx 构建器名称验证失败的回归。[docker/buildx#1879](https://github.com/docker/buildx/pull/1879)
-- 修复了构建期间调整终端大小时可能发生的 panic。
+- Fix a regression where valid docker contexts could fail buildx builder name
+  validation. [docker/buildx#1879](https://github.com/docker/buildx/pull/1879)
+- Fix a possible panic when terminal is resized during the build.
   [docker/buildx#1929](https://github.com/docker/buildx/pull/1929)
 
 ## 0.11.0
 
 {{< release-date date="2023-06-13" >}}
 
-此版本的完整发布说明可[在 GitHub 上](https://github.com/docker/buildx/releases/tag/v0.11.0)获得。
+The full release notes for this release are available
+[on GitHub](https://github.com/docker/buildx/releases/tag/v0.11.0).
 
-### 新功能
+### New
 
-- Bake 现在支持 [矩阵构建](/manuals/build/bake/reference.md#targetmatrix)。
-  `target` 上的新矩阵字段允许您创建多个相似的目标，以消除 bake 文件中的重复。[docker/buildx#1690](https://github.com/docker/buildx/pull/1690)
-- 新的实验性 `--detach` 标志用于在分离模式下运行构建。
+- Bake now supports [matrix builds](/manuals/build/bake/reference.md#targetmatrix).
+  The new matrix field on `target` lets you create multiple similar targets to
+  remove duplication in bake files. [docker/buildx#1690](https://github.com/docker/buildx/pull/1690)
+- New experimental `--detach` flag for running builds in detached mode.
   [docker/buildx#1296](https://github.com/docker/buildx/pull/1296),
   [docker/buildx#1620](https://github.com/docker/buildx/pull/1620),
   [docker/buildx#1614](https://github.com/docker/buildx/pull/1614),
   [docker/buildx#1737](https://github.com/docker/buildx/pull/1737),
   [docker/buildx#1755](https://github.com/docker/buildx/pull/1755)
-- 新的实验性 [调试监控模式](https://github.com/docker/buildx/blob/v0.11.0-rc1/docs/guides/debugging.md)
-  允许您在构建中启动调试会话。
+- New experimental [debug monitor mode](https://github.com/docker/buildx/blob/v0.11.0-rc1/docs/guides/debugging.md)
+  that lets you start a debug session in your builds.
   [docker/buildx#1626](https://github.com/docker/buildx/pull/1626),
   [docker/buildx#1640](https://github.com/docker/buildx/pull/1640)
-- 新的 [`EXPERIMENTAL_BUILDKIT_SOURCE_POLICY` 环境变量](./building/variables.md#experimental_buildkit_source_policy)
-  用于应用 BuildKit 源策略文件。
+- New [`EXPERIMENTAL_BUILDKIT_SOURCE_POLICY` environment variable](./building/variables.md#experimental_buildkit_source_policy)
+  for applying a BuildKit source policy file.
   [docker/buildx#1628](https://github.com/docker/buildx/pull/1628)
 
-### 错误修复和增强功能
+### Bug fixes and enhancements
 
-- `--load` 现在支持在启用 containerd 镜像存储时加载多平台镜像。
+- `--load` now supports loading multi-platform images when the containerd image
+  store is enabled.
   [docker/buildx#1813](https://github.com/docker/buildx/pull/1813)
-- 构建进度输出现在显示正在使用的构建器的名称。
+- Build progress output now displays the name of the builder being used.
   [docker/buildx#1177](https://github.com/docker/buildx/pull/1177)
-- Bake 现在支持检测 `compose.{yml,yaml}` 文件。
+- Bake now supports detecting `compose.{yml,yaml}` files.
   [docker/buildx#1752](https://github.com/docker/buildx/pull/1752)
-- Bake 现在支持新的 compose 构建键 `dockerfile_inline` 和 `additional_contexts`。
+- Bake now supports new compose build keys `dockerfile_inline` and `additional_contexts`.
   [docker/buildx#1784](https://github.com/docker/buildx/pull/1784)
-- Bake 现在支持 replace HCL 函数。
+- Bake now supports replace HCL function.
   [docker/buildx#1720](https://github.com/docker/buildx/pull/1720)
-- Bake 现在允许将多个相似的证明参数合并为一个参数，以允许使用单个全局值进行覆盖。
+- Bake now allows merging multiple similar attestation parameters into a single
+  parameter to allow overriding with a single global value.
   [docker/buildx#1699](https://github.com/docker/buildx/pull/1699)
-- 初步支持 shell 补全。
+- Initial support for shell completion.
   [docker/buildx#1727](https://github.com/docker/buildx/pull/1727)
-- 对于使用 `docker` 驱动程序的构建器，BuildKit 版本现在可以在 `buildx ls` 和 `buildx inspect` 中正确显示。
+- BuildKit versions now correctly display in `buildx ls` and `buildx inspect`
+  for builders using the `docker` driver.
   [docker/buildx#1552](https://github.com/docker/buildx/pull/1552)
-- 在 buildx 检查视图中显示其他构建器节点详细信息。
+- Display additional builder node details in buildx inspect view.
   [docker/buildx#1440](https://github.com/docker/buildx/pull/1440),
   [docker/buildx#1854](https://github.com/docker/buildx/pull/1874)
-- 使用 `remote` 驱动程序的构建器允许使用 TLS 而无需提供自己的密钥/证书（如果 BuildKit 远程配置为支持它）
+- Builders using the `remote` driver allow using TLS without proving its own
+  key/cert (if BuildKit remote is configured to support it)
   [docker/buildx#1693](https://github.com/docker/buildx/pull/1693)
-- 使用 `kubernetes` 驱动程序的构建器支持新的 `serviceaccount` 选项，该选项设置 Kubernetes Pod 的 `serviceAccountName`。
+- Builders using the `kubernetes` driver support a new `serviceaccount` option,
+  which sets the `serviceAccountName` of the Kubernetes pod.
   [docker/buildx#1597](https://github.com/docker/buildx/pull/1597)
-- 使用 `kubernetes` 驱动程序的构建器支持 kubeconfig 文件中的 `proxy-url` 选项。
+- Builders using the `kubernetes` driver support the `proxy-url` option in the
+  kubeconfig file.
   [docker/buildx#1780](https://github.com/docker/buildx/pull/1780)
-- 如果未显式提供名称，使用 `kubernetes` 的构建器现在会自动分配节点名称。
+- Builders using the `kubernetes` are now automatically assigned a node name if
+  no name is explicitly provided.
   [docker/buildx#1673](https://github.com/docker/buildx/pull/1673)
-- 修复了在 Windows 上为 `docker-container` 驱动程序写入证书时的无效路径。
+- Fix invalid path when writing certificates for `docker-container` driver on Windows.
   [docker/buildx#1831](https://github.com/docker/buildx/pull/1831)
-- 修复了使用 SSH 访问远程 bake 文件时的 bake 失败。
+- Fix bake failure when remote bake file is accessed using SSH.
   [docker/buildx#1711](https://github.com/docker/buildx/pull/1711),
   [docker/buildx#1734](https://github.com/docker/buildx/pull/1734)
-- 修复了远程 bake 上下文被错误解析时的 bake 失败。
+- Fix bake failure when remote bake context is incorrectly resolved.
   [docker/buildx#1783](https://github.com/docker/buildx/pull/1783)
-- 修复了 bake 上下文中 `BAKE_CMD_CONTEXT` 和 `cwd://` 路径的路径解析。
+- Fix path resolution of `BAKE_CMD_CONTEXT` and `cwd://` paths in bake contexts.
   [docker/buildx#1840](https://github.com/docker/buildx/pull/1840)
-- 修复了使用 `buildx imagetools create` 创建镜像时混合 OCI 和 Docker 媒体类型的问题。
+- Fix mixed OCI and Docker media types when creating images using
+  `buildx imagetools create`.
   [docker/buildx#1797](https://github.com/docker/buildx/pull/1797)
-- 修复了 `--iidfile` 和 `-q` 之间不匹配的镜像 ID。
+- Fix mismatched image id between `--iidfile` and `-q`.
   [docker/buildx#1844](https://github.com/docker/buildx/pull/1844)
-- 修复了混合静态凭据和 IAM 配置文件时的 AWS 身份验证。
+- Fix AWS authentication when mixing static creds and IAM profiles.
   [docker/buildx#1816](https://github.com/docker/buildx/pull/1816)
 
 ## 0.10.4
@@ -695,11 +748,11 @@ toc_max: 2
 
 {{% include "buildx-v0.10-disclaimer.md" %}}
 
-### 错误修复和增强功能
+### Bug fixes and enhancements
 
-- 添加 `BUILDX_NO_DEFAULT_ATTESTATIONS` 作为 `--provenance false` 的替代方案。[docker/buildx#1645](https://github.com/docker/buildx/issues/1645)
-- 默认情况下禁用脏 Git 检出检测以提高性能。可以使用 `BUILDX_GIT_CHECK_DIRTY` 选择加入。[docker/buildx#1650](https://github.com/docker/buildx/issues/1650)
-- 在发送到 BuildKit 之前从 VCS 提示 URL 中剥离凭据。[docker/buildx#1664](https://github.com/docker/buildx/issues/1664)
+- Add `BUILDX_NO_DEFAULT_ATTESTATIONS` as alternative to `--provenance false`. [docker/buildx#1645](https://github.com/docker/buildx/issues/1645)
+- Disable dirty Git checkout detection by default for performance. Can be enabled with `BUILDX_GIT_CHECK_DIRTY` opt-in. [docker/buildx#1650](https://github.com/docker/buildx/issues/1650)
+- Strip credentials from VCS hint URL before sending to BuildKit. [docker/buildx#1664](https://github.com/docker/buildx/issues/1664)
 
 ## 0.10.3
 
@@ -707,13 +760,13 @@ toc_max: 2
 
 {{% include "buildx-v0.10-disclaimer.md" %}}
 
-### 错误修复和增强功能
+### Bug fixes and enhancements
 
-- 修复了收集 Git 来源信息时的可达提交和警告。[docker/buildx#1592](https://github.com/docker/buildx/issues/1592), [docker/buildx#1634](https://github.com/docker/buildx/issues/1634)
-- 修复了 docker 上下文未被验证的回归。[docker/buildx#1596](https://github.com/docker/buildx/issues/1596)
-- 修复了 JSON bake 定义的函数解析。[docker/buildx#1605](https://github.com/docker/buildx/issues/1605)
-- 修复了原始 HCL bake 诊断被丢弃的情况。[docker/buildx#1607](https://github.com/docker/buildx/issues/1607)
-- 修复了使用 bake 和 compose 文件时未正确设置的标签。[docker/buildx#1631](https://github.com/docker/buildx/issues/1631)
+- Fix reachable commit and warnings on collecting Git provenance info. [docker/buildx#1592](https://github.com/docker/buildx/issues/1592), [docker/buildx#1634](https://github.com/docker/buildx/issues/1634)
+- Fix a regression where docker context was not being validated. [docker/buildx#1596](https://github.com/docker/buildx/issues/1596)
+- Fix function resolution with JSON bake definition. [docker/buildx#1605](https://github.com/docker/buildx/issues/1605)
+- Fix case where original HCL bake diagnostic is discarded. [docker/buildx#1607](https://github.com/docker/buildx/issues/1607)
+- Fix labels not correctly set with bake and compose file. [docker/buildx#1631](https://github.com/docker/buildx/issues/1631)
 
 ## 0.10.2
 
@@ -721,12 +774,13 @@ toc_max: 2
 
 {{% include "buildx-v0.10-disclaimer.md" %}}
 
-### 错误修复和增强功能
+### Bug fixes and enhancements
 
-- 修复了在多节点构建中未考虑首选平台顺序的问题。[docker/buildx#1561](https://github.com/docker/buildx/issues/1561)
-- 修复了处理 `SOURCE_DATE_EPOCH` 环境变量时可能发生的 panic。[docker/buildx#1564](https://github.com/docker/buildx/issues/1564)
-- 修复了自 BuildKit v0.11 以来在某些注册表上进行多节点清单合并时可能出现的推送错误。[docker/buildx#1566](https://github.com/docker/buildx/issues/1566)
-- 改进了收集 Git 来源信息时的警告。[docker/buildx#1568](https://github.com/docker/buildx/issues/1568)
+- Fix preferred platforms order not taken into account in multi-node builds. [docker/buildx#1561](https://github.com/docker/buildx/issues/1561)
+- Fix possible panic on handling `SOURCE_DATE_EPOCH` environment variable. [docker/buildx#1564](https://github.com/docker/buildx/issues/1564)
+- Fix possible push error on multi-node manifest merge since BuildKit v0.11 on
+  some registries. [docker/buildx#1566](https://github.com/docker/buildx/issues/1566)
+- Improve warnings on collecting Git provenance info. [docker/buildx#1568](https://github.com/docker/buildx/issues/1568)
 
 ## 0.10.1
 
@@ -734,15 +788,16 @@ toc_max: 2
 
 {{% include "buildx-v0.10-disclaimer.md" %}}
 
-### 错误修复和增强功能
+### Bug fixes and enhancements
 
-- 修复了发送正确的来源 URL 作为 `vsc:source` 元数据。[docker/buildx#1548](https://github.com/docker/buildx/issues/1548)
-- 修复了数据竞争导致的可能 panic。[docker/buildx#1504](https://github.com/docker/buildx/issues/1504)
-- 修复了 `rm --all-inactive` 的回归。[docker/buildx#1547](https://github.com/docker/buildx/issues/1547)
-- 通过延迟加载数据改进 `imagetools inspect` 中的证明访问。[docker/buildx#1546](https://github.com/docker/buildx/issues/1546)
-- 正确将功能请求标记为内部。[docker/buildx#1538](https://github.com/docker/buildx/issues/1538)
-- 检测无效的证明配置。[docker/buildx#1545](https://github.com/docker/buildx/issues/1545)
-- 更新 containerd 补丁以修复影响 `imagetools` 命令的可能推送回归。[docker/buildx#1559](https://github.com/docker/buildx/issues/1559)
+- Fix sending the correct origin URL as `vsc:source` metadata. [docker/buildx#1548](https://github.com/docker/buildx/issues/1548)
+- Fix possible panic from data-race. [docker/buildx#1504](https://github.com/docker/buildx/issues/1504)
+- Fix regression with `rm --all-inactive`. [docker/buildx#1547](https://github.com/docker/buildx/issues/1547)
+- Improve attestation access in `imagetools inspect` by lazily loading data. [docker/buildx#1546](https://github.com/docker/buildx/issues/1546)
+- Correctly mark capabilities request as internal. [docker/buildx#1538](https://github.com/docker/buildx/issues/1538)
+- Detect invalid attestation configuration. [docker/buildx#1545](https://github.com/docker/buildx/issues/1545)
+- Update containerd patches to fix possible push regression affecting
+  `imagetools` commands. [docker/buildx#1559](https://github.com/docker/buildx/issues/1559)
 
 ## 0.10.0
 
@@ -750,513 +805,590 @@ toc_max: 2
 
 {{% include "buildx-v0.10-disclaimer.md" %}}
 
-### 新功能
+### New
 
-- `buildx build` 命令支持新的 `--attest` 标志，以及简写 `--sbom` 和 `--provenance`，用于为当前构建添加证明。[docker/buildx#1412](https://github.com/docker/buildx/issues/1412)
+- The `buildx build` command supports new `--attest` flag, along with
+  shorthands `--sbom` and `--provenance`, for adding attestations for your
+  current build. [docker/buildx#1412](https://github.com/docker/buildx/issues/1412)
   [docker/buildx#1475](https://github.com/docker/buildx/issues/1475)
-  - `--attest type=sbom` 或 `--sbom=true` 添加 [SBOM 证明](/manuals/build/metadata/attestations/sbom.md)。
-  - `--attest type=provenance` 或 `--provenance=true` 添加 [SLSA 来源证明](/manuals/build/metadata/attestations/slsa-provenance.md)。
-  - 创建 OCI 镜像时，默认情况下镜像包含最小来源证明。
-- 当使用支持来源证明的 BuildKit 构建时，Buildx 将自动共享构建上下文的版本控制信息，以便可以在来源中显示以供后续调试。以前这仅在直接从 Git URL 构建时发生。要退出此行为，您可以设置 `BUILDX_GIT_INFO=0`。可选地，您还可以通过设置 `BUILDX_GIT_LABELS=1` 自动定义带有 VCS 信息的标签。
+  - `--attest type=sbom` or `--sbom=true` adds [SBOM attestations](/manuals/build/metadata/attestations/sbom.md).
+  - `--attest type=provenance` or `--provenance=true` adds [SLSA provenance attestation](/manuals/build/metadata/attestations/slsa-provenance.md).
+  - When creating OCI images, a minimal provenance attestation is included
+    with the image by default.
+- When building with BuildKit that supports provenance attestations Buildx will
+  automatically share the version control information of your build context, so
+  it can be shown in provenance for later debugging. Previously this only
+  happened when building from a Git URL directly. To opt-out of this behavior
+  you can set `BUILDX_GIT_INFO=0`. Optionally you can also automatically define
+  labels with VCS info by setting `BUILDX_GIT_LABELS=1`.
   [docker/buildx#1462](https://github.com/docker/buildx/issues/1462),
   [docker/buildx#1297](https://github.com/docker/buildx),
   [docker/buildx#1341](https://github.com/docker/buildx/issues/1341),
   [docker/buildx#1468](https://github.com/docker/buildx),
   [docker/buildx#1477](https://github.com/docker/buildx/issues/1477)
-- 带有 `--build-context` 的命名上下文现在支持 `oci-layout://` 协议，用于使用本地 OCI 布局目录的值初始化上下文。
-  例如 `--build-context stagename=oci-layout://path/to/dir`。此功能需要 BuildKit v0.11.0+ 和 Dockerfile 1.5.0+。[docker/buildx#1456](https://github.com/docker/buildx/issues/1456)
-- Bake 现在支持 [资源插值](bake/inheritance.md#reusing-single-attribute-from-targets)，您可以在其中重用其他目标定义中的值。[docker/buildx#1434](https://github.com/docker/buildx/issues/1434)
-- 如果您的环境中定义了 `SOURCE_DATE_EPOCH` 环境变量，Buildx 现在将自动转发它。此功能旨在与 BuildKit v0.11.0+ 中更新的 [可重复构建](https://github.com/moby/buildkit/blob/master/docs/build-repro.md) 支持一起使用。[docker/buildx#1482](https://github.com/docker/buildx/issues/1482)
-- Buildx 现在会记住构建器的最后活动，以便更好地组织构建器实例。[docker/buildx#1439](https://github.com/docker/buildx/issues/1439)
-- Bake 定义现在支持 [变量](bake/reference.md#variable) 和 [标签](bake/reference.md#targetlabels) 的空值，以便构建参数和标签使用 Dockerfile 中设置的默认值。
+- Named contexts with `--build-context` now support `oci-layout://` protocol
+  for initializing the context with a value of a local OCI layout directory.
+  E.g. `--build-context stagename=oci-layout://path/to/dir`. This feature
+  requires BuildKit v0.11.0+ and Dockerfile 1.5.0+. [docker/buildx#1456](https://github.com/docker/buildx/issues/1456)
+- Bake now supports [resource interpolation](bake/inheritance.md#reusing-single-attribute-from-targets)
+  where you can reuse the values from other target definitions. [docker/buildx#1434](https://github.com/docker/buildx/issues/1434)
+- Buildx will now automatically forward `SOURCE_DATE_EPOCH` environment variable
+  if it is defined in your environment. This feature is meant to be used with
+  updated [reproducible builds](https://github.com/moby/buildkit/blob/master/docs/build-repro.md)
+  support in BuildKit v0.11.0+. [docker/buildx#1482](https://github.com/docker/buildx/issues/1482)
+- Buildx now remembers the last activity for a builder for better organization
+  of builder instances. [docker/buildx#1439](https://github.com/docker/buildx/issues/1439)
+- Bake definition now supports null values for [variables](bake/reference.md#variable) and [labels](bake/reference.md#targetlabels)
+  for build arguments and labels to use the defaults set in the Dockerfile.
   [docker/buildx#1449](https://github.com/docker/buildx/issues/1449)
-- [`buildx imagetools inspect` 命令](/reference/cli/docker/buildx/imagetools/inspect.md)
-  现在支持显示 SBOM 和来源数据。
+- The [`buildx imagetools inspect` command](/reference/cli/docker/buildx/imagetools/inspect.md)
+  now supports showing SBOM and Provenance data.
   [docker/buildx#1444](https://github.com/docker/buildx/issues/1444),
   [docker/buildx#1498](https://github.com/docker/buildx/issues/1498)
-- 提高 `ls` 命令和检查流程的性能。
+- Increase performance of `ls` command and inspect flows.
   [docker/buildx#1430](https://github.com/docker/buildx/issues/1430),
   [docker/buildx#1454](https://github.com/docker/buildx/issues/1454),
   [docker/buildx#1455](https://github.com/docker/buildx/issues/1455),
   [docker/buildx#1345](https://github.com/docker/buildx/issues/1345)
-- 使用 [Docker 驱动程序](/manuals/build/builders/drivers/docker.md) 添加额外主机现在支持 Docker 特定的 `host-gateway` 特殊值。[docker/buildx#1446](https://github.com/docker/buildx/issues/1446)
-- [OCI 导出器](exporters/oci-docker.md) 现在支持 `tar=false` 选项，用于直接在目录中导出 OCI 格式。[docker/buildx#1420](https://github.com/docker/buildx/issues/1420)
+- Adding extra hosts with [Docker driver](/manuals/build/builders/drivers/docker.md) now supports
+  Docker-specific `host-gateway` special value. [docker/buildx#1446](https://github.com/docker/buildx/issues/1446)
+- [OCI exporter](exporters/oci-docker.md) now supports `tar=false` option for
+  exporting OCI format directly in a directory. [docker/buildx#1420](https://github.com/docker/buildx/issues/1420)
 
-### 升级
+### Upgrades
 
-- 将 Compose 规范更新为 1.6.0。[docker/buildx#1387](https://github.com/docker/buildx/issues/1387)
+- Updated the Compose Specification to 1.6.0. [docker/buildx#1387](https://github.com/docker/buildx/issues/1387)
 
-### 错误修复和增强功能
+### Bug fixes and enhancements
 
-- `--invoke` 现在可以从镜像元数据加载默认启动环境。[docker/buildx#1324](https://github.com/docker/buildx/issues/1324)
-- 修复关于 UserNS 的容器驱动程序行为。[docker/buildx#1368](https://github.com/docker/buildx/issues/1368)
-- 修复了在 Bake 中使用错误变量值类型时可能发生的 panic。[docker/buildx#1442](https://github.com/docker/buildx/issues/1442)
-- 修复了 `imagetools inspect` 中可能发生的 panic。[docker/buildx#1441](https://github.com/docker/buildx/issues/1441)
+- `--invoke` can now load default launch environment from the image metadata. [docker/buildx#1324](https://github.com/docker/buildx/issues/1324)
+- Fix container driver behavior in regards to UserNS. [docker/buildx#1368](https://github.com/docker/buildx/issues/1368)
+- Fix possible panic in Bake when using wrong variable value type. [docker/buildx#1442](https://github.com/docker/buildx/issues/1442)
+- Fix possible panic in `imagetools inspect`. [docker/buildx#1441](https://github.com/docker/buildx/issues/1441)
   [docker/buildx#1406](https://github.com/docker/buildx/issues/1406)
-- 修复了默认向 BuildKit 发送空 `--add-host` 值的问题。[docker/buildx#1457](https://github.com/docker/buildx/issues/1457)
-- 修复了处理带有进度组的进度前缀。[docker/buildx#1305](https://github.com/docker/buildx/issues/1305)
-- 修复了在 Bake 中递归解析组。[docker/buildx#1313](https://github.com/docker/buildx/issues/1313)
-- 修复了多节点构建器清单上可能出现的错误缩进。[docker/buildx#1396](https://github.com/docker/buildx/issues/1396)
-- 修复了缺少 OpenTelemetry 配置可能导致的 panic。[docker/buildx#1383](https://github.com/docker/buildx/issues/1383)
-- 修复了当 TTY 不可用时 `--progress=tty` 的行为。[docker/buildx#1371](https://github.com/docker/buildx/issues/1371)
-- 修复了 `prune` 和 `du` 命令中的连接错误条件。[docker/buildx#1307](https://github.com/docker/buildx/issues/1307)
+- Fix sending empty `--add-host` value to BuildKit by default. [docker/buildx#1457](https://github.com/docker/buildx/issues/1457)
+- Fix handling progress prefixes with progress groups. [docker/buildx#1305](https://github.com/docker/buildx/issues/1305)
+- Fix recursively resolving groups in Bake. [docker/buildx#1313](https://github.com/docker/buildx/issues/1313)
+- Fix possible wrong indentation on multi-node builder manifests. [docker/buildx#1396](https://github.com/docker/buildx/issues/1396)
+- Fix possible panic from missing OpenTelemetry configuration. [docker/buildx#1383](https://github.com/docker/buildx/issues/1383)
+- Fix `--progress=tty` behavior when TTY is not available. [docker/buildx#1371](https://github.com/docker/buildx/issues/1371)
+- Fix connection error conditions in `prune` and `du` commands. [docker/buildx#1307](https://github.com/docker/buildx/issues/1307)
 
 ## 0.9.1
 
 {{< release-date date="2022-08-18" >}}
 
-### 错误修复和增强功能
+### Bug fixes and enhancements
 
-- `inspect` 命令现在显示正在使用的 BuildKit 版本。[docker/buildx#1279](https://github.com/docker/buildx/issues/1279)
-- 修复了构建包含没有构建块的服务的 Compose 文件时的回归。[docker/buildx#1277](https://github.com/docker/buildx/issues/1277)
+- The `inspect` command now displays the BuildKit version in use. [docker/buildx#1279](https://github.com/docker/buildx/issues/1279)
+- Fixed a regression when building Compose files that contain services without a
+  build block. [docker/buildx#1277](https://github.com/docker/buildx/issues/1277)
 
-有关更多详细信息，请参阅 [Buildx GitHub 存储库](https://github.com/docker/buildx/releases/tag/v0.9.1)中的完整发布说明。
+For more details, see the complete release notes in the [Buildx GitHub repository](https://github.com/docker/buildx/releases/tag/v0.9.1).
 
 ## 0.9.0
 
 {{< release-date date="2022-08-17" >}}
 
-### 新功能
+### New
 
-- 支持新的 [`remote` 驱动程序](/manuals/build/builders/drivers/remote.md)，您可以使用它连接到任何已运行的 BuildKit 实例。
+- Support for a new [`remote` driver](/manuals/build/builders/drivers/remote.md) that you can use
+  to connect to any already running BuildKit instance.
   [docker/buildx#1078](https://github.com/docker/buildx/issues/1078),
   [docker/buildx#1093](https://github.com/docker/buildx/issues/1093),
   [docker/buildx#1094](https://github.com/docker/buildx/issues/1094),
   [docker/buildx#1103](https://github.com/docker/buildx/issues/1103),
   [docker/buildx#1134](https://github.com/docker/buildx/issues/1134),
   [docker/buildx#1204](https://github.com/docker/buildx/issues/1204)
-- 即使构建上下文来自外部 Git 或 HTTP URL，您现在也可以从标准输入加载 Dockerfile。[docker/buildx#994](https://github.com/docker/buildx/issues/994)
-- 构建命令现在支持新的构建上下文类型 `oci-layout://`，用于 [从本地 OCI 布局目录加载构建上下文](/reference/cli/docker/buildx/build.md#source-oci-layout)。
-  请注意，此功能取决于未发布的 BuildKit 功能，在 BuildKit v0.11 发布之前需要使用来自 `moby/buildkit:master` 的构建器实例。[docker/buildx#1173](https://github.com/docker/buildx/issues/1173)
-- 您现在可以使用新的 `--print` 标志运行执行构建的 BuildKit 前端支持的辅助函数并打印其结果。您可以在 Dockerfile 中使用此功能来显示当前构建支持的构建参数和密钥（使用 `--print=outline`），并使用 `--print=targets` 列出所有可用的 Dockerfile 阶段。这是一项实验性功能，用于收集早期反馈，需要启用 `BUILDX_EXPERIMENTAL=1` 环境变量。我们计划在未来更新/扩展此功能，而不保留向后兼容性。[docker/buildx#1100](https://github.com/docker/buildx/issues/1100),
+- You can now load Dockerfile from standard input even when the build context is
+  coming from external Git or HTTP URL. [docker/buildx#994](https://github.com/docker/buildx/issues/994)
+- Build commands now support new the build context type `oci-layout://` for loading
+  [build context from local OCI layout directories](/reference/cli/docker/buildx/build.md#source-oci-layout).
+  Note that this feature depends on an unreleased BuildKit feature and builder
+  instance from `moby/buildkit:master` needs to be used until BuildKit v0.11 is
+  released. [docker/buildx#1173](https://github.com/docker/buildx/issues/1173)
+- You can now use the new `--print` flag to run helper functions supported by the
+  BuildKit frontend performing the build and print their results. You can use
+  this feature in Dockerfile to show the build arguments and secrets that the
+  current build supports with `--print=outline` and list all available
+  Dockerfile stages with `--print=targets`. This feature is experimental for
+  gathering early feedback and requires enabling `BUILDX_EXPERIMENTAL=1`
+  environment variable. We plan to update/extend this feature in the future
+  without keeping backward compatibility. [docker/buildx#1100](https://github.com/docker/buildx/issues/1100),
   [docker/buildx#1272](https://github.com/docker/buildx/issues/1272)
-- 您现在可以使用新的 `--invoke` 标志从构建结果启动交互式容器，以进行交互式调试循环。您可以使用代码更改重新加载这些容器，或从特殊的监视器模式将它们恢复到初始状态。这是一项实验性功能，用于收集早期反馈，需要启用 `BUILDX_EXPERIMENTAL=1` 环境变量。我们计划在未来更新/扩展此功能，而不启用向后兼容性。
+- You can now use the new `--invoke` flag to launch interactive containers from
+  build results for an interactive debugging cycle. You can reload these
+  containers with code changes or restore them to an initial state from the
+  special monitor mode. This feature is experimental for gathering early
+  feedback and requires enabling `BUILDX_EXPERIMENTAL=1` environment variable.
+  We plan to update/extend this feature in the future without enabling backward
+  compatibility.
   [docker/buildx#1168](https://github.com/docker/buildx/issues/1168),
   [docker/buildx#1257](https://github.com/docker/buildx),
   [docker/buildx#1259](https://github.com/docker/buildx/issues/1259)
-- Buildx 现在理解 `BUILDKIT_COLORS` 和 `NO_COLOR` 环境变量，以自定义/禁用交互式构建进度条的颜色。[docker/buildx#1230](https://github.com/docker/buildx/issues/1230),
+- Buildx now understands environment variable `BUILDKIT_COLORS` and `NO_COLOR`
+  to customize/disable the colors of interactive build progressbar. [docker/buildx#1230](https://github.com/docker/buildx/issues/1230),
   [docker/buildx#1226](https://github.com/docker/buildx/issues/1226)
-- `buildx ls` 命令现在显示每个构建器实例的当前 BuildKit 版本。[docker/buildx#998](https://github.com/docker/buildx/issues/998)
-- `bake` 命令现在在构建 Compose 文件时会自动加载 `.env` 文件以实现兼容性。[docker/buildx#1261](https://github.com/docker/buildx/issues/1261)
-- Bake 现在支持带有 `cache_to` 定义的 Compose 文件。[docker/buildx#1155](https://github.com/docker/buildx/issues/1155)
-- Bake 现在支持新的内置函数 `timestamp()` 以访问当前时间。[docker/buildx#1214](https://github.com/docker/buildx/issues/1214)
-- Bake 现在支持 Compose 构建密钥定义。[docker/buildx#1069](https://github.com/docker/buildx/issues/1069)
-- 现在通过 `x-bake` 在 Compose 文件中支持其他构建上下文配置。[docker/buildx#1256](https://github.com/docker/buildx/issues/1256)
-- 检查构建器现在显示当前驱动程序选项配置。[docker/buildx#1003](https://github.com/docker/buildx/issues/1003),
+- `buildx ls` command now shows the current BuildKit version of each builder
+  instance. [docker/buildx#998](https://github.com/docker/buildx/issues/998)
+- The `bake` command now loads `.env` file automatically when building Compose
+  files for compatibility. [docker/buildx#1261](https://github.com/docker/buildx/issues/1261)
+- Bake now supports Compose files with `cache_to` definition. [docker/buildx#1155](https://github.com/docker/buildx/issues/1155)
+- Bake now supports new builtin function `timestamp()` to access current time. [docker/buildx#1214](https://github.com/docker/buildx/issues/1214)
+- Bake now supports Compose build secrets definition. [docker/buildx#1069](https://github.com/docker/buildx/issues/1069)
+- Additional build context configuration is now supported in Compose files via `x-bake`. [docker/buildx#1256](https://github.com/docker/buildx/issues/1256)
+- Inspecting builder now shows current driver options configuration. [docker/buildx#1003](https://github.com/docker/buildx/issues/1003),
   [docker/buildx#1066](https://github.com/docker/buildx/issues/1066)
 
-### 更新
+### Updates
 
-- 将 Compose 规范更新为 1.4.0。[docker/buildx#1246](https://github.com/docker/buildx/issues/1246),
+- Updated the Compose Specification to 1.4.0. [docker/buildx#1246](https://github.com/docker/buildx/issues/1246),
   [docker/buildx#1251](https://github.com/docker/buildx/issues/1251)
 
-### 错误修复和增强功能
+### Bug fixes and enhancements
 
-- `buildx ls` 命令输出已更新，可以更好地访问来自不同构建器的错误。[docker/buildx#1109](https://github.com/docker/buildx/issues/1109)
-- `buildx create` 命令现在执行构建器参数的额外验证，以避免创建配置无效的构建器实例。[docker/buildx#1206](https://github.com/docker/buildx/issues/1206)
-- `buildx imagetools create` 命令现在可以创建新的多平台镜像，即使源子镜像位于不同的存储库或注册表中。[docker/buildx#1137](https://github.com/docker/buildx/issues/1137)
-- 您现在可以设置默认构建器配置，该配置在创建构建器实例且未传递自定义 `--config` 值时使用。[docker/buildx#1111](https://github.com/docker/buildx/issues/1111)
-- Docker 驱动程序现在可以检测 `dockerd` 实例是否支持最初禁用的 Buildkit 功能，如多平台镜像。[docker/buildx#1260](https://github.com/docker/buildx/issues/1260),
+- The `buildx ls` command output has been updated with better access to errors
+  from different builders. [docker/buildx#1109](https://github.com/docker/buildx/issues/1109)
+- The `buildx create` command now performs additional validation of builder parameters
+  to avoid creating a builder instance with invalid configuration. [docker/buildx#1206](https://github.com/docker/buildx/issues/1206)
+- The `buildx imagetools create` command can now create new multi-platform images
+  even if the source subimages are located on different repositories or
+  registries. [docker/buildx#1137](https://github.com/docker/buildx/issues/1137)
+- You can now set the default builder config that is used when creating
+  builder instances without passing custom `--config` value. [docker/buildx#1111](https://github.com/docker/buildx/issues/1111)
+- Docker driver can now detect if `dockerd` instance supports initially
+  disabled Buildkit features like multi-platform images. [docker/buildx#1260](https://github.com/docker/buildx/issues/1260),
   [docker/buildx#1262](https://github.com/docker/buildx/issues/1262)
-- 使用名称中带有 `.` 的目标的 Compose 文件现在转换为使用 `_`，以便选择器键仍可在此类目标中使用。[docker/buildx#1011](https://github.com/docker/buildx/issues/1011)
-- 包含了检查有效驱动程序配置的额外验证。[docker/buildx#1188](https://github.com/docker/buildx/issues/1188),
+- Compose files using targets with `.` in the name are now converted to use `_`
+  so the selector keys can still be used in such targets. [docker/buildx#1011](https://github.com/docker/buildx/issues/1011)
+- Included an additional validation for checking valid driver configurations. [docker/buildx#1188](https://github.com/docker/buildx/issues/1188),
   [docker/buildx#1273](https://github.com/docker/buildx/issues/1273)
-- `remove` 命令现在显示已删除的构建器，并禁止删除上下文构建器。[docker/buildx#1128](https://github.com/docker/buildx/issues/1128)
-- 在使用 Kubernetes 驱动程序时启用 Azure 身份验证。[docker/buildx#974](https://github.com/docker/buildx/issues/974)
-- 添加 kubernetes 驱动程序的容忍度处理。[docker/buildx#1045](https://github.com/docker/buildx/issues/1045)
+- The `remove` command now displays the removed builder and forbids removing
+  context builders. [docker/buildx#1128](https://github.com/docker/buildx/issues/1128)
+- Enable Azure authentication when using Kubernetes driver. [docker/buildx#974](https://github.com/docker/buildx/issues/974)
+- Add tolerations handling for kubernetes driver. [docker/buildx#1045](https://github.com/docker/buildx/issues/1045)
   [docker/buildx#1053](https://github.com/docker/buildx/issues/1053)
-- 在 `kubernetes` 驱动程序中用 `securityContext` 替换已弃用的 seccomp 注释。
+- Replace deprecated seccomp annotations with `securityContext` in the `kubernetes` driver.
   [docker/buildx#1052](https://github.com/docker/buildx/issues/1052)
-- 修复了处理带有 nil 平台的清单时的 panic。[docker/buildx#1144](https://github.com/docker/buildx/issues/1144)
-- 修复了将持续时间过滤器与 `prune` 命令一起使用的问题。[docker/buildx#1252](https://github.com/docker/buildx/issues/1252)
-- 修复了在 Bake 定义上合并多个 JSON 文件的问题。[docker/buildx#1025](https://github.com/docker/buildx/issues/1025)
-- 修复了从 Docker 上下文创建的隐式构建器具有无效配置或连接中断的问题。[docker/buildx#1129](https://github.com/docker/buildx/issues/1129)
-- 修复了使用命名上下文时显示无输出警告的条件。[docker/buildx#968](https://github.com/docker/buildx/issues/968)
-- 修复了构建器实例和 docker 上下文具有相同名称时重复构建器的问题。[docker/buildx#1131](https://github.com/docker/buildx/issues/1131)
-- 修复了打印不必要的 SSH 警告日志的问题。[docker/buildx#1085](https://github.com/docker/buildx/issues/1085)
-- 修复了在使用带有 Bake JSON 定义的空变量块时可能发生的 panic。[docker/buildx#1080](https://github.com/docker/buildx/issues/1080)
-- 修复了镜像工具命令未正确处理 `--builder` 标志的问题。[docker/buildx#1067](https://github.com/docker/buildx/issues/1067)
-- 修复了将自定义镜像与 rootless 选项一起使用的问题。[docker/buildx#1063](https://github.com/docker/buildx/issues/1063)
+- Fix panic on handling manifests with nil platform. [docker/buildx#1144](https://github.com/docker/buildx/issues/1144)
+- Fix using duration filter with `prune` command. [docker/buildx#1252](https://github.com/docker/buildx/issues/1252)
+- Fix merging multiple JSON files on Bake definition. [docker/buildx#1025](https://github.com/docker/buildx/issues/1025)
+- Fix issues with implicit builder created from Docker context had invalid
+  configuration or dropped connection. [docker/buildx#1129](https://github.com/docker/buildx/issues/1129)
+- Fix conditions for showing no-output warning when using named contexts. [docker/buildx#968](https://github.com/docker/buildx/issues/968)
+- Fix duplicating builders when builder instance and docker context have the
+  same name. [docker/buildx#1131](https://github.com/docker/buildx/issues/1131)
+- Fix printing unnecessary SSH warning logs. [docker/buildx#1085](https://github.com/docker/buildx/issues/1085)
+- Fix possible panic when using an empty variable block with Bake JSON
+  definition. [docker/buildx#1080](https://github.com/docker/buildx/issues/1080)
+- Fix image tools commands not handling `--builder` flag correctly. [docker/buildx#1067](https://github.com/docker/buildx/issues/1067)
+- Fix using custom image together with rootless option. [docker/buildx#1063](https://github.com/docker/buildx/issues/1063)
 
-有关更多详细信息，请参阅 [Buildx GitHub 存储库](https://github.com/docker/buildx/releases/tag/v0.9.0)中的完整发布说明。
+For more details, see the complete release notes in the [Buildx GitHub repository](https://github.com/docker/buildx/releases/tag/v0.9.0).
 
 ## 0.8.2
 
 {{< release-date date="2022-04-04" >}}
 
-### 更新
+### Updates
 
-- 将 `buildx bake` 使用的 Compose 规范更新为 v1.2.1，以修复解析端口定义的问题。[docker/buildx#1033](https://github.com/docker/buildx/issues/1033)
+- Update Compose spec used by `buildx bake` to v1.2.1 to fix parsing ports definition. [docker/buildx#1033](https://github.com/docker/buildx/issues/1033)
 
-### 错误修复和增强功能
+### Bug fixes and enhancements
 
-- 修复了处理 BuildKit v0.10 的进度流时可能发生的崩溃。[docker/buildx#1042](https://github.com/docker/buildx/issues/1042)
-- 修复了在 `buildx bake` 中解析已被父组加载的组的问题。[docker/buildx#1021](https://github.com/docker/buildx/issues/1021)
+- Fix possible crash on handling progress streams from BuildKit v0.10. [docker/buildx#1042](https://github.com/docker/buildx/issues/1042)
+- Fix parsing groups in `buildx bake` when already loaded by a parent group. [docker/buildx#1021](https://github.com/docker/buildx/issues/1021)
 
-有关更多详细信息，请参阅 [Buildx GitHub 存储库](https://github.com/docker/buildx/releases/tag/v0.8.2)中的完整发布说明。
+For more details, see the complete release notes in the [Buildx GitHub repository](https://github.com/docker/buildx/releases/tag/v0.8.2).
 
 ## 0.8.1
 
 {{< release-date date="2022-03-21" >}}
 
-### 错误修复和增强功能
+### Bug fixes and enhancements
 
-- 修复了处理构建上下文扫描错误时可能发生的 panic。[docker/buildx#1005](https://github.com/docker/buildx/issues/1005)
-- 允许在 `buildx bake` 中的 Compose 目标名称上使用 `.` 以实现向后兼容性。[docker/buildx#1018](https://github.com/docker/buildx/issues/1018)
+- Fix possible panic on handling build context scanning errors. [docker/buildx#1005](https://github.com/docker/buildx/issues/1005)
+- Allow `.` on Compose target names in `buildx bake` for backward compatibility. [docker/buildx#1018](https://github.com/docker/buildx/issues/1018)
 
-有关更多详细信息，请参阅 [Buildx GitHub 存储库](https://github.com/docker/buildx/releases/tag/v0.8.1)中的完整发布说明。
+For more details, see the complete release notes in the [Buildx GitHub repository](https://github.com/docker/buildx/releases/tag/v0.8.1).
 
 ## 0.8.0
 
 {{< release-date date="2022-03-09" >}}
 
-### 新功能
+### New
 
-- 构建命令现在接受 `--build-context` 标志来 [定义其他命名构建上下文](/reference/cli/docker/buildx/build/#build-context)
-  用于您的构建。[docker/buildx#904](https://github.com/docker/buildx/issues/904)
-- Bake 定义现在支持 [定义目标之间的依赖关系](bake/contexts.md)
-  并在另一个构建中使用一个目标的结果。
+- Build command now accepts `--build-context` flag to [define additional named build contexts](/reference/cli/docker/buildx/build/#build-context)
+  for your builds. [docker/buildx#904](https://github.com/docker/buildx/issues/904)
+- Bake definitions now support [defining dependencies between targets](bake/contexts.md)
+  and using the result of one target in another build.
   [docker/buildx#928](https://github.com/docker/buildx/issues/928),
   [docker/buildx#965](https://github.com/docker/buildx/issues/965),
   [docker/buildx#963](https://github.com/docker/buildx/issues/963),
   [docker/buildx#962](https://github.com/docker/buildx/issues/962),
   [docker/buildx#981](https://github.com/docker/buildx/issues/981)
-- `imagetools inspect` 现在接受 `--format` 标志，允许访问特定镜像的配置和构建信息。[docker/buildx#854](https://github.com/docker/buildx/issues/854),
+- `imagetools inspect` now accepts `--format` flag allowing access to config
+  and buildinfo for specific images. [docker/buildx#854](https://github.com/docker/buildx/issues/854),
   [docker/buildx#972](https://github.com/docker/buildx/issues/972)
-- 新标志 `--no-cache-filter` 允许配置构建，以便它仅针对指定的 Dockerfile 阶段忽略缓存。[docker/buildx#860](https://github.com/docker/buildx/issues/860)
-- 构建现在可以显示构建前端设置的警告摘要。[docker/buildx#892](https://github.com/docker/buildx/issues/892)
-- 新的构建参数 `BUILDKIT_INLINE_BUILDINFO_ATTRS` 允许选择加入以将构建属性嵌入到结果镜像中。[docker/buildx#908](https://github.com/docker/buildx/issues/908)
-- 新标志 `--keep-buildkitd` 允许在删除构建器时保持 BuildKit 守护进程运行
+- New flag `--no-cache-filter` allows configuring build, so it ignores cache
+  only for specified Dockerfile stages. [docker/buildx#860](https://github.com/docker/buildx/issues/860)
+- Builds can now show a summary of warnings sets by the building frontend. [docker/buildx#892](https://github.com/docker/buildx/issues/892)
+- The new build argument `BUILDKIT_INLINE_BUILDINFO_ATTRS` allows opting-in to embed
+  building attributes to resulting image. [docker/buildx#908](https://github.com/docker/buildx/issues/908)
+- The new flag `--keep-buildkitd` allows keeping BuildKit daemon running when removing a builder
   - [docker/buildx#852](https://github.com/docker/buildx/issues/852)
 
-### 错误修复和增强功能
+### Bug fixes and enhancements
 
-- `--metadata-file` 输出现在支持嵌入式结构类型。[docker/buildx#946](https://github.com/docker/buildx/issues/946)
-- `buildx rm` 现在接受新标志 `--all-inactive`，用于删除所有当前未运行的构建器。[docker/buildx#885](https://github.com/docker/buildx/issues/885)
-- 代理配置现在从 Docker 配置文件读取并随构建请求一起发送以实现向后兼容性。[docker/buildx#959](https://github.com/docker/buildx/issues/959)
-- 支持 Compose 中的主机网络。[docker/buildx#905](https://github.com/docker/buildx/issues/905),
+- `--metadata-file` output now supports embedded structure types. [docker/buildx#946](https://github.com/docker/buildx/issues/946)
+- `buildx rm` now accepts new flag `--all-inactive` for removing all builders
+  that are not currently running. [docker/buildx#885](https://github.com/docker/buildx/issues/885)
+- Proxy config is now read from Docker configuration file and sent with build
+  requests for backward compatibility. [docker/buildx#959](https://github.com/docker/buildx/issues/959)
+- Support host networking in Compose. [docker/buildx#905](https://github.com/docker/buildx/issues/905),
   [docker/buildx#880](https://github.com/docker/buildx/issues/880)
-- Bake 文件现在可以使用 `-f -` 从 stdin 读取。[docker/buildx#864](https://github.com/docker/buildx/issues/864)
-- 无论使用何种驱动程序，`--iidfile` 现在总是写入镜像配置摘要（使用 `--metadata-file` 获取摘要）。[docker/buildx#980](https://github.com/docker/buildx/issues/980)
-- Bake 中的目标名称现在被限制为不使用特殊字符。[docker/buildx#929](https://github.com/docker/buildx/issues/929)
-- 当使用 `docker` 驱动程序推送时，可以从元数据中读取镜像清单摘要。[docker/buildx#989](https://github.com/docker/buildx/issues/989)
-- 修复 Compose 文件中的环境文件处理。[docker/buildx#905](https://github.com/docker/buildx/issues/905)
-- 在 `du` 命令中显示上次访问时间。[docker/buildx#867](https://github.com/docker/buildx/issues/867)
-- 修复了当多个 Bake 目标运行相同的构建步骤时可能出现的双重输出日志。[docker/buildx#977](https://github.com/docker/buildx/issues/977)
-- 修复了多节点构建器构建具有混合平台的多个目标时可能出现的错误。[docker/buildx#985](https://github.com/docker/buildx/issues/985)
-- 修复了 Bake 中的一些嵌套继承情况。[docker/buildx#914](https://github.com/docker/buildx/issues/914)
-- 修复了 Bake 文件上的默认组打印。[docker/buildx#884](https://github.com/docker/buildx/issues/884)
-- 修复了使用 rootless 容器时的 `UsernsMode`。[docker/buildx#887](https://github.com/docker/buildx/issues/887)
+- Bake files can now be read from stdin with `-f -`. [docker/buildx#864](https://github.com/docker/buildx/issues/864)
+- `--iidfile` now always writes the image config digest independently of the
+  driver being used (use `--metadata-file` for digest). [docker/buildx#980](https://github.com/docker/buildx/issues/980)
+- Target names in Bake are now restricted to not use special characters. [docker/buildx#929](https://github.com/docker/buildx/issues/929)
+- Image manifest digest can be read from metadata when pushed with `docker`
+  driver. [docker/buildx#989](https://github.com/docker/buildx/issues/989)
+- Fix environment file handling in Compose files. [docker/buildx#905](https://github.com/docker/buildx/issues/905)
+- Show last access time in `du` command. [docker/buildx#867](https://github.com/docker/buildx/issues/867)
+- Fix possible double output logs when multiple Bake targets run same build
+  steps. [docker/buildx#977](https://github.com/docker/buildx/issues/977)
+- Fix possible errors on multi-node builder building multiple targets with
+  mixed platform. [docker/buildx#985](https://github.com/docker/buildx/issues/985)
+- Fix some nested inheritance cases in Bake. [docker/buildx#914](https://github.com/docker/buildx/issues/914)
+- Fix printing default group on Bake files. [docker/buildx#884](https://github.com/docker/buildx/issues/884)
+- Fix `UsernsMode` when using rootless container. [docker/buildx#887](https://github.com/docker/buildx/issues/887)
 
-有关更多详细信息，请参阅 [Buildx GitHub 存储库](https://github.com/docker/buildx/releases/tag/v0.8.0)中的完整发布说明。
+For more details, see the complete release notes in the [Buildx GitHub repository](https://github.com/docker/buildx/releases/tag/v0.8.0).
 
 ## 0.7.1
 
 {{< release-date date="2021-08-25" >}}
 
-### 修复
+### Fixes
 
-- 修复了 `.dockerignore` 中排除规则匹配的问题。[docker/buildx#858](https://github.com/docker/buildx/issues/858)
-- 修复了当前组的 `bake --print` JSON 输出。[docker/buildx#857](https://github.com/docker/buildx/issues/857)
+- Fix issue with matching exclude rules in `.dockerignore`. [docker/buildx#858](https://github.com/docker/buildx/issues/858)
+- Fix `bake --print` JSON output for current group. [docker/buildx#857](https://github.com/docker/buildx/issues/857)
 
-有关更多详细信息，请参阅 [Buildx GitHub 存储库](https://github.com/docker/buildx/releases/tag/v0.7.1)中的完整发布说明。
+For more details, see the complete release notes in the [Buildx GitHub repository](https://github.com/docker/buildx/releases/tag/v0.7.1).
 
 ## 0.7.0
 
 {{< release-date date="2021-11-10" >}}
 
-### 新功能
+### New features
 
-- 来自 BuildKit 配置的 TLS 证书现在通过 `docker-container` 和 `kubernetes` 驱动程序传输到构建容器。[docker/buildx#787](https://github.com/docker/buildx/issues/787)
-- 构建支持 `--ulimit` 标志以实现功能对等。[docker/buildx#800](https://github.com/docker/buildx/issues/800)
-- 构建支持 `--shm-size` 标志以实现功能对等。[docker/buildx#790](https://github.com/docker/buildx/issues/790)
-- 构建支持 `--quiet` 以实现功能对等。[docker/buildx#740](https://github.com/docker/buildx/issues/740)
-- 构建支持 `--cgroup-parent` 标志以实现功能对等。[docker/buildx#814](https://github.com/docker/buildx/issues/814)
-- Bake 支持内置变量 `BAKE_LOCAL_PLATFORM`。[docker/buildx#748](https://github.com/docker/buildx/issues/748)
-- Bake 支持 Compose 文件中的 `x-bake` 扩展字段。[docker/buildx#721](https://github.com/docker/buildx/issues/721)
-- `kubernetes` 驱动程序现在支持冒号分隔的 `KUBECONFIG`。[docker/buildx#761](https://github.com/docker/buildx/issues/761)
-- `kubernetes` 驱动程序现在支持使用 `--config` 设置 Buildkit 配置文件。[docker/buildx#682](https://github.com/docker/buildx/issues/682)
-- `kubernetes` 驱动程序现在支持使用 driver-opt 安装 QEMU 模拟器。[docker/buildx#682](https://github.com/docker/buildx/issues/682)
+- TLS certificates from BuildKit configuration are now transferred to build
+  container with `docker-container` and `kubernetes` drivers. [docker/buildx#787](https://github.com/docker/buildx/issues/787)
+- Builds support `--ulimit` flag for feature parity. [docker/buildx#800](https://github.com/docker/buildx/issues/800)
+- Builds support `--shm-size` flag for feature parity. [docker/buildx#790](https://github.com/docker/buildx/issues/790)
+- Builds support `--quiet` for feature parity. [docker/buildx#740](https://github.com/docker/buildx/issues/740)
+- Builds support `--cgroup-parent` flag for feature parity. [docker/buildx#814](https://github.com/docker/buildx/issues/814)
+- Bake supports builtin variable `BAKE_LOCAL_PLATFORM`. [docker/buildx#748](https://github.com/docker/buildx/issues/748)
+- Bake supports `x-bake` extension field in Compose files. [docker/buildx#721](https://github.com/docker/buildx/issues/721)
+- `kubernetes` driver now supports colon-separated `KUBECONFIG`. [docker/buildx#761](https://github.com/docker/buildx/issues/761)
+- `kubernetes` driver now supports setting Buildkit config file with `--config`. [docker/buildx#682](https://github.com/docker/buildx/issues/682)
+- `kubernetes` driver now supports installing QEMU emulators with driver-opt. [docker/buildx#682](https://github.com/docker/buildx/issues/682)
 
-### 增强功能
+### Enhancements
 
-- 允许从客户端使用自定义注册表配置进行多节点推送。[docker/buildx#825](https://github.com/docker/buildx/issues/825)
-- 允许为 `buildx imagetools` 命令使用自定义注册表配置。[docker/buildx#825](https://github.com/docker/buildx/issues/825)
-- 允许在使用 `buildx create --bootstrap` 创建后启动构建器。[docker/buildx#692](https://github.com/docker/buildx/issues/692)
-- 允许多节点推送使用 `registry:insecure` 输出选项。[docker/buildx#825](https://github.com/docker/buildx/issues/825)
-- BuildKit 配置和 TLS 文件现在保存在 Buildx 状态目录中，并在需要重新创建 BuildKit 实例时重用。[docker/buildx#824](https://github.com/docker/buildx/issues/824)
-- 确保不同项目使用单独的目标目录进行增量上下文传输以获得更好的性能。[docker/buildx#817](https://github.com/docker/buildx/issues/817)
-- 构建容器现在默认放置在单独的 cgroup 上。[docker/buildx#782](https://github.com/docker/buildx/issues/782)
-- Bake 现在使用 `--print` 打印默认组。[docker/buildx#720](https://github.com/docker/buildx/issues/720)
-- `docker` 驱动程序现在通过 HTTP 拨号构建会话以获得更好的性能。[docker/buildx#804](https://github.com/docker/buildx/issues/804)
+- Allow using custom registry configuration for multi-node pushes from the
+  client. [docker/buildx#825](https://github.com/docker/buildx/issues/825)
+- Allow using custom registry configuration for `buildx imagetools` command. [docker/buildx#825](https://github.com/docker/buildx/issues/825)
+- Allow booting builder after creating with `buildx create --bootstrap`. [docker/buildx#692](https://github.com/docker/buildx/issues/692)
+- Allow `registry:insecure` output option for multi-node pushes. [docker/buildx#825](https://github.com/docker/buildx/issues/825)
+- BuildKit config and TLS files are now kept in Buildx state directory and
+  reused if BuildKit instance needs to be recreated. [docker/buildx#824](https://github.com/docker/buildx/issues/824)
+- Ensure different projects use separate destination directories for
+  incremental context transfer for better performance. [docker/buildx#817](https://github.com/docker/buildx/issues/817)
+- Build containers are now placed on separate cgroup by default. [docker/buildx#782](https://github.com/docker/buildx/issues/782)
+- Bake now prints the default group with `--print`. [docker/buildx#720](https://github.com/docker/buildx/issues/720)
+- `docker` driver now dials build session over HTTP for better performance. [docker/buildx#804](https://github.com/docker/buildx/issues/804)
 
-### 修复
+### Fixes
 
-- 修复了将 `--iidfile` 与多节点推送一起使用的问题。[docker/buildx#826](https://github.com/docker/buildx/issues/826)
-- 在 Bake 中使用 `--push` 不会清除文件中的其他镜像导出选项。[docker/buildx#773](https://github.com/docker/buildx/issues/773)
-- 修复了在使用 `https` 协议时 `buildx bake` 的 Git URL 检测。[docker/buildx#822](https://github.com/docker/buildx/issues/822)
-- 修复了在多节点构建上推送具有多个名称的镜像。[docker/buildx#815](https://github.com/docker/buildx/issues/815)
-- 避免为不使用它的命令显示 `--builder` 标志。[docker/buildx#818](https://github.com/docker/buildx/issues/818)
-- 不受支持的构建标志现在显示警告。[docker/buildx#810](https://github.com/docker/buildx/issues/810)
-- 修复了在某些 OpenTelemetry 跟踪中报告错误详细信息的问题。[docker/buildx#812](https://github.com/docker/buildx/issues/812)
+- Fix using `--iidfile` together with a multi-node push. [docker/buildx#826](https://github.com/docker/buildx/issues/826)
+- Using `--push` in Bake does not clear other image export options in the file. [docker/buildx#773](https://github.com/docker/buildx/issues/773)
+- Fix Git URL detection for `buildx bake` when `https` protocol was used. [docker/buildx#822](https://github.com/docker/buildx/issues/822)
+- Fix pushing image with multiple names on multi-node builds. [docker/buildx#815](https://github.com/docker/buildx/issues/815)
+- Avoid showing `--builder` flags for commands that don't use it. [docker/buildx#818](https://github.com/docker/buildx/issues/818)
+- Unsupported build flags now show a warning. [docker/buildx#810](https://github.com/docker/buildx/issues/810)
+- Fix reporting error details in some OpenTelemetry traces. [docker/buildx#812](https://github.com/docker/buildx/issues/812)
 
-有关更多详细信息，请参阅 [Buildx GitHub 存储库](https://github.com/docker/buildx/releases/tag/v0.7.0)中的完整发布说明。
+For more details, see the complete release notes in the [Buildx GitHub repository](https://github.com/docker/buildx/releases/tag/v0.7.0).
 
 ## 0.6.3
 
 {{< release-date date="2021-08-30" >}}
 
-### 修复
+### Fixes
 
-- 修复 Windows 客户端的 BuildKit 状态卷位置。[docker/buildx#751](https://github.com/docker/buildx/issues/751)
+- Fix BuildKit state volume location for Windows clients. [docker/buildx#751](https://github.com/docker/buildx/issues/751)
 
-有关更多详细信息，请参阅 [Buildx GitHub 存储库](https://github.com/docker/buildx/releases/tag/v0.6.3)中的完整发布说明。
+For more details, see the complete release notes in the [Buildx GitHub repository](https://github.com/docker/buildx/releases/tag/v0.6.3).
 
 ## 0.6.2
 
 {{< release-date date="2021-08-21" >}}
 
-有关更多详细信息，请参阅 [Buildx GitHub 存储库](https://github.com/docker/buildx/releases/tag/v0.6.2)中的完整发布说明。
+For more details, see the complete release notes in the [Buildx GitHub repository](https://github.com/docker/buildx/releases/tag/v0.6.2).
 
-### 修复
+### Fixes
 
-- 修复了某些 SSH 配置中出现的连接错误。[docker/buildx#741](https://github.com/docker/buildx/issues/741)
+- Fix connection error showing up in some SSH configurations. [docker/buildx#741](https://github.com/docker/buildx/issues/741)
 
 ## 0.6.1
 
 {{< release-date date="2021-07-30" >}}
 
-### 增强功能
+### Enhancements
 
-- 设置 `ConfigFile` 以使用 Bake 解析 compose 文件。[docker/buildx#704](https://github.com/docker/buildx/issues/704)
+- Set `ConfigFile` to parse compose files with Bake. [docker/buildx#704](https://github.com/docker/buildx/issues/704)
 
-### 修复
+### Fixes
 
-- 重复的进度环境变量。[docker/buildx#693](https://github.com/docker/buildx/issues/693)
-- 应忽略 nil 客户端。[docker/buildx#686](https://github.com/docker/buildx/issues/686)
+- Duplicate progress env var. [docker/buildx#693](https://github.com/docker/buildx/issues/693)
+- Should ignore nil client. [docker/buildx#686](https://github.com/docker/buildx/issues/686)
 
-有关更多详细信息，请参阅 [Buildx GitHub 存储库](https://github.com/docker/buildx/releases/tag/v0.6.1)中的完整发布说明。
+For more details, see the complete release notes in the [Buildx GitHub repository](https://github.com/docker/buildx/releases/tag/v0.6.1).
 
 ## 0.6.0
 
 {{< release-date date="2021-07-16" >}}
 
-### 新功能
+### New features
 
-- 支持 OpenTelemetry 跟踪并将 Buildx 客户端跟踪转发到 BuildKit。[docker/buildx#635](https://github.com/docker/buildx/issues/635)
-- 实验性的 GitHub Actions 远程缓存后端，使用 `--cache-to type=gha` 和 `--cache-from type=gha`。[docker/buildx#535](https://github.com/docker/buildx/issues/535)
-- 向 build 和 Bake 命令添加了新的 `--metadata-file` 标志，允许以 JSON 格式保存构建结果元数据。[docker/buildx#605](https://github.com/docker/buildx/issues/605)
-- 这是第一个支持 Windows ARM64 的版本。[docker/buildx#654](https://github.com/docker/buildx/issues/654)
-- 这是第一个支持 Linux Risc-V 的版本。[docker/buildx#652](https://github.com/docker/buildx/issues/652)
-- Bake 现在支持使用本地文件或另一个远程源作为上下文从远程定义构建。[docker/buildx#671](https://github.com/docker/buildx/issues/671)
-- Bake 现在允许变量相互引用，并在变量中使用用户函数，反之亦然。
+- Support for OpenTelemetry traces and forwarding Buildx client traces to
+  BuildKit. [docker/buildx#635](https://github.com/docker/buildx/issues/635)
+- Experimental GitHub Actions remote cache backend with `--cache-to type=gha`
+  and `--cache-from type=gha`. [docker/buildx#535](https://github.com/docker/buildx/issues/535)
+- New `--metadata-file` flag has been added to build and Bake command that
+  allows saving build result metadata in JSON format. [docker/buildx#605](https://github.com/docker/buildx/issues/605)
+- This is the first release supporting Windows ARM64. [docker/buildx#654](https://github.com/docker/buildx/issues/654)
+- This is the first release supporting Linux Risc-V. [docker/buildx#652](https://github.com/docker/buildx/issues/652)
+- Bake now supports building from remote definition with local files or
+  another remote source as context. [docker/buildx#671](https://github.com/docker/buildx/issues/671)
+- Bake now allows variables to reference each other and using user functions
+  in variables and vice-versa.
   [docker/buildx#575](https://github.com/docker/buildx/issues/575),
   [docker/buildx#539](https://github.com/docker/buildx/issues/539),
   [docker/buildx#532](https://github.com/docker/buildx/issues/532)
-- Bake 允许在全局范围内定义属性。[docker/buildx#541](https://github.com/docker/buildx/issues/541)
-- Bake 允许跨多个文件的变量。[docker/buildx#538](https://github.com/docker/buildx/issues/538)
-- 向进度打印机添加了新的安静模式。[docker/buildx#558](https://github.com/docker/buildx/issues/558)
-- `kubernetes` 驱动程序现在支持定义资源/限制。[docker/buildx#618](https://github.com/docker/buildx/issues/618)
-- Buildx 二进制文件现在可以通过 [buildx-bin](https://hub.docker.com/r/docker/buildx-bin) Docker 镜像访问。[docker/buildx#656](https://github.com/docker/buildx/issues/656)
+- Bake allows defining attributes in the global scope. [docker/buildx#541](https://github.com/docker/buildx/issues/541)
+- Bake allows variables across multiple files. [docker/buildx#538](https://github.com/docker/buildx/issues/538)
+- New quiet mode has been added to progress printer. [docker/buildx#558](https://github.com/docker/buildx/issues/558)
+- `kubernetes` driver now supports defining resources/limits. [docker/buildx#618](https://github.com/docker/buildx/issues/618)
+- Buildx binaries can now be accessed through [buildx-bin](https://hub.docker.com/r/docker/buildx-bin)
+  Docker image. [docker/buildx#656](https://github.com/docker/buildx/issues/656)
 
-### 增强功能
+### Enhancements
 
-- `docker-container` 驱动程序现在将 BuildKit 状态保存在卷中。启用保留状态的更新。[docker/buildx#672](https://github.com/docker/buildx/issues/672)
-- Compose 解析器现在基于新的 [compose-go parser](https://github.com/compose-spec/compose-go)，修复了对某些较新语法的支持。[docker/buildx#669](https://github.com/docker/buildx/issues/669)
-- 构建基于 ssh 的 git URL 时，现在会自动转发 SSH 套接字。[docker/buildx#581](https://github.com/docker/buildx/issues/581)
-- Bake HCL 解析器已重写。[docker/buildx#645](https://github.com/docker/buildx/issues/645)
-- 扩展 HCL 支持更多功能。[docker/buildx#491](https://github.com/docker/buildx/issues/491)
+- `docker-container` driver now keeps BuildKit state in volume. Enabling
+  updates with keeping state. [docker/buildx#672](https://github.com/docker/buildx/issues/672)
+- Compose parser is now based on new [compose-go parser](https://github.com/compose-spec/compose-go)
+  fixing support for some newer syntax. [docker/buildx#669](https://github.com/docker/buildx/issues/669)
+- SSH socket is now automatically forwarded when building an ssh-based git URL. [docker/buildx#581](https://github.com/docker/buildx/issues/581)
+- Bake HCL parser has been rewritten. [docker/buildx#645](https://github.com/docker/buildx/issues/645)
+- Extend HCL support with more functions. [docker/buildx#491](https://github.com/docker/buildx/issues/491)
   [docker/buildx#503](https://github.com/docker/buildx/issues/503)
-- 允许来自环境变量的密钥。[docker/buildx#488](https://github.com/docker/buildx/issues/488)
-- 使用不支持的多平台和加载配置的构建现在会快速失败。[docker/buildx#582](https://github.com/docker/buildx/issues/582)
-- 存储 Kubernetes 配置文件以使 buildx 构建器可切换。[docker/buildx#497](https://github.com/docker/buildx/issues/497)
-- Kubernetes 现在在检查时将所有 pod 列为节点。[docker/buildx#477](https://github.com/docker/buildx/issues/477)
-- 默认 Rootless 镜像已设置为 `moby/buildkit:buildx-stable-1-rootless`。[docker/buildx#480](https://github.com/docker/buildx/issues/480)
+- Allow secrets from environment variables. [docker/buildx#488](https://github.com/docker/buildx/issues/488)
+- Builds with an unsupported multi-platform and load configuration now fail fast. [docker/buildx#582](https://github.com/docker/buildx/issues/582)
+- Store Kubernetes config file to make buildx builder switchable. [docker/buildx#497](https://github.com/docker/buildx/issues/497)
+- Kubernetes now lists all pods as nodes on inspection. [docker/buildx#477](https://github.com/docker/buildx/issues/477)
+- Default Rootless image has been set to `moby/buildkit:buildx-stable-1-rootless`. [docker/buildx#480](https://github.com/docker/buildx/issues/480)
 
-### 修复
+### Fixes
 
-- `imagetools create` 命令现在正确地将 JSON 描述符与旧描述符混合。[docker/buildx#592](https://github.com/docker/buildx/issues/592)
-- 修复了使用 `--network=none` 构建时不需要额外安全授权的问题。[docker/buildx#531](https://github.com/docker/buildx/issues/531)
+- `imagetools create` command now correctly merges JSON descriptor with old one. [docker/buildx#592](https://github.com/docker/buildx/issues/592)
+- Fix building with `--network=none` not requiring extra security entitlements. [docker/buildx#531](https://github.com/docker/buildx/issues/531)
 
-有关更多详细信息，请参阅 [Buildx GitHub 存储库](https://github.com/docker/buildx/releases/tag/v0.6.0)中的完整发布说明。
+For more details, see the complete release notes in the [Buildx GitHub repository](https://github.com/docker/buildx/releases/tag/v0.6.0).
 
 ## 0.5.1
 
 {{< release-date date="2020-12-15" >}}
 
-### 修复
+### Fixes
 
-- 修复了在 `kubernetes` 驱动程序之外设置 `buildx create` 上的 `--platform` 时的回归。[docker/buildx#475](https://github.com/docker/buildx/issues/475)
+- Fix regression on setting `--platform` on `buildx create` outside
+  `kubernetes` driver. [docker/buildx#475](https://github.com/docker/buildx/issues/475)
 
-有关更多详细信息，请参阅 [Buildx GitHub 存储库](https://github.com/docker/buildx/releases/tag/v0.5.1)中的完整发布说明。
+For more details, see the complete release notes in the [Buildx GitHub repository](https://github.com/docker/buildx/releases/tag/v0.5.1).
 
 ## 0.5.0
 
 {{< release-date date="2020-12-15" >}}
 
-### 新功能
+### New features
 
-- `docker` 驱动程序现在支持 `--push` 标志。[docker/buildx#442](https://github.com/docker/buildx/issues/442)
-- Bake 支持内联 Dockerfile。[docker/buildx#398](https://github.com/docker/buildx/issues/398)
-- Bake 支持从远程 URL 和 Git 存储库构建。[docker/buildx#398](https://github.com/docker/buildx/issues/398)
-- `BUILDX_CONFIG` 环境变量允许用户拥有与 Docker 配置分开的 buildx 状态。[docker/buildx#385](https://github.com/docker/buildx/issues/385)
-- `BUILDKIT_MULTI_PLATFORM` 构建参数允许强制构建多平台返回对象，即使仅指定了一个 `--platform`。[docker/buildx#467](https://github.com/docker/buildx/issues/467)
+- The `docker` driver now supports the `--push` flag. [docker/buildx#442](https://github.com/docker/buildx/issues/442)
+- Bake supports inline Dockerfiles. [docker/buildx#398](https://github.com/docker/buildx/issues/398)
+- Bake supports building from remote URLs and Git repositories. [docker/buildx#398](https://github.com/docker/buildx/issues/398)
+- `BUILDX_CONFIG` env var allow users to have separate buildx state from
+  Docker config. [docker/buildx#385](https://github.com/docker/buildx/issues/385)
+- `BUILDKIT_MULTI_PLATFORM` build arg allows to force building multi-platform
+  return objects even if only one `--platform` specified. [docker/buildx#467](https://github.com/docker/buildx/issues/467)
 
-### 增强功能
+### Enhancements
 
-- 允许 `--append` 与 `kubernetes` 驱动程序一起使用。[docker/buildx#370](https://github.com/docker/buildx/issues/370)
-- 使用 `--debug` 时，构建错误会显示源文件中的错误位置和系统堆栈跟踪。[docker/buildx#389](https://github.com/docker/buildx/issues/389)
-- Bake 使用源定义格式化 HCL 错误。[docker/buildx#391](https://github.com/docker/buildx/issues/391)
-- Bake 允许数组中的空字符串值，这些值将被丢弃。[docker/buildx#428](https://github.com/docker/buildx/issues/428)
-- 您现在可以将 Kubernetes 集群配置与 `kubernetes` 驱动程序一起使用。[docker/buildx#368](https://github.com/docker/buildx/issues/368)
+- Allow `--append` to be used with `kubernetes` driver. [docker/buildx#370](https://github.com/docker/buildx/issues/370)
+- Build errors show error location in source files and system stacktraces
+  with `--debug`. [docker/buildx#389](https://github.com/docker/buildx/issues/389)
+- Bake formats HCL errors with source definition. [docker/buildx#391](https://github.com/docker/buildx/issues/391)
+- Bake allows empty string values in arrays that will be discarded. [docker/buildx#428](https://github.com/docker/buildx/issues/428)
+- You can now use the Kubernetes cluster config with the `kubernetes` driver. [docker/buildx#368](https://github.com/docker/buildx/issues/368)
   [docker/buildx#460](https://github.com/docker/buildx/issues/460)
-- 创建临时令牌以拉取镜像，而不是在可能的情况下共享凭据。[docker/buildx#469](https://github.com/docker/buildx/issues/469)
-- 确保在拉取 BuildKit 容器镜像时传递凭据。[docker/buildx#441](https://github.com/docker/buildx/issues/441)
+- Creates a temporary token for pulling images instead of sharing credentials
+  when possible. [docker/buildx#469](https://github.com/docker/buildx/issues/469)
+- Ensure credentials are passed when pulling BuildKit container image. [docker/buildx#441](https://github.com/docker/buildx/issues/441)
   [docker/buildx#433](https://github.com/docker/buildx/issues/433)
-- 在 `docker-container` 驱动程序中禁用用户命名空间重新映射。[docker/buildx#462](https://github.com/docker/buildx/issues/462)
-- 允许 `--builder` 标志切换到默认实例。[docker/buildx#425](https://github.com/docker/buildx/issues/425)
-- 避免对空 `BUILDX_NO_DEFAULT_LOAD` 配置值发出警告。[docker/buildx#390](https://github.com/docker/buildx/issues/390)
-- 将 `quiet` 选项生成的错误替换为警告。[docker/buildx#403](https://github.com/docker/buildx/issues/403)
-- CI 已切换到 GitHub Actions。
+- Disable user namespace remapping in `docker-container` driver. [docker/buildx#462](https://github.com/docker/buildx/issues/462)
+- Allow `--builder` flag to switch to default instance. [docker/buildx#425](https://github.com/docker/buildx/issues/425)
+- Avoid warn on empty `BUILDX_NO_DEFAULT_LOAD` config value. [docker/buildx#390](https://github.com/docker/buildx/issues/390)
+- Replace error generated by `quiet` option by a warning. [docker/buildx#403](https://github.com/docker/buildx/issues/403)
+- CI has been switched to GitHub Actions.
   [docker/buildx#451](https://github.com/docker/buildx/issues/451),
   [docker/buildx#463](https://github.com/docker/buildx/issues/463),
   [docker/buildx#466](https://github.com/docker/buildx/issues/466),
   [docker/buildx#468](https://github.com/docker/buildx/issues/468),
   [docker/buildx#471](https://github.com/docker/buildx/issues/471)
 
-### 修复
+### Fixes
 
-- 处理小写 Dockerfile 名称作为后备以实现向后兼容性。[docker/buildx#444](https://github.com/docker/buildx/issues/444)
+- Handle lowercase Dockerfile name as a fallback for backward compatibility. [docker/buildx#444](https://github.com/docker/buildx/issues/444)
 
-有关更多详细信息，请参阅 [Buildx GitHub 存储库](https://github.com/docker/buildx/releases/tag/v0.5.0)中的完整发布说明。
+For more details, see the complete release notes in the [Buildx GitHub repository](https://github.com/docker/buildx/releases/tag/v0.5.0).
 
 ## 0.4.2
 
 {{< release-date date="2020-08-22" >}}
 
-### 新功能
+### New features
 
-- 支持 `cacheonly` 导出器。[docker/buildx#337](https://github.com/docker/buildx/issues/337)
+- Support `cacheonly` exporter. [docker/buildx#337](https://github.com/docker/buildx/issues/337)
 
-### 增强功能
+### Enhancements
 
-- 更新 `go-cty` 以引入更多 `stdlib` 函数。[docker/buildx#277](https://github.com/docker/buildx/issues/277)
-- 改进加载时的错误检查。[docker/buildx#281](https://github.com/docker/buildx/issues/281)
+- Update `go-cty` to pull in more `stdlib` functions. [docker/buildx#277](https://github.com/docker/buildx/issues/277)
+- Improve error checking on load. [docker/buildx#281](https://github.com/docker/buildx/issues/281)
 
-### 修复
+### Fixes
 
-- 修复了解析带有 HCL 的 json 配置。[docker/buildx#280](https://github.com/docker/buildx/issues/280)
-- 确保 `--builder` 从根选项连接。[docker/buildx#321](https://github.com/docker/buildx/issues/321)
-- 移除多平台 iidfile 的警告。[docker/buildx#351](https://github.com/docker/buildx/issues/351)
+- Fix parsing json config with HCL. [docker/buildx#280](https://github.com/docker/buildx/issues/280)
+- Ensure `--builder` is wired from root options. [docker/buildx#321](https://github.com/docker/buildx/issues/321)
+- Remove warning for multi-platform iidfile. [docker/buildx#351](https://github.com/docker/buildx/issues/351)
 
-有关更多详细信息，请参阅 [Buildx GitHub 存储库](https://github.com/docker/buildx/releases/tag/v0.4.2)中的完整发布说明。
+For more details, see the complete release notes in the [Buildx GitHub repository](https://github.com/docker/buildx/releases/tag/v0.4.2).
 
 ## 0.4.1
 
 {{< release-date date="2020-05-01" >}}
 
-### 修复
+### Fixes
 
-- 修复了标志解析的回归。[docker/buildx#268](https://github.com/docker/buildx/issues/268)
-- 修复了在 HCL 目标中使用 pull 和 no-cache 键的问题。[docker/buildx#268](https://github.com/docker/buildx/issues/268)
+- Fix regression on flag parsing. [docker/buildx#268](https://github.com/docker/buildx/issues/268)
+- Fix using pull and no-cache keys in HCL targets. [docker/buildx#268](https://github.com/docker/buildx/issues/268)
 
-有关更多详细信息，请参阅 [Buildx GitHub 存储库](https://github.com/docker/buildx/releases/tag/v0.4.1)中的完整发布说明。
+For more details, see the complete release notes in the [Buildx GitHub repository](https://github.com/docker/buildx/releases/tag/v0.4.1).
 
 ## 0.4.0
 
 {{< release-date date="2020-04-30" >}}
 
-### 新功能
+### New features
 
-- 添加 `kubernetes` 驱动程序。[docker/buildx#167](https://github.com/docker/buildx/issues/167)
-- 新的全局 `--builder` 标志，用于覆盖单个命令的构建器实例。[docker/buildx#246](https://github.com/docker/buildx/issues/246)
-- 新的 `prune` 和 `du` 命令，用于管理本地构建器缓存。[docker/buildx#249](https://github.com/docker/buildx/issues/249)
-- 您现在可以为 HCL 目标设置新的 `pull` 和 `no-cache` 选项。[docker/buildx#165](https://github.com/docker/buildx/issues/165)
+- Add `kubernetes` driver. [docker/buildx#167](https://github.com/docker/buildx/issues/167)
+- New global `--builder` flag to override builder instance for a single command. [docker/buildx#246](https://github.com/docker/buildx/issues/246)
+- New `prune` and `du` commands for managing local builder cache. [docker/buildx#249](https://github.com/docker/buildx/issues/249)
+- You can now set the new `pull` and `no-cache` options for HCL targets. [docker/buildx#165](https://github.com/docker/buildx/issues/165)
 
-### 增强功能
+### Enhancements
 
-- 升级 Bake 到 HCL2，支持变量和函数。[docker/buildx#192](https://github.com/docker/buildx/issues/192)
-- Bake 现在支持 `--load` 和 `--push`。[docker/buildx#164](https://github.com/docker/buildx/issues/164)
-- Bake 现在支持多个目标的通配符覆盖。[docker/buildx#164](https://github.com/docker/buildx/issues/164)
-- 容器驱动程序允许通过 `driver-opt` 设置环境变量。[docker/buildx#170](https://github.com/docker/buildx/issues/170)
+- Upgrade Bake to HCL2 with support for variables and functions. [docker/buildx#192](https://github.com/docker/buildx/issues/192)
+- Bake now supports `--load` and `--push`. [docker/buildx#164](https://github.com/docker/buildx/issues/164)
+- Bake now supports wildcard overrides for multiple targets. [docker/buildx#164](https://github.com/docker/buildx/issues/164)
+- Container driver allows setting environment variables via `driver-opt`. [docker/buildx#170](https://github.com/docker/buildx/issues/170)
 
-有关更多详细信息，请参阅 [Buildx GitHub 存储库](https://github.com/docker/buildx/releases/tag/v0.4.0)中的完整发布说明。
+For more details, see the complete release notes in the [Buildx GitHub repository](https://github.com/docker/buildx/releases/tag/v0.4.0).
 
 ## 0.3.1
 
 {{< release-date date="2019-09-27" >}}
 
-### 增强功能
+### Enhancements
 
-- 处理复制 unix 套接字而不是报错。[docker/buildx#155](https://github.com/docker/buildx/issues/155)
+- Handle copying unix sockets instead of erroring. [docker/buildx#155](https://github.com/docker/buildx/issues/155)
   [moby/buildkit#1144](https://github.com/moby/buildkit/issues/1144)
 
-### 修复
+### Fixes
 
-- 运行带有多个 Compose 文件的 Bake 现在可以正确合并目标。[docker/buildx#134](https://github.com/docker/buildx/issues/134)
-- 修复了从 stdin (`build -f -`) 构建 Dockerfile 时的错误。
+- Running Bake with multiple Compose files now merges targets correctly. [docker/buildx#134](https://github.com/docker/buildx/issues/134)
+- Fix bug when building a Dockerfile from stdin (`build -f -`).
   [docker/buildx#153](https://github.com/docker/buildx/issues/153)
 
-有关更多详细信息，请参阅 [Buildx GitHub 存储库](https://github.com/docker/buildx/releases/tag/v0.3.1)中的完整发布说明。
+For more details, see the complete release notes in the [Buildx GitHub repository](https://github.com/docker/buildx/releases/tag/v0.3.1).
 
 ## 0.3.0
 
 {{< release-date date="2019-08-02" >}}
 
-### 新功能
+### New features
 
-- 自定义 `buildkitd` 守护进程标志。[docker/buildx#102](https://github.com/docker/buildx/issues/102)
-- `create` 上的驱动程序特定选项。[docker/buildx#122](https://github.com/docker/buildx/issues/122)
+- Custom `buildkitd` daemon flags. [docker/buildx#102](https://github.com/docker/buildx/issues/102)
+- Driver-specific options on `create`. [docker/buildx#122](https://github.com/docker/buildx/issues/122)
 
-### 增强功能
+### Enhancements
 
-- 环境变量用于 Compose 文件中。[docker/buildx#117](https://github.com/docker/buildx/issues/117)
-- Bake 现在遵守 `--no-cache` 和 `--pull`。[docker/buildx#118](https://github.com/docker/buildx/issues/118)
-- 自定义 BuildKit 配置文件。[docker/buildx#121](https://github.com/docker/buildx/issues/121)
-- 使用 `build --allow` 支持授权。[docker/buildx#104](https://github.com/docker/buildx/issues/104)
+- Environment variables are used in Compose files. [docker/buildx#117](https://github.com/docker/buildx/issues/117)
+- Bake now honors `--no-cache` and `--pull`. [docker/buildx#118](https://github.com/docker/buildx/issues/118)
+- Custom BuildKit config file. [docker/buildx#121](https://github.com/docker/buildx/issues/121)
+- Entitlements support with `build --allow`. [docker/buildx#104](https://github.com/docker/buildx/issues/104)
 
-### 修复
+### Fixes
 
-- 修复了 `--build-arg foo` 不会从环境中读取 `foo` 的错误。[docker/buildx#116](https://github.com/docker/buildx/issues/116)
+- Fix bug where `--build-arg foo` would not read `foo` from environment. [docker/buildx#116](https://github.com/docker/buildx/issues/116)
 
-有关更多详细信息，请参阅 [Buildx GitHub 存储库](https://github.com/docker/buildx/releases/tag/v0.3.0)中的完整发布说明。
+For more details, see the complete release notes in the [Buildx GitHub repository](https://github.com/docker/buildx/releases/tag/v0.3.0).
 
 ## 0.2.2
 
 {{< release-date date="2019-05-30" >}}
 
-### 增强功能
+### Enhancements
 
-- 更改 Compose 文件处理以要求有效的服务规范。[docker/buildx#87](https://github.com/docker/buildx/issues/87)
+- Change Compose file handling to require valid service specifications. [docker/buildx#87](https://github.com/docker/buildx/issues/87)
 
-有关更多详细信息，请参阅 [Buildx GitHub 存储库](https://github.com/docker/buildx/releases/tag/v0.2.2)中的完整发布说明。
+For more details, see the complete release notes in the [Buildx GitHub repository](https://github.com/docker/buildx/releases/tag/v0.2.2).
 
 ## 0.2.1
 
 {{< release-date date="2019-05-25" >}}
 
-### 新功能
+### New features
 
-- 添加 `BUILDKIT_PROGRESS` 环境变量。[docker/buildx#69](https://github.com/docker/buildx/issues/69)
-- 添加 `local` 平台。[docker/buildx#70](https://github.com/docker/buildx/issues/70)
+- Add `BUILDKIT_PROGRESS` env var. [docker/buildx#69](https://github.com/docker/buildx/issues/69)
+- Add `local` platform. [docker/buildx#70](https://github.com/docker/buildx/issues/70)
 
-### 增强功能
+### Enhancements
 
-- 如果配置中定义了 arm 变体，则保留它。[docker/buildx#68](https://github.com/docker/buildx/issues/68)
-- 使 dockerfile 相对于上下文。[docker/buildx#83](https://github.com/docker/buildx/issues/83)
+- Keep arm variant if one is defined in the config. [docker/buildx#68](https://github.com/docker/buildx/issues/68)
+- Make dockerfile relative to context. [docker/buildx#83](https://github.com/docker/buildx/issues/83)
 
-### 修复
+### Fixes
 
-- 修复了从 compose 文件解析目标的问题。[docker/buildx#53](https://github.com/docker/buildx/issues/53)
+- Fix parsing target from compose files. [docker/buildx#53](https://github.com/docker/buildx/issues/53)
 
-有关更多详细信息，请参阅 [Buildx GitHub 存储库](https://github.com/docker/buildx/releases/tag/v0.2.1)中的完整发布说明。
+For more details, see the complete release notes in the [Buildx GitHub repository](https://github.com/docker/buildx/releases/tag/v0.2.1).
 
 ## 0.2.0
 
 {{< release-date date="2019-04-25" >}}
 
-### 新功能
+### New features
 
-- 首次发布
+- First release
 
-有关更多详细信息，请参阅 [Buildx GitHub 存储库](https://github.com/docker/buildx/releases/tag/v0.2.0)中的完整发布说明。
+For more details, see the complete release notes in the [Buildx GitHub repository](https://github.com/docker/buildx/releases/tag/v0.2.0).

@@ -1,113 +1,113 @@
 ---
-title: 更改账单周期
+title: Change your billing cycle
 weight: 50
-description: 了解如何更改 Docker 订阅的账单周期
+description: Learn to change your billing cycle for your Docker subscription
 keywords: billing, cycle, payments, subscription
 ---
 
-您可以按月付或年付的账单周期支付订阅费用。您在购买订阅时选择
-首选的账单周期。
+You can pay for a subscription on a monthly or yearly billing cycle. You select
+your preferred billing cycle when you buy your subscription.
 
 > [!NOTE]
 >
-> Business 订阅仅提供年付账单周期。
+> Business subscriptions are available only on yearly billing cycle.
 
-如果您使用月付账单周期，可以选择切换到年付
-账单周期。
+If you have a monthly billing cycle, you can choose to switch to an annual
+billing cycle.
 
 > [!NOTE]
 >
-> 您无法从年付账单周期切换到月付周期。
+> You can't switch from an annual billing cycle to a monthly cycle.
 
-当您更改账单周期的时长时：
+When you change the billing cycle's duration:
 
-- 下一个账单日期将反映新的周期。要查找您的下一个账单日期，
-请参阅[查看续订日期](history.md#view-renewal-date)。
-- 订阅的开始日期将重置。例如，如果
-月付订阅的开始日期是 3 月 1 日，结束日期是 4 月 1 日，那么在
-2024 年 3 月 15 日切换账单周期后，新的开始日期是 2024 年 3 月
-15 日，新的结束日期是 2025 年 3 月 15 日。
-- 任何未使用的月付订阅将按比例折算并作为抵用金应用于
-新的年付周期。例如，如果您从每月 $10 的订阅切换到
-每年 $100 的订阅，扣除未使用的月付价值
-（在本例中为 $5），迁移费用变为 $95（$100 - $5）。2025 年 3 月 15 日
-之后的续订费用为 $100。
+- The next billing date reflects the new cycle. To find your next billing date,
+see [View renewal date](history.md#view-renewal-date).
+- The subscription's start date resets. For example, if the start date of the
+monthly subscription is March 1st and the end date is April 1st, then after
+switching the billing duration to March 15th, 2024 the new start date is March
+15th, 2024, and the new end date is March 15th, 2025.
+- Any unused monthly subscription is prorated and applied as credit towards the
+new annual period. For example, if you switch from a $10 monthly subscription to
+a $100 annual subscription, deducting the unused monthly value
+(in this case $5), the migration cost becomes $95 ($100 - $5). The renewal cost
+after March 15, 2025 is $100.
 
 {{% include "tax-compliance.md" %}}
 
-## 个人账户
+## Personal account
 
 {{< tabs >}}
 {{< tab name="Docker subscription" >}}
 
-要更改您的账单周期：
+To change your billing cycle:
 
-1. 登录 [Docker Home](https://app.docker.com/) 并选择
-您的组织。
-1. 选择 **Billing**。
-1. 在计划和使用量页面，选择 **Switch to annual billing**。
-1. 验证您的账单信息。
-1. 选择 **Continue to payment**。
-1. 验证付款信息并选择 **Upgrade subscription**。
+1. Sign in to [Docker Home](https://app.docker.com/) and select
+your organization.
+1. Select **Billing**.
+1. On the plans and usage page, select **Switch to annual billing**.
+1. Verify your billing information.
+1. Select **Continue to payment**.
+1. Verify payment information and select **Upgrade subscription**.
 
 > [!NOTE]
 >
-> 如果您选择使用美国银行账户付款，您必须验证该账户。有关
-> 更多信息，请参阅
-[验证银行账户](manuals/billing/payment-method.md#verify-a-bank-account)。
+> If you choose to pay using a US bank account, you must verify the account. For
+> more information, see
+[Verify a bank account](manuals/billing/payment-method.md#verify-a-bank-account).
 
-账单计划和使用量页面现在将反映您新的年付订阅
-详情。
+The billing plans and usage page will now reflect your new annual subscription
+details.
 
 {{< /tab >}}
 {{< tab name="Legacy Docker subscription" >}}
 
-要更改您的账单周期：
+To change your billing cycle:
 
-1. 登录 [Docker Hub](https://hub.docker.com)。
-1. 选择您的组织，然后选择 **Billing**。
-1. 在 **Plan** 标签页的右下角，选择 **Switch to annual billing**。
-1. 查看 **Change to an Annual subscription**
-页面上显示的信息，然后选择 **Accept Terms and Purchase** 确认。
+1. Sign in to [Docker Hub](https://hub.docker.com).
+1. Select your organization, then select **Billing**.
+1. In the bottom-right of the **Plan** tab, select **Switch to annual billing**.
+1. Review the information displayed on the **Change to an Annual subscription**
+page and select **Accept Terms and Purchase** to confirm.
 
 {{< /tab >}}
 {{< /tabs >}}
 
-## 组织
+## Organization
 
 > [!NOTE]
 >
-> 您必须是组织所有者才能更改付款信息。
+> You must be an organization owner to make changes to the payment information.
 
 {{< tabs >}}
 {{< tab name="Docker subscription" >}}
 
-要更改组织的账单周期：
+To change your organization's billing cycle:
 
-1. 登录 [Docker Home](https://app.docker.com/) 并选择
-您的组织。
-1. 选择 **Billing**。
-1. 在计划和使用量页面，选择 **Switch to annual billing**。
-1. 验证您的账单信息。
-1. 选择 **Continue to payment**。
-1. 验证付款信息并选择 **Upgrade subscription**。
+1. Sign in to [Docker Home](https://app.docker.com/) and select
+your organization.
+1. Select **Billing**.
+1. On the plans and usage page, select **Switch to annual billing**.
+1. Verify your billing information.
+1. Select **Continue to payment**.
+1. Verify payment information and select **Upgrade subscription**.
 
 > [!NOTE]
 >
-> 如果您选择使用美国银行账户付款，您必须验证该账户。有关
-> 更多信息，请参阅
-> [验证银行账户](manuals/billing/payment-method.md#verify-a-bank-account)。
+> If you choose to pay using a US bank account, you must verify the account. For
+> more information, see
+> [Verify a bank account](manuals/billing/payment-method.md#verify-a-bank-account).
 
 {{< /tab >}}
 {{< tab name="Legacy Docker subscription" >}}
 
-要更改组织的账单周期：
+To change your organization's billing cycle:
 
-1. 登录 [Docker Hub](https://hub.docker.com)。
-1. 选择您的组织，然后选择 **Billing**。
-1. 选择 **Switch to annual billing**。
-1. 查看 **Change to an Annual subscription**
-页面上显示的信息，然后选择 **Accept Terms and Purchase** 确认。
+1. Sign in to [Docker Hub](https://hub.docker.com).
+1. Select your organization, then select **Billing**.
+1. Select **Switch to annual billing**.
+1. Review the information displayed on the **Change to an Annual subscription**
+page and select **Accept Terms and Purchase** to confirm.
 
 {{< /tab >}}
 {{< /tabs >}}

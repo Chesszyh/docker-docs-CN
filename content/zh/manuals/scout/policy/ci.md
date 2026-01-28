@@ -1,40 +1,75 @@
 ---
-title: 在 CI 中评估策略合规性
+title: Evaluate policy compliance in CI
 description: |
-  配置您的持续集成流水线，当镜像的策略评估相对于基线变差时失败
+  Configure your continuous integration pipelines to fail
+  when Policy Evaluation for an image is worse compared to baseline
 keywords: scout, supply chain, policy, ci
 ---
 
-将策略评估添加到您的持续集成流水线中，可帮助您检测和防止代码更改导致策略合规性相对于基线变差的情况。
+Adding Policy Evaluation to your continuous integration pipelines helps you
+detect and prevent cases where code changes would cause policy compliance to
+become worse compared to your baseline.
 
-在 CI 环境中进行策略评估的推荐策略是评估本地镜像并将结果与基线进行比较。如果本地镜像的策略合规性比指定的基线差，CI 运行将以错误失败。如果策略合规性更好或保持不变，CI 运行将成功。
+The recommended strategy for Policy Evaluation in a CI setting involves
+evaluating a local image and comparing the results to a baseline. If the policy
+compliance for the local image is worse than the specified baseline, the CI run
+fails with an error. If policy compliance is better or unchanged, the CI run
+succeeds.
 
-这种比较是相对的，意味着它只关注您的 CI 镜像相对于基线是更好还是更差。这不是通过或失败所有策略的绝对检查。通过相对于您定义的基线进行测量，您可以快速看到更改对策略合规性的影响是正面还是负面。
+This comparison is relative, meaning that it's only concerned with whether your
+CI image is better or worse than your baseline. It's not an absolute check to
+pass or fail all policies. By measuring relative to a baseline that you define,
+you can quickly see if a change has a positive or negative impact on policy
+compliance.
 
-## 工作原理
+## How it works
 
-当您在 CI 中进行策略评估时，您在 CI 流水线中构建的镜像上运行本地策略评估。要运行本地评估，您评估的镜像必须存在于运行 CI 工作流的镜像存储中。构建或拉取镜像，然后运行评估。
+When you do Policy Evaluation in CI, you run a local policy evaluation on the
+image you build in your CI pipeline. To run a local evaluation, the image that
+you evaluate must exist in the image store where your CI workflow is being run.
+Either build or pull the image, and then run the evaluation.
 
-要运行策略评估并在本地镜像的合规性比比较基线差时触发失败，您需要指定要用作基线的镜像版本。您可以硬编码特定的镜像引用，但更好的解决方案是使用[环境](../integrations/environment/_index.md)从环境中自动推断镜像版本。以下示例使用环境将 CI 镜像与 `production` 环境中的镜像进行比较。
+To run policy evaluation and trigger failure if compliance for your local image
+is worse than your comparison baseline, you need to specify the image version
+to use as a baseline. You can hard-code a specific image reference, but a
+better solution is to use [environments](../integrations/environment/_index.md)
+to automatically infer the image version from an environment. The example that
+follows uses environments to compare the CI image with the image in the
+`production` environment.
 
-## 示例
+## Example
 
-以下关于如何在 CI 中运行策略评估的示例使用 [Docker Scout GitHub Action](https://github.com/marketplace/actions/docker-scout) 对在 CI 中构建的镜像执行 `compare` 命令。compare 命令有一个 `to-env` 输入，它将针对名为 `production` 的环境运行比较。`exit-on` 输入设置为 `policy`，意味着只有在策略合规性恶化时比较才会失败。
+The following example on how to run policy evaluation in CI uses the [Docker
+Scout GitHub Action](https://github.com/marketplace/actions/docker-scout) to
+execute the `compare` command on an image built in CI. The compare command has
+a `to-env` input, which will run the comparison against an environment called
+`production`. The `exit-on` input is set to `policy`, meaning that the
+comparison fails only if policy compliance has worsened.
 
-此示例不假设您使用 Docker Hub 作为容器镜像仓库。因此，此工作流使用 `docker/login-action` 两次：
+This example doesn't assume that you're using Docker Hub as your container
+registry. As a result, this workflow uses the `docker/login-action` twice:
 
-- 一次用于向您的容器镜像仓库进行身份验证。
-- 再一次用于向 Docker 进行身份验证以拉取您 `production` 镜像的分析结果。
+- Once for authenticating to your container registry.
+- Once more for authenticating to Docker to pull the analysis results of your
+  `production` image.
 
-如果您使用 Docker Hub 作为容器镜像仓库，您只需要进行一次身份验证。
+If you use Docker Hub as your container registry, you only need to authenticate
+once.
 
 > [!NOTE]
 >
-> 由于 Docker Engine 的限制，不支持将多平台镜像或带有证明的镜像加载到镜像存储中。
+> Due to a limitation in the Docker Engine, loading multi-platform images or
+> images with attestations to the image store isn't supported.
 >
-> 要使策略评估正常工作，您必须将镜像加载到运行器的本地镜像存储中。确保您正在构建没有证明的单平台镜像，并且正在加载构建结果。否则，策略评估将失败。
+> For the policy evaluation to work, you must load the image to the local image
+> store of the runner. Ensure that you're building a single-platform image
+> without attestations, and that you're loading the build results. Otherwise,
+> the policy evaluation fails.
 
-还要注意作业的 `pull-requests: write` 权限。Docker Scout GitHub Action 默认会添加带有评估结果的拉取请求评论，这需要此权限。有关详细信息，请参阅 [Pull Request Comments](https://github.com/docker/scout-action#pull-request-comments)。
+Also note the `pull-requests: write` permission for the job. The Docker Scout
+GitHub Action adds a pull request comment with the evaluation results by
+default, which requires this permission. For details, see
+[Pull Request Comments](https://github.com/docker/scout-action#pull-request-comments).
 
 ```yaml
 name: Docker
@@ -65,7 +100,7 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ secrets.REGISTRY_USER }}
           password: ${{ secrets.REGISTRY_TOKEN }}
-
+      
       - name: Setup Docker buildx
         uses: docker/setup-buildx-action@v3
 
@@ -106,8 +141,13 @@ jobs:
           exit-on: policy
 ```
 
-以下截图展示了当策略评估检查失败时 GitHub PR 评论的样子，因为 PR 镜像的策略相对于基线变差了。
+The following screenshot shows what the GitHub PR comment looks like when a
+policy evaluation check fails because policy has become worse in the PR image
+compared to baseline.
 
-![GitHub PR 中的策略评估评论](../images/scout-policy-eval-ci.webp)
+![Policy evaluation comment in GitHub PR](../images/scout-policy-eval-ci.webp)
 
-此示例演示了如何使用 GitHub Actions 在 CI 中运行策略评估。Docker Scout 还支持其他 CI 平台。有关更多信息，请参阅 [Docker Scout CI 集成](../integrations/_index.md#continuous-integration)。
+This example has demonstrated how to run policy evaluation in CI with GitHub
+Actions. Docker Scout also supports other CI platforms. For more information,
+see [Docker Scout CI
+integrations](../integrations/_index.md#continuous-integration).

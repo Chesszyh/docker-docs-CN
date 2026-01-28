@@ -1,44 +1,55 @@
 ---
-title: 迁移现有应用以使用 Docker Hardened Images
-linktitle: 迁移应用
-description: 按照分步指南更新您的 Dockerfile，采用 Docker Hardened Images 实现安全、最小化和生产就绪的构建。
+title: Migrate an existing application to use Docker Hardened Images
+linktitle: Migrate an app
+description: Follow a step-by-step guide to update your Dockerfiles and adopt Docker Hardened Images for secure, minimal, and production-ready builds.
 weight: 50
 keywords: migrate dockerfile, hardened base image, multi-stage build, non-root containers, secure container build
 ---
 
 {{< summary-bar feature_name="Docker Hardened Images" >}}
 
-本指南帮助您将现有的 Dockerfile 迁移到使用 Docker Hardened Images（DHI）。DHI 是最小化且以安全为重点的，这可能需要对您的基础镜像、构建过程和运行时配置进行调整。
+This guide helps you migrate your existing Dockerfiles to use Docker Hardened
+Images (DHIs). DHIs are minimal and security-focused, which may require
+adjustments to your base images, build process, and runtime configuration.
 
-本指南侧重于迁移框架镜像，例如用于使用 Go、Python 或 Node.js 等语言从源代码构建应用的镜像。如果您正在迁移应用镜像，如数据库、代理或其他预构建服务，许多相同的原则仍然适用。
+This guide focuses on migrating framework images, such as images for building
+applications from source using languages like Go, Python, or Node.js. If you're
+migrating application images, such as databases, proxies, or other prebuilt
+services, many of the same principles still apply.
 
-## 迁移注意事项
+## Migration considerations
 
-DHI 省略了常见工具，如 shell 和包管理器，以减少攻击面。它们还默认以非 root 用户运行。因此，迁移到 DHI 通常需要对您的 Dockerfile 进行以下更改：
+DHIs omit common tools such as shells and package managers to
+reduce the attack surface. They also default to running as a nonroot user. As a
+result, migrating to DHI typically requires the following changes to your
+Dockerfile:
 
 
-| 项目               | 迁移说明                                                                                                                                                                                                                                                                                                                 |
+| Item               | Migration note                                                                                                                                                                                                                                                                                                                 |
 |:-------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 基础镜像         | 将 Dockerfile 中的基础镜像替换为 Docker Hardened Image。                                                                                                                                                                                                      |
-| 包管理 | 用于运行时的镜像不包含包管理器。仅在带有 `dev` 标签的镜像中使用包管理器。利用多阶段构建，将必要的制品从构建阶段复制到运行时阶段。                                                                                                                                                                        |
-| 非 root 用户      | 默认情况下，用于运行时的镜像以 nonroot 用户运行。确保必要的文件和目录对 nonroot 用户可访问。                                                                                                                                              |
-| 多阶段构建  | 在构建阶段使用带有 `dev` 或 `sdk` 标签的镜像，在运行时使用非 dev 镜像。                                                                                                                                                                                     |
-| TLS 证书   | DHI 默认包含标准 TLS 证书。无需安装 TLS 证书。                                                                                                                                                                               |
-| 端口              | 用于运行时的 DHI 默认以 nonroot 用户运行。因此，在 Kubernetes 中或在 20.10 之前版本的 Docker Engine 中运行时，这些镜像中的应用无法绑定到特权端口（低于 1024）。为避免问题，请将应用配置为在容器内监听 1025 或更高的端口。 |
-| 入口点        | DHI 可能具有与 Docker Official Images 等镜像不同的入口点。检查 DHI 的入口点并根据需要更新您的 Dockerfile。                                                                                                                                        |
-| 无 shell           | 用于运行时的 DHI 不包含 shell。在构建阶段使用 dev 镜像运行 shell 命令，然后将制品复制到运行时阶段。                                                                                                                                            |
+| Base image         | Replace your base images in your Dockerfile with a Docker Hardened Image.                                                                                                                                                                                                                                                      |
+| Package management | Images intended for runtime, don't contain package managers. Use package managers only in images with a `dev` tag. Utilize multi-stage builds and copy necessary artifacts from the build stage to the runtime stage.                                                                                                                                                                        |
+| Non-root user      | By default, images intended for runtime, run as the nonroot user. Ensure that necessary files and directories are accessible to the nonroot user.                                                                                                                                                                              |
+| Multi-stage build  | Utilize images with a `dev` or `sdk` tags for build stages and non-dev images for runtime.                                                                                                                                                                                                                                     |
+| TLS certificates   | DHIs contain standard TLS certificates by default. There is no need to install TLS certificates.                                                                                                                                                                                                                               |
+| Ports              | DHIs intented for runtime run as a nonroot user by default. As a result, applications in these images can't bind to privileged ports (below 1024) when running in Kubernetes or in Docker Engine versions older than 20.10. To avoid issues, configure your application to listen on port 1025 or higher inside the container. |
+| Entry point        | DHIs may have different entry points than images such as Docker Official Images. Inspect entry points for DHIs and update your Dockerfile if necessary.                                                                                                                                                                        |
+| No shell           | DHIs intended for runtime don't contain a shell. Use dev images in build stages to run shell commands and then copy artifacts to the runtime stage.                                                                                                                                                                            |
 
-有关更多详情和故障排除提示，请参阅[故障排除](/manuals/dhi/troubleshoot.md)。
+For more details and troubleshooting tips, see the [Troubleshoot](/manuals/dhi/troubleshoot.md).
 
-## 迁移现有应用
+## Migrate an existing application
 
-以下步骤概述了迁移过程。
+The following steps outline the migration process.
 
-### 步骤 1：更新 Dockerfile 中的基础镜像
+### Step 1: Update the base image in your Dockerfile
 
-将应用 Dockerfile 中的基础镜像更新为加固镜像。这通常是标记为 `dev` 或 `sdk` 的镜像，因为它具有安装软件包和依赖项所需的工具。
+Update the base image in your application’s Dockerfile to a hardened image. This
+is typically going to be an image tagged as `dev` or `sdk` because it has the tools
+needed to install packages and dependencies.
 
-以下来自 Dockerfile 的示例 diff 片段显示了旧基础镜像被新的加固镜像替换。
+The following example diff snippet from a Dockerfile shows the old base image
+replaced by the new hardened image.
 
 ```diff
 - ## Original base image
@@ -48,19 +59,26 @@ DHI 省略了常见工具，如 shell 和包管理器，以减少攻击面。它
 + FROM <your-namespace>/dhi-golang:1.22-dev
 ```
 
-### 步骤 2：更新 Dockerfile 中的运行时镜像
+### Step 2: Update the runtime image in your Dockerfile
 
-为确保您的最终镜像尽可能最小化，您应该使用[多阶段构建](/manuals/build/building/multi-stage.md)。Dockerfile 中的所有阶段都应使用加固镜像。虽然中间阶段通常使用标记为 `dev` 或 `sdk` 的镜像，但最终的运行时阶段应使用运行时镜像。
+To ensure that your final image is as minimal as possible, you should use a
+[multi-stage build](/manuals/build/building/multi-stage.md). All stages in your
+Dockerfile should use a hardened image. While intermediary stages will typically
+use images tagged as `dev` or `sdk`, your final runtime stage should use a runtime image.
 
-利用构建阶段编译您的应用，并将生成的制品复制到最终的运行时阶段。这确保了您的最终镜像是最小化且安全的。
+Utilize the build stage to compile your application and copy the resulting
+artifacts to the final runtime stage. This ensures that your final image is
+minimal and secure.
 
-请参阅[示例 Dockerfile 迁移](#示例-dockerfile-迁移)部分，了解如何更新您的 Dockerfile 的示例。
+See the [Example Dockerfile migrations](#example-dockerfile-migrations) section for
+examples of how to update your Dockerfile.
 
-## 示例 Dockerfile 迁移
+## Example Dockerfile migrations
 
-以下迁移示例展示了迁移前和迁移后的 Dockerfile。
+The following migration examples show a Dockerfile before the migration and
+after the migration.
 
-### Go 示例
+### Go example
 
 {{< tabs >}}
 {{< tab name="Before" >}}
@@ -101,7 +119,7 @@ ENTRYPOINT ["/app/main"]
 {{< /tab >}}
 {{< /tabs >}}
 
-### Node.js 示例
+### Node.js example
 
 {{< tabs >}}
 {{< tab name="Before" >}}
@@ -150,7 +168,7 @@ CMD ["index.js"]
 {{< /tab >}}
 {{< /tabs >}}
 
-### Python 示例
+### Python example
 
 {{< tabs >}}
 {{< tab name="Before" >}}

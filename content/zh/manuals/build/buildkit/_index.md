@@ -1,70 +1,87 @@
 ---
 title: BuildKit
 weight: 100
-description: BuildKit 简介与概述
+description: Introduction and overview of BuildKit
 keywords: build, buildkit
 ---
 
-## 概述
+## Overview
 
 [BuildKit](https://github.com/moby/buildkit)
-是一个改进的后端，用于替代传统构建器。对于 Docker Desktop 用户以及 Docker Engine 23.0 及更高版本的用户，BuildKit 是默认的构建器。
+is an improved backend to replace the legacy builder. BuildKit is the default builder
+for users on Docker Desktop, and Docker Engine as of version 23.0.
 
-BuildKit 提供了新功能并提升了构建性能。
-它还引入了对更复杂场景的支持：
+BuildKit provides new functionality and improves your builds' performance.
+It also introduces support for handling more complex scenarios:
 
-- 检测并跳过执行未使用的构建阶段
-- 并行构建相互独立的构建阶段
-- 在构建之间只增量传输[构建上下文](../concepts/context.md)中已更改的文件
-- 检测并跳过传输[构建上下文](../concepts/context.md)中未使用的文件
-- 使用具有众多新功能的 [Dockerfile 前端](frontend.md)实现
-- 避免与其余 API 产生副作用（中间镜像和容器）
-- 为自动清理优先处理构建缓存
+- Detect and skip executing unused build stages
+- Parallelize building independent build stages
+- Incrementally transfer only the changed files in your
+  [build context](../concepts/context.md) between builds
+- Detect and skip transferring unused files in your
+  [build context](../concepts/context.md)
+- Use [Dockerfile frontend](frontend.md) implementations with many
+  new features
+- Avoid side effects with rest of the API (intermediate images and containers)
+- Prioritize your build cache for automatic pruning
 
-除了众多新功能外，BuildKit 在当前体验上改进的主要领域是性能、存储管理和可扩展性。在性能方面，一个重要的更新是全新的完全并发的构建图求解器。它可以在可能的情况下并行运行构建步骤，并优化掉那些对最终结果没有影响的命令。我们还优化了对本地源文件的访问。通过只跟踪这些文件在重复构建调用之间的更新，无需等待本地文件被读取或上传即可开始工作。
+Apart from many new features, the main areas BuildKit improves on the current
+experience are performance, storage management, and extensibility. From the
+performance side, a significant update is a new fully concurrent build graph
+solver. It can run build steps in parallel when possible and optimize out
+commands that don't have an impact on the final result. We have also optimized
+the access to the local source files. By tracking only the updates made to these
+files between repeated build invocations, there is no need to wait for local
+files to be read or uploaded before the work can begin.
 
 ## LLB
 
-BuildKit 的核心是
-[Low-Level Build（LLB，低级构建）](https://github.com/moby/buildkit#exploring-llb)定义格式。LLB 是一种中间二进制格式，
-允许开发者扩展 BuildKit。LLB 定义了一个内容可寻址的
-依赖图，可用于组合非常复杂的构建
-定义。它还支持 Dockerfile 中未暴露的功能，如直接
-数据挂载和嵌套调用。
+At the core of BuildKit is a
+[Low-Level Build (LLB)](https://github.com/moby/buildkit#exploring-llb) definition format. LLB is an intermediate binary format
+that allows developers to extend BuildKit. LLB defines a content-addressable
+dependency graph that can be used to put together very complex build
+definitions. It also supports features not exposed in Dockerfiles, like direct
+data mounting and nested invocation.
 
 {{< figure src="../images/buildkit-dag.svg" class="invertible" >}}
 
-关于构建的执行和缓存的一切都在 LLB 中定义。
-与传统构建器相比，缓存模型完全重写。LLB 不是
-使用启发式方法来比较镜像，而是直接跟踪构建
-图的校验和以及挂载到特定操作的内容。这使得它更快、
-更精确、更可移植。构建缓存甚至可以导出到仓库，
-后续调用可以按需从任何主机拉取。
+Everything about execution and caching of your builds is defined in LLB. The
+caching model is entirely rewritten compared to the legacy builder. Rather than
+using heuristics to compare images, LLB directly tracks the checksums of build
+graphs and content mounted to specific operations. This makes it much faster,
+more precise, and portable. The build cache can even be exported to a registry,
+where it can be pulled on-demand by subsequent invocations on any host.
 
-LLB 可以直接使用
-[golang 客户端包](https://pkg.go.dev/github.com/moby/buildkit/client/llb)生成，该包允许使用 Go 语言原语定义构建操作之间的关系。这为您提供了运行
-任何您能想象的事物的全部能力，但这可能不是大多数人
-定义其构建的方式。相反，大多数用户会使用前端组件或 LLB 嵌套
-调用来运行一组准备好的构建步骤。
+LLB can be generated directly using a
+[golang client package](https://pkg.go.dev/github.com/moby/buildkit/client/llb) that allows defining the relationships between your
+build operations using Go language primitives. This gives you full power to run
+anything you can imagine, but will probably not be how most people will define
+their builds. Instead, most users would use a frontend component, or LLB nested
+invocation, to run a prepared set of build steps.
 
-## 前端
+## Frontend
 
-前端是一个组件，它接收人类可读的构建格式并将其
-转换为 LLB，以便 BuildKit 可以执行它。前端可以作为镜像分发，
-用户可以指定特定版本的前端，确保
-其定义所使用的功能能够正常工作。
+A frontend is a component that takes a human-readable build format and converts
+it to LLB so BuildKit can execute it. Frontends can be distributed as images,
+and the user can target a specific version of a frontend that is guaranteed to
+work for the features used by their definition.
 
-例如，要使用 BuildKit 构建 [Dockerfile](/reference/dockerfile.md)，您需要
-[使用外部 Dockerfile 前端](frontend.md)。
+For example, to build a [Dockerfile](/reference/dockerfile.md) with
+BuildKit, you would
+[use an external Dockerfile frontend](frontend.md).
 
-## 开始使用
+## Getting started
 
-对于 Docker Desktop 和 Docker Engine v23.0 及更高版本的用户，BuildKit 是默认的构建器。
+BuildKit is the default builder for users on Docker Desktop and Docker Engine
+v23.0 and later.
 
-如果您已安装 Docker Desktop，则无需启用 BuildKit。如果
-您运行的 Docker Engine 版本早于 23.0，可以通过设置环境变量或在守护进程配置中将 BuildKit 设为默认设置来启用 BuildKit。
+If you have installed Docker Desktop, you don't need to enable BuildKit. If you
+are running a version of Docker Engine version earlier than 23.0, you can enable
+BuildKit either by setting an environment variable, or by making BuildKit the
+default setting in the daemon configuration.
 
-要在运行 `docker build` 命令时设置 BuildKit 环境变量，请运行：
+To set the BuildKit environment variable when running the `docker build`
+command, run:
 
 ```console
 $ DOCKER_BUILDKIT=1 docker build .
@@ -72,9 +89,10 @@ $ DOCKER_BUILDKIT=1 docker build .
 
 > [!NOTE]
 >
-> Buildx 始终使用 BuildKit。
+> Buildx always uses BuildKit.
 
-要默认使用 Docker BuildKit，请按如下方式编辑 `/etc/docker/daemon.json` 中的 Docker 守护进程配置，然后重启守护进程。
+To use Docker BuildKit by default, edit the Docker daemon configuration in
+`/etc/docker/daemon.json` as follows, and restart the daemon.
 
 ```json
 {
@@ -84,54 +102,56 @@ $ DOCKER_BUILDKIT=1 docker build .
 }
 ```
 
-如果 `/etc/docker/daemon.json` 文件不存在，请创建名为 `daemon.json` 的新文件，然后将上述内容添加到文件中。然后重启 Docker 守护进程。
+If the `/etc/docker/daemon.json` file doesn't exist, create new file called
+`daemon.json` and then add the following to the file. And restart the Docker
+daemon.
 
-## Windows 上的 BuildKit
+## BuildKit on Windows
 
 > [!WARNING]
 >
-> BuildKit 仅完全支持构建 Linux 容器。Windows 容器
-> 支持是实验性的。
+> BuildKit only fully supports building Linux containers. Windows container
+> support is experimental.
 
-从 0.13 版本开始，BuildKit 对 Windows 容器（WCOW）提供实验性支持。
-本节将引导您完成试用它的步骤。
-我们感谢您通过[在此处提交 issue](https://github.com/moby/buildkit/issues/new) 提交的任何反馈，特别是关于 `buildkitd.exe` 的反馈。
+BuildKit has experimental support for Windows containers (WCOW) as of version 0.13.
+This section walks you through the steps for trying it out.
+We appreciate any feedback you submit by [opening an issue here](https://github.com/moby/buildkit/issues/new), especially `buildkitd.exe`.
 
-### 已知限制
+### Known limitations
 
-有关 Windows 上 BuildKit 相关的已知 bug 和限制的信息，
-请参阅 [GitHub issues](https://github.com/moby/buildkit/issues?q=is%3Aissue%20state%3Aopen%20label%3Aarea%2Fwindows-wcow)。
+For information about open bugs and limitations related to BuildKit on Windows,
+see [GitHub issues](https://github.com/moby/buildkit/issues?q=is%3Aissue%20state%3Aopen%20label%3Aarea%2Fwindows-wcow).
 
-### 前提条件
+### Prerequisites
 
-- 架构：`amd64`、`arm64`（二进制文件可用但尚未正式测试）。
-- 支持的操作系统：Windows Server 2019、Windows Server 2022、Windows 11。
-- 基础镜像：`ServerCore:ltsc2019`、`ServerCore:ltsc2022`、`NanoServer:ltsc2022`。
-  请参阅[此处的兼容性映射表](https://learn.microsoft.com/en-us/virtualization/windowscontainers/deploy-containers/version-compatibility?tabs=windows-server-2019%2Cwindows-11#windows-server-host-os-compatibility)。
-- Docker Desktop 4.29 或更高版本
+- Architecture: `amd64`, `arm64` (binaries available but not officially tested yet).
+- Supported OS: Windows Server 2019, Windows Server 2022, Windows 11.
+- Base images: `ServerCore:ltsc2019`, `ServerCore:ltsc2022`, `NanoServer:ltsc2022`.
+  See the [compatibility map here](https://learn.microsoft.com/en-us/virtualization/windowscontainers/deploy-containers/version-compatibility?tabs=windows-server-2019%2Cwindows-11#windows-server-host-os-compatibility).
+- Docker Desktop version 4.29 or later
 
-### 步骤
+### Steps
 
 > [!NOTE]
 >
-> 以下命令需要在 PowerShell 终端中以管理员（提升）权限运行。
+> The following commands require administrator (elevated) privileges in a PowerShell terminal.
 
-1. 启用 **Hyper-V** 和 **Containers** Windows 功能。
+1. Enable the **Hyper-V** and **Containers** Windows features.
 
    ```console
    > Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V, Containers -All
    ```
 
-   如果您看到 `RestartNeeded` 为 `True`，请重启您的机器并以管理员身份重新打开 PowerShell 终端。
-   否则，继续下一步。
+   If you see `RestartNeeded` as `True`, restart your machine and re-open a PowerShell terminal as an administrator.
+   Otherwise, continue with the next step.
 
-2. 在 Docker Desktop 中切换到 Windows 容器。
+2. Switch to Windows containers in Docker Desktop.
 
-   选择任务栏中的 Docker 图标，然后选择 **Switch to Windows containers...**。
+   Select the Docker icon in the taskbar, and then **Switch to Windows containers...**.
 
-3. 按照[此处](https://github.com/containerd/containerd/blob/main/docs/getting-started.md#installing-containerd-on-windows)的设置说明安装 containerd 1.7.7 或更高版本。
+3. Install containerd version 1.7.7 or later following the setup instructions [here](https://github.com/containerd/containerd/blob/main/docs/getting-started.md#installing-containerd-on-windows).
 
-4. 下载并解压最新的 BuildKit 发布版本。
+4. Download and extract the latest BuildKit release.
 
    ```powershell
    $version = "v0.22.0" # specify the release version, v0.13+
@@ -146,7 +166,7 @@ $ DOCKER_BUILDKIT=1 docker build .
    ## x bin/buildkitd.exe
    ```
 
-5. 将 BuildKit 二进制文件安装到 `PATH`。
+5. Install BuildKit binaries on `PATH`.
 
    ```powershell
    # after the binaries are extracted in the bin directory
@@ -159,34 +179,34 @@ $ DOCKER_BUILDKIT=1 docker build .
    $Env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + `
        [System.Environment]::GetEnvironmentVariable("Path","User")
    ```
-6. 启动 BuildKit 守护进程。
+6. Start the BuildKit daemon.
 
    ```console
    > buildkitd.exe
    ```
    > [!NOTE]
-   > 如果您正在运行由 _dockerd 管理的_ `containerd` 进程，请改用它，通过提供地址：
+   > If you are running a _dockerd-managed_ `containerd` process, use that instead, by supplying the address:
    > `buildkitd.exe --containerd-worker-addr "npipe:////./pipe/docker-containerd"`
 
-7. 在另一个具有管理员权限的终端中，创建使用本地 BuildKit 守护进程的远程构建器。
+7. In another terminal with administrator privileges, create a remote builder that uses the local BuildKit daemon.
 
    > [!NOTE]
    >
-   > 这需要 Docker Desktop 4.29 或更高版本。
+   > This requires Docker Desktop version 4.29 or later.
 
    ```console
    > docker buildx create --name buildkit-exp --use --driver=remote npipe:////./pipe/buildkitd
    buildkit-exp
    ```
 
-8. 通过运行 `docker buildx inspect` 验证构建器连接。
+8. Verify the builder connection by running `docker buildx inspect`.
 
    ```console
    > docker buildx inspect
    ```
 
-   输出应显示构建器平台是 Windows，
-   并且构建器的端点是命名管道。
+   The output should indicate that the builder platform is Windows,
+   and that the endpoint of the builder is a named pipe.
 
    ```text
    Name:          buildkit-exp
@@ -201,7 +221,7 @@ $ DOCKER_BUILDKIT=1 docker build .
    ...
    ```
 
-9. 创建 Dockerfile 并构建 `hello-buildkit` 镜像。
+9. Create a Dockerfile and build a `hello-buildkit` image.
 
    ```console
    > mkdir sample_dockerfile
@@ -219,13 +239,13 @@ $ DOCKER_BUILDKIT=1 docker build .
    "@
    ```
 
-10. 构建并推送镜像到仓库。
+10. Build and push the image to a registry.
 
     ```console
     > docker buildx build --push -t <username>/hello-buildkit .
     ```
 
-11. 推送到仓库后，使用 `docker run` 运行镜像。
+11. After pushing to the registry, run the image with `docker run`.
 
     ```console
     > docker run <username>/hello-buildkit

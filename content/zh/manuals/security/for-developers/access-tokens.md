@@ -1,76 +1,87 @@
 ---
-title: 创建和管理访问令牌
-linkTitle: 访问令牌
-description: 了解如何创建和管理您的个人 Docker 访问令牌，以安全地通过编程方式推送和拉取镜像。
+title: Create and manage access tokens
+linkTitle: Access tokens
+description: Learn how to create and manage your personal Docker access tokens
+  to securely push and pull images programmatically.
 keywords: docker hub, hub, security, PAT, personal access token
 aliases:
 - /docker-hub/access-tokens/
 ---
 
-您可以创建个人访问令牌（Personal Access Token，PAT）作为密码的替代方案，用于 Docker CLI 身份验证。
+You can create a personal access token (PAT) to use as an alternative to your password for Docker CLI authentication.
 
-与密码相比，PAT 具有以下优势：
+Compared to passwords, PATs provide the following advantages:
 
-- 您可以查看 PAT 的最后使用时间，如果发现任何可疑活动，可以禁用或删除它。
-- 使用访问令牌时，您无法对账户执行任何管理操作，包括更改密码。这可以在您的计算机被入侵时保护您的账户。
-- 访问令牌对于构建集成非常有价值，因为您可以为每个集成发放多个令牌，并随时撤销它们。
+- You can investigate when the PAT was last used and then disable or delete it if you find any suspicious activity.
+- When using an access token, you can't perform any administrative activity on the account, including changing the password. It protects your account if your computer is compromised.
+- Access tokens are valuable for building integrations, as you can issue multiple tokens, one for each integration, and revoke them at
+any time.
 
-## 创建访问令牌
+## Create an access token
 
 > [!IMPORTANT]
 >
-> 请像对待密码一样保护访问令牌，并对其保密。例如，将令牌安全地存储在凭据管理器中。
+> Treat access tokens like your password and keep them secret. Store your tokens securely in a credential manager for example.
 
-使用 Docker Admin Console 创建访问令牌。
+Use the Docker Admin Console to create an access token.
 
-1. 登录 [Docker Home](https://app.docker.com/)。
-1. 选择右上角的头像，然后从下拉菜单中选择 **Account settings**。
-1. 选择 **Personal access tokens**。
-1. 选择 **Generate new token**。
-1. 为令牌添加描述。使用能够说明令牌用例或用途的内容。
-1. 选择令牌的过期日期。
-1. 设置访问权限。
-   访问权限是在仓库中设置限制的范围。例如，对于读写权限，自动化流水线可以构建镜像然后将其推送到仓库。但是，它不能删除仓库。
-1. 选择 **Generate**，然后复制屏幕上显示的令牌并保存。关闭此提示后，您将无法再次获取该令牌。
+1. Sign in to [Docker Home](https://app.docker.com/).
+1. Select your avatar in the top-right corner and from the drop-down menu select **Account settings**.
+1. Select **Personal access tokens**.
+1. Select **Generate new token**.
+1. Add a description for your token. Use something that indicates the use case or purpose of the token.
+1. Select the expiration date for the token.
+1. Set the access permissions.
+   The access permissions are scopes that set restrictions in your
+   repositories. For example, for Read & Write permissions, an automation
+   pipeline can build an image and then push it to a repository. However, it
+   can't delete the repository.
+1. Select **Generate** and then copy the token that appears on the screen and save it. You won't be able to retrieve the token once you close this prompt.
 
-## 使用访问令牌
+## Use an access token
 
-使用 Docker CLI 登录时，您可以使用访问令牌代替密码。
+You can use an access token in place of your password when you sign in using Docker CLI.
 
-使用以下命令从 Docker CLI 客户端登录，将 `YOUR_USERNAME` 替换为您的 Docker ID：
+Sign in from your Docker CLI client with the following command, replacing `YOUR_USERNAME` with your Docker ID:
 
 ```console
 $ docker login --username <YOUR_USERNAME>
 ```
 
-当提示输入密码时，输入您的个人访问令牌而不是密码。
+When prompted for a password, enter your personal access token instead of a password.
 
 > [!NOTE]
 >
-> 如果您启用了[双因素认证（2FA）](2fa/_index.md)，则在从 Docker CLI 登录时必须使用个人访问令牌。2FA 是一种可选但更安全的身份验证方法。
+> If you have [two-factor authentication (2FA)](2fa/_index.md) enabled, you must
+> use a personal access token when logging in from the Docker CLI. 2FA is an
+> optional, but more secure method of authentication.
 
-### 合理使用
+### Fair use
 
-使用 PAT 时，用户应注意过度创建 PAT 可能会导致限流或额外收费。为确保资源的合理使用并维护服务质量，Docker 保留对过度使用 PAT 的账户施加限制或收取额外费用的权利。
+When utilizing PATs, users should be aware that excessive creation of PATs could lead to throttling, or additional charges. To ensure fair resource usage and maintain service quality, Docker reserves the right to impose restrictions or apply additional charges to accounts exhibiting excessive use of PATs.
 
-## 修改现有令牌
+## Modify existing tokens
 
 > [!NOTE]
 >
-> 您无法编辑现有令牌的过期日期。如果需要设置新的过期日期，必须创建新的 PAT。
+> You can't edit the expiration date on an existing token. You must create a new PAT if you need to set a new expiration date.
 
-您可以根据需要重命名、激活、停用或删除令牌。您可以在账户设置中管理令牌。
+You can rename, activate, deactivate, or delete a token as needed. You can manage your tokens in your account settings.
 
-1. 登录 [Docker Home](https://app.docker.com/login)。
-1. 选择右上角的头像，然后从下拉菜单中选择 **Account settings**。
-1. 选择 **Personal access tokens**。
+1. Sign in to [Docker Home](https://app.docker.com/login).
+1. Select your avatar in the top-right corner and from the drop-down menu select **Account settings**.
+1. Select **Personal access tokens**.
 
-   此页面显示所有令牌的概览，并列出令牌是手动生成的还是[自动生成](#自动生成的令牌)的。您还可以查看令牌的范围、哪些令牌处于激活或未激活状态、创建时间、最后使用时间以及过期日期。
-1. 选择令牌行最右侧的操作菜单，然后选择 **Deactivate** 或 **Activate**、**Edit** 或 **Delete** 来修改令牌。
-1. 编辑令牌后，选择 **Save token**。
+   This page shows an overview of all your
+   tokens, and lists if the token was generated manually or if it was
+   [auto-generated](#auto-generated-tokens). You can also view the scope of the
+   tokens, which tokens are activate and inactive, when they were created, when
+   they were last used, and their expiration date.
+1. Select the actions menu on the far right of a token row, then select **Deactivate** or **Activate**, **Edit**, or **Delete** to modify the token.
+1. After editing the token, select **Save token**.
 
-## 自动生成的令牌
+## Auto-generated tokens
 
-当您使用 Docker Desktop 登录 Docker 账户时，Docker Desktop 会代表您生成一个身份验证令牌。当您使用 Docker CLI 与 Docker Hub 交互时，CLI 会使用此令牌进行身份验证。该令牌范围具有读取、写入和删除权限。如果您的 Docker Desktop 会话过期，该令牌会自动从本地删除。
+When you sign in to your Docker account with Docker Desktop, Docker Desktop generates an authentication token on your behalf. When you interact with Docker Hub using the Docker CLI, the CLI uses this token for authentication. The token scope has Read, Write, and Delete access. If your Docker Desktop session expires, the token is automatically removed locally.
 
-您的账户最多可以关联 5 个自动生成的令牌。这些令牌会根据使用情况和创建日期自动删除和创建。您也可以根据需要删除自动生成的令牌。更多信息，请参阅[修改现有令牌](#修改现有令牌)。
+You can have up to 5 auto-generated tokens associated with your account. These are deleted and created automatically based on usage and creation dates. You can also delete your auto-generated tokens as needed. For more information, see [Modify existing tokens](#modify-existing-tokens).

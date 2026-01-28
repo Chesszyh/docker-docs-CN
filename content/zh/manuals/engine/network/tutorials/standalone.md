@@ -1,26 +1,43 @@
 ---
-title: 独立容器网络连接
-description: 独立容器网络连接的教程
+title: Networking with standalone containers
+description: Tutorials for networking with standalone containers
 keywords: networking, bridge, routing, ports, overlay
 aliases:
   - /network/network-tutorial-standalone/
 ---
 
-本系列教程介绍独立 Docker 容器的网络连接。有关 swarm 服务的网络连接，请参阅 [swarm 服务网络连接](/manuals/engine/network/tutorials/overlay.md)。如果您需要了解更多关于 Docker 网络的一般知识，请参阅[概述](/manuals/engine/network/_index.md)。
+This series of tutorials deals with networking for standalone Docker containers.
+For networking with swarm services, see
+[Networking with swarm services](/manuals/engine/network/tutorials/overlay.md). If you need to
+learn more about Docker networking in general, see the [overview](/manuals/engine/network/_index.md).
 
-本主题包含两个不同的教程。您可以在 Linux、Windows 或 Mac 上运行每个教程，但对于最后一个教程，您需要在其他地方运行第二个 Docker 主机。
+This topic includes two different tutorials. You can run each of them on
+Linux, Windows, or a Mac, but for the last one, you need a second Docker
+host running elsewhere.
 
-- [使用默认桥接网络](#使用默认桥接网络)演示如何使用 Docker 自动为您设置的默认 `bridge` 网络。此网络不是生产系统的最佳选择。
+- [Use the default bridge network](#use-the-default-bridge-network) demonstrates
+  how to use the default `bridge` network that Docker sets up for you
+  automatically. This network is not the best choice for production systems.
 
-- [使用用户定义的桥接网络](#使用用户定义的桥接网络)展示如何创建和使用您自己的自定义桥接网络来连接在同一 Docker 主机上运行的容器。这是生产环境中运行独立容器的推荐方式。
+- [Use user-defined bridge networks](#use-user-defined-bridge-networks) shows
+  how to create and use your own custom bridge networks, to connect containers
+  running on the same Docker host. This is recommended for standalone containers
+  running in production.
 
-虽然 [overlay 网络](/manuals/engine/network/drivers/overlay.md)通常用于 swarm 服务，但您也可以为独立容器使用 overlay 网络。这部分内容在[使用 overlay 网络的教程](/manuals/engine/network/tutorials/overlay.md#为独立容器使用-overlay-网络)中有介绍。
+Although [overlay networks](/manuals/engine/network/drivers/overlay.md) are generally used for swarm services,
+you can also use an overlay network for standalone containers. That's covered as
+part of the [tutorial on using overlay networks](/manuals/engine/network/tutorials/overlay.md#use-an-overlay-network-for-standalone-containers).
 
-## 使用默认桥接网络
+## Use the default bridge network
 
-在此示例中，您在同一 Docker 主机上启动两个不同的 `alpine` 容器，并进行一些测试以了解它们如何相互通信。您需要安装并运行 Docker。
+In this example, you start two different `alpine` containers on the same Docker
+host and do some tests to understand how they communicate with each other. You
+need to have Docker installed and running.
 
-1.  打开一个终端窗口。在执行任何其他操作之前列出当前网络。如果您从未在此 Docker 守护进程上添加过网络或初始化过 swarm，您应该会看到以下内容。您可能会看到不同的网络，但至少应该看到这些（网络 ID 会有所不同）：
+1.  Open a terminal window. List current networks before you do anything else.
+    Here's what you should see if you've never added a network or initialized a
+    swarm on this Docker daemon. You may see different networks, but you should
+    at least see these (the network IDs will be different):
 
     ```console
     $ docker network ls
@@ -31,9 +48,19 @@ aliases:
     7092879f2cc8        none                null                local
     ```
 
-    列出了默认的 `bridge` 网络，以及 `host` 和 `none`。后两者不是完整的网络，而是用于启动直接连接到 Docker 守护进程主机的网络堆栈的容器，或启动没有网络设备的容器。本教程将把两个容器连接到 `bridge` 网络。
+    The default `bridge` network is listed, along with `host` and `none`. The
+    latter two are not fully-fledged networks, but are used to start a container
+    connected directly to the Docker daemon host's networking stack, or to start
+    a container with no network devices. This tutorial will connect two
+    containers to the `bridge` network.
 
-2.  启动两个运行 `ash` 的 `alpine` 容器，`ash` 是 Alpine 的默认 shell 而不是 `bash`。`-dit` 标志表示以分离模式（在后台）启动容器、交互式（具有输入能力）以及带有 TTY（以便您可以看到输入和输出）。由于您是以分离模式启动的，因此不会立即连接到容器。相反，会打印容器的 ID。因为您没有指定任何 `--network` 标志，容器会连接到默认的 `bridge` 网络。
+2.  Start two `alpine` containers running `ash`, which is Alpine's default shell
+    rather than `bash`. The `-dit` flags mean to start the container detached
+    (in the background), interactive (with the ability to type into it), and
+    with a TTY (so you can see the input and output). Since you are starting it
+    detached, you won't be connected to the container right away. Instead, the
+    container's ID will be printed. Because you have not specified any
+    `--network` flags, the containers connect to the default `bridge` network.
 
     ```console
     $ docker run -dit --name alpine1 alpine ash
@@ -41,7 +68,7 @@ aliases:
     $ docker run -dit --name alpine2 alpine ash
     ```
 
-    检查两个容器是否确实已启动：
+    Check that both containers are actually started:
 
     ```console
     $ docker container ls
@@ -51,7 +78,7 @@ aliases:
     da33b7aa74b0        alpine              "ash"               17 seconds ago      Up 16 seconds                           alpine1
     ```
 
-3.  检查 `bridge` 网络以查看连接到它的容器。
+3.  Inspect the `bridge` network to see what containers are connected to it.
 
     ```console
     $ docker network inspect bridge
@@ -105,9 +132,14 @@ aliases:
     ]
     ```
 
-    在顶部附近，列出了有关 `bridge` 网络的信息，包括 Docker 主机和 `bridge` 网络之间网关的 IP 地址（`172.17.0.1`）。在 `Containers` 键下，列出了每个连接的容器及其 IP 地址信息（`alpine1` 是 `172.17.0.2`，`alpine2` 是 `172.17.0.3`）。
+    Near the top, information about the `bridge` network is listed, including
+    the IP address of the gateway between the Docker host and the `bridge`
+    network (`172.17.0.1`). Under the `Containers` key, each connected container
+    is listed, along with information about its IP address (`172.17.0.2` for
+    `alpine1` and `172.17.0.3` for `alpine2`).
 
-4.  容器在后台运行。使用 `docker attach` 命令连接到 `alpine1`。
+4.  The containers are running in the background. Use the `docker attach`
+    command to connect to `alpine1`.
 
     ```console
     $ docker attach alpine1
@@ -115,7 +147,9 @@ aliases:
     / #
     ```
 
-    提示符变为 `#`，表示您是容器内的 `root` 用户。使用 `ip addr show` 命令显示从容器内部看到的 `alpine1` 的网络接口：
+    The prompt changes to `#` to indicate that you are the `root` user within
+    the container. Use the `ip addr show` command to show the network interfaces
+    for `alpine1` as they look from within the container:
 
     ```console
     # ip addr show
@@ -134,9 +168,13 @@ aliases:
            valid_lft forever preferred_lft forever
     ```
 
-    第一个接口是回环设备。暂时忽略它。注意第二个接口的 IP 地址为 `172.17.0.2`，这与前一步中显示的 `alpine1` 的地址相同。
+    The first interface is the loopback device. Ignore it for now. Notice that
+    the second interface has the IP address `172.17.0.2`, which is the same
+    address shown for `alpine1` in the previous step.
 
-5.  在 `alpine1` 内部，通过 ping `google.com` 确保您可以连接到互联网。`-c 2` 标志将命令限制为两次 `ping` 尝试。
+5.  From within `alpine1`, make sure you can connect to the internet by
+    pinging `google.com`. The `-c 2` flag limits the command to two `ping`
+    attempts.
 
     ```console
     # ping -c 2 google.com
@@ -150,7 +188,8 @@ aliases:
     round-trip min/avg/max = 9.841/9.869/9.897 ms
     ```
 
-6.  现在尝试 ping 第二个容器。首先，通过其 IP 地址 `172.17.0.3` 进行 ping：
+6.  Now try to ping the second container. First, ping it by its IP address,
+    `172.17.0.3`:
 
     ```console
     # ping -c 2 172.17.0.3
@@ -164,7 +203,8 @@ aliases:
     round-trip min/avg/max = 0.086/0.090/0.094 ms
     ```
 
-    这成功了。接下来，尝试通过容器名称 ping `alpine2` 容器。这将失败。
+    This succeeds. Next, try pinging the `alpine2` container by container
+    name. This will fail.
 
     ```console
     # ping -c 2 alpine2
@@ -172,28 +212,39 @@ aliases:
     ping: bad address 'alpine2'
     ```
 
-7.  使用分离序列 `CTRL` + `p` `CTRL` + `q`（按住 `CTRL` 并依次输入 `p` 然后 `q`）从 `alpine1` 分离而不停止它。如果您愿意，可以连接到 `alpine2` 并在那里重复步骤 4、5 和 6，将 `alpine1` 替换为 `alpine2`。
+7.  Detach from `alpine1` without stopping it by using the detach sequence,
+    `CTRL` + `p` `CTRL` + `q` (hold down `CTRL` and type `p` followed by `q`).
+    If you wish, attach to `alpine2` and repeat steps 4, 5, and 6 there,
+    substituting `alpine1` for `alpine2`.
 
-8.  停止并删除两个容器。
+8.  Stop and remove both containers.
 
     ```console
     $ docker container stop alpine1 alpine2
     $ docker container rm alpine1 alpine2
     ```
 
-请记住，默认的 `bridge` 网络不建议用于生产环境。要了解用户定义的桥接网络，请继续阅读[下一个教程](#使用用户定义的桥接网络)。
+Remember, the default `bridge` network is not recommended for production. To
+learn about user-defined bridge networks, continue to the
+[next tutorial](#use-user-defined-bridge-networks).
 
-## 使用用户定义的桥接网络
+## Use user-defined bridge networks
 
-在此示例中，我们再次启动两个 `alpine` 容器，但将它们连接到我们已经创建的名为 `alpine-net` 的用户定义网络。这些容器根本不会连接到默认的 `bridge` 网络。然后我们启动第三个 `alpine` 容器，它连接到 `bridge` 网络但不连接到 `alpine-net`，以及第四个 `alpine` 容器，它连接到两个网络。
+In this example, we again start two `alpine` containers, but attach them to a
+user-defined network called `alpine-net` which we have already created. These
+containers are not connected to the default `bridge` network at all. We then
+start a third `alpine` container which is connected to the `bridge` network but
+not connected to `alpine-net`, and a fourth `alpine` container which is
+connected to both networks.
 
-1.  创建 `alpine-net` 网络。您不需要 `--driver bridge` 标志，因为它是默认值，但此示例展示了如何指定它。
+1.  Create the `alpine-net` network. You do not need the `--driver bridge` flag
+    since it's the default, but this example shows how to specify it.
 
     ```console
     $ docker network create --driver bridge alpine-net
     ```
 
-2.  列出 Docker 的网络：
+2.  List Docker's networks:
 
     ```console
     $ docker network ls
@@ -205,7 +256,8 @@ aliases:
     7092879f2cc8        none                null                local
     ```
 
-    检查 `alpine-net` 网络。这将显示其 IP 地址以及没有容器连接到它的事实：
+    Inspect the `alpine-net` network. This shows you its IP address and the fact
+    that no containers are connected to it:
 
     ```console
     $ docker network inspect alpine-net
@@ -237,9 +289,14 @@ aliases:
     ]
     ```
 
-    注意此网络的网关是 `172.18.0.1`，而默认桥接网络的网关是 `172.17.0.1`。您系统上的确切 IP 地址可能不同。
+    Notice that this network's gateway is `172.18.0.1`, as opposed to the
+    default bridge network, whose gateway is `172.17.0.1`. The exact IP address
+    may be different on your system.
 
-3.  创建您的四个容器。注意 `--network` 标志。您只能在 `docker run` 命令期间连接到一个网络，因此您需要之后使用 `docker network connect` 将 `alpine4` 也连接到 `bridge` 网络。
+3.  Create your four containers. Notice the `--network` flags. You can only
+    connect to one network during the `docker run` command, so you need to use
+    `docker network connect` afterward to connect `alpine4` to the `bridge`
+    network as well.
 
     ```console
     $ docker run -dit --name alpine1 --network alpine-net alpine ash
@@ -253,7 +310,7 @@ aliases:
     $ docker network connect bridge alpine4
     ```
 
-    验证所有容器都在运行：
+    Verify that all containers are running:
 
     ```console
     $ docker container ls
@@ -265,7 +322,7 @@ aliases:
     0a02c449a6e9        alpine              "ash"               About a minute ago   Up About a minute                       alpine1
     ```
 
-4.  再次检查 `bridge` 网络和 `alpine-net` 网络：
+4.  Inspect the `bridge` network and the `alpine-net` network again:
 
     ```console
     $ docker network inspect bridge
@@ -319,7 +376,7 @@ aliases:
     ]
     ```
 
-    容器 `alpine3` 和 `alpine4` 连接到 `bridge` 网络。
+    Containers `alpine3` and `alpine4` are connected to the `bridge` network.
 
     ```console
     $ docker network inspect alpine-net
@@ -373,13 +430,18 @@ aliases:
     ]
     ```
 
-    容器 `alpine1`、`alpine2` 和 `alpine4` 连接到 `alpine-net` 网络。
+    Containers `alpine1`, `alpine2`, and `alpine4` are connected to the
+    `alpine-net` network.
 
-5.  在像 `alpine-net` 这样的用户定义网络上，容器不仅可以通过 IP 地址通信，还可以将容器名称解析为 IP 地址。此功能称为自动服务发现（automatic service discovery）。让我们连接到 `alpine1` 并测试一下。`alpine1` 应该能够将 `alpine2` 和 `alpine4`（以及 `alpine1` 自身）解析为 IP 地址。
-
+5.  On user-defined networks like `alpine-net`, containers can not only
+    communicate by IP address, but can also resolve a container name to an IP
+    address. This capability is called automatic service discovery. Let's
+    connect to `alpine1` and test this out. `alpine1` should be able to resolve
+    `alpine2` and `alpine4` (and `alpine1`, itself) to IP addresses.
+    
     > [!NOTE]
-    >
-    > 自动服务发现只能解析自定义容器名称，不能解析默认自动生成的容器名称。
+    > 
+    > Automatic service discovery can only resolve custom container names, not default automatically generated container names,
 
     ```console
     $ docker container attach alpine1
@@ -415,7 +477,8 @@ aliases:
     round-trip min/avg/max = 0.026/0.040/0.054 ms
     ```
 
-6.  从 `alpine1`，您根本无法连接到 `alpine3`，因为它不在 `alpine-net` 网络上。
+6.  From `alpine1`, you should not be able to connect to `alpine3` at all, since
+    it is not on the `alpine-net` network.
 
     ```console
     # ping -c 2 alpine3
@@ -423,7 +486,10 @@ aliases:
     ping: bad address 'alpine3'
     ```
 
-    不仅如此，您也无法通过 IP 地址从 `alpine1` 连接到 `alpine3`。回顾 `bridge` 网络的 `docker network inspect` 输出，找到 `alpine3` 的 IP 地址：`172.17.0.2`。尝试 ping 它。
+    Not only that, but you can't connect to `alpine3` from `alpine1` by its IP
+    address either. Look back at the `docker network inspect` output for the
+    `bridge` network and find `alpine3`'s IP address: `172.17.0.2` Try to ping
+    it.
 
     ```console
     # ping -c 2 172.17.0.2
@@ -434,9 +500,13 @@ aliases:
     2 packets transmitted, 0 packets received, 100% packet loss
     ```
 
-    使用分离序列 `CTRL` + `p` `CTRL` + `q`（按住 `CTRL` 并依次输入 `p` 然后 `q`）从 `alpine1` 分离。
+    Detach from `alpine1` using detach sequence,
+    `CTRL` + `p` `CTRL` + `q` (hold down `CTRL` and type `p` followed by `q`).
 
-7.  请记住，`alpine4` 同时连接到默认的 `bridge` 网络和 `alpine-net`。它应该能够到达所有其他容器。但是，您需要通过 IP 地址访问 `alpine3`。连接到它并运行测试。
+7.  Remember that `alpine4` is connected to both the default `bridge` network
+    and `alpine-net`. It should be able to reach all of the other containers.
+    However, you will need to address `alpine3` by its IP address. Attach to it
+    and run the tests.
 
     ```console
     $ docker container attach alpine4
@@ -485,7 +555,12 @@ aliases:
     round-trip min/avg/max = 0.033/0.048/0.064 ms
     ```
 
-8.  作为最后的测试，确保您的容器都可以通过 ping `google.com` 连接到互联网。您已经连接到 `alpine4`，所以从那里开始尝试。接下来，从 `alpine4` 分离并连接到 `alpine3`（它只连接到 `bridge` 网络）并重试。最后，连接到 `alpine1`（它只连接到 `alpine-net` 网络）并重试。
+8.  As a final test, make sure your containers can all connect to the internet
+    by pinging `google.com`. You are already attached to `alpine4` so start by
+    trying from there. Next, detach from `alpine4` and connect to `alpine3`
+    (which is only attached to the `bridge` network) and try again. Finally,
+    connect to `alpine1` (which is only connected to the `alpine-net` network)
+    and try again.
 
     ```console
     # ping -c 2 google.com
@@ -529,7 +604,7 @@ aliases:
     CTRL+p CTRL+q
     ```
 
-9.  停止并删除所有容器和 `alpine-net` 网络。
+9.  Stop and remove all containers and the `alpine-net` network.
 
     ```console
     $ docker container stop alpine1 alpine2 alpine3 alpine4
@@ -540,8 +615,8 @@ aliases:
     ```
 
 
-## 其他网络教程
+## Other networking tutorials
 
-- [主机网络教程](/manuals/engine/network/tutorials/host.md)
-- [Overlay 网络教程](/manuals/engine/network/tutorials/overlay.md)
-- [Macvlan 网络教程](/manuals/engine/network/tutorials/macvlan.md)
+- [Host networking tutorial](/manuals/engine/network/tutorials/host.md)
+- [Overlay networking tutorial](/manuals/engine/network/tutorials/overlay.md)
+- [Macvlan networking tutorial](/manuals/engine/network/tutorials/macvlan.md)

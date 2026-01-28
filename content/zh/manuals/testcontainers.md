@@ -1,58 +1,58 @@
 ---
 title: Testcontainers
-description: 学习如何使用 Testcontainers 在您首选的编程语言中以编程方式运行容器。
+description: Learn how to use Testcontainers to run containers programmatically in your preferred programming language.
 keywords: docker APIs, docker, testcontainers documentation, testcontainers, testcontainers oss, testcontainers oss documentation,
   docker compose, docker-compose, java, golang, go
 params:
   sidebar:
     group: Open source
 intro:
-- title: 什么是 Testcontainers？
-  description: 了解 Testcontainers 的功能及其主要优势
+- title: What is Testcontainers?
+  description: Learn about what Testcontainers does and its key benefits
   icon: feature_search
   link: https://testcontainers.com/getting-started/#what-is-testcontainers
-- title: Testcontainers 工作流程
-  description: 理解 Testcontainers 的工作流程
+- title: The Testcontainers workflow
+  description: Understand the Testcontainers workflow 
   icon: explore
   link: https://testcontainers.com/getting-started/#testcontainers-workflow
 quickstart:
 - title: Testcontainers for Go
-  description: 一个 Go 包，可以简单地为自动化集成/冒烟测试创建和清理基于容器的依赖项。
+  description: A Go package that makes it simple to create and clean up container-based dependencies for automated integration/smoke tests.
   icon: /icons/go.svg
   link: https://golang.testcontainers.org/quickstart/
 - title: Testcontainers for Java
-  description: 一个支持 JUnit 测试的 Java 库，提供轻量级、一次性的 Docker 容器实例。
+  description: A Java library that supports JUnit tests, providing lightweight, throwaway instances of anything that can run in a Docker container.
   icon: /icons/java.svg
   link: https://java.testcontainers.org/
 ---
 
-Testcontainers 是一组开源库，提供简单轻量的 API，用于使用封装在 Docker 容器中的真实服务来引导本地开发和测试依赖项。
-使用 Testcontainers，您可以编写依赖于与生产环境相同服务的测试，无需模拟或内存服务。
+Testcontainers is a set of open source libraries that provides easy and lightweight APIs for bootstrapping local development and test dependencies with real services wrapped in Docker containers.
+Using Testcontainers, you can write tests that depend on the same services you use in production without mocks or in-memory services.
 
 {{< grid items=intro >}}
 
-## 快速入门
+## Quickstart
 
-### 支持的语言
+### Supported languages
 
-Testcontainers 为最流行的语言提供支持，Docker 赞助以下 Testcontainers 实现的开发：
+Testcontainers provide support for the most popular languages, and Docker sponsors the development of the following Testcontainers implementations:
 
 - [Go](https://golang.testcontainers.org/quickstart/)
 - [Java](https://java.testcontainers.org/quickstart/junit_5_quickstart/)
 
-其余的由社区驱动，由独立贡献者维护。
+The rest are community-driven and maintained by independent contributors.
 
-### 先决条件
+### Prerequisites
 
-Testcontainers 需要与 Docker API 兼容的容器运行时。
-在开发过程中，Testcontainers 会针对 Linux 上的最新 Docker 版本以及 Mac 和 Windows 上的 Docker Desktop 进行积极测试。
-Testcontainers 会自动检测并使用这些 Docker 环境，无需任何额外配置。
+Testcontainers requires a Docker-API compatible container runtime. 
+During development, Testcontainers is actively tested against recent versions of Docker on Linux, as well as against Docker Desktop on Mac and Windows. 
+These Docker environments are automatically detected and used by Testcontainers without any additional configuration being necessary.
 
-可以配置 Testcontainers 以支持其他 Docker 设置，例如远程 Docker 主机或 Docker 替代方案。
-但是，这些不在主要开发工作流程中进行积极测试，因此可能不是所有 Testcontainers 功能都可用，
-可能需要额外的手动配置。
+It is possible to configure Testcontainers to work for other Docker setups, such as a remote Docker host or Docker alternatives.
+However, these are not actively tested in the main development workflow, so not all Testcontainers features might be available
+and additional manual configuration might be necessary.
 
-如果您对您的设置的配置详情或是否支持运行基于 Testcontainers 的测试有进一步的问题，
-请在 [Slack](https://slack.testcontainers.org/) 上联系 Testcontainers 团队和 Testcontainers 社区的其他用户。
+If you have further questions about configuration details for your setup or whether it supports running Testcontainers-based tests,
+ contact the Testcontainers team and other users from the Testcontainers community on [Slack](https://slack.testcontainers.org/).
 
  {{< grid items=quickstart >}}

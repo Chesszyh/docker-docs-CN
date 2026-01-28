@@ -1,54 +1,54 @@
 ---
-title: 组织管理概述
-linkTitle: 组织管理
+title: Organization administration overview
+linkTitle: Organization administration
 weight: 10
-description: 了解如何在 Docker 中管理组织，包括组织与团队的关系、如何入门等
+description: Learn about managing organizations in Docker including how they relate to teams, how to onboard, and more
 keywords: organizations, admin, overview
 grid:
-- title: 组织入门
-  description: 了解如何入门并保护您的组织。
+- title: Onboard your organization
+  description: Learn how to onboard and secure your organization.
   icon: explore
   link: /admin/organization/onboard
-- title: 管理成员
-  description: 探索如何管理成员。
+- title: Manage members
+  description: Explore how to manage members.
   icon: group_add
   link: /admin/organization/members/
-- title: 活动日志
-  description: 了解如何审计成员的活动。
+- title: Activity logs
+  description: Learn how to audit the activities of your members.
   icon: text_snippet
   link: /admin/organization/activity-logs/
-- title: 镜像访问管理
-  description: 控制开发人员可以拉取哪些类型的镜像。
+- title: Image Access Management
+  description: Control which types of images your developers can pull.
   icon: photo_library
   link: /admin/organization/image-access/
-- title: 注册表访问管理
-  description: 定义开发人员可以访问哪些注册表。
+- title: Registry Access Management
+  description: Define which registries your developers can access.
   icon: home_storage
   link: /admin/organization/registry-access/
-- title: 组织设置
-  description: 配置组织信息并管理设置。
+- title: Organization settings
+  description: Configure information for your organization and manage settings.
   icon: settings
   link: /admin/organization/general-settings/
-- title: SSO 和 SCIM
-  description: '为您的组织设置[单点登录](/security/for-admins/single-sign-on/)和
-    [SCIM](/security/for-admins/provisioning/scim/)。
+- title: SSO and SCIM
+  description: 'Set up [Single Sign-On](/security/for-admins/single-sign-on/)
+    and [SCIM](/security/for-admins/provisioning/scim/) for your organization.
 
     '
   icon: key
-- title: 域名管理
-  description: 添加、验证和审计您的域名。
+- title: Domain management
+  description: Add, verify, and audit your domains.
   link: /security/for-admins/domain-management/
   icon: domain_verification
-- title: 常见问题
-  description: 探索常见的组织问题。
+- title: FAQs
+  description: Explore common organization FAQs.
   link: /faq/admin/organization-faqs/
   icon: help
 ---
 
 {{% include "admin-org-overview.md" %}}
 
-要创建组织，请参阅[创建您的组织](../organization/orgs.md)。
+To create an organization, see [Create your organization](../organization/orgs.md).
 
-在以下章节中了解如何管理组织。
+Learn how to administer an organization in the following sections.
 
 {{< grid >}}

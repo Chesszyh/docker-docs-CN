@@ -1,8 +1,8 @@
 ---
-description: 了解单点登录的工作原理、如何设置以及所需的 SSO 属性。
+description: Learn how single sign-on works, how to set it up, and the required SSO attributes.
 keywords: Single Sign-On, SSO, sign-on, admin, docker hub, admin console, security
-title: 单点登录概述
-linkTitle: 单点登录
+title: Single sign-on overview
+linkTitle: Single sign-on
 aliases:
 - /single-sign-on/
 - /admin/company/settings/sso/
@@ -12,40 +12,40 @@ weight: 10
 
 {{< summary-bar feature_name="SSO" >}}
 
-单点登录（Single sign-on，SSO）允许用户通过其身份提供商（Identity Providers，IdPs）进行身份验证来访问 Docker。SSO 可用于整个公司及该公司下的所有关联组织，或者用于拥有 Docker Business 订阅的单个组织。要将您现有的账户升级到 Docker Business 订阅，请参阅[升级您的订阅](/subscription/upgrade/)。
+Single sign-on (SSO) lets users access Docker by authenticating using their identity providers (IdPs). SSO is available for a whole company, and all associated organizations within that company, or an individual organization that has a Docker Business subscription. To upgrade your existing account to a Docker Business subscription, see [Upgrade your subscription](/subscription/upgrade/).
 
-## SSO 工作原理
+## How SSO works
 
-当您启用 SSO 时，Docker 支持非 IdP 发起的 SSO 流程进行用户登录。用户不再使用其 Docker 用户名和密码进行身份验证，而是被重定向到您的身份提供商的身份验证页面进行登录。用户必须登录到 Docker Hub 或 Docker Desktop 才能启动 SSO 身份验证流程。
+When you enable SSO, Docker supports a non-IdP-initiated SSO flow for user login. Instead of users authenticating using their Docker username and password, they are redirected to your identity provider's authentication page to sign in. Users must sign in to Docker Hub or Docker Desktop to initiate the SSO authentication process.
 
-下图展示了 SSO 在 Docker Hub 和 Docker Desktop 中的运作和管理方式。此外，它还提供了有关如何在您的 IdP 之间进行身份验证的信息。
+The following diagram shows how SSO operates and is managed in Docker Hub and Docker Desktop. In addition, it provides information on how to authenticate between your IdP.
 
-![SSO 架构](images/SSO.png)
+![SSO architecture](images/SSO.png)
 
-## 如何设置
+## How to set it up
 
-SSO 的配置包括以下步骤：
-1. 通过在 Docker 中创建和验证域来[配置 SSO](../single-sign-on/configure.md)。
-2. 在 Docker 和您的 IdP 中[创建您的 SSO 连接](../single-sign-on/connect.md)。
-3. 交叉连接 Docker 和您的 IdP。
-4. 测试您的连接。
-5. 配置用户。
-6. 可选。[强制登录](../enforce-sign-in/_index.md)。
-7. [管理您的 SSO 配置](../single-sign-on/manage.md)。
+SSO is configured using the following steps:
+1. [Configure SSO](../single-sign-on/configure.md) by creating and verifying a domain in Docker.
+2. [Create your SSO connection](../single-sign-on/connect.md) in Docker and your IdP.
+3. Cross-connect Docker and your IdP.
+4. Test your connection.
+5. Provision users.
+6. Optional. [Enforce sign-in](../enforce-sign-in/_index.md).
+7. [Manage your SSO configuration](../single-sign-on/manage.md).
 
-完成 SSO 配置后，首次用户可以使用其公司的域电子邮件地址登录 Docker Hub 或 Docker Desktop。一旦登录，他们将被添加到您的公司，分配到一个组织，如有必要，还会分配到一个团队。
+Once your SSO configuration is complete, a first-time user can sign in to Docker Hub or Docker Desktop using their company's domain email address. Once they sign in, they are added to your company, assigned to an organization, and if necessary, assigned to a team.
 
-## 前提条件
+## Prerequisites
 
-在配置 SSO 之前，请确保满足以下前提条件：
-* 通知您的公司有关新的 SSO 登录程序。
-* 验证所有用户都已安装 Docker Desktop 4.4.2 或更高版本。
-* 如果您的组织计划[强制执行 SSO](/manuals/security/for-admins/single-sign-on/connect.md#optional-enforce-sso)，使用 Docker CLI 的成员需要[创建个人访问令牌（PAT）](/docker-hub/access-tokens/)。PAT 将用于代替他们的用户名和密码。Docker 计划在未来弃用使用密码登录 CLI 的方式，因此使用 PAT 将是防止身份验证问题的必要条件。有关更多详细信息，请参阅[安全公告](/security/security-announcements/#deprecation-of-password-logins-on-cli-when-sso-enforced)。
-* 确保您的所有 Docker 用户在您的 IdP 上都有一个有效用户，其电子邮件地址与其唯一主体标识符（Unique Primary Identifier，UPN）相同。
-* 确认所有 CI/CD 流水线已将其密码替换为 PAT。
-* 对于您的服务账户，请添加您的其他域或在您的 IdP 中启用它。
+Before configuring SSO, ensure you meet the following prerequisites:
+* Notify your company about the new SSO sign in procedures.
+* Verify that all users have Docker Desktop version 4.4.2 or later installed.
+* If your organization is planning to [enforce SSO](/manuals/security/for-admins/single-sign-on/connect.md#optional-enforce-sso), members using the Docker CLI are required to [create a Personal Access Token (PAT)](/docker-hub/access-tokens/). The PAT will be used instead of their username and password. Docker plans to deprecate signing in to the CLI with a password in the future, so using a PAT will be required to prevent issues with authentication. For more details see the [security announcement](/security/security-announcements/#deprecation-of-password-logins-on-cli-when-sso-enforced).
+* Ensure all your Docker users have a valid user on your IdP with the same email address as their Unique Primary Identifier (UPN).
+* Confirm that all CI/CD pipelines have replaced their passwords with PATs.
+* For your service accounts, add your additional domains or enable it in your IdP.
 
-## 下一步
+## What's next?
 
-- 开始在 Docker 中[配置 SSO](../../for-admins/single-sign-on/configure.md)
-- 查看[常见问题解答](../../../security/faqs/single-sign-on/_index.md)
+- Start [configuring SSO](../../for-admins/single-sign-on/configure.md) in Docker
+- Explore the [FAQs](../../../security/faqs/single-sign-on/_index.md)

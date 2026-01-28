@@ -1,22 +1,27 @@
 ---
 description: How to setup and run Docker with SSH or HTTPS
 keywords: docker, docs, article, example, ssh, https, daemon, tls, ca,  certificate
-title: 保护 Docker 守护进程套接字
+title: Protect the Docker daemon socket
 aliases:
 - /articles/https/
 - /engine/articles/https/
 - /engine/security/https/
 ---
 
-默认情况下，Docker 通过非网络化的 UNIX 套接字运行。它也可以选择使用 SSH 或 TLS（HTTPS）套接字进行通信。
+By default, Docker runs through a non-networked UNIX socket. It can also
+optionally communicate using SSH or a TLS (HTTPS) socket.
 
-## 使用 SSH 保护 Docker 守护进程套接字
+## Use SSH to protect the Docker daemon socket
 
 > [!NOTE]
 >
-> 给定的 `USERNAME` 必须具有访问远程机器上 docker 套接字的权限。请参阅[以非 root 用户身份管理 Docker](../install/linux-postinstall.md#manage-docker-as-a-non-root-user) 了解如何授予非 root 用户访问 docker 套接字的权限。
+> The given `USERNAME` must have permissions to access the docker socket on the
+> remote machine. Refer to [manage Docker as a non-root user](../install/linux-postinstall.md#manage-docker-as-a-non-root-user)
+> to learn how to give a non-root user access to the docker socket.
 
-以下示例创建一个 [`docker context`](/manuals/engine/manage-resources/contexts.md) 以使用 SSH 连接到 `host1.example.com` 上的远程 `dockerd` 守护进程，并作为远程机器上的 `docker-user` 用户：
+The following example creates a [`docker context`](/manuals/engine/manage-resources/contexts.md)
+to connect with a remote `dockerd` daemon on `host1.example.com` using SSH, and
+as the `docker-user` user on the remote machine:
 
 ```console
 $ docker context create \
@@ -28,7 +33,8 @@ my-remote-engine
 Successfully created context "my-remote-engine"
 ```
 
-创建上下文后，使用 `docker context use` 切换 `docker` CLI 以使用它，并连接到远程引擎：
+After creating the context, use `docker context use` to switch the `docker` CLI
+to use it, and to connect to the remote engine:
 
 ```console
 $ docker context use my-remote-engine
@@ -39,7 +45,7 @@ $ docker info
 <prints output of the remote engine>
 ```
 
-使用 `default` 上下文切换回默认（本地）守护进程：
+Use the `default` context to switch back to the default (local) daemon:
 
 ```console
 $ docker context use default
@@ -47,7 +53,10 @@ default
 Current context is now "default"
 ```
 
-或者，使用 `DOCKER_HOST` 环境变量临时切换 `docker` CLI 以使用 SSH 连接到远程主机。这不需要创建上下文，对于与不同引擎创建临时连接很有用：
+Alternatively, use the `DOCKER_HOST` environment variable to temporarily switch
+the `docker` CLI to connect to the remote host using SSH. This does not require
+creating a context, and can be useful to create an ad-hoc connection with a different
+engine:
 
 ```console
 $ export DOCKER_HOST=ssh://docker-user@host1.example.com
@@ -55,33 +64,40 @@ $ docker info
 <prints output of the remote engine>
 ```
 
-### SSH 技巧
+### SSH Tips
 
-为了获得最佳的 SSH 用户体验，请按以下方式配置 `~/.ssh/config`，以允许为 `docker` CLI 的多次调用重用 SSH 连接：
+For the best user experience with SSH, configure `~/.ssh/config` as follows to allow
+reusing a SSH connection for multiple invocations of the `docker` CLI:
 
 ```text
- ControlMaster     auto
- ControlPath       ~/.ssh/control-%C
- ControlPersist    yes
+ControlMaster     auto
+ControlPath       ~/.ssh/control-%C
+ControlPersist    yes
 ```
 
-## 使用 TLS（HTTPS）保护 Docker 守护进程套接字
+## Use TLS (HTTPS) to protect the Docker daemon socket
 
-如果你需要以安全的方式通过 HTTP 而不是 SSH 访问 Docker，你可以通过指定 `tlsverify` 标志并将 Docker 的 `tlscacert` 标志指向受信任的 CA 证书来启用 TLS（HTTPS）。
+If you need Docker to be reachable through HTTP rather than SSH in a safe manner,
+you can enable TLS (HTTPS) by specifying the `tlsverify` flag and pointing Docker's
+`tlscacert` flag to a trusted CA certificate.
 
-在守护进程模式下，它只允许来自由该 CA 签名的证书认证的客户端的连接。在客户端模式下，它只连接到由该 CA 签名的证书的服务器。
+In the daemon mode, it only allows connections from clients
+authenticated by a certificate signed by that CA. In the client mode,
+it only connects to servers with a certificate signed by that CA.
 
 > [!IMPORTANT]
 >
-> 使用 TLS 和管理 CA 是一个高级话题。在生产环境中使用之前，请熟悉 OpenSSL、x509 和 TLS。
+> Using TLS and managing a CA is an advanced topic. Familiarize yourself
+> with OpenSSL, x509, and TLS before using it in production.
 
-### 使用 OpenSSL 创建 CA、服务器和客户端密钥
+### Create a CA, server and client keys with OpenSSL
 
 > [!NOTE]
 >
-> 在以下示例中，将所有 `$HOST` 实例替换为你的 Docker 守护进程主机的 DNS 名称。
+> Replace all instances of `$HOST` in the following example with the
+> DNS name of your Docker daemon's host.
 
-首先，在 Docker 守护进程的主机上，生成 CA 私钥和公钥：
+First, on the Docker daemon's host machine, generate CA private and public keys:
 
 ```console
 $ openssl genrsa -aes256 -out ca-key.pem 4096
@@ -110,11 +126,14 @@ Common Name (e.g. server FQDN or YOUR name) []:$HOST
 Email Address []:Sven@home.org.au
 ```
 
-现在你有了 CA，你可以创建服务器密钥和证书签名请求（CSR）。确保"Common Name"与你用于连接 Docker 的主机名匹配：
+Now that you have a CA, you can create a server key and certificate
+signing request (CSR). Make sure that "Common Name" matches the hostname you use
+to connect to Docker:
 
 > [!NOTE]
 >
-> 在以下示例中，将所有 `$HOST` 实例替换为你的 Docker 守护进程主机的 DNS 名称。
+> Replace all instances of `$HOST` in the following example with the
+> DNS name of your Docker daemon's host.
 
 ```console
 $ openssl genrsa -out server-key.pem 4096
@@ -126,21 +145,24 @@ e is 65537 (0x10001)
 $ openssl req -subj "/CN=$HOST" -sha256 -new -key server-key.pem -out server.csr
 ```
 
-接下来，我们将使用我们的 CA 签署公钥：
+Next, we're going to sign the public key with our CA:
 
-由于 TLS 连接可以通过 IP 地址和 DNS 名称建立，因此在创建证书时需要指定 IP 地址。例如，要允许使用 `10.10.10.20` 和 `127.0.0.1` 进行连接：
+Since TLS connections can be made through IP address as well as DNS name, the IP addresses
+need to be specified when creating the certificate. For example, to allow connections
+using `10.10.10.20` and `127.0.0.1`:
 
 ```console
 $ echo subjectAltName = DNS:$HOST,IP:10.10.10.20,IP:127.0.0.1 >> extfile.cnf
 ```
 
-将 Docker 守护进程密钥的扩展用法属性设置为仅用于服务器身份验证：
+Set the Docker daemon key's extended usage attributes to be used only for
+server authentication:
 
 ```console
 $ echo extendedKeyUsage = serverAuth >> extfile.cnf
 ```
 
-现在，生成签名证书：
+Now, generate the signed certificate:
 
 ```console
 $ openssl x509 -req -days 365 -sha256 -in server.csr -CA ca.pem -CAkey ca-key.pem \
@@ -151,13 +173,19 @@ Getting CA Private Key
 Enter pass phrase for ca-key.pem:
 ```
 
-[授权插件](/engine/extend/plugins_authorization/)提供了更细粒度的控制来补充来自双向 TLS 的身份验证。除了上述文档中描述的其他信息外，在 Docker 守护进程上运行的授权插件会接收连接 Docker 客户端的证书信息。
+[Authorization plugins](/engine/extend/plugins_authorization/) offer more
+fine-grained control to supplement authentication from mutual TLS. In addition
+to other information described in the above document, authorization plugins
+running on a Docker daemon receive the certificate information for connecting
+Docker clients.
 
-对于客户端身份验证，创建客户端密钥和证书签名请求：
+For client authentication, create a client key and certificate signing
+request:
 
 > [!NOTE]
 >
-> 为了简化接下来的几个步骤，你也可以在 Docker 守护进程的主机上执行此步骤。
+> For simplicity of the next couple of steps, you may perform this
+> step on the Docker daemon's host machine as well.
 
 ```console
 $ openssl genrsa -out key.pem 4096
@@ -169,13 +197,14 @@ e is 65537 (0x10001)
 $ openssl req -subj '/CN=client' -new -key key.pem -out client.csr
 ```
 
-要使密钥适合客户端身份验证，请创建一个新的扩展配置文件：
+To make the key suitable for client authentication, create a new extensions
+config file:
 
 ```console
 $ echo extendedKeyUsage = clientAuth > extfile-client.cnf
 ```
 
-现在，生成签名证书：
+Now, generate the signed certificate:
 
 ```console
 $ openssl x509 -req -days 365 -sha256 -in client.csr -CA ca.pem -CAkey ca-key.pem \
@@ -186,27 +215,32 @@ Getting CA Private Key
 Enter pass phrase for ca-key.pem:
 ```
 
-生成 `cert.pem` 和 `server-cert.pem` 后，你可以安全地删除两个证书签名请求和扩展配置文件：
+After generating `cert.pem` and `server-cert.pem` you can safely remove the
+two certificate signing requests and extensions config files:
 
 ```console
 $ rm -v client.csr server.csr extfile.cnf extfile-client.cnf
 ```
 
-使用默认的 `umask` 022，你的密钥是*全局可读*的，并且对你和你的组可写。
+With a default `umask` of 022, your secret keys are *world-readable* and
+writable for you and your group.
 
-为了保护你的密钥免受意外损坏，请删除它们的写权限。要使它们只对你可读，请按以下方式更改文件模式：
+To protect your keys from accidental damage, remove their
+write permissions. To make them only readable by you, change file modes as follows:
 
 ```console
 $ chmod -v 0400 ca-key.pem key.pem server-key.pem
 ```
 
-证书可以是全局可读的，但你可能希望删除写访问权限以防止意外损坏：
+Certificates can be world-readable, but you might want to remove write access to
+prevent accidental damage:
 
 ```console
 $ chmod -v 0444 ca.pem server-cert.pem cert.pem
 ```
 
-现在你可以使 Docker 守护进程只接受来自提供由你的 CA 信任的证书的客户端的连接：
+Now you can make the Docker daemon only accept connections from clients
+providing a certificate trusted by your CA:
 
 ```console
 $ dockerd \
@@ -217,15 +251,19 @@ $ dockerd \
     -H=0.0.0.0:2376
 ```
 
-要连接到 Docker 并验证其证书，请提供你的客户端密钥、证书和受信任的 CA：
+To connect to Docker and validate its certificate, provide your client keys,
+certificates and trusted CA:
 
 > [!TIP]
 >
-> 此步骤应在你的 Docker 客户端机器上运行。因此，你需要将你的 CA 证书、服务器证书和客户端证书复制到该机器。
+> This step should be run on your Docker client machine. As such, you
+> need to copy your CA certificate, your server certificate, and your client
+> certificate to that machine.
 
 > [!NOTE]
 >
-> 在以下示例中，将所有 `$HOST` 实例替换为你的 Docker 守护进程主机的 DNS 名称。
+> Replace all instances of `$HOST` in the following example with the
+> DNS name of your Docker daemon's host.
 
 ```console
 $ docker --tlsverify \
@@ -237,15 +275,22 @@ $ docker --tlsverify \
 
 > [!NOTE]
 >
-> 基于 TLS 的 Docker 应该在 TCP 端口 2376 上运行。
+> Docker over TLS should run on TCP port 2376.
 
 > [!WARNING]
 >
-> 如上例所示，当你使用证书身份验证时，不需要使用 `sudo` 或 `docker` 组运行 `docker` 客户端。这意味着任何拥有密钥的人都可以向你的 Docker 守护进程发出任何指令，从而获得托管守护进程的机器的 root 访问权限。像保护 root 密码一样保护这些密钥！
+> As shown in the example above, you don't need to run the `docker` client
+> with `sudo` or the `docker` group when you use certificate authentication.
+> That means anyone with the keys can give any instructions to your Docker
+> daemon, giving them root access to the machine hosting the daemon. Guard
+> these keys as you would a root password!
 
-### 默认安全
+### Secure by default
 
-如果你想默认保护你的 Docker 客户端连接，你可以将文件移动到你的主目录中的 `.docker` 目录——同时设置 `DOCKER_HOST` 和 `DOCKER_TLS_VERIFY` 变量（而不是在每次调用时传递 `-H=tcp://$HOST:2376` 和 `--tlsverify`）。
+If you want to secure your Docker client connections by default, you can move
+the files to the `.docker` directory in your home directory --- and set the
+`DOCKER_HOST` and `DOCKER_TLS_VERIFY` variables as well (instead of passing
+`-H=tcp://$HOST:2376` and `--tlsverify` on every call).
 
 ```console
 $ mkdir -pv ~/.docker
@@ -254,36 +299,43 @@ $ cp -v {ca,cert,key}.pem ~/.docker
 $ export DOCKER_HOST=tcp://$HOST:2376 DOCKER_TLS_VERIFY=1
 ```
 
-Docker 现在默认安全连接：
+Docker now connects securely by default:
 
     $ docker ps
 
-### 其他模式
+### Other modes
 
-如果你不想进行完整的双向身份验证，你可以通过混合标志以各种其他模式运行 Docker。
+If you don't want to have complete two-way authentication, you can run
+Docker in various other modes by mixing the flags.
 
-#### 守护进程模式
+#### Daemon modes
 
- - `tlsverify`、`tlscacert`、`tlscert`、`tlskey` 设置：验证客户端
- - `tls`、`tlscert`、`tlskey`：不验证客户端
+ - `tlsverify`, `tlscacert`, `tlscert`, `tlskey` set: Authenticate clients
+ - `tls`, `tlscert`, `tlskey`: Do not authenticate clients
 
-#### 客户端模式
+#### Client modes
 
- - `tls`：基于公共/默认 CA 池验证服务器
- - `tlsverify`、`tlscacert`：基于给定的 CA 验证服务器
- - `tls`、`tlscert`、`tlskey`：使用客户端证书进行身份验证，不基于给定的 CA 验证服务器
- - `tlsverify`、`tlscacert`、`tlscert`、`tlskey`：使用客户端证书进行身份验证，并基于给定的 CA 验证服务器
+ - `tls`: Authenticate server based on public/default CA pool
+ - `tlsverify`, `tlscacert`: Authenticate server based on given CA
+ - `tls`, `tlscert`, `tlskey`: Authenticate with client certificate, do not
+   authenticate server based on given CA
+ - `tlsverify`, `tlscacert`, `tlscert`, `tlskey`: Authenticate with client
+   certificate and authenticate server based on given CA
 
-如果找到，客户端会发送其客户端证书，所以你只需要将你的密钥放入 `~/.docker/{ca,cert,key}.pem`。或者，如果你想将密钥存储在其他位置，你可以使用环境变量 `DOCKER_CERT_PATH` 指定该位置。
+If found, the client sends its client certificate, so you just need
+to drop your keys into `~/.docker/{ca,cert,key}.pem`. Alternatively,
+if you want to store your keys in another location, you can specify that
+location using the environment variable `DOCKER_CERT_PATH`.
 
 ```console
 $ export DOCKER_CERT_PATH=~/.docker/zone1/
 $ docker --tlsverify ps
 ```
 
-#### 使用 `curl` 连接到安全的 Docker 端口
+#### Connecting to the secure Docker port using `curl`
 
-要使用 `curl` 进行测试 API 请求，你需要使用三个额外的命令行标志：
+To use `curl` to make test API requests, you need to use three extra command line
+flags:
 
 ```console
 $ curl https://$HOST:2376/images/json \
@@ -292,7 +344,7 @@ $ curl https://$HOST:2376/images/json \
   --cacert ~/.docker/ca.pem
 ```
 
-## 相关信息
+## Related information
 
-* [使用证书进行仓库客户端验证](certificates.md)
-* [使用受信任的镜像](trust/_index.md)
+* [Using certificates for repository client verification](certificates.md)
+* [Use trusted images](trust/_index.md)

@@ -1,57 +1,75 @@
 ---
-title: 验证 Docker Hardened Image
-linktitle: 验证镜像
-description: 使用 Docker Scout 或 cosign 验证 Docker Hardened Images 的签名证明，如 SBOM、来源证明和漏洞数据。
+title: Verify a Docker Hardened Image
+linktitle: Verify an image
+description: Use Docker Scout or cosign to verify signed attestations like SBOMs, provenance, and vulnerability data for Docker Hardened Images.
 weight: 40
 keywords: verify container image, docker scout attest, cosign verify, sbom validation, signed container attestations
 ---
 
 {{< summary-bar feature_name="Docker Hardened Images" >}}
 
-Docker Hardened Images（DHI）包含签名的证明，用于验证镜像的构建过程、内容和安全状态。这些证明适用于每个镜像变体，可以使用 [cosign](https://docs.sigstore.dev/) 或 Docker Scout CLI 进行验证。
+Docker Hardened Images (DHI) include signed attestations that verify the image’s
+build process, contents, and security posture. These attestations are available
+for each image variant and can be verified using
+[cosign](https://docs.sigstore.dev/) or the Docker Scout CLI.
 
-Docker 用于 DHI 镜像的公钥发布在：
+Docker's public key for DHI images is published at:
 
 - https://registry.scout.docker.com/keyring/dhi/latest.pub
 - https://github.com/docker-hardened-images/keyring
 
-## 使用 Docker Scout 验证证明
+## Verify attestations with Docker Scout
 
-您可以使用 Docker Scout CLI 列出和检索 Docker Hardened Images 的证明，包括镜像到您组织命名空间中的镜像。
+You can use the Docker Scout CLI to list and retrieve attestations for Docker
+Hardened Images, including images mirrored into your organization's namespace.
 
 > [!NOTE]
 >
-> 在运行 `docker scout attest` 命令之前，请确保您在本地拉取的任何镜像都与远程镜像保持最新。您可以通过运行 `docker pull` 来实现。如果您不这样做，可能会看到 `No attestation found`。
+> Before you run `docker scout attest` commands, ensure any image that you have
+> pulled locally is up to date with the remote image. You can do this by running
+> `docker pull`. If you don't do this, you may see `No attestation found`.
 
-### 为什么使用 Docker Scout 而不是直接使用 cosign？
+### Why use Docker Scout instead of cosign directly?
 
-虽然您可以使用 cosign 手动验证证明，但在使用 Docker Hardened Images 时，Docker Scout CLI 提供了几个关键优势：
+While you can use cosign to verify attestations manually, the Docker Scout CLI
+offers several key advantages when working with Docker Hardened Images:
 
-- 专为目标构建的体验：Docker Scout 理解 DHI 证明和镜像命名约定的结构，因此您无需手动构建完整的镜像摘要或 URI。
+- Purpose-built experience: Docker Scout understands the structure of DHI
+  attestations and image naming conventions, so you don't have to construct full
+  image digests or URIs manually.
 
-- 自动平台解析：使用 Scout，您可以指定平台（例如，`--platform linux/amd64`），它会自动验证正确的镜像变体。Cosign 需要您自己查找摘要。
+- Automatic platform resolution: With Scout, you can specify the platform (e.g.,
+  `--platform linux/amd64`), and it automatically verifies the correct image
+  variant. Cosign requires you to look up the digest yourself.
 
-- 人类可读的摘要：Scout 返回证明内容的摘要（例如，软件包数量、来源步骤），而 cosign 只返回原始签名验证输出。
+- Human-readable summaries: Scout returns summaries of attestation contents
+  (e.g., package counts, provenance steps), whereas cosign only returns raw
+  signature validation output.
 
-- 一步验证：`docker scout attest get` 中的 `--verify` 标志会验证证明并显示等效的 cosign 命令，使您更容易理解幕后发生的事情。
+- One-step validation: The `--verify` flag in `docker scout attest get` validates
+  the attestation and shows the equivalent cosign command, making it easier to
+  understand what's happening behind the scenes.
 
-- 与 Docker Hub 和 DHI 信任模型集成：Docker Scout 与 Docker 的证明基础设施和公钥环紧密集成，确保 Docker 生态系统内用户的兼容性并简化验证。
+- Integrated with Docker Hub and DHI trust model: Docker Scout is tightly
+  integrated with Docker’s attestation infrastructure and public keyring,
+  ensuring compatibility and simplifying verification for users within the
+  Docker ecosystem.
 
-简而言之，Docker Scout 简化了验证过程并减少了人为错误的可能性，同时仍然为您提供完全的可见性和在需要时回退到 cosign 的选项。
+In short, Docker Scout streamlines the verification process and reduces the chances of human error, while still giving you full visibility and the option to fall back to cosign when needed.
 
-### 列出可用的证明
+### List available attestations
 
-要列出镜像 DHI 的证明：
+To list attestations for a mirrored DHI:
 
 ```console
 $ docker scout attest list <your-org-namespace>/dhi-<image>:<tag> --platform <platform>
 ```
 
-此命令显示所有可用的证明，包括 SBOM、来源证明、漏洞报告等。
+This command shows all available attestations, including SBOMs, provenance, vulnerability reports, and more.
 
-### 检索特定证明
+### Retrieve a specific attestation
 
-要检索特定证明，请使用 `--predicate-type` 标志和完整的谓词类型 URI：
+To retrieve a specific attestation, use the `--predicate-type` flag with the full predicate type URI:
 
 ```console
 $ docker scout attest get \
@@ -59,7 +77,7 @@ $ docker scout attest get \
   <your-org-namespace>/dhi-<image>:<tag> --platform <platform>
 ```
 
-例如：
+For example:
 
 ```console
 $ docker scout attest get \
@@ -67,7 +85,7 @@ $ docker scout attest get \
   docs/dhi-python:3.13 --platform linux/amd64
 ```
 
-要仅检索谓词主体：
+To retrieve only the predicate body:
 
 ```console
 $ docker scout attest get \
@@ -76,7 +94,7 @@ $ docker scout attest get \
   <your-org-namespace>/dhi-<image>:<tag> --platform <platform>
 ```
 
-例如：
+For example:
 
 ```console
 $ docker scout attest get \
@@ -85,25 +103,26 @@ $ docker scout attest get \
   docs/dhi-python:3.13 --platform linux/amd64
 ```
 
-### 使用 Docker Scout 验证证明
+### Validate the attestation with Docker Scout
 
-要使用 Docker Scout 验证证明，您可以使用 `--verify` 标志：
+To validate the attestation using Docker Scout, you can use the `--verify` flag:
 
 ```console
 $ docker scout attest get <image-name>:<tag> \
    --predicate-type https://scout.docker.com/sbom/v0.1 --verify
 ```
 
-例如，要验证 `dhi/node:20.19-debian12-fips-20250701182639` 镜像的 SBOM 证明：
+For example, to verify the SBOM attestation for the `dhi/node:20.19-debian12-fips-20250701182639` image:
 
 ```console
 $ docker scout attest get docs/dhi-node:20.19-debian12-fips-20250701182639 \
    --predicate-type https://scout.docker.com/sbom/v0.1 --verify
 ```
 
-### 显示等效的 cosign 命令
+### Show the equivalent cosign command
 
-使用 `--verify` 标志时，它还会打印相应的 [cosign](https://docs.sigstore.dev/) 命令以验证镜像签名：
+When using the `--verify` flag, it also prints the corresponding
+[cosign](https://docs.sigstore.dev/) command to verify the image signature:
 
 ```console
 $ docker scout attest get \
@@ -112,7 +131,7 @@ $ docker scout attest get \
   <your-org-namespace>/dhi-<image>:<tag> --platform <platform>
 ```
 
-例如：
+For example:
 
 ```console
 $ docker scout attest get \
@@ -121,9 +140,9 @@ $ docker scout attest get \
   docs/dhi-python:3.13 --platform linux/amd64
 ```
 
-如果验证成功，Docker Scout 会打印完整的 `cosign verify` 命令。
+If verification succeeds, Docker Scout prints the full `cosign verify` command.
 
-示例输出：
+Example output:
 
 ```console
     v SBOM obtained from attestation, 101 packages found
@@ -135,9 +154,10 @@ $ docker scout attest get \
 
 > [!IMPORTANT]
 >
-> 使用 cosign 时，您必须首先向 Docker Hub 镜像仓库和 Docker Scout 镜像仓库进行身份验证。
+> When using cosign, you must first authenticate to both the Docker Hub registry
+> and the Docker Scout registry.
 >
-> 例如：
+> For example:
 >
 > ```console
 > $ docker login
@@ -147,16 +167,21 @@ $ docker scout attest get \
 >     --key https://registry.scout.docker.com/keyring/dhi/latest.pub --experimental-oci11
 > ```
 
-## 可用的 DHI 证明
+## Available DHI attestations
 
-请参阅[可用证明](../core-concepts/attestations.md#available-attestations)以获取每个 DHI 可用证明的列表。
+See [available
+attestations](../core-concepts/attestations.md#available-attestations) for list
+of attestations available for each DHI.
 
-## 在 Docker Hub 上探索证明
+## Explore attestations on Docker Hub
 
-您也可以在[探索镜像变体](./explore.md#查看镜像变体详情)时可视化浏览证明。**Attestations** 部分列出每个可用的证明及其：
+You can also browse attestations visually when [exploring an image
+variant](./explore.md#view-image-variant-details). The **Attestations** section
+lists each available attestation with its:
 
-- 类型（例如 SBOM、VEX）
-- 谓词类型 URI
-- 用于 `cosign` 的摘要引用
+- Type (e.g. SBOM, VEX)
+- Predicate type URI
+- Digest reference for use with `cosign`
 
-这些证明作为 Docker Hardened Image 构建过程的一部分自动生成和签名。
+These attestations are generated and signed automatically as part of the Docker
+Hardened Image build process.

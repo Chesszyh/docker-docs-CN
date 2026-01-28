@@ -1,7 +1,7 @@
 ---
 build:
   render: never
-title: AI 与 Docker Compose
+title: AI and Docker Compose
 weight: 40
 params:
   sidebar:

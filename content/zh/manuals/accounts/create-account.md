@@ -1,7 +1,7 @@
 ---
-title: 创建账户
+title: Create an account
 weight: 10
-description: 了解如何注册 Docker ID 并登录您的账户
+description: Learn how to register for a Docker ID and sign in to your account
 keywords: accounts, docker ID, billing, paid plans, support, Hub, Store, Forums, knowledge
   base, beta access, email, activation, verification
 aliases:
@@ -9,93 +9,94 @@ aliases:
 - /docker-id/
 ---
 
-您可以使用电子邮件地址创建免费的 Docker 账户，也可以通过 Google 或 GitHub 账户注册。一旦您使用唯一的 Docker ID 创建了账户，就可以访问所有 Docker 产品，包括 Docker Hub。通过 Docker Hub，您可以访问仓库并浏览社区和经过验证的发布者提供的镜像。
+You can create a free Docker account with your email address or by signing up with your Google or GitHub account. Once you've created your account with a unique Docker ID, you can access all Docker products, including Docker Hub. With Docker Hub, you can access repositories and explore images that are available from the community and verified publishers.
 
-您的 Docker ID 将成为您在托管 Docker 服务和 [Docker 论坛](https://forums.docker.com/)中的用户名。
+Your Docker ID becomes your username for hosted Docker services, and [Docker forums](https://forums.docker.com/).
 
 > [!TIP]
 >
-> 探索 [Docker 的订阅计划](https://www.docker.com/pricing/)，了解 Docker 还能为您提供什么。
+> Explore [Docker's subscriptions](https://www.docker.com/pricing/) to see what else Docker can offer you.
 
-## 创建 Docker ID
+## Create a Docker ID
 
-### 使用电子邮件地址注册
+### Sign up with your email address
 
-1. 前往 [Docker 注册页面](https://app.docker.com/signup/)。
+1. Go to the [Docker sign-up page](https://app.docker.com/signup/).
 
-2. 输入一个唯一且有效的电子邮件地址。
+2. Enter a unique, valid email address.
 
-3. 输入一个用户名作为您的 Docker ID。一旦创建了 Docker ID，如果您停用此账户，将来将无法重新使用该用户名。
+3. Enter a username to use as your Docker ID. Once you create your Docker ID you can't reuse it in the future if you deactivate this account.
 
-    您的用户名：
-    - 长度必须在 4 到 30 个字符之间
-    - 只能包含数字和小写字母
+    Your username:
+    - Must be between 4 and 30 characters long
+    - Can only contain numbers and lowercase letters
 
-4. 输入一个至少 9 个字符的密码。
+4. Enter a password that's at least 9 characters long.
 
-5. 选择 **Sign Up**。
+5. Select **Sign Up**.
 
-6. 打开您的电子邮件客户端。Docker 会向您提供的地址发送一封验证邮件。
+6. Open your email client. Docker sends a verification email to the address you provided.
 
-7. 验证您的电子邮件地址以完成注册流程。
+7. Verify your email address to complete the registration process.
 
 > [!NOTE]
 >
-> 您必须验证电子邮件地址后才能完全访问 Docker 的功能。
+> You must verify your email address before you have full access to Docker's features.
 
-### 使用 Google 或 GitHub 注册
+### Sign up with Google or GitHub
 
 > [!IMPORTANT]
 >
-> 要使用社交账号提供商注册，您必须在开始之前先通过该提供商验证您的电子邮件地址。
+> To sign up with your social provider, you must verify your email address with your provider before you begin.
 
-1. 前往 [Docker 注册页面](https://app.docker.com/signup/)。
+1. Go to the [Docker sign-up page](https://app.docker.com/signup/).
 
-2. 选择您的社交账号提供商，Google 或 GitHub。
+2. Select your social provider, Google or GitHub.
 
-3. 选择您想要关联到 Docker 账户的社交账号。
+3. Select the social account you want to link to your Docker account.
 
-4. 选择 **Authorize Docker** 以允许 Docker 访问您的社交账号信息。您将被重定向到注册页面。
+4. Select **Authorize Docker** to let Docker to access your social account information. You will be re-routed to the sign-up page.
 
-5. 输入一个用户名作为您的 Docker ID。
+5. Enter a username to use as your Docker ID.
 
-    您的用户名：
-    - 长度必须在 4 到 30 个字符之间
-    - 只能包含数字和小写字母
+    Your username:
+    - Must be between 4 and 30 characters long
+    - Can only contain numbers and lowercase letters
 
-6. 选择 **Sign up**。
+6. Select **Sign up**.
 
-## 登录
+## Sign in
 
-注册 Docker ID 并验证电子邮件地址后，您可以登录[您的 Docker 账户](https://login.docker.com/u/login/)。您可以：
-- 使用电子邮件地址（或用户名）和密码登录。
-- 使用社交账号提供商登录。更多信息，请参阅[使用社交账号提供商登录](#使用社交账号提供商登录)。
-- 使用 `docker login` 命令通过 CLI 登录。更多信息，请参阅 [`docker login`](/reference/cli/docker/login.md)。
+Once you register your Docker ID and verify your email address, you can sign in to [your Docker account](https://login.docker.com/u/login/). You can either:
+- Sign in with your email address (or username) and password.
+- Sign in with your social provider. For more information, see [Sign in with your social provider](#sign-in-with-your-social-provider).
+- Sign in through the CLI using the `docker login` command. For more information, see [`docker login`](/reference/cli/docker/login.md).
 
 > [!WARNING]
 >
-> 当您使用 `docker login` 命令时，您的凭据会存储在您的主目录中的 `.docker/config.json` 文件中。密码在此文件中以 base64 编码存储。
+> When you use the `docker login` command, your credentials are
+stored in your home directory in `.docker/config.json`. The password is base64-encoded in this file.
 >
-> 我们建议使用 [Docker 凭据助手](https://github.com/docker/docker-credential-helpers)之一来安全存储密码。为了获得额外的安全性，您还可以使用[个人访问令牌](../security/for-developers/access-tokens.md)来登录，该令牌在此文件中仍然是编码的（如果没有 Docker 凭据助手），但不允许执行管理员操作（如更改密码）。
+> We recommend using one of the [Docker credential helpers](https://github.com/docker/docker-credential-helpers) for secure storage of passwords. For extra security, you can also use a [personal access token](../security/for-developers/access-tokens.md) to sign in instead, which is still encoded in this file (without a Docker credential helper) but doesn't permit administrator actions (such as changing the password).
 
-### 使用社交账号提供商登录
+### Sign in with your social provider
 
 > [!IMPORTANT]
 >
-> 要使用社交账号提供商登录，您必须在开始之前先通过该提供商验证您的电子邮件地址。
+> To sign in with your social provider, you must verify your email address with your provider before you begin.
 
-您也可以使用 Google 或 GitHub 账户登录您的 Docker 账户。如果存在一个与您社交账号提供商的主要电子邮件地址相同的 Docker 账户，您的 Docker 账户将自动关联到该社交账号。这使您可以使用社交账号提供商登录。
+You can also sign in to your Docker account with your Google or GitHub account. If a Docker account exists with the same email address as the primary email for your social provider, your Docker account will automatically be linked to the social profile. This lets you sign in with your social provider.
 
-如果您尝试使用社交账号提供商登录但还没有 Docker 账户，系统将为您创建一个新账户。按照屏幕上的说明使用您的社交账号提供商创建 Docker ID。
+If you try to sign in with your social provider and don't have a Docker account yet, a new account will be created for you. Follow the on-screen instructions to create a Docker ID using your social provider.
 
-## 在登录时重置密码
+## Reset your password at sign in
 
-要重置密码，请在[登录](https://login.docker.com/u/login)页面输入您的电子邮件地址并继续登录。当提示输入密码时，选择 **Forgot password?**。
+To reset your password, enter your email address on the [Sign in](https://login.docker.com/u/login) page and continue to sign in. When prompted for your password, select **Forgot password?**.
 
-## 故障排除
+## Troubleshooting
 
-如果您拥有付费 Docker 订阅，可以[联系支持团队](https://hub.docker.com/support/contact/)获取帮助。
+If you have a paid Docker subscription, you can [contact the Support team](https://hub.docker.com/support/contact/) for assistance.
 
-所有 Docker 用户都可以通过以下资源寻求故障排除信息和支持，Docker 或社区会尽最大努力进行响应：
-   - [Docker 社区论坛](https://forums.docker.com/)
-   - [Docker 社区 Slack](http://dockr.ly/comm-slack)
+All Docker users can seek troubleshooting information and support through the following resources, where Docker or the community respond on a best effort basis:
+   - [Docker Community Forums](https://forums.docker.com/)
+   - [Docker Community Slack](http://dockr.ly/comm-slack)

@@ -1,17 +1,20 @@
 ---
-title: 在 GitHub Actions 中使用命名上下文
+title: Named contexts with GitHub Actions
 linkTitle: Named contexts
-description: 在 GitHub Actions 中使用多阶段构建的额外上下文
+description: Use additional contexts in multi-stage builds with GitHub Actions
 keywords: ci, github actions, gha, buildkit, buildx, context
 ---
 
-您可以定义[额外的构建上下文](/reference/cli/docker/buildx/build.md#build-context)，并在 Dockerfile 中使用 `FROM name` 或 `--from=name` 来访问它们。当 Dockerfile 定义了同名的阶段时，它会被覆盖。
+You can define [additional build contexts](/reference/cli/docker/buildx/build.md#build-context),
+and access them in your Dockerfile with `FROM name` or `--from=name`. When
+Dockerfile defines a stage with the same name it's overwritten.
 
-这在 GitHub Actions 中非常有用，可以重用其他构建的结果或在工作流中将镜像固定到特定标签。
+This can be useful with GitHub Actions to reuse results from other builds or pin
+an image to a specific tag in your workflow.
 
-## 将镜像固定到标签
+## Pin image to a tag
 
-将 `alpine:latest` 替换为固定版本：
+Replace `alpine:latest` with a pinned one:
 
 ```dockerfile
 # syntax=docker/dockerfile:1
@@ -40,11 +43,13 @@ jobs:
           tags: myimage:latest
 ```
 
-## 在后续步骤中使用镜像
+## Use image in subsequent steps
 
-默认情况下，[Docker Setup Buildx](https://github.com/marketplace/actions/docker-setup-buildx) action 使用 `docker-container` 作为构建驱动程序，因此构建的 Docker 镜像不会自动加载。
+By default, the [Docker Setup Buildx](https://github.com/marketplace/actions/docker-setup-buildx)
+action uses `docker-container` as a build driver, so built Docker images aren't
+loaded automatically.
 
-使用命名上下文，您可以重用构建的镜像：
+With named contexts you can reuse the built image:
 
 ```dockerfile
 # syntax=docker/dockerfile:1
@@ -82,9 +87,13 @@ jobs:
           tags: myimage:latest
 ```
 
-## 与容器构建器一起使用
+## Using with a container builder
 
-如上一节所示，我们没有使用默认的 [`docker-container` 驱动程序](../../builders/drivers/docker-container.md)来使用命名上下文进行构建。这是因为此驱动程序无法从 Docker 存储加载镜像，因为它是隔离的。要解决这个问题，您可以在工作流中使用[本地镜像仓库](local-registry.md)来推送基础镜像：
+As shown in the previous section we are not using the default
+[`docker-container` driver](../../builders/drivers/docker-container.md) for building with
+named contexts. That's because this driver can't load an image from the Docker
+store as it's isolated. To solve this problem you can use a [local registry](local-registry.md)
+to push your base image in your workflow:
 
 ```dockerfile
 # syntax=docker/dockerfile:1

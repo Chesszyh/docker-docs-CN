@@ -2,33 +2,47 @@
 description: How to set up and use certificates with a registry to verify access
 keywords: Usage, registry, repository, client, root, certificate, docker, apache,
   ssl, tls, documentation, examples, articles, tutorials
-title: 使用证书验证仓库客户端
+title: Verify repository client with certificates
 aliases:
 - /articles/certificates/
 - /engine/articles/certificates/
 ---
 
-在[使用 HTTPS 运行 Docker](protect-access.md) 中，你了解到默认情况下，Docker 通过非网络化的 Unix 套接字运行，必须启用 TLS 才能使 Docker 客户端和守护进程通过 HTTPS 安全通信。TLS 确保仓库端点的真实性，并确保往返仓库的流量是加密的。
+In [Running Docker with HTTPS](protect-access.md), you learned that, by default,
+Docker runs via a non-networked Unix socket and TLS must be enabled in order
+to have the Docker client and the daemon communicate securely over HTTPS.  TLS ensures authenticity of the registry endpoint and that traffic to/from registry is encrypted.
 
-本文演示如何使用基于证书的客户端-服务器身份验证来确保 Docker 仓库服务器和 Docker 守护进程（仓库服务器的客户端）之间的流量是加密的并经过正确的身份验证。
+This article demonstrates how to ensure the traffic between the Docker registry
+server and the Docker daemon (a client of the registry server) is encrypted and
+properly authenticated using certificate-based client-server authentication.
 
-我们将向你展示如何为仓库安装证书颁发机构（CA）根证书以及如何设置客户端 TLS 证书进行验证。
+We show you how to install a Certificate Authority (CA) root certificate
+for the registry and how to set the client TLS certificate for verification.
 
-## 理解配置
+## Understand the configuration
 
-通过在 `/etc/docker/certs.d` 下创建一个与仓库主机名相同的目录来配置自定义证书，例如 `localhost`。所有 `*.crt` 文件都作为 CA 根证书添加到此目录。
+A custom certificate is configured by creating a directory under
+`/etc/docker/certs.d` using the same name as the registry's hostname, such as
+`localhost`. All `*.crt` files are added to this directory as CA roots.
 
 > [!NOTE]
 >
-> 在 Linux 上，任何根证书颁发机构都会与系统默认值合并，包括主机的根 CA 集。如果你在 Windows Server 上运行 Docker，或在 Windows 容器上运行 Docker Desktop for Windows，则只有在未配置自定义根证书时才使用系统默认证书。
+> On Linux any root certificates authorities are merged with the system defaults,
+> including the host's root CA set. If you are running Docker on Windows Server,
+> or Docker Desktop for Windows with Windows containers, the system default
+> certificates are only used when no custom root certificates are configured.
 
-一个或多个 `<filename>.key/cert` 对的存在向 Docker 表明需要自定义证书才能访问所需的仓库。
+The presence of one or more `<filename>.key/cert` pairs indicates to Docker
+that there are custom certificates required for access to the desired
+repository.
 
 > [!NOTE]
 >
-> 如果存在多个证书，则按字母顺序尝试每个证书。如果出现 4xx 级或 5xx 级身份验证错误，Docker 会继续尝试下一个证书。
+> If multiple certificates exist, each is tried in alphabetical
+> order. If there is a 4xx-level or 5xx-level authentication error, Docker
+> continues to try with the next certificate.
 
-以下说明了使用自定义证书的配置：
+The following illustrates a configuration with custom certificates:
 
 ```text
     /etc/docker/certs.d/        <-- Certificate directory
@@ -39,12 +53,15 @@ aliases:
                                     the registry certificate, in PEM
 ```
 
-前面的示例是特定于操作系统的，仅用于说明目的。你应该查阅操作系统文档以创建操作系统提供的捆绑证书链。
+The preceding example is operating-system specific and is for illustrative
+purposes only. You should consult your operating system documentation for
+creating an os-provided bundled certificate chain.
 
 
-## 创建客户端证书
+## Create the client certificates
 
-使用 OpenSSL 的 `genrsa` 和 `req` 命令首先生成一个 RSA 密钥，然后使用该密钥创建证书。
+Use OpenSSL's `genrsa` and `req` commands to first generate an RSA
+key and then use the key to create the certificate.   
 
 ```console
 $ openssl genrsa -out client.key 4096
@@ -53,17 +70,22 @@ $ openssl req -new -x509 -text -key client.key -out client.cert
 
 > [!NOTE]
 >
-> 这些 TLS 命令仅在 Linux 上生成有效的证书集。macOS 中的 OpenSSL 版本与 Docker 所需的证书类型不兼容。
+> These TLS commands only generate a working set of certificates on Linux.
+> The version of OpenSSL in macOS is incompatible with the type of
+> certificate Docker requires.
 
-## 故障排除技巧
+## Troubleshooting tips
 
-Docker 守护进程将 `.crt` 文件解释为 CA 证书，将 `.cert` 文件解释为客户端证书。如果 CA 证书意外地被赋予了 `.cert` 扩展名而不是正确的 `.crt` 扩展名，Docker 守护进程会记录以下错误消息：
+The Docker daemon interprets `.crt` files as CA certificates and `.cert` files
+as client certificates. If a CA certificate is accidentally given the extension
+`.cert` instead of the correct `.crt` extension, the Docker daemon logs the
+following error message:
 
 ```text
 Missing key KEY_NAME for client certificate CERT_NAME. CA certificates should use the extension .crt.
 ```
 
-如果在没有端口号的情况下访问 Docker 仓库，则不要在目录名称中添加端口。以下显示了默认端口 443 上仓库的配置，该仓库通过 `docker login my-https.registry.example.com` 访问：
+If the Docker registry is accessed without a port number, do not add the port to the directory name.  The following shows the configuration for a registry on default port 443 which is accessed with `docker login my-https.registry.example.com`:
 
 ```text
     /etc/docker/certs.d/
@@ -73,7 +95,7 @@ Missing key KEY_NAME for client certificate CERT_NAME. CA certificates should us
        └── ca.crt
 ```
 
-## 相关信息
+## Related information
 
-* [使用受信任的镜像](trust/_index.md)
-* [保护 Docker 守护进程套接字](protect-access.md)
+* [Use trusted images](trust/_index.md)
+* [Protect the Docker daemon socket](protect-access.md)

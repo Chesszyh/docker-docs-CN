@@ -1,43 +1,49 @@
 ---
-title: 将 Scout 用于不同的制品类型
+title: Use Scout with different artifact types
 description: |
-  某些 Docker Scout 命令支持镜像引用前缀，
-  用于控制要分析的镜像或文件的位置。
+  Some of the Docker Scout commands support image references prefixes
+  for controlling the location of the images or files that you want to analyze.
 keywords: scout, vulnerabilities, analyze, analysis, cli, packages, sbom, cve, security, local, source, code, supply chain
 aliases:
   - /scout/image-prefix/
 ---
 
-某些 Docker Scout CLI 命令支持使用前缀来指定要分析的制品（artifact）的位置或类型。
+Some of the Docker Scout CLI commands support prefixes for specifying
+the location or type of artifact that you would like to analyze.
 
-默认情况下，使用 `docker scout cves` 命令进行镜像分析时，会以 Docker Engine 本地镜像存储中的镜像为目标。以下命令在本地镜像存在时总是使用本地镜像：
+By default, image analysis with the `docker scout cves` command
+targets images in the local image store of the Docker Engine.
+The following command always uses a local image if it exists:
 
 ```console
 $ docker scout cves <image>
 ```
 
-如果镜像在本地不存在，Docker 会在运行分析之前拉取镜像。再次分析同一镜像时，默认会使用相同的本地版本，即使该标签在镜像仓库中已经发生变化。
+If the image doesn't exist locally, Docker pulls the image before running the analysis.
+Analyzing the same image again would use the same local version by default,
+even if the tag has since changed in the registry.
 
-通过在镜像引用前添加 `registry://` 前缀，您可以强制 Docker Scout 分析镜像仓库版本的镜像：
+By adding a `registry://` prefix to the image reference,
+you can force Docker Scout to analyze the registry version of the image:
 
 ```console
 $ docker scout cves registry://<image>
 ```
 
-## 支持的前缀
+## Supported prefixes
 
-支持的前缀包括：
+The supported prefixes are:
 
-| 前缀                 | 描述                                                                 |
+| Prefix               | Description                                                          |
 | -------------------- | -------------------------------------------------------------------- |
-| `image://`（默认）   | 使用本地镜像，如果不存在则回退到镜像仓库查找                         |
-| `local://`           | 使用本地镜像存储中的镜像（不进行镜像仓库查找）                       |
-| `registry://`        | 使用镜像仓库中的镜像（不使用本地镜像）                               |
-| `oci-dir://`         | 使用 OCI 布局目录                                                    |
-| `archive://`         | 使用 tarball 归档文件，如通过 `docker save` 创建的文件               |
-| `fs://`              | 使用本地目录或文件                                                   |
+| `image://` (default) | Use a local image, or fall back to a registry lookup                 |
+| `local://`           | Use an image from the local image store (don't do a registry lookup) |
+| `registry://`        | Use an image from a registry (don't use a local image)               |
+| `oci-dir://`         | Use an OCI layout directory                                          |
+| `archive://`         | Use a tarball archive, as created by `docker save`                   |
+| `fs://`              | Use a local directory or file                                        |
 
-您可以在以下命令中使用前缀：
+You can use prefixes with the following commands:
 
 - `docker scout compare`
 - `docker scout cves`
@@ -45,19 +51,26 @@ $ docker scout cves registry://<image>
 - `docker scout recommendations`
 - `docker scout sbom`
 
-## 示例
+## Examples
 
-本节包含一些示例，展示如何使用前缀为 `docker scout` 命令指定制品。
+This section contains a few examples showing how you can use prefixes
+to specify artifacts for `docker scout` commands.
 
-### 分析本地项目
+### Analyze a local project
 
-`fs://` 前缀允许您直接分析本地源代码，而无需将其构建为容器镜像。以下 `docker scout quickview` 命令可让您快速查看当前工作目录中源代码的漏洞摘要：
+The `fs://` prefix lets you analyze local source code directly,
+without having to build it into a container image.
+The following `docker scout quickview` command gives you an
+at-a-glance vulnerability summary of the source code in the current working directory:
 
 ```console
 $ docker scout quickview fs://.
 ```
 
-要查看本地源代码中发现的漏洞详情，可以使用 `docker scout cves --details fs://.` 命令。可以与其他标志组合使用，将结果缩小到您感兴趣的软件包和漏洞。
+To view the details of vulnerabilities found in your local source code, you can
+use the `docker scout cves --details fs://.` command. Combine it with
+other flags to narrow down the results to the packages and vulnerabilities that
+you're interested in.
 
 ```console
 $ docker scout cves --details --only-severity high fs://.
@@ -99,9 +112,13 @@ pkg:npm/fastify@3.29.0
   CRITICAL  0
 ```
 
-### 将本地项目与镜像进行比较
+### Compare a local project to an image
 
-使用 `docker scout compare`，您可以将本地文件系统上源代码的分析结果与容器镜像的分析结果进行比较。以下示例将本地源代码（`fs://.`）与镜像仓库中的镜像 `registry://docker/scout-cli:latest` 进行比较。在这种情况下，比较的基准和目标都使用了前缀。
+With `docker scout compare`, you can compare the analysis of source code on
+your local filesystem with the analysis of a container image.
+The following example compares local source code (`fs://.`)
+with a registry image `registry://docker/scout-cli:latest`.
+In this case, both the baseline and target for the comparison use prefixes.
 
 ```console
 $ docker scout compare fs://. --to registry://docker/scout-cli:latest --ignore-unchanged
@@ -135,26 +152,29 @@ WARN 'docker scout compare' is experimental and its behaviour might change in th
        213 packages unchanged
 ```
 
-上面的示例为了简洁起见进行了截断。
+The previous example is truncated for brevity.
 
-### 查看镜像 tarball 的 SBOM
+### View the SBOM of an image tarball
 
-以下示例展示了如何使用 `archive://` 前缀获取使用 `docker save` 创建的镜像 tarball 的 SBOM。本例中的镜像是 `docker/scout-cli:latest`，SBOM 以 SPDX 格式导出到 `sbom.spdx.json` 文件。
+The following example shows how you can use the `archive://` prefix
+to get the SBOM of an image tarball, created with `docker save`.
+The image in this case is `docker/scout-cli:latest`,
+and the SBOM is exported to file `sbom.spdx.json` in SPDX format.
 
 ```console
 $ docker pull docker/scout-cli:latest
 latest: Pulling from docker/scout-cli
-257973a141f5: Download complete
-1f2083724dd1: Download complete
-5c8125a73507: Download complete
+257973a141f5: Download complete 
+1f2083724dd1: Download complete 
+5c8125a73507: Download complete 
 Digest: sha256:13318bb059b0f8b0b87b35ac7050782462b5d0ac3f96f9f23d165d8ed68d0894
 $ docker save docker/scout-cli:latest -o scout-cli.tar
 $ docker scout sbom --format spdx -o sbom.spdx.json archive://scout-cli.tar
 ```
 
-## 了解更多
+## Learn more
 
-在 CLI 参考文档中阅读有关命令和支持标志的信息：
+Read about the commands and supported flags in the CLI reference documentation:
 
 - [`docker scout quickview`](/reference/cli/docker/scout/quickview.md)
 - [`docker scout cves`](/reference/cli/docker/scout/cves.md)

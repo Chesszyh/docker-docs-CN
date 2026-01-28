@@ -1,15 +1,15 @@
 ---
-title: 管理组织成员
+title: Manage organization members
 weight: 30
-description: 了解如何在 Docker Hub 和 Docker Admin Console 中管理组织成员。
+description: Learn how to manage organization members in Docker Hub and Docker Admin Console.
 keywords: members, teams, organizations, invite members, manage team members
 aliases:
 - /docker-hub/members/
 ---
 
-了解如何在 Docker Hub 和 Docker Admin Console 中管理组织成员。
+Learn how to manage members for your organization in Docker Hub and the Docker Admin Console.
 
-## 邀请成员
+## Invite members
 
 {{< tabs >}}
 {{< tab name="Admin Console" >}}
@@ -26,243 +26,267 @@ aliases:
 {{< /tab >}}
 {{< /tabs >}}
 
-## 接受邀请
+## Accept invitation
 
-当邀请发送到用户的电子邮件地址时，他们会收到一个指向 Docker Hub 的链接，可以在那里接受或拒绝邀请。
-要接受邀请：
+When an invitation is to a user's email address, they receive
+a link to Docker Hub where they can accept or decline the invitation.
+To accept an invitation:
 
-1. 导航到您的电子邮件收件箱，打开包含加入 Docker 组织邀请的 Docker 电子邮件。
-1. 要打开指向 Docker Hub 的链接，请选择 **click here** 链接。
+1. Navigate to your email inbox and open the Docker email with an invitation to
+join the Docker organization.
+1. To open the link to Docker Hub, select the **click here** link.
 
    > [!WARNING]
    >
-   > 邀请电子邮件链接在 14 天后过期。如果您的电子邮件链接已过期，您可以使用链接发送到的电子邮件地址登录 [Docker Hub](https://hub.docker.com/)，并从 **Notifications** 面板接受邀请。
+   > Invitation email links expire after 14 days. If your email link has expired,
+   > you can sign in to [Docker Hub](https://hub.docker.com/) with the email
+   > address the link was sent to and accept the invitation from the
+   > **Notifications** panel.
 
-1. Docker 创建帐户页面将打开。如果您已有帐户，请选择 **Already have an account? Sign in**。如果您还没有帐户，请使用收到邀请的同一电子邮件地址创建一个帐户。
-1. 可选。如果您没有帐户并创建了一个，您必须返回电子邮件收件箱并使用 Docker 验证电子邮件验证您的电子邮件地址。
-1. 登录 Docker Hub 后，从顶级导航菜单中选择 **My Hub**。
-1. 在您的邀请上选择 **Accept**。
+1. The Docker create an account page will open. If you already have an account, select **Already have an account? Sign in**.
+If you do not have an account yet, create an account using the same email
+address you received the invitation through.
+1. Optional. If you do not have an account and created one, you must navigate
+back to your email inbox and verify your email address using the Docker verification
+email.
+1. Once you are signed in to Docker Hub, select **My Hub** from the top-level navigation menu.
+1. Select **Accept** on your invitation.
 
-接受邀请后，您现在是组织的成员。
+After accepting an invitation, you are now a member of the organization.
 
-## 管理邀请
+## Manage invitations
 
-邀请成员后，您可以根据需要重新发送或移除邀请。
+After inviting members, you can resend or remove invitations as needed.
 
-### 重新发送邀请
+### Resend an invitation
 
 {{< tabs >}}
 {{< tab name="Admin Console" >}}
 
-您可以从 Admin Console 发送单个邀请或批量邀请。
+You can send individual invitations, or bulk invitations from the Admin Console.
 
-要重新发送单个邀请：
+To resend an individual invitation:
 
-1. 登录 [Docker Home](https://app.docker.com/) 并选择您的组织。
-1. 选择 **Members**。
-1. 选择被邀请者旁边的 **action menu**，然后选择 **Resend**。
-1. 选择 **Invite** 确认。
+1. Sign in to [Docker Home](https://app.docker.com/) and select your
+organization.
+1. Select **Members**.
+1. Select the **action menu** next to the invitee and select **Resend**.
+1. Select **Invite** to confirm.
 
-要批量重新发送邀请：
+To bulk resend invitations:
 
-1. 登录 [Docker Home](https://app.docker.com/) 并选择您的组织。
-1. 选择 **Members**。
-1. 使用 **Usernames** 旁边的 **checkboxes** 批量选择用户。
-1. 选择 **Resend invites**。
-1. 选择 **Resend** 确认。
+1. Sign in to [Docker Home](https://app.docker.com/) and select your
+organization.
+1. Select **Members**.
+1. Use the **checkboxes** next to **Usernames** to bulk select users.
+1. Select **Resend invites**.
+1. Select **Resend** to confirm.
 
 {{< /tab >}}
 {{< tab name="Docker Hub" >}}
 
 {{% include "hub-org-management.md" %}}
 
-要从 Docker Hub 重新发送邀请：
+To resend an invitation from Docker Hub:
 
-1. 登录 [Docker Hub](https://hub.docker.com/)。
-1. 选择 **My Hub**、您的组织，然后选择 **Members**。
-1. 在表格中，找到被邀请者，选择 **Actions** 图标，然后选择 **Resend invitation**。
-1. 选择 **Invite** 确认。
+1. Sign in to [Docker Hub](https://hub.docker.com/).
+1. Select **My Hub**, your organization, and then **Members**.
+1. In the table, locate the invitee, select the **Actions** icon, and then select
+**Resend invitation**.
+1. Select **Invite** to confirm.
 
-您还可以使用 Docker Hub API 重新发送邀请。有关更多信息，请参阅[重新发送邀请](https://docs.docker.com/reference/api/hub/latest/#tag/invites/paths/~1v2~1invites~1%7Bid%7D~1resend/patch) API 端点。
+You can also resend an invitation using the Docker Hub API. For more information,
+see the [Resend an invite](https://docs.docker.com/reference/api/hub/latest/#tag/invites/paths/~1v2~1invites~1%7Bid%7D~1resend/patch) API endpoint.
 
 {{< /tab >}}
 {{< /tabs >}}
 
-### 移除邀请
+### Remove an invitation
 
 {{< tabs >}}
 {{< tab name="Admin Console" >}}
 
-要从 Admin Console 移除邀请：
+To remove an invitation from the Admin Console:
 
-1. 登录 [Docker Home](https://app.docker.com/) 并选择您的组织。
-1. 选择 **Members**。
-1. 选择被邀请者旁边的 **action menu**，然后选择 **Remove invitee**。
-1. 选择 **Remove** 确认。
+1. Sign in to [Docker Home](https://app.docker.com/) and select your
+organization.
+1. Select **Members**.
+1. Select the **action menu** next to the invitee and select **Remove invitee**.
+1. Select **Remove** to confirm.
 
 {{< /tab >}}
 {{< tab name="Docker Hub" >}}
 
 {{% include "hub-org-management.md" %}}
 
-要从 Docker Hub 移除成员的邀请：
+To remove a member's invitation from Docker Hub:
 
-1. 登录 [Docker Hub](https://hub.docker.com/)。
-1. 选择 **My Hub**、您的组织，然后选择 **Members**。
-1. 在表格中，选择 **Action** 图标，然后选择 **Remove member** 或 **Remove invitee**。
-1. 按照屏幕上的说明移除成员或被邀请者。
+1. Sign in to [Docker Hub](https://hub.docker.com/).
+1. Select **My Hub**, your organization, and then **Members**.
+1. In the table, select the **Action** icon, and then select **Remove member** or **Remove invitee**.
+1. Follow the on-screen instructions to remove the member or invitee.
 
-您还可以使用 Docker Hub API 移除邀请。有关更多信息，请参阅[取消邀请](https://docs.docker.com/reference/api/hub/latest/#tag/invites/paths/~1v2~1invites~1%7Bid%7D/delete) API 端点。
+You can also remove an invitation using the Docker Hub API. For more information,
+see the [Cancel an invite](https://docs.docker.com/reference/api/hub/latest/#tag/invites/paths/~1v2~1invites~1%7Bid%7D/delete) API endpoint.
 
 {{< /tab >}}
 {{< /tabs >}}
 
-## 管理团队成员
+## Manage members on a team
 
-使用 Docker Hub 或 Admin Console 添加或移除团队成员。组织所有者可以将成员添加到组织内的一个或多个团队。
+Use Docker Hub or the Admin Console to add or remove team members. Organization owners can add a member to one or more teams within an organization.
 
-### 将成员添加到团队
+### Add a member to a team
 
 {{< tabs >}}
 {{< tab name="Admin Console" >}}
 
-要使用 Admin Console 将成员添加到团队：
+To add a member to a team with the Admin Console:
 
-1. 登录 [Docker Home](https://app.docker.com/) 并选择您的组织。
-1. 选择 **Teams**。
-1. 选择团队名称。
-1. 选择 **Add member**。您可以通过搜索成员的电子邮件地址或用户名来添加成员。
+1. Sign in to [Docker Home](https://app.docker.com/) and select your
+organization.
+1. Select **Teams**.
+1. Select the team name.
+1. Select **Add member**. You can add the member by searching for their email address or username.
 
    > [!NOTE]
    >
-   > 被邀请者必须先接受加入组织的邀请，然后才能被添加到团队。
+   > An invitee must first accept the invitation to join the organization before being added to the team.
 
 {{< /tab >}}
 {{< tab name="Docker Hub" >}}
 
 {{% include "hub-org-management.md" %}}
 
-要使用 Docker Hub 将成员添加到团队：
+To add a member to a team with Docker Hub:
 
-1. 登录 [Docker Hub](https://hub.docker.com)。
-1. 选择 **My Hub**、您的组织，然后选择 **Members**。
-1. 选择 **Action** 图标，然后选择 **Add to team**。
-
-   > [!NOTE]
-   >
-   > 您还可以导航到 **My Hub** > **Your Organization** > **Teams** > **Your Team Name** 并选择 **Add Member**。从下拉列表中选择一个成员以将其添加到团队，或通过 Docker ID 或电子邮件搜索。
-1. 选择团队，然后选择 **Add**。
+1. Sign in to [Docker Hub](https://hub.docker.com).
+1. Select **My Hub**, your organization, and then **Members**.
+1. Select the **Action** icon, and then select **Add to team**.
 
    > [!NOTE]
    >
-   > 被邀请者必须先接受加入组织的邀请，然后才能被添加到团队。
+   > You can also navigate to **My Hub** > **Your Organization** > **Teams** > **Your Team Name** and select **Add Member**. Select a member from the drop-down list to add them to the team or search by Docker ID or email.
+1. Select the team and then select **Add**.
+
+   > [!NOTE]
+   >
+   > An invitee must first accept the invitation to join the organization before being added to the team.
 
 {{< /tab >}}
 {{< /tabs >}}
 
-### 从团队中移除成员
+### Remove a member from a team
 
 > [!NOTE]
 >
-> 如果您的组织使用启用了 [SCIM](/manuals/security/for-admins/provisioning/scim.md) 的单点登录（SSO），您应该从身份提供商（IdP）中移除成员。这将自动从 Docker 中移除成员。如果禁用了 SCIM，您必须在 Docker 中手动管理成员。
+> If your organization uses single sign-on (SSO) with [SCIM](/manuals/security/for-admins/provisioning/scim.md) enabled, you should remove members from your identity provider (IdP). This will automatically remove members from Docker. If SCIM is disabled, you must manually manage members in Docker.
 
-组织所有者可以在 Docker Hub 或 Admin Console 中从团队中移除成员。从团队中移除成员将撤销其对允许资源的访问权限。
+Organization owners can remove a member from a team in Docker Hub or Admin Console. Removing the member from the team will revoke their access to the permitted resources.
 
 {{< tabs >}}
 {{< tab name="Admin Console" >}}
 
-要使用 Admin Console 从特定团队中移除成员：
+To remove a member from a specific team with the Admin Console:
 
-1. 登录 [Docker Home](https://app.docker.com/) 并选择您的组织。
-1. 选择 **Teams**。
-1. 选择团队名称。
-1. 选择用户名旁边的 **X** 以将其从团队中移除。
-1. 出现提示时，选择 **Remove** 确认。
+1. Sign in to [Docker Home](https://app.docker.com/) and select your
+organization.
+1. Select **Teams**.
+1. Select the team name.
+1. Select the **X** next to the user's name to remove them from the team.
+1. When prompted, select **Remove** to confirm.
 
 {{< /tab >}}
 {{< tab name="Docker Hub" >}}
 
 {{% include "hub-org-management.md" %}}
 
-要使用 Docker Hub 从特定团队中移除成员：
+To remove a member from a specific team with Docker Hub:
 
-1. 登录 [Docker Hub](https://hub.docker.com)。
-1. 选择 **My Hub**、您的组织、**Teams**，然后选择团队。
-1. 选择用户名旁边的 **X** 以将其从团队中移除。
-1. 出现提示时，选择 **Remove** 确认。
+1. Sign in to [Docker Hub](https://hub.docker.com).
+1. Select **My Hub**, your organization, **Teams**, and then the team.
+1. Select the **X** next to the user’s name to remove them from the team.
+1. When prompted, select **Remove** to confirm.
 
 {{< /tab >}}
 {{< /tabs >}}
 
-### 更新成员角色
+### Update a member role
 
-组织所有者可以管理组织内的[角色](/security/for-admins/roles-and-permissions/)。如果组织是公司的一部分，公司所有者也可以管理该组织的角色。如果您启用了 SSO，您可以使用 [SCIM 进行角色映射](/security/for-admins/provisioning/scim/)。
+Organization owners can manage [roles](/security/for-admins/roles-and-permissions/)
+within an organization. If an organization is part of a company,
+the company owner can also manage that organization's roles. If you have SSO enabled, you can use [SCIM for role mapping](/security/for-admins/provisioning/scim/).
 
 {{< tabs >}}
 {{< tab name="Admin Console" >}}
 
-要在 Admin Console 中更新成员角色：
+To update a member role in the Admin Console:
 
-1. 登录 [Docker Home](https://app.docker.com/) 并选择您的组织。
-1. 选择 **Members**。
-1. 找到您要编辑角色的成员的用户名。选择 **Actions** 菜单，然后选择 **Edit role**。
+1. Sign in to [Docker Home](https://app.docker.com/) and select your
+organization.
+1. Select **Members**.
+1. Find the username of the member whose role you want to edit. Select the
+**Actions** menu, then **Edit role**.
 
 > [!NOTE]
 >
-> 如果您是组织的唯一所有者，您需要先分配新所有者，然后才能编辑您的角色。
+> If you're the only owner of an organization,
+> you need to assign a new owner before you can edit your role.
 
 {{< /tab >}}
 {{< tab name="Docker Hub" >}}
 
 {{% include "hub-org-management.md" %}}
 
-要在 Docker Hub 中更新成员角色：
+To update a member role in Docker Hub:
 
-1. 登录 [Docker Hub](https://hub.docker.com)。
-1. 选择 **My Hub**、您的组织，然后选择 **Members**。
-1. 找到您要编辑角色的成员的用户名。在表格中，选择 **Actions** 图标。
-1. 选择 **Edit role**。
-1. 选择其组织，选择您要分配的角色，然后选择 **Save**。
+1. Sign in to [Docker Hub](https://hub.docker.com).
+1. Select **My Hub**, your organization, and then **Members**.
+1. Find the username of the member whose role you want to edit. In the table, select the **Actions** icon.
+1. Select **Edit role**.
+1. Select their organization, select the role you want to assign, and then select **Save**.
 
 > [!NOTE]
 >
-> 如果您是组织的唯一所有者，您需要先分配新所有者，然后才能编辑您的角色。
+> If you're the only owner of an organization,
+> you need to assign a new owner before you can edit your role.
 
 {{< /tab >}}
 {{< /tabs >}}
 
-## 导出成员 CSV 文件
+## Export members CSV file
 
 {{< summary-bar feature_name="Admin orgs" >}}
 
-所有者可以导出包含所有成员的 CSV 文件。公司的 CSV 文件包含以下字段：
+Owners can export a CSV file containing all members. The CSV file for a company contains the following fields:
 
-- Name：用户姓名
-- Username：用户的 Docker ID
-- Email：用户的电子邮件地址
-- Member of Organizations：用户在公司内所属的所有组织
-- Invited to Organizations：用户在公司内被邀请的所有组织
-- Account Created：用户帐户创建的时间和日期
+- Name: The user's name
+- Username: The user's Docker ID
+- Email: The user's email address
+- Member of Organizations: All organizations the user is a member of within a company
+- Invited to Organizations: All organizations the user is an invitee of within a company
+- Account Created: The time and date when the user account was created
 
 {{< tabs >}}
 {{< tab name="Admin Console" >}}
 
-要导出成员的 CSV 文件：
+To export a CSV file of your members:
 
-1. 登录 [Docker Home](https://app.docker.com/) 并选择您的组织。
-1. 选择 **Members**。
-1. 选择 **download** 图标以导出所有成员的 CSV 文件。
+1. Sign in to [Docker Home](https://app.docker.com/) and select your
+organization.
+1. Select **Members**.
+1. Select the **download** icon to export a CSV file of all members.
 
 {{< /tab >}}
 {{< tab name="Docker Hub" >}}
 
 {{% include "hub-org-management.md" %}}
 
-要导出成员的 CSV 文件：
+To export a CSV file of your members:
 
-1. 登录 [Docker Hub](https://hub.docker.com)。
-1. 选择 **My Hub**、您的组织，然后选择 **Members**。
-1. 选择 **Action** 图标，然后选择 **Export users as CSV**。
+1. Sign in to [Docker Hub](https://hub.docker.com).
+1. Select **My Hub**, your organization, and then **Members**.
+1. Select the **Action** icon and then select **Export users as CSV**.
 
 {{< /tab >}}
 {{< /tabs >}}

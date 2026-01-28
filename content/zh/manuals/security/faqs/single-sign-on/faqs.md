@@ -1,8 +1,8 @@
 ---
-description: 单点登录常见问题
+description: Single sign-on FAQs
 keywords: Docker, Docker Hub, SSO FAQs, single sign-on, administration, security
-title: SSO 通用常见问题
-linkTitle: 通用
+title: General FAQs on SSO
+linkTitle: General
 weight: 10
 tags: [FAQ]
 aliases:
@@ -13,50 +13,57 @@ aliases:
 - /security/faqs/single-sign-on/saml-faqs/
 ---
 
-### Docker SSO 是否对所有付费订阅可用？
+### Is Docker SSO available for all paid subscriptions?
 
-Docker 单点登录 (SSO) 仅适用于 Docker Business 订阅。[升级您的现有订阅](../../../subscription/change.md)以开始使用 Docker SSO。
+Docker single sign-on (SSO) is only available with the Docker Business subscription. [Upgrade your existing subscription](../../../subscription/change.md) to start using Docker SSO.
 
-### Docker SSO 如何工作？
+### How does Docker SSO work?
 
-Docker SSO 允许用户使用其身份提供商 (IdP) 进行身份验证以访问 Docker。Docker 支持 Entra ID（以前称为 Azure AD）和任何 SAML 2.0 身份提供商。当您启用 SSO 时，这会将用户重定向到您提供商的身份验证页面，使用其电子邮件和密码进行身份验证。
+Docker SSO lets users authenticate using their identity providers (IdPs) to access Docker. Docker supports Entra ID (formerly Azure AD) and any SAML 2.0 identity providers. When you enable SSO, this redirects users to your provider’s authentication page to authenticate using their email and password.
 
-### Docker 支持哪些 SSO 流程？
+### What SSO flows does Docker support?
 
-Docker 支持服务提供商发起 (SP-initiated) 的 SSO 流程。这意味着用户必须登录 Docker Hub 或 Docker Desktop 才能启动 SSO 身份验证过程。
+Docker supports Service Provider Initiated (SP-initiated) SSO flow. This means users must sign in to Docker Hub or Docker Desktop to initiate the SSO authentication process.
 
-### 在哪里可以找到如何配置 Docker SSO 的详细说明？
+### Where can I find detailed instructions on how to configure Docker SSO?
 
-您首先需要与您的身份提供商建立 SSO 连接，并且需要在为用户建立 SSO 连接之前验证公司电子邮件域名。有关如何配置 Docker SSO 的详细分步说明，请参阅[单点登录](../../../security/for-admins/single-sign-on/configure/_index.md)。
+You first need to establish an SSO connection with your identity provider, and the company email domain needs to be verified prior to establishing an SSO connection for your users. For detailed step-by-step instructions on how to configure Docker SSO, see [Single Sign-on](../../../security/for-admins/single-sign-on/configure/_index.md).
 
-### Docker SSO 是否支持多因素身份验证 (MFA)？
+### Does Docker SSO support multi-factor authentication (MFA)?
 
-当组织使用 SSO 时，MFA 在 IdP 级别确定，而不是在 Docker 平台上。
+When an organization uses SSO, MFA is determined on the IdP level, not on the Docker platform.
 
-### SSO 需要特定版本的 Docker Desktop 吗？
+### Do I need a specific version of Docker Desktop for SSO?
 
-是的，您组织中的所有用户必须升级到 Docker Desktop 4.4.2 或更高版本。如果强制执行 SSO 且使用公司域名电子邮件登录或作为现有 Docker 账户关联的主要电子邮件，使用旧版本 Docker Desktop 的用户将无法登录。拥有现有账户的用户无法使用其用户名和密码登录。
+Yes, all users in your organization must upgrade to Docker Desktop version 4.4.2 or later. Users on older versions of Docker Desktop won't be able to sign in after SSO is enforced if the company domain email is used to sign in or as the primary email associated with an existing Docker account. Your users with existing accounts can't sign in with their username and password.
 
-### 使用 SSO 时我可以保留我的 Docker ID 吗？
+### Can I retain my Docker ID when using SSO?
 
-对于个人 Docker ID，用户是账户所有者。Docker ID 与用户的仓库、镜像、资产的访问相关联。用户可以选择在 Docker 账户上使用公司域名电子邮件。当强制执行 SSO 时，账户将连接到组织账户。当为组织或公司强制执行 SSO 时，任何使用已验证公司域名电子邮件登录且没有现有账户的用户将自动配置账户并创建新的 Docker ID。
+For a personal Docker ID, a user is the account owner. A Docker ID is associated with access to the user's repositories, images, assets. A user can choose to have a company domain email on the Docker account. When enforcing SSO, the account is connected to the organization account. When enforcing SSO for an organization(s) or company, any user logging in without an existing account using verified company domain email will automatically have an account provisioned, and a new Docker ID created.
 
-### SAML 身份验证是否需要额外的属性？
+### Does SAML authentication require additional attributes?
 
-您必须提供电子邮件地址作为属性才能通过 SAML 进行身份验证。'Name' 属性是可选的。
+You must provide an email address as an attribute to authenticate through SAML. The ‘Name’ attribute is optional.
 
-### 应用程序是否识别 `SAMLResponse` 主题中的 NameID/唯一标识符？
+### Does the application recognize the NameID/Unique Identifier in the `SAMLResponse` subject?
 
-首选格式是您的电子邮件地址，这也应该是您的 Name ID。
+The preferred format is your email address, which should also be your Name ID.
 
-### 我可以将组映射与 SSO 和 Azure AD (OIDC) 身份验证方法一起使用吗？
+### Can I use group mapping with SSO and the Azure AD (OIDC) authentication method?
 
-不可以。SSO 的组映射不支持 Azure AD (OIDC) 身份验证方法，因为它需要授予 OIDC 应用程序 Directory.Read.All 权限，该权限提供对目录中所有用户、组和其他敏感数据的访问。由于潜在的安全风险，Docker 不支持此配置。相反，Docker 建议[配置 SCIM 以安全地启用组同步](/security/for-admins/provisioning/group-mapping/#use-group-mapping-with-scim)。
+No. Group mapping with SSO isn't supported with the Azure AD (OIDC)
+authentication method because it requires granting the OIDC app the
+Directory.Read.All permission, which provides access to all users, groups, and
+other sensitive data in the directory. Due to potential security risks, Docker
+doesn't support this configuration. Instead, Docker recommends [configuring SCIM
+to enable group sync
+securely](/security/for-admins/provisioning/group-mapping/#use-group-mapping-with-scim).
 
-### SSO 配置是否需要任何防火墙规则？
+### Are there any firewall rules required for SSO configuration?
 
-不需要。配置 SSO 不需要特定的防火墙规则，只要域名 `login.docker.com` 可访问即可。该域名通常默认可访问。但是，在极少数情况下，某些组织可能有防火墙限制阻止此域名。如果您在 SSO 设置过程中遇到问题，请确保在网络的防火墙设置中允许 `login.docker.com`。
+No. There are no specific firewall rules required for configuring SSO, as long as the domain `login.docker.com` is accessible. This domain is commonly accessible by default. However, in rare cases, some organizations may have firewall restrictions in place that block this domain. If you encounter issues during SSO setup, ensure that `login.docker.com` is allowed in your network's firewall settings.
 
-### Docker 是否使用我的 IdP 的默认会话超时？
+### Does Docker use my IdP's default session timeout?
 
-是的，Docker 通过自定义 SAML 属性支持您的 IdP 的默认会话超时。Docker 不依赖 SAML 规范中的标准 `SessionNotOnOrAfter` 元素，而是使用自定义的 `dockerSessionMinutes` 属性来控制会话持续时间。有关更多信息，请参阅 [SSO 属性](/manuals/security/for-admins/provisioning/_index.md#sso-attributes)。
+Yes, Docker supports your IdP's default session timeout using a custom SAML attribute.
+Instead of relying on the standard `SessionNotOnOrAfter` element from the SAML spec, Docker uses a custom `dockerSessionMinutes` attribute to control session duration. See [SSO attributes](/manuals/security/for-admins/provisioning/_index.md#sso-attributes) for more information.

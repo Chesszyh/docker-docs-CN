@@ -1,56 +1,75 @@
 ---
-title: 使用 VEX 创建例外
-description: 使用 VEX 文档为镜像中的漏洞创建例外。
+title: Create an exception using the VEX
+description: Create an exception for a vulnerability in an image using VEX documents.
 keywords: Docker, vulnerability, exception, create, VEX
 aliases:
   - /scout/guides/vex/
 ---
 
-VEX（Vulnerability Exploitability eXchange，漏洞可利用性交换）是一种标准格式，用于记录软件包或产品上下文中的漏洞。Docker Scout 支持使用 VEX 文档为镜像中的漏洞创建[例外](/manuals/scout/explore/exceptions.md)。
+Vulnerability Exploitability eXchange (VEX) is a standard format for
+documenting vulnerabilities in the context of a software package or product.
+Docker Scout supports VEX documents to create
+[exceptions](/manuals/scout/explore/exceptions.md) for vulnerabilities in images.
 
 > [!NOTE]
-> 您也可以使用 Docker Scout Dashboard 或 Docker Desktop 创建例外。GUI 提供了用户友好的界面来创建例外，并且可以轻松管理多个镜像的例外。它还允许您一次性为多个镜像或整个组织创建例外。有关更多信息，请参阅[使用 GUI 创建例外](/manuals/scout/how-tos/create-exceptions-gui.md)。
+> You can also create exceptions using the Docker Scout Dashboard or Docker
+> Desktop. The GUI provides a user-friendly interface for creating exceptions,
+> and it's easy to manage exceptions for multiple images. It also lets you
+> create exceptions for multiple images, or your entire organization, all at
+> once. For more information, see [Create an exception using the GUI](/manuals/scout/how-tos/create-exceptions-gui.md).
 
-## 前提条件
+## Prerequisites
 
-要使用 OpenVEX 文档创建例外，您需要：
+To create exceptions using OpenVEX documents, you need:
 
-- 最新版本的 Docker Desktop 或 Docker Scout CLI 插件
-- [`vexctl`](https://github.com/openvex/vexctl) 命令行工具
-- 必须启用 [containerd 镜像存储](/manuals/desktop/features/containerd.md)
-- 对存储镜像的镜像仓库具有写入权限
+- The latest version of Docker Desktop or the Docker Scout CLI plugin
+- The [`vexctl`](https://github.com/openvex/vexctl) command line tool.
+- The [containerd image store](/manuals/desktop/features/containerd.md) must be enabled
+- Write permissions to the registry repository where the image is stored
 
-## VEX 简介
+## Introduction to VEX
 
-VEX 标准由美国网络安全和基础设施安全局（CISA）的工作组定义。VEX 的核心是可利用性评估。这些评估描述了产品中给定 CVE 的状态。VEX 中可能的漏洞状态包括：
+The VEX standard is defined by a working group by the United States
+Cybersecurity and Infrastructure Security Agency (CISA). At the core of VEX are
+exploitability assessments. These assessments describe the status of a given
+CVE for a product. The possible vulnerability statuses in VEX are:
 
-- Not affected（不受影响）：此漏洞不需要修复。
-- Affected（受影响）：建议采取措施修复或解决此漏洞。
-- Fixed（已修复）：这些产品版本包含该漏洞的修复程序。
-- Under investigation（调查中）：尚不清楚这些产品版本是否受该漏洞影响。将在后续版本中提供更新。
+- Not affected: No remediation is required regarding this vulnerability.
+- Affected: Actions are recommended to remediate or address this vulnerability.
+- Fixed: These product versions contain a fix for the vulnerability.
+- Under investigation: It is not yet known whether these product versions are affected by the vulnerability. An update will be provided in a later release.
 
-VEX 有多种实现和格式。Docker Scout 支持 [OpenVEX](https://github.com/openvex/spec) 实现。无论具体实现如何，核心思想是相同的：提供一个框架来描述漏洞的影响。无论实现如何，VEX 的关键组件包括：
+There are multiple implementations and formats of VEX. Docker Scout supports
+the [OpenVex](https://github.com/openvex/spec) implementation. Regardless of
+the specific implementation, the core idea is the same: to provide a framework
+for describing the impact of vulnerabilities. Key components of VEX regardless
+of implementation includes:
 
-VEX 文档
-: 一种用于存储 VEX 声明的安全通告类型。文档的格式取决于具体实现。
+VEX document
+: A type of security advisory for storing VEX statements.
+  The format of the document depends on the specific implementation.
 
-VEX 声明
-: 描述产品中漏洞的状态，包括它是否可被利用，以及是否有方法修复该问题。
+VEX statement
+: Describes the status of a vulnerability in a product,
+  whether it's exploitable, and whether there are ways to remediate the issue.
 
-理由和影响
-: 根据漏洞状态，声明包括理由或影响声明，解释产品为何受或不受影响。
+Justification and impact
+: Depending on the vulnerability status, statements include a justification
+  or impact statement describing why a product is or isn't affected.
 
-行动声明
-: 描述如何修复或缓解漏洞。
+Action statements
+: Describe how to remediate or mitigate the vulnerability.
 
-## `vexctl` 示例
+## `vexctl` example
 
-以下示例命令创建一个 VEX 文档，声明：
+The following example command creates a VEX document stating that:
 
-- 此 VEX 文档描述的软件产品是 Docker 镜像 `example/app:v1`
-- 该镜像包含 npm 软件包 `express@4.17.1`
-- 该 npm 软件包受到已知漏洞 `CVE-2022-24999` 的影响
-- 该镜像不受此 CVE 影响，因为运行此镜像的容器中从不执行易受攻击的代码
+- The software product described by this VEX document is the Docker image
+  `example/app:v1`
+- The image contains the npm package `express@4.17.1`
+- The npm package is affected by a known vulnerability: `CVE-2022-24999`
+- The image is unaffected by the CVE, because the vulnerable code is never
+  executed in containers that run this image
 
 ```console
 $ vexctl create \
@@ -63,40 +82,61 @@ $ vexctl create \
   --file="CVE-2022-24999.vex.json"
 ```
 
-以下是此示例中选项的说明：
+Here's a description of the options in this example:
 
 `--author`
-: VEX 文档作者的电子邮件。
+: The email of the author of the VEX document.
 
 `--product`
-: Docker 镜像的包 URL（PURL）。PURL 是镜像的标准化格式标识符，定义在 PURL [规范](https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst#docker)中。
+: Package URL (PURL) of the Docker image. A PURL is an identifier
+  for the image in a standardized format, defined in the PURL
+  [specification](https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst#docker).
 
-  Docker 镜像 PURL 字符串以 `pkg:docker` 类型前缀开头，后跟镜像仓库和版本（镜像标签或 SHA256 摘要）。与镜像标签中版本用 `example/app:v1` 这样指定不同，在 PURL 中，镜像仓库和版本用 `@` 分隔。
+  Docker image PURL strings begin with a `pkg:docker` type prefix, followed by
+  the image repository and version (the image tag or SHA256 digest). Unlike
+  image tags, where the version is specified like `example/app:v1`, in PURL the
+  image repository and version are separated by an `@`.
 
 `--subcomponents`
-: 镜像中易受攻击软件包的 PURL。在此示例中，漏洞存在于 npm 软件包中，因此 `--subcomponents` PURL 是 npm 软件包名称和版本的标识符（`pkg:npm/express@4.17.1`）。
+: PURL of the vulnerable package in the image. In this example, the
+  vulnerability exists in an npm package, so the `--subcomponents` PURL is the
+  identifier for the npm package name and version (`pkg:npm/express@4.17.1`).
+  
+  If the same vulnerability exists in multiple packages, `vexctl` lets you
+  specify the `--subcomponents` flag multiple times for a single `create`
+  command.
 
-  如果同一漏洞存在于多个软件包中，`vexctl` 允许您在单个 `create` 命令中多次指定 `--subcomponents` 标志。
-
-  您也可以省略 `--subcomponents`，在这种情况下，VEX 声明适用于整个镜像。
+  You can also omit `--subcomponents`, in which case the VEX statement applies
+  to the entire image.
 
 `--vuln`
-: VEX 声明所处理的 CVE ID。
+: ID of the CVE that the VEX statement addresses.
 
 `--status`
-: 这是漏洞的状态标签。它描述了软件（`--product`）与 CVE（`--vuln`）之间的关系。OpenVEX 中状态标签的可能值为：
+: This is the status label of the vulnerability. This describes the
+  relationship between the software (`--product`) and the CVE (`--vuln`).
+  The possible values for the status label in OpenVEX are:
 
   - `not_affected`
   - `affected`
   - `fixed`
   - `under_investigation`
 
-  在此示例中，VEX 声明断言 Docker 镜像 `not_affected`（不受）该漏洞影响。`not_affected` 状态是唯一导致 CVE 抑制的状态，即 CVE 从分析结果中被过滤掉。其他状态对于文档记录目的有用，但它们不能用于创建例外。有关所有可能状态标签的更多信息，请参阅 OpenVEX 规范中的[状态标签](https://github.com/openvex/spec/blob/main/OPENVEX-SPEC.md#status-labels)。
+  In this example, the VEX statement asserts that the Docker image is
+  `not_affected` by the vulnerability. The `not_affected` status is the only
+  status that results in CVE suppression, where the CVE is filtered out of the
+  analysis results. The other statuses are useful for documentation purposes,
+  but they do not work for creating exceptions. For more information about all
+  the possible status labels, see [Status Labels](https://github.com/openvex/spec/blob/main/OPENVEX-SPEC.md#status-labels)
+  in the OpenVEX specification.
 
 `--justification`
-: 证明 `not_affected` 状态标签的理由，说明产品为何不受漏洞影响。在这种情况下，给出的理由是 `vulnerable_code_not_in_execute_path`，表示漏洞在产品使用时无法被执行。
+: Justifies the `not_affected` status label, informing why the product is not
+  affected by the vulnerability. In this case, the justification given is
+  `vulnerable_code_not_in_execute_path`, signalling that the vulnerability
+  can't be executed as used by the product.
 
-  在 OpenVEX 中，状态理由可以是以下五个可能值之一：
+  In OpenVEX, status justifications can have one of the five possible values:
 
   - `component_not_present`
   - `vulnerable_code_not_present`
@@ -104,14 +144,16 @@ $ vexctl create \
   - `vulnerable_code_cannot_be_controlled_by_adversary`
   - `inline_mitigations_already_exist`
 
-  有关这些值及其定义的更多信息，请参阅 OpenVEX 规范中的[状态理由](https://github.com/openvex/spec/blob/main/OPENVEX-SPEC.md#status-justifications)。
+  For more information about these values and their definitions, see
+  [Status Justifications](https://github.com/openvex/spec/blob/main/OPENVEX-SPEC.md#status-justifications)
+  in the OpenVEX specification.
 
 `--file`
-: VEX 文档输出的文件名
+: Filename of the VEX document output
 
-## JSON 文档示例
+## Example JSON document
 
-以下是此命令生成的 OpenVEX JSON：
+Here's the OpenVEX JSON generated by this command:
 
 ```json
 {
@@ -143,53 +185,83 @@ $ vexctl create \
 }
 ```
 
-理解 VEX 文档应该如何构建可能有点复杂。[OpenVEX 规范](https://github.com/openvex/spec)描述了文档和声明的格式及所有可能的属性。有关完整详细信息，请参阅规范以了解更多可用字段以及如何创建格式正确的 OpenVEX 文档。
+Understanding how VEX documents are supposed to be structured can be a bit of a
+mouthful. The [OpenVEX specification](https://github.com/openvex/spec)
+describes the format and all the possible properties of documents and
+statements. For the full details, refer to the specification to learn more
+about the available fields and how to create a well-formed OpenVEX document.
 
-要了解更多关于 `vexctl` CLI 工具的可用标志、语法以及如何安装它，请参阅 [`vexctl` GitHub 仓库](https://github.com/openvex/vexctl)。
+To learn more about the available flags and syntax of the `vexctl` CLI tool and
+how to install it, refer to the [`vexctl` GitHub repository](https://github.com/openvex/vexctl).
 
-## 验证 VEX 文档
+## Verifying VEX documents
 
-要测试您创建的 VEX 文档是否格式正确并产生预期结果，请使用带有 `--vex-location` 标志的 `docker scout cves` 命令，将 VEX 文档应用于使用 CLI 的本地镜像分析。
+To test whether the VEX documents you create are well-formed and produce the
+expected results, use the `docker scout cves` command with the `--vex-location`
+flag to apply a VEX document to a local image analysis using the CLI.
 
-以下命令调用本地镜像分析，该分析将包含指定位置中的所有 VEX 文档，使用 `--vex-location` 标志。在此示例中，CLI 被指示在当前工作目录中查找 VEX 文档。
+The following command invokes a local image analysis that incorporates all VEX
+documents in the specified location, using the `--vex-location` flag. In this
+example, the CLI is instructed to look for VEX documents in the current working
+directory.
 
 ```console
 $ docker scout cves <IMAGE> --vex-location .
 ```
 
-`docker scout cves` 命令的输出显示的结果会将 `--vex-location` 位置下找到的任何 VEX 声明纳入考虑。例如，被分配 `not_affected` 状态的 CVE 会从结果中过滤掉。如果输出似乎没有考虑 VEX 声明，这表明 VEX 文档可能在某些方面无效。
+The output of the `docker scout cves` command displays the results with any VEX
+statements found in under the `--vex-location` location factored into the
+results. For example, CVEs assigned a status of `not_affected` are filtered out
+from the results. If the output doesn't seem to take the VEX statements into
+account, that's an indication that the VEX documents might be invalid in some
+way.
 
-需要注意的事项包括：
+Things to look out for include:
 
-- Docker 镜像的 PURL 必须以 `pkg:docker/` 开头，后跟镜像名称。
-- 在 Docker 镜像 PURL 中，镜像名称和版本用 `@` 分隔。名为 `example/myapp:1.0` 的镜像具有以下 PURL：`pkg:docker/example/myapp@1.0`。
-- 记得指定 `author`（这是 OpenVEX 中的必填字段）
-- [OpenVEX 规范](https://github.com/openvex/spec)描述了如何以及何时在 VEX 文档中使用 `justification`、`impact_statement` 和其他字段。以不正确的方式指定这些会导致文档无效。确保您的 VEX 文档符合 OpenVEX 规范。
+- The PURL of a Docker image must begin with `pkg:docker/` followed by the image name.
+- In a Docker image PURL, the image name and version is separated by `@`.
+  An image named `example/myapp:1.0` has the following PURL: `pkg:docker/example/myapp@1.0`.
+- Remember to specify an `author` (it's a mandatory field in OpenVEX)
+- The [OpenVEX specification](https://github.com/openvex/spec) describes how
+  and when to use `justification`, `impact_statement`, and other fields in the
+  VEX documents. Specifying these in an incorrect way results in an invalid
+  document. Make sure your VEX documents comply with the OpenVEX specification.
 
-## 将 VEX 文档附加到镜像
+## Attach VEX documents to images
 
-创建 VEX 文档后，您可以通过以下方式将其附加到镜像：
+When you've created a VEX document,
+you can attach it to your image in the following ways:
 
-- 将文档作为[证明](#attestation)附加
-- 将文档嵌入到[镜像文件系统](#image-filesystem)中
+- Attach the document as an [attestation](#attestation)
+- Embed the document in the [image filesystem](#image-filesystem)
 
-一旦将 VEX 文档添加到镜像，您就无法将其删除。对于作为证明附加的文档，您可以创建新的 VEX 文档并再次附加到镜像。这样做将覆盖以前的 VEX 文档（但不会删除证明）。对于 VEX 文档已嵌入镜像文件系统的镜像，您需要重新构建镜像才能更改 VEX 文档。
+You can't remove a VEX document from an image once it's been added. For
+documents attached as attestations, you can create a new VEX document and
+attach it to the image again. Doing so will overwrite the previous VEX document
+(but it won't remove the attestation). For images where the VEX document has
+been embedded in the image's filesystem, you need to rebuild the image to
+change the VEX document.
 
-### 证明
+### Attestation
 
-要将 VEX 文档作为证明附加，您可以使用 `docker scout attestation add` CLI 命令。使用 VEX 时，建议使用证明作为将例外附加到镜像的选项。
+To attach VEX documents as an attestation, you can use the `docker scout
+attestation add` CLI command. Using attestations is the recommended option for
+attaching exceptions to images when using VEX.
 
-您可以将证明附加到已推送到镜像仓库的镜像。您不需要重新构建或推送镜像。此外，将例外作为证明附加到镜像意味着消费者可以直接从镜像仓库检查镜像的例外。
+You can attach attestations to images that have already been pushed to a
+registry. You don't need to build or push the image again. Additionally, having
+the exceptions attached to the image as attestations means consumers can
+inspect the exceptions for an image, directly from the registry.
 
-要将证明附加到镜像：
+To attach an attestation to an image:
 
-1. 构建镜像并将其推送到镜像仓库。
+1. Build the image and push it to a registry.
 
    ```console
    $ docker build --provenance=true --sbom=true --tag <IMAGE> --push .
    ```
 
-2. 将例外作为证明附加到镜像。
+2. Attach the exception to the image as an attestation.
 
    ```console
    $ docker scout attestation add \
@@ -198,23 +270,38 @@ $ docker scout cves <IMAGE> --vex-location .
      <IMAGE>
    ```
 
-   此命令的选项为：
+   The options for this command are:
 
-   - `--file`：VEX 文档的位置和文件名
-   - `--predicate-type`：OpenVEX 的 in-toto `predicateType`
+   - `--file`: the location and filename of the VEX document
+   - `--predicate-type`: the in-toto `predicateType` for OpenVEX
 
-### 镜像文件系统
+### Image filesystem
 
-如果您在构建镜像之前就知道例外情况，将 VEX 文档直接嵌入镜像文件系统是一个不错的选择。而且相对简单；只需在 Dockerfile 中将 VEX 文档 `COPY` 到镜像中。
+Embedding VEX documents directly on the image filesystem is a good option if
+you know the exceptions ahead of time, before you build the image. And it's
+relatively easy; just `COPY` the VEX document to the image in your Dockerfile.
 
-这种方法的缺点是您以后无法更改或更新例外。镜像层是不可变的，因此您放入镜像文件系统中的任何内容都将永远存在。将文档作为[证明](#attestation)附加可提供更好的灵活性。
+The downside with this approach is that you can't change or update the
+exception later. Image layers are immutable, so anything you put in the image's
+filesystem is there forever. Attaching the document as an
+[attestation](#attestation) provides better flexibility.
 
 > [!NOTE]
-> 对于具有证明的镜像，不会考虑嵌入在镜像文件系统中的 VEX 文档。如果您的镜像具有**任何**证明，Docker Scout 将仅在证明中查找例外，而不会在镜像文件系统中查找。
+> VEX documents embedded in the image filesystem are not considered for images
+> that have attestations. If your image has **any** attestations, Docker Scout
+> will only look for exceptions in the attestations, and not in the image
+> filesystem.
 >
-> 如果您想使用嵌入在镜像文件系统中的 VEX 文档，您必须从镜像中删除证明。请注意，镜像可能会自动添加来源证明。要确保不会向镜像添加任何证明，您可以在构建镜像时使用 `--provenance=false` 和 `--sbom=false` 标志显式禁用 SBOM 和来源证明。
+> If you want to use the VEX document embedded in the image filesystem, you
+> must remove the attestation from the image. Note that provenance attestations
+> may be added automatically for images. To ensure that no attestations are
+> added to the image, you can explicitly disable both SBOM and provenance
+> attestations using the `--provenance=false` and `--sbom=false` flags when
+> building the image.
 
-要将 VEX 文档嵌入镜像文件系统，请在镜像构建过程中将文件 `COPY` 到镜像中。以下示例展示了如何将构建上下文中 `.vex/` 下的所有 VEX 文档复制到镜像中的 `/var/lib/db`。
+To embed a VEX document on the image filesystem, `COPY` the file into the image
+as part of the image build. The following example shows how to copy all VEX
+documents under `.vex/` in the build context, to `/var/lib/db` in the image.
 
 ```dockerfile
 # syntax=docker/dockerfile:1
@@ -223,7 +310,9 @@ FROM alpine
 COPY .vex/* /var/lib/db/
 ```
 
-VEX 文档的文件名必须匹配 `*.vex.json` glob 模式。将文件存储在镜像文件系统的哪个位置并不重要。
+The filename of the VEX document must match the `*.vex.json` glob pattern.
+It doesn't matter where on the image's filesystem you store the file.
 
-请注意，复制的文件必须是最终镜像文件系统的一部分。对于多阶段构建，文档必须保留在最终阶段。
+Note that the copied files must be part of the filesystem of the final image,
+For multi-stage builds, the documents must persist in the final stage.
 

@@ -1,18 +1,23 @@
 ---
-title: 使用 GitHub Actions 进行缓存管理
+title: Cache management with GitHub Actions
 linkTitle: Cache management
 keywords: ci, github actions, gha, buildkit, buildx, cache
 ---
 
-本页包含在 GitHub Actions 中使用缓存存储后端的示例。
+This page contains examples on using the cache storage backends with GitHub
+Actions.
 
 > [!NOTE]
 >
-> 有关缓存存储后端的更多详细信息，请参阅[缓存存储后端](../../cache/backends/_index.md)。
+> See [Cache storage backends](../../cache/backends/_index.md) for more
+> details about cache storage backends.
 
-## 内联缓存
+## Inline cache
 
-在大多数情况下，您会想要使用[内联缓存导出器](../../cache/backends/inline.md)。但是，请注意 `inline` 缓存导出器仅支持 `min` 缓存模式。要使用 `max` 缓存模式，请使用带有 `cache-to` 选项的镜像仓库缓存导出器单独推送镜像和缓存，如[镜像仓库缓存示例](#registry-cache)所示。
+In most cases you want to use the [inline cache exporter](../../cache/backends/inline.md).
+However, note that the `inline` cache exporter only supports `min` cache mode.
+To use `max` cache mode, push the image and the cache separately using the
+registry cache exporter with the `cache-to` option, as shown in the [registry cache example](#registry-cache).
 
 ```yaml
 name: ci
@@ -32,7 +37,7 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-
+      
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
@@ -42,9 +47,10 @@ jobs:
           cache-to: type=inline
 ```
 
-## 镜像仓库缓存
+## Registry cache
 
-您可以使用[镜像仓库缓存导出器](../../cache/backends/registry.md)从镜像仓库上的缓存清单或（特殊）镜像配置导入/导出缓存。
+You can import/export cache from a cache manifest or (special) image
+configuration on the registry with the [registry cache exporter](../../cache/backends/registry.md).
 
 ```yaml
 name: ci
@@ -61,10 +67,10 @@ jobs:
         with:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
+      
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-
+      
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
@@ -74,13 +80,18 @@ jobs:
           cache-to: type=registry,ref=user/app:buildcache,mode=max
 ```
 
-## GitHub 缓存
+## GitHub cache
 
-### 缓存后端 API
+### Cache backend API
 
 {{< summary-bar feature_name="Cache backend API" >}}
 
-[GitHub Actions 缓存导出器](../../cache/backends/gha.md)后端使用 [GitHub Cache service API](https://github.com/tonistiigi/go-actions-cache) 来获取和上传缓存块。这就是为什么您应该只在 GitHub Action 工作流中使用此缓存后端，因为 `url`（`$ACTIONS_RESULTS_URL`）和 `token`（`$ACTIONS_RUNTIME_TOKEN`）属性只在工作流上下文中被填充。
+The [GitHub Actions cache exporter](../../cache/backends/gha.md)
+backend uses the [GitHub Cache service API](https://github.com/tonistiigi/go-actions-cache)
+to fetch and upload cache blobs. That's why you should only use this cache
+backend in a GitHub Action workflow, as the `url` (`$ACTIONS_RESULTS_URL`) and
+`token` (`$ACTIONS_RUNTIME_TOKEN`) attributes only get populated in a workflow
+context.
 
 ```yaml
 name: ci
@@ -97,10 +108,10 @@ jobs:
         with:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
+      
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-
+      
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
@@ -112,40 +123,48 @@ jobs:
 
 > [!IMPORTANT]
 >
-> 从 [2025 年 4 月 15 日起，仅支持 GitHub Cache service API v2](https://gh.io/gha-cache-sunset)。
->
-> 如果您在构建过程中遇到以下错误：
->
+> Starting [April 15th, 2025, only GitHub Cache service API v2 will be supported](https://gh.io/gha-cache-sunset).
+> 
+> If you encounter the following error during your build:
+> 
 > ```console
 > ERROR: failed to solve: This legacy service is shutting down, effective April 15, 2025. Migrate to the new service ASAP. For more information: https://gh.io/gha-cache-sunset
 > ```
->
-> 您可能正在使用仅支持旧版 GitHub Cache service API v1 的过时工具。以下是您需要升级到的最低版本，具体取决于您的使用场景：
+> 
+> You're probably using outdated tools that only support the legacy GitHub
+> Cache service API v1. Here are the minimum versions you need to upgrade to
+> depending on your use case:
 > * Docker Buildx >= v0.21.0
 > * BuildKit >= v0.20.0
 > * Docker Compose >= v2.33.1
-> * Docker Engine >= v28.0.0（如果您使用启用了 containerd 镜像存储的 Docker 驱动程序进行构建）
->
-> 如果您在 GitHub 托管运行器上使用 `docker/build-push-action` 或 `docker/bake-action` actions，Docker Buildx 和 BuildKit 已经是最新的，但在自托管运行器上，您可能需要自行更新它们。或者，您可以使用 `docker/setup-buildx-action` action 来安装最新版本的 Docker Buildx：
->
+> * Docker Engine >= v28.0.0 (if you're building using the Docker driver with containerd image store enabled)
+> 
+> If you're building using the `docker/build-push-action` or `docker/bake-action`
+> actions on GitHub hosted runners, Docker Buildx and BuildKit are already up
+> to date but on self-hosted runners, you may need to update them yourself.
+> Alternatively, you can use the `docker/setup-buildx-action` action to install
+> the latest version of Docker Buildx:
+> 
 > ```yaml
 > - name: Set up Docker Buildx
 >   uses: docker/setup-buildx-action@v3
 >   with:
 >    version: latest
 > ```
->
-> 如果您使用 Docker Compose 进行构建，可以使用 `docker/setup-compose-action` action：
->
+> 
+> If you're building using Docker Compose, you can use the
+> `docker/setup-compose-action` action:
+> 
 > ```yaml
 > - name: Set up Docker Compose
 >   uses: docker/setup-compose-action@v1
 >   with:
 >    version: latest
 > ```
->
-> 如果您使用启用了 containerd 镜像存储的 Docker Engine 进行构建，可以使用 `docker/setup-docker-action` action：
->
+> 
+> If you're building using the Docker Engine with the containerd image store
+> enabled, you can use the `docker/setup-docker-action` action:
+> 
 > ```yaml
 > -
 >   name: Set up Docker
@@ -160,15 +179,19 @@ jobs:
 >       }
 > ```
 
-### 缓存挂载
+### Cache mounts
 
-默认情况下，BuildKit 不会在 GitHub Actions 缓存中保留缓存挂载。如果您希望将缓存挂载放入 GitHub Actions 缓存并在构建之间重用它，可以使用 [`reproducible-containers/buildkit-cache-dance`](https://github.com/reproducible-containers/buildkit-cache-dance) 提供的变通方法。
+BuildKit doesn't preserve cache mounts in the GitHub Actions cache by default.
+If you wish to put your cache mounts into GitHub Actions cache and reuse it
+between builds, you can use a workaround provided by
+[`reproducible-containers/buildkit-cache-dance`](https://github.com/reproducible-containers/buildkit-cache-dance).
 
-这个 GitHub Action 创建临时容器来提取和注入缓存挂载数据，配合您的 Docker 构建步骤使用。
+This GitHub Action creates temporary containers to extract and inject the
+cache mount data with your Docker build steps.
 
-以下示例展示了如何在 Go 项目中使用此变通方法。
+The following example shows how to use this workaround with a Go project.
 
-`build/package/Dockerfile` 中的示例 Dockerfile
+Example Dockerfile in `build/package/Dockerfile`
 
 ```Dockerfile
 FROM golang:1.21.1-alpine as base-build
@@ -184,7 +207,7 @@ RUN --mount=type=cache,target=/root/.cache/go-build go build -o /bin/app /build/
 ...
 ```
 
-示例 CI action
+Example CI action
 
 ```yaml
 name: ci
@@ -201,7 +224,7 @@ jobs:
         with:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
+      
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
@@ -242,15 +265,20 @@ jobs:
           platforms: linux/amd64,linux/arm64
 ```
 
-有关此变通方法的更多信息，请参阅 [GitHub 仓库](https://github.com/reproducible-containers/buildkit-cache-dance)。
+For more information about this workaround, refer to the
+[GitHub repository](https://github.com/reproducible-containers/buildkit-cache-dance).
 
-### 本地缓存
+### Local cache
 
 > [!WARNING]
 >
-> 目前，旧的缓存条目不会被删除，因此缓存大小会[持续增长](https://github.com/docker/build-push-action/issues/252)。以下示例使用 `Move cache` 步骤作为变通方法（更多信息请参阅 [`moby/buildkit#1896`](https://github.com/moby/buildkit/issues/1896)）。
+> At the moment, old cache entries aren't deleted, so the cache size [keeps growing](https://github.com/docker/build-push-action/issues/252).
+> The following example uses the `Move cache` step as a workaround (see [`moby/buildkit#1896`](https://github.com/moby/buildkit/issues/1896)
+> for more info).
 
-您还可以使用 [GitHub cache](https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows)，配合 [actions/cache](https://github.com/actions/cache) 和[本地缓存导出器](../../cache/backends/local.md)来利用此 action：
+You can also leverage [GitHub cache](https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows)
+using the [actions/cache](https://github.com/actions/cache) and [local cache exporter](../../cache/backends/local.md)
+with this action:
 
 ```yaml
 name: ci

@@ -1,31 +1,31 @@
 ---
-title: 3D Secure 身份验证
-description: 了解 Docker 账单的 3D Secure 支持。
+title: 3D Secure authentication
+description: Learn about 3D Secure support for Docker billing.
 keywords: billing, renewal, payments, subscriptions
 weight: 40
 ---
 
 > [!NOTE]
 >
-> [Docker 订阅](../subscription/setup.md)付款支持 3D Secure 身份验证。
+> [Docker subscription](../subscription/setup.md) payments support 3D secure authentication.
 
-3D Secure（3DS）身份验证为信用卡交易增加了一个额外的安全层。如果您在需要 3DS 的地区为 Docker 账单付款，或者使用需要 3DS 的付款方式，您需要验证身份才能完成任何交易。用于验证身份的方法因您的银行机构而异。
+3D Secure (3DS) authentication incorporates an additional security layer for credit card transactions. If you’re making payments for your Docker billing in a region that requires 3DS, or using a payment method that requires 3DS, you’ll need to verify your identity to complete any transactions. The method used to verify your identity varies depending on your banking institution.
 
-如果您的付款方式需要，以下交易将使用 3DS 身份验证。
+The following transactions will use 3DS authentication if your payment method requires it.
 
-- 开始[新的付费订阅](../subscription/setup.md)
-- 将您的[账单周期](/billing/cycle/)从月付更改为年付
-- [升级您的订阅](../subscription/change.md)
-- 向现有订阅[添加席位](../subscription/manage-seats.md)
+- Starting a [new paid subscription](../subscription/setup.md)
+- Changing your [billing cycle](/billing/cycle/) from monthly to annual
+- [Upgrading your subscription](../subscription/change.md)
+- [Adding seats](../subscription/manage-seats.md) to an existing subscription
 
-## 故障排除
+## Troubleshooting
 
-如果您在完成付款时因 3DS 遇到错误，可以通过以下方式进行故障排除。
+If you encounter errors completing payments due to 3DS, you can troubleshoot in the following ways.
 
-1. 重试您的交易和身份验证。
-2. 联系您的银行以确定是否是他们那边的错误。
-3. 尝试使用不需要 3DS 的其他付款方式。
+1. Retry your transaction and verification of your identity.
+2. Contact your bank to determine any errors on their end.
+3. Try a different payment method that doesn’t require 3DS.
 
 > [!TIP]
 >
-> 确保您在浏览器中允许第三方脚本，并在尝试完成付款时禁用您可能使用的任何广告拦截器。
+> Make sure you allow third-party scripts in your browser and that any ad blocker you may use is disabled when attempting to complete payments.

@@ -1,16 +1,16 @@
 ---
-description: 恢复您的 Docker 账户
+description: Recover your Docker account
 keywords: Docker, docker, registry, security, Docker Hub, authentication, two-factor
   authentication
-title: 恢复您的 Docker 账户
+title: Recover your Docker account
 aliases:
 - /docker-hub/2fa/recover-hub-account/
 weight: 20
 ---
 
-如果您同时丢失了双因素认证应用的访问权限和恢复码：
+If you have lost access to both your two-factor authentication application and your recovery code:
 
-1. 使用您的用户名和密码登录您的 [Docker 账户](https://app.docker.com/login)。
-2. 选择 **I've lost my authentication device** 和 **I've lost my recovery code**。
-3. 填写[联系支持表单](https://hub.docker.com/support/contact/?category=2fa-lockout)。
-    您必须在 **Contact Support** 表单中输入与您的 Docker ID 关联的主要电子邮件地址，以获取恢复说明。
+1. Sign in to your [Docker account](https://app.docker.com/login) with your username and password.
+2. Select **I've lost my authentication device** and **I've lost my recovery code**.
+3. Complete the [Contact Support form](https://hub.docker.com/support/contact/?category=2fa-lockout).
+    You must enter the primary email address associated with your Docker ID in the **Contact Support** form for recovery instructions.

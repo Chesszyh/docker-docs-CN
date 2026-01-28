@@ -1,19 +1,23 @@
 ---
-title: 使用 GitHub Actions 进行可复现构建
+title: Reproducible builds with GitHub Actions
 linkTitle: Reproducible builds
-description: 如何在 GitHub Actions 中使用 SOURCE_DATE_EPOCH 环境变量创建可复现构建
+description: How to create reproducible builds in GitHub Actions using the SOURCE_EPOCH environment variable
 keywords: build, buildx, github actions, ci, gha, reproducible builds, SOURCE_DATE_EPOCH
 ---
 
-`SOURCE_DATE_EPOCH` 是一个[标准化的环境变量][source_date_epoch]，用于指示构建工具生成可复现的输出。为构建设置此环境变量会使镜像索引、配置和文件元数据中的时间戳反映指定的 Unix 时间。
+`SOURCE_DATE_EPOCH` is a [standardized environment variable][source_date_epoch]
+for instructing build tools to produce a reproducible output.
+Setting the environment variable for a build makes the timestamps in the
+image index, config, and file metadata reflect the specified Unix time.
 
 [source_date_epoch]: https://reproducible-builds.org/docs/source-date-epoch/
 
-要在 GitHub Actions 中设置环境变量，请在构建步骤中使用内置的 `env` 属性。
+To set the environment variable in GitHub Actions,
+use the built-in `env` property on the build step.
 
-## Unix 纪元时间戳
+## Unix epoch timestamps
 
-以下示例将 `SOURCE_DATE_EPOCH` 变量设置为 0，即 Unix 纪元时间。
+The following example sets the `SOURCE_DATE_EPOCH` variable to 0, Unix epoch.
 
 {{< tabs group="action" >}}
 {{< tab name="`docker/build-push-action`" >}}
@@ -64,9 +68,9 @@ jobs:
 {{< /tab >}}
 {{< /tabs >}}
 
-## Git 提交时间戳
+## Git commit timestamps
 
-以下示例将 `SOURCE_DATE_EPOCH` 设置为 Git 提交时间戳。
+The following example sets `SOURCE_DATE_EPOCH` to the Git commit timestamp.
 
 {{< tabs group="action" >}}
 {{< tab name="`docker/build-push-action`" >}}
@@ -123,6 +127,7 @@ jobs:
 {{< /tab >}}
 {{< /tabs >}}
 
-## 更多信息
+## Additional information
 
-有关 BuildKit 中 `SOURCE_DATE_EPOCH` 支持的更多信息，请参阅 [BuildKit 文档](https://github.com/moby/buildkit/blob/master/docs/build-repro.md#source_date_epoch)。
+For more information about the `SOURCE_DATE_EPOCH` support in BuildKit,
+see [BuildKit documentation](https://github.com/moby/buildkit/blob/master/docs/build-repro.md#source_date_epoch).

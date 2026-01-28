@@ -1,6 +1,6 @@
 ---
 build:
   render: never
-title: 教程
+title: Tutorials
 weight: 30
 ---

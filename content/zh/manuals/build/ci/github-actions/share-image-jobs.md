@@ -1,11 +1,17 @@
 ---
-title: 使用 GitHub Actions 在作业之间共享构建的镜像
+title: Share built image between jobs with GitHub Actions
 linkTitle: Share image between jobs
-description: 在不推送到镜像仓库的情况下在运行器之间共享镜像
+description: Share an image between runners without pushing to a registry
 keywords: ci, github actions, gha, buildkit, buildx
 ---
 
-由于每个作业在其自己的运行器中隔离运行，除非您使用[自托管运行器](https://docs.github.com/en/actions/hosting-your-own-runners/about-self-hosted-runners)或 [Docker Build Cloud](/build-cloud)，否则无法在作业之间使用构建的镜像。但是，您可以使用 [actions/upload-artifact](https://github.com/actions/upload-artifact) 和 [actions/download-artifact](https://github.com/actions/download-artifact) actions 在工作流中[在作业之间传递数据](https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts#passing-data-between-jobs-in-a-workflow)：
+As each job is isolated in its own runner, you can't use your built image
+between jobs, except if you're using [self-hosted runners](https://docs.github.com/en/actions/hosting-your-own-runners/about-self-hosted-runners)
+or [Docker Build Cloud](/build-cloud).
+However, you can [pass data between jobs](https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts#passing-data-between-jobs-in-a-workflow)
+in a workflow using the [actions/upload-artifact](https://github.com/actions/upload-artifact)
+and [actions/download-artifact](https://github.com/actions/download-artifact)
+actions:
 
 ```yaml
 name: ci

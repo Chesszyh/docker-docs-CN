@@ -1,6 +1,6 @@
 ---
 build:
   render: never
-title: 面向开发者
+title: For developers
 weight: 20
 ---

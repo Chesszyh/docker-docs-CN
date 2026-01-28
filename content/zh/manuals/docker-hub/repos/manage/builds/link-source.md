@@ -1,9 +1,9 @@
 ---
-description: 链接到 GitHub 和 BitBucket
+description: Link to GitHub and BitBucket
 keywords: Docker, docker, registry, accounts, plans, Dockerfile, Docker Hub, trusted,
   builds, trusted builds, automated builds, GitHub
-title: 配置来自 GitHub 和 BitBucket 的自动构建
-linkTitle: 链接账户
+title: Configure automated builds from GitHub and BitBucket
+linkTitle: Link accounts
 weight: 20
 aliases:
 - /docker-hub/github/
@@ -13,124 +13,148 @@ aliases:
 
 > [!NOTE]
 >
-> 自动构建需要 Docker Pro、Team 或 Business 订阅。
+> Automated builds require a Docker Pro, Team, or Business subscription.
 
 
-要自动构建和测试您的镜像，您需要将托管的源代码服务链接到 Docker Hub，以便它可以访问您的源代码仓库。您可以为用户账户或组织配置此链接。
+To automate building and testing of your images, you link to your hosted source
+code service to Docker Hub so that it can access your source code
+repositories. You can configure this link for user accounts or
+organizations.
 
-如果您要链接源代码提供商以为团队创建自动构建，请按照说明先为团队[创建服务账户](index.md#service-users-for-team-autobuilds)，然后再按照下面的说明链接账户。
+If you are linking a source code provider to create autobuilds for a team, follow the instructions to [create a service account](index.md#service-users-for-team-autobuilds) for the team before linking the account as described below.
 
-## 链接到 GitHub 用户账户
+## Link to a GitHub user account
 
-1. 登录 Docker Hub。
+1. Sign in to Docker Hub.
 
-2. 选择 **My Hub** > **Settings** > **Linked accounts**。
+2. Select **My Hub** > **Settings** > **Linked accounts**.
 
-3. 为您想要链接的源代码提供商选择 **Link provider**。
+3. Select **Link provider** for the source provider you want to link.
 
-    如果您想取消链接当前的 GitHub 账户并重新链接到新的 GitHub 账户，请确保在通过 Docker Hub 链接之前完全退出 [GitHub](https://github.com/)。
+    If you want to unlink your current GitHub account and relink to a new GitHub account, make sure to completely sign out of [GitHub](https://github.com/) before linking via Docker Hub.
 
 
-4. 查看 **Docker Hub Builder** OAuth 应用程序的设置。
+4. Review the settings for the **Docker Hub Builder** OAuth application.
 
-    ![授予访问 GitHub 账户的权限](images/authorize-builder.png)
+    ![Granting access to GitHub account](images/authorize-builder.png)
 
     > [!NOTE]
     >
-    > 如果您是任何 GitHub 组织的所有者，您可能会在此界面上看到授予 Docker Hub 访问这些组织的选项。您还可以单独编辑组织的第三方访问设置以授予或撤销 Docker Hub 的访问权限。请参阅[授予访问 GitHub 组织的权限](link-source.md#grant-access-to-a-github-organization)了解更多信息。
+    > If you are the owner of any GitHub organizations, you might see
+    options to grant Docker Hub access to them from this screen. You can also
+    individually edit an organization's third-party access settings to grant or
+    revoke Docker Hub's access. See
+    [Grant access to a GitHub organization](link-source.md#grant-access-to-a-github-organization)
+    to learn more.
 
-5. 选择 **Authorize docker** 保存链接。
+5. Select **Authorize docker** to save the link.
 
-### 授予访问 GitHub 组织的权限
+### Grant access to a GitHub organization
 
-如果您是 GitHub 组织的所有者，您可以授予或撤销 Docker Hub 对该组织仓库的访问权限。根据 GitHub 组织的设置，您可能需要是组织所有者。
+If you are the owner of a GitHub organization, you can grant or revoke Docker
+Hub's access to the organization's repositories. Depending on the GitHub
+organization's settings, you may need to be an organization owner.
 
-如果该组织之前没有被特别授予或撤销过访问权限，您通常可以在链接用户账户的同时授予访问权限。在这种情况下，组织名称旁边会出现一个 **Grant access** 按钮，如下所示。如果此按钮没有出现，您必须手动授予应用程序的访问权限。
+If the organization has not had specific access granted or revoked before, you
+can often grant access at the same time as you link your user account. In this
+case, a **Grant access** button appears next to the organization name in the
+link accounts screen, as shown below. If this button does not appear, you must
+manually grant the application's access.
 
-要手动授予 Docker Hub 访问 GitHub 组织的权限：
+To manually grant Docker Hub access to a GitHub organization:
 
-1. 使用上述说明链接您的用户账户。
+1. Link your user account using the instructions above.
 
-2. 从您的 GitHub 账户设置中，找到左下角的 **Organization settings** 部分。
+2. From your GitHub Account settings, locate the **Organization settings**
+section at the lower left.
 
-3. 选择您想要授予 Docker Hub 访问权限的组织。
+3. Select the organization you want to give Docker Hub access to.
 
-4. 选择 **Third-party access**。
+4. Select **Third-party access**.
 
-    页面会显示第三方应用程序及其访问状态的列表。
+    The page displays a list of third party applications and their access
+    status.
 
-5. 选择 **Docker Hub Builder** 旁边的铅笔图标。
+5. Select the pencil icon next to **Docker Hub Builder**.
 
-6. 选择组织旁边的 **Grant access**。
+6. Select **Grant access** next to the organization.
 
-### 撤销对 GitHub 组织的访问权限
+### Revoke access to a GitHub organization
 
-要撤销 Docker Hub 对组织 GitHub 仓库的访问权限：
+To revoke Docker Hub's access to an organization's GitHub repositories:
 
-1. 从您的 GitHub 账户设置中，找到左下角的 **Organization settings** 部分。
+1. From your GitHub Account settings, locate the **Organization settings** section at the lower left.
 
-2. 选择您想要撤销 Docker Hub 访问权限的组织。
+2. Select the organization you want to revoke Docker Hub's access to.
 
-3. 从 Organization Profile 菜单中，选择 **Third-party access**。
-    页面会显示第三方应用程序及其访问状态的列表。
+3. From the Organization Profile menu, select **Third-party access**.
+    The page displays a list of third party applications and their access status.
 
-4. 选择 Docker Hub Builder 旁边的铅笔图标。
+4. Select the pencil icon next to Docker Hub Builder.
 
-5. 在下一页中，选择 **Deny access**。
+5. On the next page, select **Deny access**.
 
-### 取消链接 GitHub 用户账户
+### Unlink a GitHub user account
 
-要撤销 Docker Hub 对您 GitHub 账户的访问权限，您必须同时从 Docker Hub 和您的 GitHub 账户中取消链接。
+To revoke Docker Hub's access to your GitHub account, you must unlink it both
+from Docker Hub, and from your GitHub account.
 
-1. 选择 **My Hub** > **Settings** > **Linked accounts**。
+1. Select **My Hub** > **Settings** > **Linked accounts**.
 
-2. 选择您想要移除的源代码提供商旁边的 **Unlink provider**。
+2. Select **Unlink provider** next to the source provider you want to remove.
 
-3. 转到您的 GitHub 账户的 **Settings** 页面。
+3. Go to your GitHub account's **Settings** page.
 
-4. 在左侧导航栏中选择 **Applications**。
+4. Select **Applications** in the left navigation bar.
 
-5. 选择 Docker Hub Builder 应用程序右侧的 `...` 菜单，然后选择 **Revoke**。
+5. Select the `...` menu to the right of the Docker Hub Builder application and select **Revoke**.
 
 > [!NOTE]
 >
-> 每个配置为自动构建源的仓库都包含一个 webhook，用于通知 Docker Hub 仓库中的更改。当您撤销对源代码提供商的访问权限时，此 webhook 不会自动移除。
+> Each repository that is configured as an automated build source
+contains a webhook that notifies Docker Hub of changes in the repository.
+This webhook is not automatically removed when you revoke access to a source
+code provider.
 
-## 链接到 Bitbucket 用户账户
+## Link to a Bitbucket user account
 
-1. 使用您的 Docker ID 登录 Docker Hub。
+1. Sign in to Docker Hub using your Docker ID.
 
-2. 选择 **My Hub** > **Settings** > **Linked accounts**。
+2. Select **My Hub** > **Settings** > **Linked accounts**.
 
-3. 为您想要链接的源代码提供商选择 **Link provider**。
+3. Select **Link provider** for the source provider you want to link.
 
-4. 如有必要，请登录 Bitbucket。
+4. If necessary, sign in to Bitbucket.
 
-5. 在出现的页面上，选择 **Grant access**。
+5. On the page that appears, select **Grant access**.
 
-### 取消链接 Bitbucket 用户账户
+### Unlink a Bitbucket user account
 
-要永久撤销 Docker Hub 对您 Bitbucket 账户的访问权限，您必须同时从 Docker Hub 取消链接，并在您的 Bitbucket 账户中撤销授权。
+To permanently revoke Docker Hub's access to your Bitbucket account, you must
+unlink it both from Docker Hub, and revoke authorization in your Bitbucket account.
 
-1. 登录 Docker Hub。
+1. Sign in to Docker Hub.
 
-2. 选择 **My Hub** > **Settings** > **Linked accounts**。
+2. Select **My Hub** > **Settings** > **Linked accounts**.
 
-3. 选择您想要移除的源代码提供商旁边的 **Unlink provider**。
+3. Select **Unlink provider** next to the source provider you want to remove.
 
 > [!IMPORTANT]
-> 在 Docker Hub 上取消链接账户后，您还必须在 Bitbucket 端撤销授权。
+> After unlinking the account on Docker Hub, you must also revoke the authorization on the Bitbucket end.
 
-要在您的 Bitbucket 账户中撤销授权：
+To revoke authorization in your Bitbucket account:
 
-1. 转到您的 Bitbucket 账户并导航到 [**Bitbucket settings**](https://bitbucket.org/account/settings/app-authorizations/)。
+1. Go to your Bitbucket account and navigate to [**Bitbucket settings**](https://bitbucket.org/account/settings/app-authorizations/).
 
-2. 在出现的页面上，选择 **OAuth**。
+2. On the page that appears, select **OAuth**.
 
-3. 选择 Docker Hub 行旁边的 **Revoke**。
+3. Select **Revoke** next to the Docker Hub line.
 
-![Bitbucket 授权撤销页面](images/bitbucket-revoke.png)
+![Bitbucket Authorization revocation page](images/bitbucket-revoke.png)
 
 > [!NOTE]
 >
-> 每个配置为自动构建源的仓库都包含一个 webhook，用于通知 Docker Hub 仓库中的更改。当您撤销对源代码提供商的访问权限时，此 webhook 不会自动移除。
+> Each repository that is configured as an automated build source
+contains a webhook that notifies Docker Hub of changes in the repository. This
+webhook is not automatically removed when you revoke access to a source code
+provider.

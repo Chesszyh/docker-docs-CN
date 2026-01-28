@@ -1,13 +1,17 @@
 ---
-description: 如何将 Docker Scout 与 Microsoft Azure DevOps Pipelines 集成
+description: How to integrate Docker Scout with Microsoft Azure DevOps Pipelines
 keywords: supply chain, security, ci, continuous integration, azure, devops
-title: 将 Docker Scout 与 Microsoft Azure DevOps Pipelines 集成
+title: Integrate Docker Scout with Microsoft Azure DevOps Pipelines
 linkTitle: Azure DevOps Pipelines
 ---
 
-以下示例在连接到 Azure DevOps 的仓库中运行，该仓库包含 Docker 镜像的定义和内容。当向 main 分支提交时触发，流水线会构建镜像并使用 Docker Scout 创建 CVE 报告。
+The following examples runs in an Azure DevOps-connected repository containing
+a Docker image's definition and contents. Triggered by a commit to the main
+branch, the pipeline builds the image and uses Docker Scout to create a CVE
+report.
 
-首先，设置工作流的其余部分，并设置所有流水线步骤可用的变量。将以下内容添加到 _azure-pipelines.yml_ 文件：
+First, set up the rest of the workflow and set up the variables available to all
+pipeline steps. Add the following to an _azure-pipelines.yml_ file:
 
 ```yaml
 trigger:
@@ -21,9 +25,10 @@ variables:
   image: "vonwig/nodejs-service"
 ```
 
-这设置了工作流使用特定的容器镜像，并使用构建 ID 标记每个新的镜像构建。
+This sets up the workflow to use a particular container image for the
+application and tag each new image build with the build ID.
 
-将以下内容添加到 YAML 文件：
+Add the following to the YAML file:
 
 ```yaml
 stages:
@@ -55,4 +60,7 @@ stages:
                 docker scout cves $(image):$(tag) --exit-code --only-severity critical,high
 ```
 
-这创建了前面提到的流程。它使用签出的 Dockerfile 构建并标记镜像，下载 Docker Scout CLI，然后对新标签运行 `cves` 命令以生成 CVE 报告。它仅显示严重或高危漏洞。
+This creates the flow mentioned previously. It builds and tags the image using
+the checked-out Dockerfile, downloads the Docker Scout CLI, and then runs the
+`cves` command against the new tag to generate a CVE report. It only shows
+critical or high-severity vulnerabilities.

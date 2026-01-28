@@ -1,8 +1,8 @@
 ---
-title: 企业部署
+title: Enterprise deployment
 weight: 50
-description: 如果您是 IT 管理员，了解如何大规模部署 Docker Desktop
-keywords: msi, docker desktop, windows, installation, mac, pkg, enterprise
+description: If you're an IT admin, learn how to deploy Docker Desktop at scale
+keywords: msi, docker desktop, windows, installation, mac, pkg, enterprise 
 build:
   render: never
 ---

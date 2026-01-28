@@ -1,14 +1,14 @@
 ---
-title: 导航
-description: Docker 扩展 API
+title: Navigation
+description: Docker extension API
 keywords: Docker, extensions, sdk, API
 aliases:
  - /desktop/extensions-sdk/dev/api/dashboard-routes-navigation/
 ---
 
-`ddClient.desktopUI.navigate` 可以导航到 Docker Desktop 的特定屏幕，例如容器选项卡、镜像选项卡或特定容器的日志。
+`ddClient.desktopUI.navigate` enables navigation to specific screens of Docker Desktop such as the containers tab, the images tab, or a specific container's logs.
 
-例如，导航到指定容器的日志：
+For example, navigate to a given container logs:
 
 ```typescript
 const id = '8c7881e6a107';
@@ -22,23 +22,23 @@ try {
 }
 ```
 
-#### 参数
+#### Parameters
 
-| 名称 | 类型     | 描述                                                                                                                                                                                            |
+| Name | Type     | Description                                                                                                                                                                                            |
 | :--- | :------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `id` | `string` | 完整的容器 ID，例如 `46b57e400d801762e9e115734bf902a2450d89669d85881058a46136520aca28`。您可以使用 `--no-trunc` 标志作为 `docker ps` 命令的一部分来显示完整的容器 ID。 |
+| `id` | `string` | The full container id, e.g. `46b57e400d801762e9e115734bf902a2450d89669d85881058a46136520aca28`. You can use the `--no-trunc` flag as part of the `docker ps` command to display the full container id. |
 
-#### 返回值
+#### Returns
 
 `Promise`<`void`\>
 
-如果容器不存在，则返回失败的 Promise。
+A promise that fails if the container doesn't exist.
 
-有关所有导航方法的更多详细信息，请参阅 [Navigation API 参考](/reference/api/extensions-sdk/NavigationIntents.md)。
+For more details about all navigation methods, see the [Navigation API reference](/reference/api/extensions-sdk/NavigationIntents.md).
 
-> 已弃用的导航方法
+> Deprecated navigation methods
 >
-> 这些方法已被弃用，将在未来版本中移除。请使用上面指定的方法。
+> These methods are deprecated and will be removed in a future version. Use the methods specified above.
 
 ```typescript
 window.ddClient.navigateToContainers();

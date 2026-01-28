@@ -1,11 +1,11 @@
 ---
 title: 下一步
-keywords: concepts, build, images, container, docker desktop
+keywords: concepts, build, images, container, docker desktop, 概念, 构建, 镜像, 容器
 description: 探索分步指南，帮助您了解 Docker 核心概念、构建镜像和运行容器。
 aliases:
  - /guides/getting-started/whats-next/
 summary: |
-  现在您已经设置了 Docker Desktop，使用容器进行了开发，并构建并推送了您的第一个镜像，您准备好采取下一步行动，深入了解什么是容器以及它是如何工作的。
+  现在您已经设置了 Docker Desktop，使用容器进行了开发，并构建和推送了您的第一个镜像，您准备好采取下一步行动，深入了解容器是什么以及它是如何工作的。
 notoc: true
 weight: 4
 
@@ -14,10 +14,10 @@ the-basics:
   description: 学习如何运行您的第一个容器。
   link: /get-started/docker-concepts/the-basics/what-is-a-container/
 - title: 什么是镜像？
-  description: 了解镜像层的基础知识。
+  description: 学习镜像层的基础知识。
   link: /get-started/docker-concepts/the-basics/what-is-an-image/
 - title: 什么是注册表？
-  description: 了解容器注册表，探索其互操作性，并与注册表交互。
+  description: 了解容器注册表，探索它们的互操作性，并与注册表交互。
   link: /get-started/docker-concepts/the-basics/what-is-a-registry/
 - title: 什么是 Docker Compose？
   description: 更好地理解 Docker Compose。
@@ -34,15 +34,15 @@ building-images:
   description: 学习如何构建、标记并将镜像发布到 Docker Hub 或任何其他注册表。
   link: /get-started/docker-concepts/building-images/build-tag-and-publish-an-image/
 - title: 使用构建缓存
-  description: 了解构建缓存、哪些更改会导致缓存失效，以及如何有效地使用构建缓存。
+  description: 了解构建缓存，什么更改会使缓存无效，以及如何有效地使用构建缓存。
   link: /get-started/docker-concepts/building-images/using-the-build-cache/
 - title: 多阶段构建
-  description: 更好地了解多阶段构建及其好处。
+  description: 更好地理解多阶段构建及其好处。
   link: /get-started/docker-concepts/building-images/multi-stage-builds/
 
 running-containers:
 - title: 发布端口
-  description: 了解 Docker 中发布和暴露端口的重要性。
+  description: 了解在 Docker 中发布和公开端口的重要性。
   link: /get-started/docker-concepts/running-containers/publishing-ports/
 - title: 覆盖容器默认值
   description: 学习如何使用 `docker run` 命令覆盖容器默认值。
@@ -68,12 +68,12 @@ running-containers:
 
 ## 构建镜像
 
-使用 Dockerfiles、构建缓存和多阶段构建制作优化的容器镜像。
+使用 Dockerfile、构建缓存和多阶段构建打造优化的容器镜像。
 
 {{< grid items="building-images" >}}
 
 ## 运行容器
 
-掌握暴露端口、覆盖默认值、持久化数据、共享文件和管理多容器应用程序的基本技术。
+掌握公开端口、覆盖默认值、持久化数据、共享文件和管理多容器应用程序的基本技术。
 
 {{< grid items="running-containers" >}}

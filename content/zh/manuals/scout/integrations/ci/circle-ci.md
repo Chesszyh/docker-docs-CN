@@ -1,15 +1,17 @@
 ---
-description: 如何将 Docker Scout 与 Circle CI 集成
+description: How to integrate Docker Scout with Circle CI
 keywords: supply chain, security, ci, continuous integration, circle ci
-title: 将 Docker Scout 与 Circle CI 集成
+title: Integrate Docker Scout with Circle CI
 linkTitle: Circle CI
 ---
 
-以下示例在 CircleCI 中触发时运行。触发时，它会签出 "docker/scout-demo-service:latest" 镜像和标签，然后使用 Docker Scout 创建 CVE 报告。
+The following examples runs when triggered in CircleCI. When triggered, it
+checks out the "docker/scout-demo-service:latest" image and tag and then uses
+Docker Scout to create a CVE report.
 
-将以下内容添加到 _.circleci/config.yml_ 文件。
+Add the following to a _.circleci/config.yml_ file.
 
-首先，设置工作流的其余部分。将以下内容添加到 YAML 文件：
+First, set up the rest of the workflow. Add the following to the YAML file:
 
 ```yaml
 version: 2.1
@@ -22,15 +24,16 @@ jobs:
       IMAGE_TAG: docker/scout-demo-service:latest
 ```
 
-这定义了工作流使用的容器镜像和镜像的环境变量。
+This defines the container image the workflow uses and an environment variable
+for the image.
 
-将以下内容添加到 YAML 文件以定义工作流的步骤：
+Add the following to the YAML file to define the steps for the workflow:
 
 ```yaml
 steps:
   # Checkout the repository files
   - checkout
-
+  
   # Set up a separate Docker environment to run `docker` commands in
   - setup_remote_docker:
       version: 20.10.24
@@ -47,19 +50,22 @@ steps:
   - run:
       name: Build Docker image
       command: docker build -t $IMAGE_TAG .
-
-  # Run Docker Scout
+  
+  # Run Docker Scout          
   - run:
       name: Scan image for CVEs
       command: |
         docker-scout cves $IMAGE_TAG --exit-code --only-severity critical,high
 ```
 
-这会签出仓库文件，然后设置一个单独的 Docker 环境来运行命令。
+This checks out the repository files and then sets up a separate Docker
+environment to run commands in.
 
-它安装 Docker Scout，登录到 Docker Hub，构建 Docker 镜像，然后运行 Docker Scout 生成 CVE 报告。它仅显示严重或高危漏洞。
+It installs Docker Scout, logs into Docker Hub, builds the Docker image, and
+then runs Docker Scout to generate a CVE report. It only shows critical or
+high-severity vulnerabilities.
 
-最后，添加工作流的名称和工作流的作业：
+Finally, add a name for the workflow and the workflow's jobs:
 
 ```yaml
 workflows:

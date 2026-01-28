@@ -1,7 +1,7 @@
 ---
-title: 组织入门
+title: Onboard your organization
 weight: 20
-description: 开始为您的 Docker Team 或 Business 组织入门。
+description: Get started onboarding your Docker Team or Business organization.
 keywords: business, team, organizations, get started, onboarding
 toc_min: 1
 toc_max: 3
@@ -13,106 +13,120 @@ aliases:
 
 {{< summary-bar feature_name="Admin orgs" >}}
 
-了解如何使用 Docker Hub 或 Docker Admin Console 为您的组织入门。
+Learn how to onboard your organization using Docker Hub or the Docker Admin Console.
 
-组织入门让管理员能够了解用户活动并执行安全设置。此外，组织成员可获得增加的拉取限制和其他组织范围的优势。有关更多详细信息，请参阅 [Docker 订阅和功能](../../subscription/details.md)。
+Onboarding your organization lets administrators gain visibility into user activity and enforce security settings. In addition, members of your organization receive increased pull limits and other organization wide benefits. For more details, see [Docker subscriptions and features](../../subscription/details.md).
 
-在本指南中，您将学习如何：
+In this guide, you'll learn how to do the following:
 
-- 识别您的用户以帮助您高效分配订阅席位
-- 邀请成员和所有者加入您的组织
-- 使用单点登录（SSO）和跨域身份管理系统（SCIM）保护组织的身份验证和授权
-- 强制 Docker Desktop 登录以确保安全最佳实践
+- Identify your users to help you efficiently allocate your subscription seats
+- Invite members and owners to your organization
+- Secure authentication and authorization for your organization using Single Sign-On (SSO) and System for Cross-domain Identity Management (SCIM)
+- Enforce sign-on for Docker Desktop to ensure security best practices
 
-## 前提条件
+## Prerequisites
 
-在开始组织入门之前，请确保您：
+Before you start onboarding your organization, ensure that you:
 
-- 拥有 Docker Team 或 Business 订阅。有关详细信息，请参阅 [Docker 定价](https://www.docker.com/pricing/)。
+- Have a Docker Team or Business subscription. See [Docker Pricing](https://www.docker.com/pricing/) for details.
 
   > [!NOTE]
   >
-  > 购买自助服务订阅时，屏幕上的说明会指导您创建组织。如果您通过 Docker 销售购买了订阅但尚未创建组织，请参阅[创建组织](/admin/organization/orgs)。
+  > When purchasing a self-serve subscription, the on-screen instructions guide you through creating an organization. If you have purchased a subscription through Docker Sales and you have not yet created an organization, see [Create an organization](/admin/organization/orgs).
 
-- 在[管理概述](../_index.md)和[常见问题](/faq/admin/general-faqs/)中熟悉 Docker 概念和术语。
+- Familiarize yourself with Docker concepts and terminology in the [administration overview](../_index.md) and [FAQs](/faq/admin/general-faqs/).
 
-## 使用引导式设置入门
+## Onboard with guided setup
 
-Admin Console 提供引导式设置来帮助您轻松完成组织入门。引导式设置步骤包含基本的入门任务。如果您想在引导式设置之外入门，请参阅[推荐的入门步骤](/manuals/admin/organization/onboard.md#推荐的入门步骤)。
+The Admin Console has a guided setup to help you easily
+onboard your organization. The guided setup steps consist of basic onboarding
+tasks. If you want to onboard outside of the guided setup,
+see [Recommended onboarding steps](/manuals/admin/organization/onboard.md#recommended-onboarding-steps).
 
-要使用引导式设置入门，请导航到 [Admin Console](https://app.docker.com) 并在左侧导航中选择 **Guided setup**。
+To onboard using the guided setup,
+navigate to the [Admin Console](https://app.docker.com) and
+select **Guided setup** in the left-hand navigation.
 
-引导式设置将引导您完成以下入门步骤：
+The guided setup walks you through the following onboarding steps:
 
-- **Invite your team**：邀请所有者和成员。
-- **Manage user access**：添加和验证域名，使用 SSO 管理用户，并强制 Docker Desktop 登录。
-- **Docker Desktop security**：配置镜像访问管理、注册表访问管理和设置管理。
+- **Invite your team**: Invite owners and members.
+- **Manage user access**: Add and verify a domain, manage users with SSO, and
+enforce Docker Desktop sign-in.
+- **Docker Desktop security**: Configure image access management, registry access
+management, and settings management.
 
-## 推荐的入门步骤
+## Recommended onboarding steps
 
-### 第一步：识别您的 Docker 用户
+### Step one: Identify your Docker users
 
-识别您的用户有助于您高效分配席位并确保他们获得 Docker 订阅的优势。
+Identifying your users helps you allocate seats efficiently and ensures they
+receive your Docker subscription benefits.
 
-1. 识别您组织中的 Docker 用户。
-   - 如果您的组织使用设备管理软件（如 MDM 或 Jamf），您可以使用设备管理软件帮助识别 Docker 用户。有关详细信息，请参阅您的设备管理软件文档。您可以通过检查每个用户机器上以下位置是否安装了 Docker Desktop 来识别 Docker 用户：
-      - Mac：`/Applications/Docker.app`
-      - Windows：`C:\Program Files\Docker\Docker`
-      - Linux：`/opt/docker-desktop`
-   - 如果您的组织不使用设备管理软件或您的用户尚未安装 Docker Desktop，您可以调查您的用户。
-2. 要求用户将其 Docker 帐户电子邮件更新为您组织域中的电子邮件，或使用该电子邮件创建新帐户。
-   - 要更新帐户的电子邮件地址，请指导您的用户登录 [Docker Hub](https://hub.docker.com)，并将电子邮件地址更新为您组织域中的电子邮件地址。
-   - 要创建新帐户，请指导您的用户使用其组织域中的电子邮件地址[注册](https://hub.docker.com/signup)。
-3. 询问您的 Docker 销售代表或[联系销售](https://www.docker.com/pricing/contact-sales/)以获取使用您组织域中电子邮件地址的 Docker 帐户列表。
+1. Identify the Docker users in your organization.
+   - If your organization uses device management software, like MDM or Jamf, you can use the device management software to help identify Docker users. See your device management software's documentation for details. You can identify Docker users by checking if Docker Desktop is installed at the following location on each user's machine:
+      - Mac: `/Applications/Docker.app`
+      - Windows: `C:\Program Files\Docker\Docker`
+      - Linux: `/opt/docker-desktop`
+   - If your organization doesn't use device management software or your users haven't installed Docker Desktop yet, you can survey your users.
+2. Ask users to update their Docker account email to one in your organization’s domain, or create a new account with that email.
+   - To update an account's email address, instruct your users to sign in to [Docker Hub](https://hub.docker.com), and update the email address to their email address in your organization's domain.
+   - To create a new account, instruct your users to go [sign up](https://hub.docker.com/signup) using their email address in your organization's domain.
+3. Ask your Docker sales representative or [contact sales](https://www.docker.com/pricing/contact-sales/) to get a list of Docker accounts that use an email address in your organization's domain.
 
-### 第二步：邀请所有者
+### Step two: Invite owners
 
-创建组织时，您是唯一的所有者。添加其他所有者是可选的。所有者可以帮助您入门和管理您的组织。
+When you create an organization, you are the only owner. It is optional to add additional owners. Owners can help you onboard and manage your organization.
 
-要添加所有者，请邀请用户并为其分配所有者角色。有关更多详细信息，请参阅[邀请成员](/admin/organization/members/)。
+To add an owner, invite a user and assign them the owner role. For more details, see [Invite members](/admin/organization/members/).
 
-### 第三步：邀请成员
+### Step three: Invite members
 
-当您将用户添加到组织时，您可以了解他们的活动并可以执行安全设置。此外，组织成员可获得增加的拉取限制和其他组织范围的优势。
+When you add users to your organization, you gain visibility into their activity and you can enforce security settings. In addition, members of your organization receive increased pull limits and other organization wide benefits.
 
-要添加成员，请邀请用户并为其分配成员角色。有关更多详细信息，请参阅[邀请成员](/admin/organization/members/)。
+To add a member, invite a user and assign them the member role. For more details, see [Invite members](/admin/organization/members/).
 
-### 第四步：使用 SSO 和 SCIM 管理用户访问
+### Step four: Manage user access with SSO and SCIM
 
-配置 SSO 和 SCIM 是可选的，仅适用于 Docker Business 订阅者。要将 Docker Team 订阅升级到 Docker Business 订阅，请参阅[升级您的订阅](/subscription/upgrade/)。
+Configuring SSO and SCIM is optional and only available to Docker Business subscribers. To upgrade a Docker Team subscription to a Docker Business subscription, see [Upgrade your subscription](/subscription/upgrade/).
 
-使用您的身份提供商（IdP）管理成员并通过 SSO 和 SCIM 自动配置到 Docker。有关更多详细信息，请参阅以下内容：
+Use your identity provider (IdP) to manage members and provision them to Docker
+automatically via SSO and SCIM. See the following for more details:
 
-   - [配置 SSO](/manuals/security/for-admins/single-sign-on/configure.md) 以在用户通过您的身份提供商登录 Docker 时进行身份验证并添加成员。
-   - 可选。[强制执行 SSO](/manuals/security/for-admins/single-sign-on/connect.md) 以确保用户登录 Docker 时必须使用 SSO。
+   - [Configure SSO](/manuals/security/for-admins/single-sign-on/configure.md) to authenticate and add members when they sign in to Docker through your identity provider.
+   - Optional. [Enforce SSO](/manuals/security/for-admins/single-sign-on/connect.md) to ensure that when users sign in to Docker, they must use SSO.
 
      > [!NOTE]
      >
-     > 强制执行单点登录（SSO）和强制 Docker Desktop 登录是不同的功能。有关更多详细信息，请参阅[强制登录与强制执行单点登录（SSO）](/security/for-admins/enforce-sign-in/#enforcing-sign-in-versus-enforcing-single-sign-on-sso)。
+     > Enforcing single sign-on (SSO) and enforcing Docker Desktop sign in
+     are different features. For more details, see
+     > [Enforcing sign-in versus enforcing single sign-on (SSO)](/security/for-admins/enforce-sign-in/#enforcing-sign-in-versus-enforcing-single-sign-on-sso).
 
-   - [配置 SCIM](/security/for-admins/provisioning/scim/) 以通过您的身份提供商自动配置、添加和取消配置 Docker 成员。
+   - [Configure SCIM](/security/for-admins/provisioning/scim/) to automatically provision, add, and de-provision members to Docker through your identity provider.
 
-### 第五步：强制 Docker Desktop 登录
+### Step five: Enforce sign-in for Docker Desktop
 
-默认情况下，组织成员可以在不登录的情况下使用 Docker Desktop。当用户不以组织成员身份登录时，他们不会获得[组织订阅的优势](../../subscription/details.md)，并且可以绕过 [Docker 的安全功能](/security/for-admins/hardened-desktop/)。
+By default, members of your organization can use Docker Desktop without signing
+in. When users don’t sign in as a member of your organization, they don’t
+receive the [benefits of your organization’s subscription](../../subscription/details.md) and they can circumvent [Docker’s security features](/security/for-admins/hardened-desktop/).
 
-根据您公司的设置和偏好，有多种方式可以强制登录：
-- [注册表密钥方法（仅限 Windows）](/security/for-admins/enforce-sign-in/methods/#registry-key-method-windows-only)
-- [`.plist` 方法（仅限 Mac）](/security/for-admins/enforce-sign-in/methods/#plist-method-mac-only)
-- [`registry.json` 方法（全部）](/security/for-admins/enforce-sign-in/methods/#registryjson-method-all)
+There are multiple ways you can enforce sign-in, depending on your company's setup and preferences:
+- [Registry key method (Windows only)](/security/for-admins/enforce-sign-in/methods/#registry-key-method-windows-only)
+- [`.plist` method (Mac only)](/security/for-admins/enforce-sign-in/methods/#plist-method-mac-only)
+- [`registry.json` method (All)](/security/for-admins/enforce-sign-in/methods/#registryjson-method-all)
 
-### 第六步：管理 Docker Desktop 安全
+### Step six: Manage Docker Desktop security
 
-Docker 提供以下安全功能来管理您组织的安全态势：
+Docker offers the following security features to manage your organization's
+security posture:
 
-- [镜像访问管理](/manuals/security/for-admins/hardened-desktop/image-access-management.md)：控制开发人员可以从 Docker Hub 拉取哪些类型的镜像。
-- [注册表访问管理](/manuals/security/for-admins/hardened-desktop/registry-access-management.md)：定义开发人员可以访问哪些注册表。
-- [设置管理](/manuals/security/for-admins/hardened-desktop/settings-management.md)：为用户设置和控制 Docker Desktop 设置。
+- [Image Access Management](/manuals/security/for-admins/hardened-desktop/image-access-management.md): Control which types of images your developers can pull from Docker Hub.
+- [Registry Access Management](/manuals/security/for-admins/hardened-desktop/registry-access-management.md): Define which registries your developers can access.
+- [Settings management](/manuals/security/for-admins/hardened-desktop/settings-management.md): Set and control Docker Desktop settings for your users.
 
-## 后续步骤
+## What's next
 
-- [管理 Docker 产品](./manage-products.md)以配置访问权限和查看使用情况。
-- 配置[强化的 Docker Desktop](/desktop/hardened-desktop/)以改善组织容器化开发的安全态势。
-- [管理您的域名](/manuals/security/for-admins/domain-management.md)以确保您域中的所有 Docker 用户都是组织的一部分。
+- [Manage Docker products](./manage-products.md) to configure access and view usage.
+- Configure [Hardened Docker Desktop](/desktop/hardened-desktop/) to improve your organization’s security posture for containerized development.
+- [Manage your domains](/manuals/security/for-admins/domain-management.md) to ensure that all Docker users in your domain are part of your organization.
 
-您的 Docker 订阅提供了更多附加功能。要了解更多信息，请参阅 [Docker 订阅和功能](/subscription/details/)。
+Your Docker subscription provides many more additional features. To learn more, see [Docker subscriptions and features](/subscription/details/).

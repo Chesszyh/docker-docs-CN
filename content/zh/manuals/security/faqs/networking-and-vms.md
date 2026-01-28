@@ -1,38 +1,38 @@
 ---
-description: 查找与网络和虚拟化相关的常见问题解答
+description: Find the answers to FAQs related to networking and virtualization
 keywords: Docker, Docker Hub, Docker Desktop security FAQs, security, platform, networks, vms
-title: 网络和虚拟机常见问题
-linkTitle: 网络和虚拟机
+title: Network and VM FAQs
+linkTitle: Network and VM
 weight: 30
 tags: [FAQ]
 aliases:
 - /faq/security/networking-and-vms/
 ---
 
-### 当容器运行时，如何限制其允许的互联网访问类型，以防止其泄露数据或下载恶意代码？
+### How can I limit the type of internet access allowed by the container when it runs, to prevent it from being able to exfiltrate data or download malicious code?
 
-没有内置机制来实现此目的，但可以通过主机上的进程级防火墙来解决。挂钩到 `com.docker.vpnkit` 用户空间进程，并应用规则限制其可以连接的位置（DNS URL 白名单；数据包/负载过滤器）以及允许使用的端口/协议。
+There is no built-in mechanism for that but it can be addressed by process-level firewall on the host. Hook into the `com.docker.vpnkit` user-space process and apply rules where it can connect to (DNS URL white list; packet/payload filter) and which ports/protocols it is allowed to use.
 
-### 我可以阻止用户在 0.0.0.0 上绑定端口吗？
+### Can I prevent users binding ports on 0.0.0.0?
 
-没有直接的方法通过 Docker Desktop 强制执行此操作，但它会继承主机上强制执行的任何防火墙规则。
+There is no direct way to enforce that through Docker Desktop but it would inherit any firewall rules enforced on the host.
 
-### 有哪些选项可以将容器化网络设置锁定到系统？如果不支持，操纵这些设置会有什么后果？
+### What options exist to lock containerized network settings to a system? If not supported, are there any consequences to manipulating the settings?
 
-Docker 网络设置完全在 VM 内部是本地的，对系统没有影响。
+The Docker network settings are entirely local within the VM and have no effect on the system.
 
-### 我可以通过本地防火墙或 VPN 客户端对容器网络流量应用规则吗？
+### Can I apply rules on container network traffic via a local firewall or VPN client?
 
-对于网络连接，Docker Desktop 使用用户空间进程（`com.docker.vpnkit`），它继承启动它的用户的防火墙规则、VPN、HTTP 代理属性等约束。
+For network connectivity, Docker Desktop uses a user-space process (`com.docker.vpnkit`), which inherits constraints like firewall rules, VPN, HTTP proxy properties etc, from the user that launched it.
 
-### 使用 Hyper-V 后端运行 Docker Desktop for Windows 是否允许用户创建任意虚拟机？
+### Does running Docker Desktop for Windows with Hyper-V backend allow users to create arbitrary VMs?
 
-不允许。`DockerDesktopVM` 名称在服务代码中是硬编码的，因此您不能使用 Docker Desktop 创建或操作任何其他虚拟机。
+No. The `DockerDesktopVM` name is hard coded in the service code, so you cannot use Docker Desktop to create or manipulate any other VM.
 
-### 在 Mac 上使用 Docker Desktop 时，我可以阻止用户创建其他虚拟机吗？
+### Can I prevent our users creating other VMs when using Docker Desktop on Mac?
 
-在 Mac 上启动虚拟机是非特权操作，因此 Docker Desktop 不会强制执行此限制。
+On Mac it is an unprivileged operation to start a VM, so that is not enforced by Docker Desktop.
 
-### 当使用 Hyper-V 和/或 WSL2 时，Docker Desktop 如何实现网络级隔离？
+### How does Docker Desktop achieve network level isolation when Hyper-V and/or WSL2 is used?
 
-VM 进程对于 WSL 2（在 `docker-desktop` 发行版内部运行）和 Hyper-V（在 `DockerDesktopVM` 内部运行）是相同的。主机/VM 通信使用 `AF_VSOCK` 虚拟机监控程序套接字（共享内存）。它不使用 Hyper-V 网络交换机或网络接口。所有主机网络都是使用 `com.docker.vpnkit.exe` 和 `com.docker.backend.exe` 进程的普通 TCP/IP 套接字执行的。有关更多信息，请参阅 [Docker Desktop 网络工作原理揭秘](https://www.docker.com/blog/how-docker-desktop-networking-works-under-the-hood/)。
+The VM processes are the same for both WSL 2 (running inside the `docker-desktop` distribution) and Hyper-V (running inside the `DockerDesktopVM`). Host/VM communication uses `AF_VSOCK` hypervisor sockets (shared memory). It does not use Hyper-V network switches or network interfaces. All host networking is performed using normal TCP/IP sockets from the `com.docker.vpnkit.exe` and `com.docker.backend.exe` processes. For more information see [How Docker Desktop networking works under the hood](https://www.docker.com/blog/how-docker-desktop-networking-works-under-the-hood/).

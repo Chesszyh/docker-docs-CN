@@ -1,29 +1,44 @@
 ---
-title: 灵活的、基于仓库的定价
-linktitle: 灵活性
-description: 了解 Docker Hardened Images 如何通过仅对您镜像和使用的内容收费来实现成本控制。
+title: Flexible, repository-based pricing
+linktitle: Flexibility
+description: Understand how Docker Hardened Images give you cost control by charging only for what you mirror and use.
 keywords: docker hardened images pricing, per repo billing, flexible pricing model, mirror image pricing, container pricing model
 weight: 30
 ---
 
-Docker Hardened Images 的设计不仅考虑了安全性和合规性，还考虑了运营和财务效率。通过按仓库收费的模式，您可以精确控制使用的内容和支付的费用。
+Docker Hardened Images are designed not only for security and compliance, but
+also for operational and financial efficiency. With a model that charges per
+repository, you get precise control over what you use and what you pay for.
 
-## 按需镜像仓库
+## Repository mirroring on your terms
 
-使用 Docker Hardened Images，您可以镜像整个仓库，每个仓库都能让您访问所有受支持的标签、变体和版本。您可以根据需求选择要镜像的仓库。
+With Docker Hardened Images, you mirror entire repositories, each giving you
+access to all supported tags, variants, and versions. You can choose which
+repositories to mirror based on your needs.
 
-这种灵活性使您的组织能够随着项目的发展进行调整，无论是启动新环境、整合运行时，还是长期管理成本，都无需担心单镜像或单次拉取的费用。
+This flexibility allows your organization to adapt as projects evolve, whether
+you're spinning up new environments, consolidating runtimes, or managing costs
+over time, without worrying about per-image or per-pull fees.
 
-## 访问所有变体和版本
+## Access all variants and versions
 
-当您镜像一个 Docker Hardened Image 仓库时，您将获得该仓库中所有受支持标签的访问权限，包括多个版本、基础发行版（如 Alpine 和 Debian）以及开发/运行时变体。您可以自由选择最适合每个用例的标签，而不会产生额外费用。
+When you mirror a Docker Hardened Image repository, you gain access to all
+supported tags in that repository, including multiple versions, base
+distributions (such as Alpine and Debian), and dev/runtime variants. You can
+freely choose the best tag for each use case without incurring additional cost.
 
-这种灵活性使团队能够采用安全镜像，而不受计费复杂性或镜像数量的限制。
+This flexibility allows teams to adopt secure images without being limited by
+billing complexity or image count.
 
-## 在团队中共享访问权限
+## Share access across your team
 
-仓库一旦被镜像，组织中的任何人都可以从中拉取、验证、扫描和运行镜像。不会根据使用量产生额外费用。您镜像所需的内容，您的团队可以自由使用。
+Once a repository is mirrored, anyone in your organization can pull, verify,
+scan, and run images from it. There are no extra charges based on usage volume.
+You mirror what you need, and your teams use it freely.
 
-## 平台团队的成本效益
+## Cost efficiency for platform teams
 
-这种模式简化了平台和安全团队的预算编制。您无需跟踪单个镜像或标签级别的使用情况，而是通过控制的仓库来管理支出，将安全执行、团队访问和成本整合在一处。
+This model simplifies budgeting for platform and security teams. Rather than
+tracking usage at the individual image or tag level, you manage your spend
+through the repositories you control, aligning security enforcement, team access,
+and cost in one place.

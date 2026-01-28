@@ -1,34 +1,51 @@
 ---
-title: 构建证明
+title: Build attestations
 keywords: build, attestations, sbom, provenance, metadata
 description: |
-  介绍 Docker Build 的 SBOM 和 provenance 证明，它们是什么以及为什么存在
+  Introduction to SBOM and provenance attestations with Docker Build,
+  what they are, and why they exist
 aliases:
   - /build/attestations/
 ---
 
 {{< youtube-embed qOzcycbTs4o >}}
 
-构建证明（Attestation）描述镜像是如何构建的，以及它包含什么内容。证明由 BuildKit 在构建时创建，并作为元数据附加到最终镜像。
+Build attestations describe how an image was built, and what it contains. The
+attestations are created at build-time by BuildKit, and become attached to the
+final image as metadata.
 
-证明的目的是使检查镜像并了解其来源、创建者及创建方式以及包含内容成为可能。这使您能够就镜像如何影响应用程序的供应链安全做出明智的决策。它还支持使用策略引擎根据您定义的策略规则验证镜像。
+The purpose of attestations is to make it possible to inspect an image and see
+where it comes from, who created it and how, and what it contains. This enables
+you to make informed decisions about how an image impacts the supply chain security
+of your application. It also enables the use of policy engines for validating
+images based on policy rules you've defined.
 
-有两种类型的构建证明可用：
+Two types of build annotations are available:
 
-- 软件物料清单（SBOM，Software Bill of Materials）：镜像包含的软件工件列表，或用于构建镜像的软件工件列表。
-- Provenance（来源证明）：镜像是如何构建的。
+- Software Bill of Material (SBOM): list of software artifacts that an image
+  contains, or that were used to build the image.
+- Provenance: how an image was built.
 
-## 证明的目的
+## Purpose of attestations
 
-开源和第三方软件包的使用比以往任何时候都更加普遍。开发人员共享和重用代码是因为它有助于提高生产力，使团队能够更快地创建更好的产品。
+The use of open source and third-party packages is more widespread than ever
+before. Developers share and reuse code because it helps increase productivity,
+allowing teams to create better products, faster.
 
-导入和使用未经审查的外部创建的代码会带来严重的安全风险。即使您确实审查了所使用的软件，新的零日漏洞也会频繁被发现，这需要开发团队采取行动进行修复。
+Importing and using code created elsewhere without vetting it introduces a
+severe security risk. Even if you do review the software that you consume, new
+zero-day vulnerabilities are frequently discovered, requiring development teams
+take action to remediate them.
 
-构建证明使查看镜像的内容及其来源变得更加容易。使用证明来分析和决定是否使用某个镜像，或查看您已经使用的镜像是否暴露于漏洞。
+Build attestations make it easier to see the contents of an image, and where it
+comes from. Use attestations to analyze and decide whether to use an image, or
+to see if images you are already using are exposed to vulnerabilities.
 
-## 创建证明
+## Creating attestations
 
-当您使用 `docker buildx build` 构建镜像时，可以使用 `--provenance` 和 `--sbom` 选项向生成的镜像添加证明记录。您可以选择添加 SBOM 或 provenance 证明类型之一，或两者都添加。
+When you build an image with `docker buildx build`, you can add attestation
+records to the resulting image using the `--provenance` and `--sbom` options.
+You can opt in to add either the SBOM or provenance attestation type, or both.
 
 ```console
 $ docker buildx build --sbom=true --provenance=true .
@@ -36,34 +53,52 @@ $ docker buildx build --sbom=true --provenance=true .
 
 > [!NOTE]
 >
-> 默认镜像存储不支持证明。如果您使用默认镜像存储并使用默认的 `docker` 驱动程序构建镜像，或使用带有 `--load` 标志的其他驱动程序，证明将会丢失。
+> The default image store doesn't support attestations. If you're using the
+> default image store and you build an image using the default `docker` driver,
+> or using a different driver with the `--load` flag, the attestations are
+> lost.
 >
-> 要确保证明被保留，您可以：
+> To make sure the attestations are preserved, you can:
 >
-> - 使用带有 `--push` 标志的 `docker-container` 驱动程序直接将镜像推送到注册表。
-> - 启用 [containerd 镜像存储](/manuals/desktop/features/containerd.md)。
+> - Use a `docker-container` driver with the `--push` flag to push the image to
+>   a registry directly.
+> - Enable the [containerd image store](/manuals/desktop/features/containerd.md).
 
 > [!NOTE]
 >
-> Provenance 证明默认启用，使用 `mode=min` 选项。您可以使用 `--provenance=false` 标志或设置 [`BUILDX_NO_DEFAULT_ATTESTATIONS`](/manuals/build/building/variables.md#buildx_no_default_attestations) 环境变量来禁用 provenance 证明。
+> Provenance attestations are enabled by default, with the `mode=min` option.
+> You can disable provenance attestations using the `--provenance=false` flag,
+> or by setting the [`BUILDX_NO_DEFAULT_ATTESTATIONS`](/manuals/build/building/variables.md#buildx_no_default_attestations) environment variable.
 >
-> 使用 `--provenance=true` 标志会默认附加 `mode=min` 的 provenance 证明。有关更多详细信息，请参阅 [Provenance 证明](./slsa-provenance.md)。
+> Using the `--provenance=true` flag attaches provenance attestations with `mode=min`
+> by default. See [Provenance attestation](./slsa-provenance.md) for more details.
 
-BuildKit 在构建镜像时生成证明。证明记录以 in-toto JSON 格式包装，并作为清单附加到最终镜像的镜像索引中。
+BuildKit generates the attestations when building the image. The attestation
+records are wrapped in the in-toto JSON format and attached to the image
+index in a manifest for the final image.
 
-## 存储
+## Storage
 
-BuildKit 以 [in-toto 格式](https://github.com/in-toto/attestation)生成证明，该格式由 Linux 基金会支持的 [in-toto 框架](https://in-toto.io/)定义。
+BuildKit produces attestations in the [in-toto format](https://github.com/in-toto/attestation),
+as defined by the [in-toto framework](https://in-toto.io/),
+a standard supported by the Linux Foundation.
 
-证明作为清单附加到镜像索引中。证明的数据记录存储为 JSON blob。
+Attestations attach to images as a manifest in the image index. The data records
+of the attestations are stored as JSON blobs.
 
-由于证明作为清单附加到镜像，这意味着您可以检查注册表中任何镜像的证明，而无需拉取整个镜像。
+Because attestations attach to images as a manifest, it means that you can
+inspect the attestations for any image in a registry without having to pull the
+whole image.
 
-所有 BuildKit 导出器都支持证明。`local` 和 `tar` 无法将证明保存到镜像清单，因为它输出的是文件目录或 tarball，而不是镜像。相反，这些导出器将证明写入导出根目录中的一个或多个 JSON 文件。
+All BuildKit exporters support attestations. The `local` and `tar` can't save
+the attestations to an image manifest, since it's outputting a directory of
+files or a tarball, not an image. Instead, these exporters write the
+attestations to one or more JSON files in the root directory of the export.
 
-## 示例
+## Example
 
-以下示例显示了 SBOM 证明的截断 in-toto JSON 表示。
+The following example shows a truncated in-toto JSON representation of an SBOM
+attestation.
 
 ```json
 {
@@ -125,13 +160,17 @@ BuildKit 以 [in-toto 格式](https://github.com/in-toto/attestation)生成证�
 }
 ```
 
-要深入了解证明存储方式的细节，请参阅[镜像证明存储（BuildKit）](attestation-storage.md)。
+To deep-dive into the specifics about how attestations are stored, see
+[Image Attestation Storage (BuildKit)](attestation-storage.md).
 
-## 证明清单格式
+## Attestation manifest format
 
-证明存储为清单，由镜像索引引用。每个_证明清单_引用单个_镜像清单_（镜像的一个平台变体）。证明清单包含单个层，即证明的"值"。
+Attestations are stored as manifests, referenced by the image's index. Each
+_attestation manifest_ refers to a single _image manifest_ (one
+platform-variant of the image). Attestation manifests contain a single layer,
+the "value" of the attestation.
 
-以下示例显示了证明清单的结构：
+The following example shows the structure of an attestation manifest:
 
 ```json
 {
@@ -155,17 +194,20 @@ BuildKit 以 [in-toto 格式](https://github.com/in-toto/attestation)生成证�
 }
 ```
 
-### 作为 OCI 工件的证明
+### Attestations as OCI artifacts
 
-您可以使用 `image` 和 `registry` 导出器的 [`oci-artifact` 选项](/manuals/build/exporters/image-registry.md#synopsis) 配置证明清单的格式。如果设置为 `true`，证明清单的结构将更改如下：
+You can configure the format of the attestation manifest using the
+[`oci-artifact` option](/manuals/build/exporters/image-registry.md#synopsis)
+for the `image` and `registry` exporters. If set to `true`, the structure of
+the attestation manifest changes as follows:
 
-- 向证明清单添加 `artifactType` 字段，值为 `application/vnd.docker.attestation.manifest.v1+json`。
-- `config` 字段是[空描述符]而不是"虚拟"配置。
-- 还添加了 `subject` 字段，指向证明引用的镜像清单。
+- An `artifactType` field is added to the attestation manifest, with a value of `application/vnd.docker.attestation.manifest.v1+json`.
+- The `config` field is an [empty descriptor] instead of a "dummy" config.
+- A `subject` field is also added, pointing to the image manifest that the attestation refers to.
 
-[空描述符]: https://github.com/opencontainers/image-spec/blob/main/manifest.md#guidance-for-an-empty-descriptor
+[empty descriptor]: https://github.com/opencontainers/image-spec/blob/main/manifest.md#guidance-for-an-empty-descriptor
 
-以下示例显示了 OCI 工件格式的证明：
+The following example shows an attestation with the OCI artifact format:
 
 ```json
 {
@@ -200,9 +242,9 @@ BuildKit 以 [in-toto 格式](https://github.com/in-toto/attestation)生成证�
 }
 ```
 
-## 下一步
+## What's next
 
-了解更多关于可用证明类型及其使用方法的信息：
+Learn more about the available attestation types and how to use them:
 
 - [Provenance](slsa-provenance.md)
 - [SBOM](sbom.md)

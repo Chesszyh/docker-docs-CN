@@ -1,7 +1,7 @@
 ---
 build:
   render: never
-title: 发布说明
+title: Release notes
 sidebar:
   reverse: true
 ---

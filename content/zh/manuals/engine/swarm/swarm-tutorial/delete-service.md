@@ -1,16 +1,19 @@
 ---
 description: Remove the service from the swarm
 keywords: tutorial, cluster management, swarm, service, get started
-title: 删除在 swarm 上运行的服务
+title: Delete the service running on the swarm
 weight: 60
 notoc: true
 ---
 
-教程的剩余步骤不使用 `helloworld` 服务，所以现在你可以从 swarm 中删除该服务。
+The remaining steps in the tutorial don't use the `helloworld` service, so now
+you can delete the service from the swarm.
 
-1.  如果你还没有，打开终端并 ssh 到运行管理节点的机器。例如，本教程使用名为 `manager1` 的机器。
+1.  If you haven't already, open a terminal and ssh into the machine where you
+    run your manager node. For example, the tutorial uses a machine named
+    `manager1`.
 
-2.  运行 `docker service rm helloworld` 删除 `helloworld` 服务。
+2.  Run `docker service rm helloworld` to remove the `helloworld` service.
 
     ```console
     $ docker service rm helloworld
@@ -18,7 +21,9 @@ notoc: true
     helloworld
     ```
 
-3.  运行 `docker service inspect <SERVICE-ID>` 验证 swarm 管理节点已删除该服务。CLI 返回一条消息表示未找到该服务：
+3.  Run `docker service inspect <SERVICE-ID>` to verify that the swarm manager
+    removed the service. The CLI returns a message that the service is not
+    found:
 
     ```console
     $ docker service inspect helloworld
@@ -26,7 +31,9 @@ notoc: true
     Status: Error: no such service: helloworld, Code: 1
     ```
 
-4.  即使服务不再存在，任务容器也需要几秒钟来清理。你可以在节点上使用 `docker ps` 来验证任务何时被删除。
+4.  Even though the service no longer exists, the task containers take a few
+    seconds to clean up. You can use `docker ps` on the nodes to verify when the
+    tasks have been removed.
 
     ```console
     $ docker ps
@@ -43,8 +50,8 @@ notoc: true
 
     ```
 
-## 下一步
+## Next steps
 
-接下来，你将设置一个新服务并应用滚动更新。
+Next, you'll set up a new service and apply a rolling update.
 
-{{< button text="应用滚动更新" url="rolling-update.md" >}}
+{{< button text="Apply rolling updates" url="rolling-update.md" >}}

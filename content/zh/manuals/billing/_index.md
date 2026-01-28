@@ -1,41 +1,41 @@
 ---
-title: 账单与付款
-linkTitle: 账单
-description: 了解 Docker 订阅的账单和付款流程相关信息。
+title: Billing and payments
+linkTitle: Billing
+description: Discover information on billing and payment processes for Docker subscriptions.
 keywords: billing, invoice, payment, subscription
 weight: 20
 params:
   sidebar:
     group: Platform
 grid_core:
-- title: 添加或更新付款方式
-  description: 了解如何为您的个人账户或组织添加或更新付款方式。
+- title: Add or update a payment method
+  description: Learn how to add or update a payment method for your personal account or organization.
   link: /billing/payment-method/
   icon: credit_score
-- title: 更新账单信息
-  description: 了解如何更新您的个人账户或组织的账单信息。
+- title: Update billing information
+  description: Discover how to update the billing information for your personal account or organization.
   link: /billing/details/
   icon: contract_edit
-- title: 查看账单历史
-  description: 了解如何查看账单历史并下载过往发票。
+- title: View billing history
+  description: Learn how to view billing history and download past invoices.
   link: /billing/history/
   icon: payments
-- title: 账单常见问题
-  description: 查找您需要的答案并探索常见问题。
+- title: Billing FAQs
+  description: Find the answers you need and explore common questions.
   link: /billing/faqs/
   icon: help
-- title: 注册税务证明
-  description: 了解如何注册税务豁免证明。
+- title: Register a tax certificate
+  description: Learn how to register a tax exemption certificate.
   link: /billing/tax-certificate/
   icon: developer_guide
-- title: 3D Secure 身份验证
-  description: 了解 Docker 账单如何支持 3DS 以及如何排查潜在问题。
+- title: 3D Secure authentication
+  description: Discover how Docker billing supports 3DS and how to troubleshoot potential issues.
   link: /billing/3d-secure/
   icon: wallet
 aliases:
   - /billing/docker-hub-pricing/
 ---
 
-使用本节中的资源来管理您的 Docker 订阅的账单和付款设置。
+Use the resources in this section to manage your billing and payment settings for your Docker subscriptions.
 
 {{< grid items="grid_core" >}}

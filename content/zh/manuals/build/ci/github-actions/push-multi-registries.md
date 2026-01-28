@@ -1,11 +1,12 @@
 ---
-title: 使用 GitHub Actions 推送到多个镜像仓库
+title: Push to multiple registries with GitHub Actions
 linkTitle: Push to multiple registries
-description: 使用 GitHub Actions 推送到多个镜像仓库
+description: Push to multiple registries with GitHub Actions
 keywords: ci, github actions, gha, buildkit, buildx, registry
 ---
 
-以下工作流将连接到 Docker Hub 和 GitHub Container Registry，并将镜像推送到两个镜像仓库：
+The following workflow will connect you to Docker Hub and GitHub Container
+Registry, and push the image to both registries:
 
 ```yaml
 name: ci

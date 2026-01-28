@@ -1,9 +1,9 @@
 ---
-description: 了解如何在 RHEL 上安装 Docker Engine。这些说明涵盖
-  不同的安装方法、如何卸载以及后续步骤。
+description: Learn how to install Docker Engine on RHEL. These instructions cover
+  the different installation methods, how to uninstall, and next steps.
 keywords: requirements, dnf, installation, rhel, rpm, install, install docker engine, uninstall, upgrade,
   update
-title: 在 RHEL 上安装 Docker Engine
+title: Install Docker Engine on RHEL
 linkTitle: RHEL
 weight: 30
 toc_max: 4
@@ -18,27 +18,27 @@ aliases:
 download-url-base: https://download.docker.com/linux/rhel
 ---
 
-要在 RHEL 上开始使用 Docker Engine，请确保您
-[满足前提条件](#prerequisites)，然后按照
-[安装步骤](#installation-methods)进行操作。
+To get started with Docker Engine on RHEL, make sure you
+[meet the prerequisites](#prerequisites), and then follow the
+[installation steps](#installation-methods).
 
-## 前提条件
+## Prerequisites
 
-### 操作系统要求
+### OS requirements
 
-要安装 Docker Engine，您需要以下
-RHEL 版本之一的受维护版本：
+To install Docker Engine, you need a maintained version of one of the following
+RHEL versions:
 
 - RHEL 8
 - RHEL 9
 
-### 卸载旧版本
+### Uninstall old versions
 
-在安装 Docker Engine 之前，您需要卸载任何冲突的软件包。
+Before you can install Docker Engine, you need to uninstall any conflicting packages.
 
-您的 Linux 发行版可能提供非官方的 Docker 软件包，这些软件包可能与
-Docker 提供的官方软件包冲突。您必须在安装官方版本的 Docker Engine 之前
-卸载这些软件包。
+Your Linux distribution may provide unofficial Docker packages, which may conflict
+with the official packages provided by Docker. You must uninstall these packages
+before you install the official version of Docker Engine.
 
 ```console
 $ sudo dnf remove docker \
@@ -53,67 +53,68 @@ $ sudo dnf remove docker \
                   runc
 ```
 
-`dnf` 可能会报告您没有安装这些软件包。
+`dnf` might report that you have none of these packages installed.
 
-卸载 Docker 时，存储在 `/var/lib/docker/` 中的镜像、容器、卷和网络
-不会被自动删除。
+Images, containers, volumes, and networks stored in `/var/lib/docker/` aren't
+automatically removed when you uninstall Docker.
 
-## 安装方法
+## Installation methods
 
-您可以根据需要以不同方式安装 Docker Engine：
+You can install Docker Engine in different ways, depending on your needs:
 
-- 您可以
-  [设置 Docker 的仓库](#install-using-the-repository)并从中安装，
-  以便于安装和升级任务。这是
-  推荐的方法。
+- You can
+  [set up Docker's repositories](#install-using-the-repository) and install
+  from them, for ease of installation and upgrade tasks. This is the
+  recommended approach.
 
-- 您可以下载 RPM 软件包，
-  [手动安装](#install-from-a-package)，并完全手动管理
-  升级。这在诸如在无法访问互联网的隔离系统上安装
-  Docker 等情况下很有用。
+- You can download the RPM package,
+  [install it manually](#install-from-a-package), and manage
+  upgrades completely manually. This is useful in situations such as installing
+  Docker on air-gapped systems with no access to the internet.
 
-- 在测试和开发环境中，您可以使用自动化
-  [便捷脚本](#install-using-the-convenience-script)来安装 Docker。
+- In testing and development environments, you can use automated
+  [convenience scripts](#install-using-the-convenience-script) to install Docker.
 
-### 使用 rpm 仓库安装 {#install-using-the-repository}
+### Install using the rpm repository {#install-using-the-repository}
 
-在新主机上首次安装 Docker Engine 之前，您
-需要设置 Docker 仓库。之后，您可以从仓库安装和更新
-Docker。
+Before you install Docker Engine for the first time on a new host machine, you
+need to set up the Docker repository. Afterward, you can install and update
+Docker from the repository.
 
-#### 设置仓库
+#### Set up the repository
 
-安装 `dnf-plugins-core` 软件包（提供管理
-DNF 仓库的命令）并设置仓库。
+Install the `dnf-plugins-core` package (which provides the commands to manage
+your DNF repositories) and set up the repository.
 
 ```console
 $ sudo dnf -y install dnf-plugins-core
 $ sudo dnf config-manager --add-repo {{% param "download-url-base" %}}/docker-ce.repo
 ```
 
-#### 安装 Docker Engine
+#### Install Docker Engine
 
-1. 安装 Docker 软件包。
+1. Install the Docker packages.
 
    {{< tabs >}}
    {{< tab name="Latest" >}}
 
-   要安装最新版本，请运行：
+   To install the latest version, run:
 
    ```console
    $ sudo dnf install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
    ```
 
-   如果提示接受 GPG 密钥，请验证指纹是否匹配
-   `060A 61C5 1B55 8A7F 742B 77AA C52F EB6B 621E 9F35`，如果匹配，则接受它。
+   If prompted to accept the GPG key, verify that the fingerprint matches
+   `060A 61C5 1B55 8A7F 742B 77AA C52F EB6B 621E 9F35`, and if so, accept it.
 
-   此命令会安装 Docker，但不会启动 Docker。它还会创建一个
-   `docker` 组，但默认情况下不会向该组添加任何用户。
+   This command installs Docker, but it doesn't start Docker. It also creates a
+   `docker` group, however, it doesn't add any users to the group by default.
 
    {{< /tab >}}
    {{< tab name="Specific version" >}}
 
-   要安装特定版本，首先列出仓库中的可用版本：
+   To install a specific version, start by listing the available versions in
+   the repository:
 
    ```console
    $ dnf list docker-ce --showduplicates | sort -r
@@ -123,70 +124,70 @@ $ sudo dnf config-manager --add-repo {{% param "download-url-base" %}}/docker-ce
    <...>
    ```
 
-   返回的列表取决于启用了哪些仓库，并且特定于
-   您的 RHEL 版本（在此示例中由 `.el9` 后缀表示）。
+   The list returned depends on which repositories are enabled, and is specific
+   to your version of RHEL (indicated by the `.el9` suffix in this example).
 
-   通过完全限定的软件包名称安装特定版本，即
-   软件包名称（`docker-ce`）加上版本字符串（第 2 列），
-   用连字符（`-`）分隔。例如，`docker-ce-3:{{% param "docker_ce_version" %}}-1.el9`。
+   Install a specific version by its fully qualified package name, which is
+   the package name (`docker-ce`) plus the version string (2nd column),
+   separated by a hyphen (`-`). For example, `docker-ce-3:{{% param "docker_ce_version" %}}-1.el9`.
 
-   将 `<VERSION_STRING>` 替换为所需版本，然后运行以下
-   命令进行安装：
+   Replace `<VERSION_STRING>` with the desired version and then run the following
+   command to install:
 
    ```console
    $ sudo dnf install docker-ce-<VERSION_STRING> docker-ce-cli-<VERSION_STRING> containerd.io docker-buildx-plugin docker-compose-plugin
    ```
 
-   此命令会安装 Docker，但不会启动 Docker。它还会创建一个
-   `docker` 组，但默认情况下不会向该组添加任何用户。
+   This command installs Docker, but it doesn't start Docker. It also creates a
+   `docker` group, however, it doesn't add any users to the group by default.
 
    {{< /tab >}}
    {{< /tabs >}}
 
-2. 启动 Docker Engine。
+2. Start Docker Engine.
 
    ```console
    $ sudo systemctl enable --now docker
    ```
 
-   这会配置 Docker systemd 服务在您
-   启动系统时自动启动。如果您不希望 Docker 自动启动，请改用 `sudo
-   systemctl start docker`。
+   This configures the Docker systemd service to start automatically when you
+   boot your system. If you don't want Docker to start automatically, use `sudo
+   systemctl start docker` instead.
 
-3. 通过运行 `hello-world` 镜像验证安装是否成功：
+3. Verify that the installation is successful by running the `hello-world` image:
 
    ```console
    $ sudo docker run hello-world
    ```
 
-   此命令下载一个测试镜像并在容器中运行它。当
-   容器运行时，它会打印一条确认消息并退出。
+   This command downloads a test image and runs it in a container. When the
+   container runs, it prints a confirmation message and exits.
 
-您现在已成功安装并启动了 Docker Engine。
+You have now successfully installed and started Docker Engine.
 
 {{% include "root-errors.md" %}}
 
-#### 升级 Docker Engine
+#### Upgrade Docker Engine
 
-要升级 Docker Engine，请按照[安装说明](#install-using-the-repository)进行操作，
-选择您要安装的新版本。
+To upgrade Docker Engine, follow the [installation instructions](#install-using-the-repository),
+choosing the new version you want to install.
 
-### 从软件包安装 {#install-from-a-package}
+### Install from a package
 
-如果您无法使用 Docker 的 `rpm` 仓库安装 Docker Engine，可以
-下载适用于您版本的 `.rpm` 文件并手动安装。每次要
-升级 Docker Engine 时都需要下载新文件。
+If you can't use Docker's `rpm` repository to install Docker Engine, you can
+download the `.rpm` file for your release and install it manually. You need to
+download a new file each time you want to upgrade Docker Engine.
 
 <!-- markdownlint-disable-next-line -->
-1. 前往 [{{% param "download-url-base" %}}/]({{% param "download-url-base" %}}/)。
+1. Go to [{{% param "download-url-base" %}}/]({{% param "download-url-base" %}}/).
 
-2. 在列表中选择您的 RHEL 版本。
+2. Select your RHEL version in the list.
 
-3. 选择适用的架构（`x86_64`、`aarch64` 或 `s390x`），
-   然后前往 `stable/Packages/`。
+3. Select the applicable architecture (`x86_64`, `aarch64`, or `s390x`), and
+   then go to `stable/Packages/`.
 
-4. 下载 Docker Engine、CLI、containerd
-   和 Docker Compose 软件包的以下 `rpm` 文件：
+4. Download the following `rpm` files for the Docker Engine, CLI, containerd,
+   and Docker Compose packages:
 
    - `containerd.io-<version>.<arch>.rpm`
    - `docker-ce-<version>.<arch>.rpm`
@@ -194,8 +195,8 @@ $ sudo dnf config-manager --add-repo {{% param "download-url-base" %}}/docker-ce
    - `docker-buildx-plugin-<version>.<arch>.rpm`
    - `docker-compose-plugin-<version>.<arch>.rpm`
 
-5. 安装 Docker Engine，将以下路径更改为您下载
-   软件包的路径。
+5. Install Docker Engine, changing the following path to the path where you downloaded
+   the packages.
 
    ```console
    $ sudo dnf install ./containerd.io-<version>.<arch>.rpm \
@@ -205,58 +206,58 @@ $ sudo dnf config-manager --add-repo {{% param "download-url-base" %}}/docker-ce
      ./docker-compose-plugin-<version>.<arch>.rpm
    ```
 
-   Docker 已安装但未启动。`docker` 组已创建，但没有
-   用户被添加到该组。
+   Docker is installed but not started. The `docker` group is created, but no
+   users are added to the group.
 
-6. 启动 Docker Engine。
+6. Start Docker Engine.
 
    ```console
    $ sudo systemctl enable --now docker
    ```
 
-   这会配置 Docker systemd 服务在您
-   启动系统时自动启动。如果您不希望 Docker 自动启动，请改用 `sudo
-   systemctl start docker`。
+   This configures the Docker systemd service to start automatically when you
+   boot your system. If you don't want Docker to start automatically, use `sudo
+   systemctl start docker` instead.
 
-7. 通过运行 `hello-world` 镜像验证安装是否成功：
+7. Verify that the installation is successful by running the `hello-world` image:
 
    ```console
    $ sudo docker run hello-world
    ```
 
-   此命令下载一个测试镜像并在容器中运行它。当
-   容器运行时，它会打印一条确认消息并退出。
+   This command downloads a test image and runs it in a container. When the
+   container runs, it prints a confirmation message and exits.
 
-您现在已成功安装并启动了 Docker Engine。
+You have now successfully installed and started Docker Engine.
 
 {{% include "root-errors.md" %}}
 
-#### 升级 Docker Engine
+#### Upgrade Docker Engine
 
-要升级 Docker Engine，请下载较新的软件包文件并重复
-[安装过程](#install-from-a-package)，使用 `dnf upgrade`
-代替 `dnf install`，并指向新文件。
+To upgrade Docker Engine, download the newer package files and repeat the
+[installation procedure](#install-from-a-package), using `dnf upgrade`
+instead of `dnf install`, and point to the new files.
 
 {{% include "install-script.md" %}}
 
-## 卸载 Docker Engine
+## Uninstall Docker Engine
 
-1. 卸载 Docker Engine、CLI、containerd 和 Docker Compose 软件包：
+1. Uninstall the Docker Engine, CLI, containerd, and Docker Compose packages:
 
    ```console
    $ sudo dnf remove docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin docker-ce-rootless-extras
    ```
 
-2. 主机上的镜像、容器、卷或自定义配置文件
-   不会被自动删除。要删除所有镜像、容器和卷：
+2. Images, containers, volumes, or custom configuration files on your host
+   aren't automatically removed. To delete all images, containers, and volumes:
 
    ```console
    $ sudo rm -rf /var/lib/docker
    $ sudo rm -rf /var/lib/containerd
    ```
 
-您必须手动删除任何已编辑的配置文件。
+You have to delete any edited configuration files manually.
 
-## 后续步骤
+## Next steps
 
-- 继续阅读 [Linux 安装后步骤](linux-postinstall.md)。
+- Continue to [Post-installation steps for Linux](linux-postinstall.md).

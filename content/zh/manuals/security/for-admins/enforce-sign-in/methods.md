@@ -1,63 +1,68 @@
 ---
-description: 了解强制开发者登录 Docker Desktop 的不同方法
+description: Learn about the different ways you can force your developers to sign in to Docker Desktop
 keywords: authentication, registry.json, configure, enforce sign-in, docker desktop, security, .plist. registry key, mac, windows
-title: 强制 Docker Desktop 登录的方法
+title: Ways to enforce sign-in for Docker Desktop
 tags: [admin]
-linkTitle: 方法
+linkTitle: Methods
 ---
 
 {{< summary-bar feature_name="Enforce sign-in" >}}
 
-本页概述了强制 Docker Desktop 登录的不同方法。
+This page outlines the different methods for enforcing sign-in for Docker Desktop.
 
-## 注册表键方法（仅限 Windows）
+## Registry key method (Windows only)
 
 > [!NOTE]
 >
-> 注册表键方法适用于 Docker Desktop 4.32 及更高版本。
+> The registry key method is available with Docker Desktop version 4.32 and later.
 
-要在 Windows 上强制 Docker Desktop 登录，您可以配置一个注册表键来指定组织的允许用户。以下步骤指导您创建和部署注册表键以强制执行此策略：
+To enforce sign-in for Docker Desktop on Windows, you can configure a registry key that specifies your organization's allowed users. The following steps guide you through creating and deploying the registry key to enforce this policy:
 
-1. 创建注册表键。您的新键应如下所示：
+1. Create the registry key. Your new key should look like the following:
 
    ```console
    $ HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Docker\Docker Desktop
    ```
-2. 创建一个多字符串值 `allowedOrgs`。
+2. Create a multi-string value `allowedOrgs`.
    > [!IMPORTANT]
    >
-   > 从 Docker Desktop 4.36 及更高版本开始，您可以添加多个组织。在 Docker Desktop 4.35 及更早版本中，如果添加多个组织，登录强制会静默失败。
-3. 使用您组织的名称（全部小写）作为字符串数据。如果添加多个组织，请确保每个组织单独一行。不要使用空格或逗号等其他分隔符。
-4. 重新启动 Docker Desktop。
-5. 当 Docker Desktop 重新启动时，验证是否出现 **Sign in required!** 提示。
+   > As of Docker Desktop version 4.36 and later, you can add more than one organization. With Docker Desktop version 4.35 and earlier, if you add more than one organization sign-in enforcement silently fails.
+3. Use your organization's name, all lowercase as string data. If you're adding more than one organization, make sure they are all on their own line. Don't use any other separators such as spaces or commas.
+4. Restart Docker Desktop.
+5. When Docker Desktop restarts, verify that the **Sign in required!** prompt appears.
 
-在某些情况下，可能需要重新启动系统才能使强制生效。
+In some cases, a system reboot may be necessary for enforcement to take effect.
 
 > [!NOTE]
 >
-> 如果注册表键和 `registry.json` 文件同时存在，注册表键优先。
+> If a registry key and a `registry.json` file both exist, the registry key takes precedence.
 
-### 通过组策略部署示例
+### Example deployment via Group Policy
 
-以下示例概述了如何使用组策略部署注册表键以强制 Docker Desktop 登录。根据您组织的基础设施、安全策略和管理工具，有多种方法可以部署此配置。
+The following example outlines how to deploy a registry key to enforce sign-in on Docker Desktop using Group Policy. There are multiple ways to deploy this configuration depending on your organization's infrastructure, security policies, and management tools.
 
-1. 创建注册表脚本。编写一个脚本来创建 `HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Docker\Docker Desktop` 键，添加 `allowedOrgs` 多字符串，然后将值设置为您组织的名称。
-2. 在组策略中，创建或编辑一个应用于您要定位的计算机或用户的组策略对象（GPO）。
-3. 在 GPO 中，导航到 **Computer Configuration** 并选择 **Preferences**。
-4. 选择 **Windows Settings**，然后选择 **Registry**。
-5. 要添加注册表项，右键单击 **Registry** 节点，选择 **New**，然后选择 **Registry Item**。
-6. 配置新注册表项以匹配您创建的注册表脚本，将操作指定为 **Update**。确保输入正确的路径、值名称（`allowedOrgs`）和值数据（您的组织名称）。
-7. 将 GPO 链接到包含您要应用此设置的计算机的组织单位（OU）。
-8. 首先在一小组计算机上测试 GPO，以确保其按预期运行。您可以在测试计算机上使用 `gpupdate /force` 命令手动刷新其组策略设置，并检查注册表以确认更改。
-9. 验证后，您可以继续进行更广泛的部署。监控部署以确保设置在组织的计算机上正确应用。
+1. Create the registry script. Write a script to create the `HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Docker\Docker Desktop` key, add the `allowedOrgs` multi-string, and then set the value to your organization’s name.
+2. Within Group Policy, create or edit a Group Policy Objective (GPO) that applies to the machines or users you want to target.
+3. Within the GPO, navigate to **Computer Configuration** and select **Preferences**.
+4. Select **Windows Settings** then **Registry**.
+5. To add the registry item, right-click on the **Registry** node, select **New**, and then **Registry Item**.
+6. Configure the new registry item to match the registry script you created, specifying the action as **Update**. Make sure you input the correct path, value name (`allowedOrgs`), and value data (your organization names).
+7. Link the GPO to an Organizational Unit (OU) that contains the machines you want to apply this setting to.
+8. Test the GPO on a small set of machines first to ensure it behaves as expected. You can use the `gpupdate /force` command on a test machine to manually refresh its group policy settings and check the registry to confirm the changes.
+9. Once verified, you can proceed with broader deployment. Monitor the deployment to ensure the settings are applied correctly across the organization's computers.
 
-## 配置描述文件方法（仅限 Mac）
+## Configuration profiles method (Mac only)
 
 {{< summary-bar feature_name="Config profiles" >}}
 
-配置描述文件是 macOS 的一项功能，可让您向管理的 Mac 分发配置信息。这是在 macOS 上强制登录的最安全方法，因为已安装的配置描述文件受 Apple 系统完整性保护（SIP）保护，因此用户无法篡改。
+Configuration profiles are a feature of macOS that let you distribute
+configuration information to the Macs you manage. It is the safest method to
+enforce sign-in on macOS because the installed configuration profiles are
+protected by Apples' System Integrity Protection (SIP) and therefore can't be
+tampered with by the users.
 
-1. 将以下 XML 文件保存为扩展名为 `.mobileconfig` 的文件，例如 `docker.mobileconfig`：
+1. Save the following XML file with the extension `.mobileconfig`, for example
+   `docker.mobileconfig`:
 
    ```xml
     <?xml version="1.0" encoding="UTF-8"?>
@@ -103,29 +108,31 @@ linkTitle: 方法
     </plist>
    ```
 
-2. 将占位符 `com.yourcompany.docker.config` 和 `Your Company Name` 更改为您公司的名称。
+2. Change the placeholders `com.yourcompany.docker.config` and `Your Company Name` to the name of your company.
 
-3. 添加您的组织名称。允许的组织名称存储在 `allowedOrgs` 属性中。它可以包含单个组织的名称或以分号分隔的组织名称列表：
+3. Add your organization name. The names of the allowed organizations are stored in the `allowedOrgs`
+   property. It can contain either the name of a single organization or a list of organization names,
+   separated by a semicolon:
 
    ```xml
             <key>allowedOrgs</key>
             <string>first_org;second_org</string>
    ```
 
-4. 使用 MDM 解决方案将修改后的 `.mobileconfig` 文件分发到您的 macOS 客户端。
+4. Use a MDM solution to distribute your modified `.mobileconfig` file to your macOS clients. 
 
-5. 验证配置描述文件已添加到 macOS 客户端的 **Device (Managed)** 描述文件列表中（**System Settings** > **General** > **Device Management**）。
+5. Verify that the profile is added to **Device (Managed)** profiles list (**System Settings** > **General** > **Device Management**) on your macOS clients.
 
-## plist 方法（仅限 Mac）
+## plist method (Mac only)
 
 > [!NOTE]
 >
-> `plist` 方法适用于 Docker Desktop 4.32 及更高版本。
+> The `plist` method is available with Docker Desktop version 4.32 and later.
 
-要在 macOS 上强制 Docker Desktop 登录，您可以使用定义所需设置的 `plist` 文件。以下步骤指导您完成创建和部署必要的 `plist` 文件以强制执行此策略的过程：
+To enforce sign-in for Docker Desktop on macOS, you can use a `plist` file that defines the required settings. The following steps guide you through the process of creating and deploying the necessary `plist` file to enforce this policy:
 
-1. 创建文件 `/Library/Application Support/com.docker.docker/desktop.plist`。
-2. 在文本编辑器中打开 `desktop.plist` 并添加以下内容，其中 `myorg` 替换为您组织的名称（全部小写）：
+1. Create the file `/Library/Application Support/com.docker.docker/desktop.plist`.
+2. Open `desktop.plist` in a text editor and add the following content, where `myorg` is replaced with your organization’s name all lowercase:
 
    ```xml
    <?xml version="1.0" encoding="UTF-8"?>
@@ -142,68 +149,69 @@ linkTitle: 方法
    ```
    > [!IMPORTANT]
    >
-   > 从 Docker Desktop 4.36 及更高版本开始，您可以添加多个组织。在 Docker Desktop 4.35 及更早版本中，如果添加多个组织，登录强制会静默失败。
+   > As of Docker Desktop version 4.36 and later, you can add more than one organization. With Docker Desktop version 4.35 and earlier, sign-in enforcement silently fails if you add more than one organization.
 
-3. 修改文件权限以确保任何非管理员用户都无法编辑该文件。
-4. 重新启动 Docker Desktop。
-5. 当 Docker Desktop 重新启动时，验证是否出现 **Sign in required!** 提示。
+3. Modify the file permissions to ensure the file cannot be edited by any non-administrator users.
+4. Restart Docker Desktop.
+5. When Docker Desktop restarts, verify that the **Sign in required!** prompt appears.
 
 > [!NOTE]
 >
-> 如果 `plist` 和 `registry.json` 文件同时存在，`plist` 文件优先。
+> If a `plist` and `registry.json` file both exist, the `plist` file takes precedence.
 
-### 部署示例
+### Example deployment
 
-以下示例概述了如何创建和分发 `plist` 文件以强制 Docker Desktop 登录。根据您组织的基础设施、安全策略和管理工具，有多种方法可以部署此配置。
+The following example outlines how to create and distribute the `plist` file to enforce sign-in on Docker Desktop. There are multiple ways to deploy this configuration depending on your organization's infrastructure, security policies, and management tools.
 
 {{< tabs >}}
 {{< tab name="MDM" >}}
 
-1. 按照之前概述的步骤创建 `desktop.plist` 文件。
-2. 使用 Jamf 或 Fleet 等 MDM 工具将 `desktop.plist` 文件分发到目标 macOS 设备的 `/Library/Application Support/com.docker.docker/`。
-3. 通过 MDM 工具，将文件权限设置为仅允许管理员编辑。
+1. Follow the steps previously outlined to create the `desktop.plist` file.
+2. Use an MDM tool like Jamf or Fleet to distribute the `desktop.plist` file to `/Library/Application Support/com.docker.docker/` on target macOS devices.
+3. Through the MDM tool, set the file permissions to permit editing by administrators only.
 
 {{< /tab >}}
 {{< tab name="Shell script" >}}
 
-1. 创建一个 Bash 脚本，可以检查正确目录中是否存在 `.plist` 文件，根据需要创建或修改它，并设置适当的权限。
-   在脚本中包含命令以：
-    - 导航到 `/Library/Application Support/com.docker.docker/` 目录，如果不存在则创建它。
-    - 使用 `defaults` 命令将所需的键和值写入 `desktop.plist` 文件。例如：
+1. Create a Bash script that can check for the existence of the `.plist` file in the correct directory, create or modify it as needed, and set the appropriate permissions.
+   Include commands in your script to:
+    - Navigate to the `/Library/Application Support/com.docker.docker/` directory or create it if it doesn't exist.
+    - Use the `defaults` command to write the required keys and values to the `desktop.plist` file. For example:
        ```console
        $ defaults write /Library/Application\ Support/com.docker.docker/desktop.plist allowedOrgs -string "myorg"
        ```
-    - 使用 `chmod` 更改 `plist` 文件的权限以限制编辑，可能还需要使用 `chown` 将所有者设置为 root 或其他管理员账户，确保未经授权的用户无法轻易修改它。
-2. 在将脚本部署到整个组织之前，在本地 macOS 计算机上测试它以确保其按预期运行。注意目录路径、权限和 `plist` 设置的成功应用。
-3. 确保您有能力在 macOS 设备上远程执行脚本。这可能涉及设置 SSH 访问或使用支持 macOS 的远程支持工具。
-4. 使用适合您组织基础设施的远程脚本执行方法。选项包括：
-    - SSH：如果目标计算机上启用了 SSH，您可以使用它远程执行脚本。此方法需要了解设备的 IP 地址和适当的凭据。
-    - 远程支持工具：对于使用远程支持工具的组织，您可以将脚本添加到任务中并在所有选定的计算机上执行。
-5. 确保脚本在所有目标设备上按预期运行。您可能需要检查日志文件或在脚本本身中实现日志记录以报告其成功或失败。
+    - Change permissions of the `plist` file to restrict editing, using `chmod` and possibly `chown` to set the owner to root or another administrator account, ensuring it can't be easily modified by unauthorized users.
+2. Before deploying the script across the organization, test it on a local macOS machine to ensure it behaves as expected. Pay attention to directory paths, permissions, and the successful application of `plist` settings.
+3. Ensure that you have the capability to execute scripts remotely on macOS devices. This might involve setting up SSH access or using a remote support tool that supports macOS.
+4.  Use a method of remote script execution that fits your organization's infrastructure. Options include:
+    - SSH: If SSH is enabled on the target machines, you can use it to execute the script remotely. This method requires knowledge of the device's IP address and appropriate credentials.
+    - Remote support tool: For organizations using a remote support tool, you can add the script to a task and execute it across all selected machines.
+5. Ensure the script is running as expected on all targeted devices. You may have to check log files or implement logging within the script itself to report its success or failure.
 
 {{< /tab >}}
 {{< /tabs >}}
 
-## registry.json 方法（全平台）
+## registry.json method (All)
 
-以下说明解释了如何创建 `registry.json` 文件并将其部署到单个设备。有多种方法可以部署 `registry.json` 文件。您可以按照 `.plist` 文件部分中概述的示例部署进行操作。您选择的方法取决于您组织的基础设施、安全策略和最终用户的管理权限。
+The following instructions explain how to create and deploy a `registry.json` file to a single device. There are many ways to deploy the `registry.json` file. You can follow the example deployments outlined in the `.plist` file section. The method you choose is dependent on your organization's infrastructure, security policies, and the administrative rights of the end-users.
 
-### 选项 1：创建 registry.json 文件以强制登录
+### Option 1: Create a registry.json file to enforce sign-in
 
-1. 确保用户是 Docker 中您组织的成员。有关更多详细信息，请参阅[管理成员](/admin/organization/members/)。
-2. 创建 `registry.json` 文件。
+1. Ensure the user is a member of your organization in Docker. For more
+details, see [Manage members](/admin/organization/members/).
+2. Create the `registry.json` file.
 
-    根据用户的操作系统，在以下位置创建名为 `registry.json` 的文件，并确保用户无法编辑该文件。
+    Based on the user's operating system, create a file named `registry.json` at the following location and make sure the file can't be edited by the user.
 
-    | 平台 | 位置 |
+    | Platform | Location |
     | --- | --- |
     | Windows | `/ProgramData/DockerDesktop/registry.json` |
     | Mac | `/Library/Application Support/com.docker.docker/registry.json` |
     | Linux | `/usr/share/docker-desktop/registry/registry.json` |
 
-3. 在 `registry.json` 文件中指定您的组织。
+3. Specify your organization in the `registry.json` file.
 
-    在文本编辑器中打开 `registry.json` 文件并添加以下内容，其中 `myorg` 替换为您组织的名称。文件内容区分大小写，您必须使用小写字母表示组织名称。
+    Open the `registry.json` file in a text editor and add the following contents, where `myorg` is replaced with your organization’s name. The file contents are case-sensitive and you must use lowercase letters for your organization's name.
 
 
     ```json
@@ -213,46 +221,53 @@ linkTitle: 方法
     ```
    > [!IMPORTANT]
    >
-   > 从 Docker Desktop 4.36 及更高版本开始，您可以添加多个组织。在 Docker Desktop 4.35 及更早版本中，如果添加多个组织，登录强制会静默失败。
+   > As of Docker Desktop version 4.36 and later, you can add more than one organization. With Docker Desktop version 4.35 and earlier, if you add more than one organization sign-in enforcement silently fails.
 
-4. 验证登录是否被强制执行。
+4. Verify that sign-in is enforced.
 
-    要激活 `registry.json` 文件，请在用户的计算机上重新启动 Docker Desktop。当 Docker Desktop 启动时，验证是否出现 **Sign in required!** 提示。
+    To activate the `registry.json` file, restart Docker Desktop on the user’s machine. When Docker Desktop starts, verify that the **Sign in
+    required!** prompt appears.
 
-    在某些情况下，可能需要重新启动系统才能使强制生效。
+    In some cases, a system reboot may be necessary for the enforcement to take effect.
 
     > [!TIP]
     >
-    > 如果您的用户在您强制登录后启动 Docker Desktop 时遇到问题，他们可能需要更新到最新版本。
+    > If your users have issues starting Docker Desktop after you enforce sign-in, they may need to update to the latest version.
 
-### 选项 2：在安装 Docker Desktop 时创建 registry.json 文件
+### Option 2: Create a registry.json file when installing Docker Desktop
 
-要在安装 Docker Desktop 时创建 `registry.json` 文件，请根据用户的操作系统使用以下说明。
+To create a `registry.json` file when installing Docker Desktop, use the following instructions based on your user's operating system.
 
 {{< tabs >}}
 {{< tab name="Windows" >}}
 
-要在安装 Docker Desktop 时自动创建 `registry.json` 文件，请下载 `Docker Desktop Installer.exe` 并从包含 `Docker Desktop Installer.exe` 的目录运行以下命令之一。将 `myorg` 替换为您组织的名称。您必须使用小写字母表示组织名称。
+To automatically create a `registry.json` file when installing Docker Desktop,
+download `Docker Desktop Installer.exe` and run one of the following commands
+from the directory containing `Docker Desktop Installer.exe`. Replace `myorg`
+with your organization's name. You must use lowercase letters for your
+organization's name.
 
-如果使用 PowerShell：
+If you're using PowerShell:
 
 ```powershell
 PS> Start-Process '.\Docker Desktop Installer.exe' -Wait 'install --allowed-org=myorg'
 ```
 
-如果使用 Windows 命令提示符：
+If you're using the Windows Command Prompt:
 
 ```console
 C:\Users\Admin> "Docker Desktop Installer.exe" install --allowed-org=myorg
 ```
 > [!IMPORTANT]
 >
-> 从 Docker Desktop 4.36 及更高版本开始，您可以向单个 `registry.json` 文件添加多个组织。在 Docker Desktop 4.35 及更早版本中，如果添加多个组织，登录强制会静默失败。
+> As of Docker Desktop version 4.36 and later, you can add more than one organization to a single `registry.json` file. With Docker Desktop version 4.35 and earlier, if you add more than one organization sign-in enforcement silently fails.
 
 {{< /tab >}}
 {{< tab name="Mac" >}}
 
-要在安装 Docker Desktop 时自动创建 `registry.json` 文件，请下载 `Docker.dmg` 并从包含 `Docker.dmg` 的目录在终端中运行以下命令。将 `myorg` 替换为您组织的名称。您必须使用小写字母表示组织名称。
+To automatically create a `registry.json` file when installing Docker Desktop,
+download `Docker.dmg` and run the following commands in a terminal from the
+directory containing `Docker.dmg`. Replace `myorg` with your organization's name. You must use lowercase letters for your organization's name.
 
 ```console
 $ sudo hdiutil attach Docker.dmg
@@ -263,20 +278,25 @@ $ sudo hdiutil detach /Volumes/Docker
 {{< /tab >}}
 {{< /tabs >}}
 
-### 选项 3：使用命令行创建 registry.json 文件
+### Option 3: Create a registry.json file using the command line
 
-要使用命令行创建 `registry.json`，请根据用户的操作系统使用以下说明。
+To create a `registry.json` using the command line, use the following instructions based on your user's operating system.
 
 {{< tabs >}}
 {{< tab name="Windows" >}}
 
-要使用 CLI 创建 `registry.json` 文件，请以管理员身份运行以下 PowerShell 命令，并将 `myorg` 替换为您组织的名称。文件内容区分大小写，您必须使用小写字母表示组织名称。
+To use the CLI to create a `registry.json` file, run the following PowerShell
+command as an administrator and replace `myorg` with your organization's name. The file
+contents are case-sensitive and you must use lowercase letters for your
+organization's name.
 
 ```powershell
 PS>  Set-Content /ProgramData/DockerDesktop/registry.json '{"allowedOrgs":["myorg"]}'
 ```
 
-这将在 `C:\ProgramData\DockerDesktop\registry.json` 创建 `registry.json` 文件，并包含用户所属的组织信息。确保用户无法编辑此文件，只有管理员可以：
+This creates the `registry.json` file at
+`C:\ProgramData\DockerDesktop\registry.json` and includes the organization
+information the user belongs to. Make sure that the user can't edit this file, but only the administrator can:
 
 ```console
 PS C:\ProgramData\DockerDesktop> Get-Acl .\registry.json
@@ -292,28 +312,35 @@ registry.json BUILTIN\Administrators NT AUTHORITY\SYSTEM Allow  FullControl...
 
 > [!IMPORTANT]
 >
-> 从 Docker Desktop 4.36 及更高版本开始，您可以向单个 `registry.json` 文件添加多个组织。在 Docker Desktop 4.35 及更早版本中，如果添加多个组织，登录强制会静默失败。
+> As of Docker Desktop version 4.36 and later, you can add more than one organization to a single `registry.json` file. With Docker Desktop version 4.35 and earlier, if you add more than one organization sign-in enforcement silently fails.
 
 {{< /tab >}}
 {{< tab name="Mac" >}}
 
-要使用 CLI 创建 `registry.json` 文件，请在终端中运行以下命令，并将 `myorg` 替换为您组织的名称。文件内容区分大小写，您必须使用小写字母表示组织名称。
+To use the CLI to create a `registry.json` file, run the following commands in a
+terminal and replace `myorg` with your organization's name. The file contents
+are case-sensitive and you must use lowercase letters for your organization's
+name.
 
 ```console
 $ sudo mkdir -p "/Library/Application Support/com.docker.docker"
 $ echo '{"allowedOrgs":["myorg"]}' | sudo tee "/Library/Application Support/com.docker.docker/registry.json"
 ```
 
-这将在 `/Library/Application Support/com.docker.docker/registry.json` 创建（或更新，如果文件已存在）`registry.json` 文件，并包含用户所属的组织信息。确保文件具有预期的内容，并且用户无法编辑此文件，只有管理员可以。
+This creates (or updates, if the file already exists) the `registry.json` file
+at `/Library/Application Support/com.docker.docker/registry.json` and includes
+the organization information the user belongs to. Make sure that the file has the
+expected content, and that the user can't edit this file, but only the administrator can.
 
-验证文件内容是否包含正确的信息：
+Verify that the content of the file contains the correct information:
 
 ```console
 $ sudo cat "/Library/Application Support/com.docker.docker/registry.json"
 {"allowedOrgs":["myorg"]}
 ```
 
-验证文件是否具有预期的权限（`-rw-r--r--`）和所有权（`root` 和 `admin`）：
+Verify that the file has the expected permissions (`-rw-r--r--`) and ownership
+(`root` and `admin`):
 
 ```console
 $ sudo ls -l "/Library/Application Support/com.docker.docker/registry.json"
@@ -322,28 +349,35 @@ $ sudo ls -l "/Library/Application Support/com.docker.docker/registry.json"
 
 > [!IMPORTANT]
 >
-> 从 Docker Desktop 4.36 及更高版本开始，您可以向单个 `registry.json` 文件添加多个组织。在 Docker Desktop 4.35 及更早版本中，如果添加多个组织，登录强制会静默失败。
+> As of Docker Desktop version 4.36 and later, you can add more than one organization to a single `registry.json` file. With Docker Desktop version 4.35 and earlier, if you add more than one organization sign-in enforcement silently fails.
 
 {{< /tab >}}
 {{< tab name="Linux" >}}
 
-要使用 CLI 创建 `registry.json` 文件，请在终端中运行以下命令，并将 `myorg` 替换为您组织的名称。文件内容区分大小写，您必须使用小写字母表示组织名称。
+To use the CLI to create a `registry.json` file, run the following commands in a
+terminal and replace `myorg` with your organization's name. The file contents
+are case-sensitive and you must use lowercase letters for your organization's
+name.
 
 ```console
 $ sudo mkdir -p /usr/share/docker-desktop/registry
 $ echo '{"allowedOrgs":["myorg"]}' | sudo tee /usr/share/docker-desktop/registry/registry.json
 ```
 
-这将在 `/usr/share/docker-desktop/registry/registry.json` 创建（或更新，如果文件已存在）`registry.json` 文件，并包含用户所属的组织信息。确保文件具有预期的内容，并且用户无法编辑此文件，只有 root 可以。
+This creates (or updates, if the file already exists) the `registry.json` file
+at `/usr/share/docker-desktop/registry/registry.json` and includes the
+organization information to which the user belongs. Make sure the file has the
+expected content and that the user can't edit this file, only the root can.
 
-验证文件内容是否包含正确的信息：
+Verify that the content of the file contains the correct information:
 
 ```console
 $ sudo cat /usr/share/docker-desktop/registry/registry.json
 {"allowedOrgs":["myorg"]}
 ```
 
-验证文件是否具有预期的权限（`-rw-r--r--`）和所有权（`root`）：
+Verify that the file has the expected permissions (`-rw-r--r--`) and ownership
+(`root`):
 
 ```console
 $ sudo ls -l /usr/share/docker-desktop/registry/registry.json
@@ -352,11 +386,11 @@ $ sudo ls -l /usr/share/docker-desktop/registry/registry.json
 
 > [!IMPORTANT]
 >
-> 从 Docker Desktop 4.36 及更高版本开始，您可以向单个 `registry.json` 文件添加多个组织。在 Docker Desktop 4.35 及更早版本中，如果添加多个组织，登录强制会静默失败。
+> As of Docker Desktop version 4.36 and later, you can add more than one organization to a single `registry.json` file. With Docker Desktop version 4.35 and earlier, if you add more than one organization sign-in enforcement silently fails.
 
 {{< /tab >}}
 {{< /tabs >}}
 
-## 更多资源
+## More resources
 
-- [视频：使用 registry.json 强制登录](https://www.youtube.com/watch?v=CIOQ6wDnJnM)
+- [Video: Enforce sign-in with a registry.json](https://www.youtube.com/watch?v=CIOQ6wDnJnM)

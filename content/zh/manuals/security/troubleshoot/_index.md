@@ -1,6 +1,6 @@
 ---
 build:
   render: never
-title: 故障排除
+title: Troubleshoot
 weight: 40
 ---

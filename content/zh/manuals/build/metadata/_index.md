@@ -1,6 +1,6 @@
 ---
 build:
   render: never
-title: 元数据
+title: Metadata
 weight: 80
 ---

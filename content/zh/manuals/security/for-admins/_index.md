@@ -1,6 +1,6 @@
 ---
 build:
   render: never
-title: 管理员指南
+title: For admins
 weight: 10
 ---

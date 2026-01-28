@@ -1,8 +1,9 @@
 ---
 description: >
-  使用组织中的角色来控制谁有权访问内容、注册表和组织管理权限。
+  Use roles in your organization to control who has access to content,
+  registry, and organization management permissions.
 keywords: members, teams, organization, company, roles, access, docker hub, admin console, security
-title: 角色和权限
+title: Roles and permissions
 aliases:
 - /docker-hub/roles-and-permissions/
 weight: 40
@@ -10,108 +11,108 @@ weight: 40
 
 {{< summary-bar feature_name="General admin" >}}
 
-组织和公司所有者可以为个人分配角色，赋予他们在组织中不同的权限。本指南概述了 Docker 的组织角色及其权限范围。
+Organization and company owners can assign roles to individuals giving them different permissions in the organization. This guide outlines Docker's organization roles and their permission scopes.
 
-## 角色
+## Roles
 
-当您邀请用户加入组织时，需要为他们分配一个角色。角色是一组权限的集合。角色定义用户是否可以创建仓库、拉取镜像、创建团队以及配置组织设置。
+When you invite users to your organization, you assign them a role. A role is a collection of permissions. Roles define whether users can create repositories, pull images, create teams, and configure organization settings.
 
-以下是可分配的角色：
+The following roles are available to assign:
 
-- 成员（Member）：非管理角色。成员可以查看同一组织中的其他成员。
-- 分销商成员（Distributor Member）：受限访问角色。分销商成员只能查看和拉取他们被明确授予访问权限的仓库。他们无法查看其他成员或团队。
-- 编辑者（Editor）：对组织具有部分管理权限。编辑者可以创建、编辑和删除仓库。他们还可以编辑现有团队的访问权限。
-- 组织所有者（Organization owner）：拥有组织的完全管理权限。组织所有者可以管理组织的仓库、团队、成员、设置和计费。
-- 公司所有者（Company owner）：除了组织所有者的权限外，公司所有者还可以为其关联的组织配置设置。
+- Member: Non-administrative role. Members can view other members that are in the same organization.
+- Distributor Member: Restricted-access role. Distributor Members can only view and pull from repositories they’ve been explicitly granted access to. They cannot view other members or teams.
+- Editor: Partial administrative access to the organization. Editors can create, edit, and delete repositories. They can also edit an existing team's access permissions.
+- Organization owner: Full organization administrative access. Organization owners can manage organization repositories, teams, members, settings, and billing.
+- Company owner: In addition to the permissions of an organization owner, company owners can configure settings for their associated organizations.
 
-所有者可以使用 Docker Hub 或管理控制台（Admin Console）管理组织成员的角色：
-- 在 [Docker Hub](/manuals/admin/organization/members.md#update-a-member-role) 中更新成员角色
-- 在[管理控制台](/manuals/admin/company/users.md#update-a-member-role)中更新组织成员或公司
-- 了解更多关于[组织和公司](/manuals/admin/_index.md)的信息
+Owners can manage roles for members of an organization using Docker Hub or the Admin Console:
+- Update a member role in [Docker Hub](/manuals/admin/organization/members.md#update-a-member-role)
+- Update an organization's members or company in the [Admin Console](/manuals/admin/company/users.md#update-a-member-role)
+- Learn more about [organizations and companies](/manuals/admin/_index.md)
 
-## 权限
+## Permissions
 
 > [!NOTE]
 >
-> 公司所有者对所有关联的组织拥有与组织所有者相同的访问权限。有关更多信息，请参阅[公司概述](/admin/company/)。
+> Company owners have the same access as organization owners for all associated organizations. For more information, see [Company overview](/admin/company/).
 
-以下部分描述了每个角色的权限。
+The following sections describe the permissions for each role.
 
-### 内容和注册表权限
+### Content and registry permissions
 
-下表列出了成员、编辑者和组织所有者角色的内容和注册表权限。这些权限和角色适用于整个组织，包括组织命名空间中的所有仓库。
+The following table outlines content and registry permissions for member, editor, and organization owner roles. These permissions and roles apply to the entire organization, including all the repositories in the namespace for the organization.
 
-| 权限                                            | 成员 | 编辑者 | 组织所有者 |
-| :---------------------------------------------- | :--- | :----- | :--------- |
-| 浏览镜像和扩展                                  | ✅   | ✅     | ✅         |
-| 对内容进行星标、收藏、投票和评论                | ✅   | ✅     | ✅         |
-| 拉取镜像                                        | ✅   | ✅     | ✅         |
-| 创建和发布扩展                                  | ✅   | ✅     | ✅         |
-| 成为已验证、官方或开源发布者                    | ❌   | ❌     | ✅         |
-| 作为发布者观察内容参与度                        | ❌   | ❌     | ✅         |
-| 创建公共和私有仓库                              | ❌   | ✅     | ✅         |
-| 编辑和删除仓库                                  | ❌   | ✅     | ✅         |
-| 管理标签                                        | ❌   | ✅     | ✅         |
-| 查看仓库活动                                    | ❌   | ❌     | ✅         |
-| 设置自动构建                                    | ❌   | ❌     | ✅         |
-| 编辑构建设置                                    | ❌   | ❌     | ✅         |
-| 查看团队                                        | ✅   | ✅     | ✅         |
-| 为仓库分配团队权限                              | ❌   | ✅     | ✅         |
+| Permission                                            | Member | Editor | Organization owner |
+| :---------------------------------------------------- | :----- | :----- | :----------------- |
+| Explore images and extensions                         | ✅     | ✅     | ✅                 |
+| Star, favorite, vote, and comment on content          | ✅     | ✅     | ✅                 |
+| Pull images                                           | ✅     | ✅     | ✅                 |
+| Create and publish an extension                       | ✅     | ✅     | ✅                 |
+| Become a Verified, Official, or Open Source publisher | ❌     | ❌     | ✅                 |
+| Observe content engagement as a publisher             | ❌     | ❌     | ✅                 |
+| Create public and private repositories                | ❌     | ✅     | ✅                 |
+| Edit and delete repositories                          | ❌     | ✅     | ✅                 |
+| Manage tags                                           | ❌     | ✅     | ✅                 |
+| View repository activity                              | ❌     | ❌     | ✅                 |
+| Set up Automated builds                               | ❌     | ❌     | ✅                 |
+| Edit build settings                                   | ❌     | ❌     | ✅                 |
+| View teams                                            | ✅     | ✅     | ✅                 |
+| Assign team permissions to repositories               | ❌     | ✅     | ✅                 |
 
-当您将成员添加到团队时，您可以管理他们的仓库权限。有关团队仓库权限，请参阅[创建和管理团队权限参考](/manuals/admin/organization/manage-a-team.md#permissions-reference)。
+When you add members to a team, you can manage their repository permissions. For team repository permissions, see [Create and manage a team permissions reference](/manuals/admin/organization/manage-a-team.md#permissions-reference).
 
-下图提供了权限如何为用户工作的示例。在此示例中，第一个权限检查是针对角色：成员或编辑者。编辑者对组织命名空间中的仓库拥有管理权限。如果成员是授予这些权限的团队成员，则成员可能对仓库拥有管理权限。
+The following diagram provides an example of how permissions may work for a user. In this example, the first permission check is for the role: member or editor. Editors have administrative permissions for repositories across the namespace of the organization. Members may have administrative permissions for a repository if they're a member of a team that grants those permissions.
 
-![组织内的用户仓库权限](../images/roles-and-permissions-member-editor-roles.png)
+![User repository permissions within an organization](../images/roles-and-permissions-member-editor-roles.png)
 
-### 组织管理权限
+### Organization management permissions
 
-下表列出了成员、编辑者、组织所有者和公司所有者角色的组织管理权限。
+The following table outlines organization management permissions for member, editor, organization owner, and company owner roles.
 
-| 权限                                                | 成员 | 编辑者 | 组织所有者 | 公司所有者 |
-| :-------------------------------------------------- | :--- | :----- | :--------- | :--------- |
-| 创建团队                                            | ❌   | ❌     | ✅         | ✅         |
-| 管理团队（包括删除）                                | ❌   | ❌     | ✅         | ✅         |
-| 配置组织设置（包括关联服务）                        | ❌   | ❌     | ✅         | ✅         |
-| 将组织添加到公司                                    | ❌   | ❌     | ✅         | ✅         |
-| 邀请成员                                            | ❌   | ❌     | ✅         | ✅         |
-| 管理成员                                            | ❌   | ❌     | ✅         | ✅         |
-| 管理成员角色和权限                                  | ❌   | ❌     | ✅         | ✅         |
-| 查看成员活动                                        | ❌   | ❌     | ✅         | ✅         |
-| 导出和报告                                          | ❌   | ❌     | ✅         | ✅         |
-| 镜像访问管理（Image Access Management）             | ❌   | ❌     | ✅         | ✅         |
-| 注册表访问管理（Registry Access Management）        | ❌   | ❌     | ✅         | ✅         |
-| 设置单点登录（SSO）和 SCIM                          | ❌   | ❌     | ✅ \*      | ✅         |
-| 要求 Docker Desktop 登录                            | ❌   | ❌     | ✅ \*      | ✅         |
-| 管理计费信息（例如，账单地址）                      | ❌   | ❌     | ✅         | ✅         |
-| 管理付款方式（例如，信用卡或发票）                  | ❌   | ❌     | ✅         | ✅         |
-| 查看计费历史                                        | ❌   | ❌     | ✅         | ✅         |
-| 管理订阅                                            | ❌   | ❌     | ✅         | ✅         |
-| 管理席位                                            | ❌   | ❌     | ✅         | ✅         |
-| 升级和降级计划                                      | ❌   | ❌     | ✅         | ✅         |
+| Permission                                                        | Member | Editor | Organization owner | Company owner |
+| :---------------------------------------------------------------- | :----- | :----- | :----------------- | :------------ |
+| Create teams                                                      | ❌     | ❌     | ✅                 | ✅            |
+| Manage teams (including delete)                                   | ❌     | ❌     | ✅                 | ✅            |
+| Configure the organization's settings (including linked services) | ❌     | ❌     | ✅                 | ✅            |
+| Add organizations to a company                                    | ❌     | ❌     | ✅                 | ✅            |
+| Invite members                                                    | ❌     | ❌     | ✅                 | ✅            |
+| Manage members                                                    | ❌     | ❌     | ✅                 | ✅            |
+| Manage member roles and permissions                               | ❌     | ❌     | ✅                 | ✅            |
+| View member activity                                              | ❌     | ❌     | ✅                 | ✅            |
+| Export and reporting                                              | ❌     | ❌     | ✅                 | ✅            |
+| Image Access Management                                           | ❌     | ❌     | ✅                 | ✅            |
+| Registry Access Management                                        | ❌     | ❌     | ✅                 | ✅            |
+| Set up Single Sign-On (SSO) and SCIM                              | ❌     | ❌     | ✅ \*              | ✅            |
+| Require Docker Desktop sign-in                                    | ❌     | ❌     | ✅ \*              | ✅            |
+| Manage billing information (for example, billing address)                 | ❌     | ❌     | ✅                 | ✅            |
+| Manage payment methods (for example, credit card or invoice)              | ❌     | ❌     | ✅                 | ✅            |
+| View billing history                                              | ❌     | ❌     | ✅                 | ✅            |
+| Manage subscriptions                                              | ❌     | ❌     | ✅                 | ✅            |
+| Manage seats                                                      | ❌     | ❌     | ✅                 | ✅            |
+| Upgrade and downgrade plans                                       | ❌     | ❌     | ✅                 | ✅            |
 
-_\* 如果不属于公司_
+_\* If not part of a company_
 
-### Docker Scout 权限
+### Docker Scout permissions
 
-下表列出了成员、编辑者和组织所有者角色的 Docker Scout 管理权限。
+The following table outlines Docker Scout management permissions for member, editor, and organization owner roles.
 
-| 权限                                            | 成员 | 编辑者 | 组织所有者 |
-| :---------------------------------------------- | :--- | :----- | :--------- |
-| 查看和比较分析结果                              | ✅   | ✅     | ✅         |
-| 上传分析记录                                    | ✅   | ✅     | ✅         |
-| 为仓库激活和停用 Docker Scout                   | ❌   | ✅     | ✅         |
-| 创建环境                                        | ❌   | ❌     | ✅         |
-| 管理注册表集成                                  | ❌   | ❌     | ✅         |
+| Permission                                            | Member | Editor | Organization owner |
+| :---------------------------------------------------- | :----- | :----- | :----------------- |
+| View and compare analysis results                     | ✅     | ✅     | ✅                 |
+| Upload analysis records                               | ✅     | ✅     | ✅                 |
+| Activate and deactivate Docker Scout for a repository | ❌     | ✅     | ✅                 |
+| Create environments                                   | ❌     | ❌     | ✅                 |
+| Manage registry integrations                          | ❌     | ❌     | ✅                 |
 
-### Docker Build Cloud 权限
+### Docker Build Cloud permissions
 
-下表列出了成员、编辑者和组织所有者角色的 Docker Build Cloud 管理权限。
+The following table outlines Docker Build Cloud management permissions for member, editor, and organization owner roles.
 
-| 权限                   | 成员 | 编辑者 | 组织所有者 |
-| ---------------------- | :--- | :----- | :--------- |
-| 使用云构建器           | ✅   | ✅     | ✅         |
-| 创建和移除构建器       | ✅   | ✅     | ✅         |
-| 配置构建器设置         | ✅   | ✅     | ✅         |
-| 购买分钟数             | ❌   | ❌     | ✅         |
-| 管理订阅               | ❌   | ❌     | ✅         |
+| Permission                   | Member | Editor | Organization owner |
+| ---------------------------- | :----- | :----- | :----------------- |
+| Use a cloud builder          | ✅     | ✅     | ✅                 |
+| Create and remove builders   | ✅     | ✅     | ✅                 |
+| Configure builder settings   | ✅     | ✅     | ✅                 |
+| Buy minutes                  | ❌     | ❌     | ✅                 |
+| Manage subscription          | ❌     | ❌     | ✅                 |

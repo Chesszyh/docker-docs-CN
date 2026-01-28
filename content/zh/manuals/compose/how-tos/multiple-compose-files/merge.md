@@ -1,40 +1,41 @@
 ---
-description: 合并 Compose 文件的工作原理
+description: How merging Compose files works
 keywords: compose, docker, merge, compose file
-title: 合并 Compose 文件
+title: Merge Compose files
 linkTitle: Merge
 weight: 10
 aliases:
 - /compose/multiple-compose-files/merge/
 ---
 
-Docker Compose 允许你合并和覆盖一组 Compose 文件以创建复合 Compose 文件。
+Docker Compose lets you merge and override a set of Compose files together to create a composite Compose file.
 
-默认情况下，Compose 读取两个文件，一个 `compose.yaml` 和一个可选的
-`compose.override.yaml` 文件。按照惯例，`compose.yaml`
-包含你的基础配置。覆盖文件可以
-包含现有服务的配置覆盖或全新的
-服务。
+By default, Compose reads two files, a `compose.yaml` and an optional
+`compose.override.yaml` file. By convention, the `compose.yaml`
+contains your base configuration. The override file can
+contain configuration overrides for existing services or entirely new
+services.
 
-如果在两个文件中都定义了一个服务，Compose 会使用
-下面描述的规则以及
-[Compose 规范](/reference/compose-file/merge.md)中的规则合并配置。
+If a service is defined in both files, Compose merges the configurations using
+the rules described below and in the 
+[Compose Specification](/reference/compose-file/merge.md).
 
-## 如何合并多个 Compose 文件
+## How to merge multiple Compose files
 
-要使用多个覆盖文件，或使用不同名称的覆盖文件，你
-可以使用预定义的 [COMPOSE_FILE](../environment-variables/envvars.md#compose_file) 环境变量，或使用 `-f` 选项指定文件列表。
+To use multiple override files, or an override file with a different name, you
+can either use the pre-defined [COMPOSE_FILE](../environment-variables/envvars.md#compose_file) environment variable, or use the `-f` option to specify the list of files. 
 
-Compose 按照命令行中指定的顺序合并文件。后续文件可以合并、覆盖或
-添加到它们的前置文件中。
+Compose merges files in
+the order they're specified on the command line. Subsequent files may merge, override, or
+add to their predecessors.
 
-例如：
+For example:
 
 ```console
 $ docker compose -f compose.yaml -f compose.admin.yaml run backup_db
 ```
 
-`compose.yaml` 文件可能指定了一个 `webapp` 服务。
+The `compose.yaml` file might specify a `webapp` service.
 
 ```yaml
 webapp:
@@ -45,7 +46,7 @@ webapp:
     - "/data"
 ```
 
-`compose.admin.yaml` 也可以指定这个相同的服务：
+The `compose.admin.yaml` may also specify this same service: 
 
 ```yaml
 webapp:
@@ -53,9 +54,9 @@ webapp:
     - DEBUG=1
 ```
 
-任何匹配的
-字段都会覆盖前一个文件。新值添加到 `webapp` 服务
-配置中：
+Any matching
+fields override the previous file. New values, add to the `webapp` service
+configuration:
 
 ```yaml
 webapp:
@@ -68,24 +69,26 @@ webapp:
     - DEBUG=1
 ```
 
-## 合并规则
+## Merging rules 
 
-- 路径相对于基础文件进行评估。当你使用多个 Compose 文件时，必须确保所有文件中的路径都相对于基础 Compose 文件（使用 `-f` 指定的第一个 Compose 文件）。这是必需的，因为覆盖文件不需要是
-有效的 Compose 文件。覆盖文件可以包含小的配置片段。
-跟踪服务的哪个片段相对于哪个路径是困难且
-令人困惑的，因此为了使路径更容易理解，所有路径必须相对于基础文件定义。
+- Paths are evaluated relative to the base file. When you use multiple Compose files, you must make sure all paths in the files are relative to the base Compose file (the first Compose file specified
+with `-f`). This is required because override files need not be valid
+Compose files. Override files can contain small fragments of configuration.
+Tracking which fragment of a service is relative to which path is difficult and
+confusing, so to keep paths easier to understand, all paths must be defined
+relative to the base file.
 
    >[!TIP]
    >
-   > 你可以使用 `docker compose config` 来查看合并后的配置并避免路径相关问题。
+   > You can use `docker compose config` to review your merged configuration and avoid path-related issues.
 
-- Compose 将原始服务的配置复制到本地服务。
-如果配置选项同时在原始服务和本地
-服务中定义，本地值会替换或扩展原始值。
+- Compose copies configurations from the original service over to the local one.
+If a configuration option is defined in both the original service and the local
+service, the local value replaces or extends the original value.
 
-   - 对于单值选项如 `image`、`command` 或 `mem_limit`，新值替换旧值。
+   - For single-value options like `image`, `command` or `mem_limit`, the new value replaces the old value.
 
-      原始服务：
+      original service:
 
       ```yaml
       services:
@@ -94,7 +97,7 @@ webapp:
           command: python app.py
       ```
 
-      本地服务：
+      local service:
 
       ```yaml
       services:
@@ -103,7 +106,7 @@ webapp:
           command: python otherapp.py
       ```
 
-      结果：
+      result:
 
       ```yaml
       services:
@@ -112,9 +115,9 @@ webapp:
           command: python otherapp.py
       ```
 
-   - 对于多值选项 `ports`、`expose`、`external_links`、`dns`、`dns_search` 和 `tmpfs`，Compose 连接两组值：
+   - For the multi-value options `ports`, `expose`, `external_links`, `dns`, `dns_search`, and `tmpfs`, Compose concatenates both sets of values:
 
-      原始服务：
+      original service:
 
       ```yaml
       services:
@@ -124,7 +127,7 @@ webapp:
             - "3000"
       ```
 
-      本地服务：
+      local service:
 
       ```yaml
       services:
@@ -135,7 +138,7 @@ webapp:
             - "5000"
       ```
 
-      结果：
+      result:
 
       ```yaml
       services:
@@ -147,9 +150,9 @@ webapp:
             - "5000"
       ```
 
-   - 对于 `environment`、`labels`、`volumes` 和 `devices`，Compose 将条目"合并"在一起，本地定义的值优先。对于 `environment` 和 `labels`，环境变量或标签名称决定使用哪个值：
+   - In the case of `environment`, `labels`, `volumes`, and `devices`, Compose "merges" entries together with locally defined values taking precedence. For `environment` and `labels`, the environment variable or label name determines which value is used:
 
-      原始服务：
+      original service:
 
       ```yaml
       services:
@@ -160,7 +163,7 @@ webapp:
             - BAR=original
       ```
 
-      本地服务：
+      local service:
 
       ```yaml
       services:
@@ -171,7 +174,7 @@ webapp:
             - BAZ=local
       ```
 
-     结果：
+     result:
 
       ```yaml
       services:
@@ -183,9 +186,9 @@ webapp:
             - BAZ=local
       ```
 
-   - `volumes` 和 `devices` 的条目使用容器中的挂载路径进行合并：
+   - Entries for `volumes` and `devices` are merged using the mount path in the container:
 
-      原始服务：
+      original service:
 
       ```yaml
       services:
@@ -196,7 +199,7 @@ webapp:
             - ./original:/bar
       ```
 
-      本地服务：
+      local service:
 
       ```yaml
       services:
@@ -207,7 +210,7 @@ webapp:
             - ./local:/baz
       ```
 
-      结果：
+      result:
 
       ```yaml
       services:
@@ -219,13 +222,13 @@ webapp:
             - ./local:/baz
       ```
 
-有关更多合并规则，请参阅 Compose 规范中的[合并和覆盖](/reference/compose-file/merge.md)。
+For more merging rules, see [Merge and override](/reference/compose-file/merge.md) in the Compose Specification. 
 
-### 附加信息
+### Additional information
 
-- 使用 `-f` 是可选的。如果未提供，Compose 会在工作目录及其父目录中搜索 `compose.yaml` 和 `compose.override.yaml` 文件。你至少必须提供 `compose.yaml` 文件。如果两个文件存在于同一目录级别，Compose 会将它们组合成单一配置。
+- Using `-f` is optional. If not provided, Compose searches the working directory and its parent directories for a `compose.yaml` and a `compose.override.yaml` file. You must supply at least the `compose.yaml` file. If both files exist on the same directory level, Compose combines them into a single configuration.
 
-- 你可以使用 `-f` 和 `-`（破折号）作为文件名从 `stdin` 读取配置。例如：
+- You can use a `-f` with `-` (dash) as the filename to read the configuration from `stdin`. For example: 
    ```console
    $ docker compose -f - <<EOF
      webapp:
@@ -238,14 +241,14 @@ webapp:
         - DEBUG=1
      EOF
    ```
+   
+   When `stdin` is used, all paths in the configuration are relative to the current working directory.
+   
+- You can use the `-f` flag to specify a path to a Compose file that is not located in the current directory, either from the command line or by setting up a [COMPOSE_FILE environment variable](../environment-variables/envvars.md#compose_file) in your shell or in an environment file.
 
-   当使用 `stdin` 时，配置中的所有路径都相对于当前工作目录。
+   For example, if you are running the [Compose Rails sample](https://github.com/docker/awesome-compose/tree/master/official-documentation-samples/rails/README.md), and have a `compose.yaml` file in a directory called `sandbox/rails`. You can use a command like [docker compose pull](/reference/cli/docker/compose/pull.md) to get the postgres image for the `db` service from anywhere by using the `-f` flag as follows: `docker compose -f ~/sandbox/rails/compose.yaml pull db`
 
-- 你可以使用 `-f` 标志指定不在当前目录中的 Compose 文件的路径，可以从命令行或通过在 shell 或环境文件中设置 [COMPOSE_FILE 环境变量](../environment-variables/envvars.md#compose_file)。
-
-   例如，如果你正在运行 [Compose Rails 示例](https://github.com/docker/awesome-compose/tree/master/official-documentation-samples/rails/README.md)，并且在名为 `sandbox/rails` 的目录中有一个 `compose.yaml` 文件。你可以使用如下命令 [docker compose pull](/reference/cli/docker/compose/pull.md) 通过使用 `-f` 标志从任何地方获取 `db` 服务的 postgres 镜像：`docker compose -f ~/sandbox/rails/compose.yaml pull db`
-
-   这是完整的示例：
+   Here's the full example:
 
    ```console
    $ docker compose -f ~/sandbox/rails/compose.yaml pull db
@@ -268,14 +271,15 @@ webapp:
    Status: Downloaded newer image for postgres:latest
    ```
 
-## 示例
+## Example
 
-多文件的一个常见用例是为类似生产环境
-（可能是生产、预发布或 CI 环境）更改开发 Compose 应用。
-为了支持这些差异，你可以将 Compose 配置拆分为
-几个不同的文件：
+A common use case for multiple files is changing a development Compose app
+for a production-like environment (which may be production, staging or CI).
+To support these differences, you can split your Compose configuration into
+a few different files:
 
-从一个定义服务规范配置的基础文件开始。
+Start with a base file that defines the canonical configuration for the
+services.
 
 `compose.yaml`
 
@@ -294,8 +298,8 @@ services:
     image: redis:latest
 ```
 
-在这个示例中，开发配置向主机公开一些端口，
-将我们的代码作为卷挂载，并构建 web 镜像。
+In this example the development configuration exposes some ports to the
+host, mounts our code as a volume, and builds the web image.
 
 `compose.override.yaml`
 
@@ -320,10 +324,10 @@ services:
       - 6379:6379
 ```
 
-当你运行 `docker compose up` 时，它会自动读取覆盖。
+When you run `docker compose up` it reads the overrides automatically.
 
-要在生产环境中使用此 Compose 应用，需要创建另一个覆盖文件，该文件可能存储在不同的 git
-仓库中或由不同的团队管理。
+To use this Compose app in a production environment, another override file is created, which might be stored in a different git
+repository or managed by a different team.
 
 `compose.prod.yaml`
 
@@ -340,22 +344,23 @@ services:
       TTL: '500'
 ```
 
-要使用此生产 Compose 文件部署，你可以运行
+To deploy with this production Compose file you can run
 
 ```console
 $ docker compose -f compose.yaml -f compose.prod.yaml up -d
 ```
 
-这使用 `compose.yaml` 和 `compose.prod.yaml` 中的配置部署所有三个服务，但不使用 `compose.override.yaml` 中的
-开发配置。
+This deploys all three services using the configuration in
+`compose.yaml` and `compose.prod.yaml` but not the
+dev configuration in `compose.override.yaml`.
 
-有关更多信息，请参阅[在生产环境中使用 Compose](../production.md)。
+For more information, see [Using Compose in production](../production.md). 
 
-## 限制
+## Limitations
 
-Docker Compose 支持应用程序模型中包含的许多资源的相对路径：服务镜像的构建上下文、定义环境变量的文件位置、绑定挂载卷中使用的本地目录路径。
-有了这样的约束，在单体仓库中的代码组织可能变得困难，因为自然的选择是为每个团队或组件设置专用文件夹，但这样 Compose 文件的相对路径就变得无关紧要了。
+Docker Compose supports relative paths for the many resources to be included in the application model: build context for service images, location of file defining environment variables, path to a local directory used in a bind-mounted volume.
+With such a constraint, code organization in a monorepo can become hard as a natural choice would be to have dedicated folders per team or component, but then the Compose files relative paths become irrelevant. 
 
-## 参考信息
+## Reference information
 
-- [合并规则](/reference/compose-file/merge.md)
+- [Merge rules](/reference/compose-file/merge.md)

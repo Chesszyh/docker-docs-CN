@@ -1,50 +1,69 @@
 ---
-title: GitHub Actions 构建摘要
+title: GitHub Actions build summary
 linkTitle: Build summary
-description: 通过 GitHub Actions 获取 Docker 构建的概览
+description: Get an overview of your Docker Builds with GitHub Actions
 keywords: github actions, gha, build, summary, annotation
 ---
 
-Docker 用于构建和推送镜像的 GitHub Actions 会为您的构建生成作业摘要，概述执行过程和使用的材料：
+Docker's GitHub Actions for building and pushing images generate a job summary
+for your build that outlines the execution and materials used:
 
-- 显示使用的 Dockerfile、构建持续时间和缓存利用率的摘要
-- 构建的输入，如构建参数、标签、标注和构建上下文
-- 对于使用 [Bake](../../bake/_index.md) 的构建，会显示完整的 bake 定义
+- A summary showing the Dockerfile used, the build duration, and cache utilization
+- Inputs for the build, such as build arguments, tags, labels, and build contexts
+- For builds with [Bake](../../bake/_index.md), the full bake definition for the build
 
-![GitHub Actions 构建摘要](../images/gha_build_summary.png)
+![A GitHub Actions build summary](../images/gha_build_summary.png)
 
-如果您使用以下版本的 [Build and push Docker images](https://github.com/marketplace/actions/build-and-push-docker-images) 或 [Docker Buildx Bake](https://github.com/marketplace/actions/docker-buildx-bake) GitHub Actions，Docker 构建的作业摘要会自动出现：
+Job summaries for Docker builds appear automatically if you use the following
+versions of the [Build and push Docker images](https://github.com/marketplace/actions/build-and-push-docker-images)
+or [Docker Buildx Bake](https://github.com/marketplace/actions/docker-buildx-bake)
+GitHub Actions:
 
 - `docker/build-push-action@v6`
 - `docker/bake-action@v6`
 
-要查看作业摘要，请在作业完成后在 GitHub 中打开作业的详情页面。摘要对于失败和成功的构建都可用。对于失败的构建，摘要还会显示导致构建失败的错误消息：
+To view the job summary, open the details page for the job in GitHub after the
+job has finished. The summary is available for both failed and successful
+builds. In the case of a failed build, the summary also displays the error
+message that caused the build to fail:
 
-![构建摘要错误消息](../images/build_summary_error.png)
+![Builds summary error message](../images/build_summary_error.png)
 
-## 将构建记录导入 Docker Desktop
+## Import build records to Docker Desktop
 
 {{< summary-bar feature_name="Import builds" >}}
 
-作业摘要包含一个用于下载该运行的构建记录存档的链接。构建记录存档是一个 ZIP 文件，包含关于构建（如果使用 `docker/bake-action` 构建多个目标，则包含多个构建）的详细信息。您可以将此构建记录存档导入 Docker Desktop，这为您提供了一个强大的图形界面，可通过 [Docker Desktop **Builds** 视图](/manuals/desktop/use-desktop/builds.md)进一步分析构建的性能。
+The job summary includes a link for downloading a build record archive for the
+run. The build record archive is a ZIP file containing the details about a build
+(or builds, if you use `docker/bake-action` to build multiple targets). You can
+import this build record archive into Docker Desktop, which gives you a
+powerful, graphical interface for further analyzing the build's performance via
+the [Docker Desktop **Builds** view](/manuals/desktop/use-desktop/builds.md).
 
-要将构建记录存档导入 Docker Desktop：
+To import the build record archive into Docker Desktop:
 
-1. 下载并安装 [Docker Desktop](/get-started/get-docker.md)。
+1. Download and install [Docker Desktop](/get-started/get-docker.md).
 
-2. 从 GitHub Actions 中的作业摘要下载构建记录存档。
+2. Download the build record archive from the job summary in GitHub Actions.
 
-3. 在 Docker Desktop 中打开 **Builds** 视图。
+3. Open the **Builds** view in Docker Desktop.
 
-4. 选择 **Import build** 按钮，然后浏览您下载的 `.zip` 存档作业摘要。或者，您可以在打开导入构建对话框后将构建记录存档 ZIP 文件拖放到 Docker Desktop 窗口中。
+4. Select the **Import build** button, and then browse for the `.zip` archive
+   job summary that you downloaded. Alternatively, you can drag-and-drop the
+   build record archive ZIP file onto the Docker Desktop window after opening
+   the import build dialog.
 
-5. 选择 **Import** 来添加构建记录。
+5. Select **Import** to add the build records.
 
-几秒钟后，GitHub Actions 运行中的构建将出现在 Builds 视图的 **Completed builds** 选项卡下。要检查构建并查看所有输入、结果、构建步骤和缓存利用率的详细视图，请选择列表中的项目。
+After a few seconds, the builds from the GitHub Actions run appear under the
+**Completed builds** tab in the Builds view. To inspect a build and see a
+detailed view of all the inputs, results, build steps, and cache utilization,
+select the item in the list.
 
-## 禁用作业摘要
+## Disable job summary
 
-要禁用作业摘要，请在构建步骤的 YAML 配置中设置 `DOCKER_BUILD_SUMMARY` 环境变量：
+To disable job summaries, set the `DOCKER_BUILD_SUMMARY` environment variable
+in the YAML configuration for your build step:
 
 ```yaml {hl_lines=4}
       - name: Build
@@ -56,9 +75,11 @@ Docker 用于构建和推送镜像的 GitHub Actions 会为您的构建生成作
           labels: ${{ steps.meta.outputs.labels }}
 ```
 
-## 禁用构建记录上传
+## Disable build record upload
 
-要禁用将构建记录存档上传到 GitHub，请在构建步骤的 YAML 配置中设置 `DOCKER_BUILD_RECORD_UPLOAD` 环境变量：
+To disable the upload of the build record archive to GitHub, set the
+`DOCKER_BUILD_RECORD_UPLOAD` environment variable in the YAML configuration for
+your build step:
 
 ```yaml {hl_lines=4}
       - name: Build
@@ -70,11 +91,14 @@ Docker 用于构建和推送镜像的 GitHub Actions 会为您的构建生成作
           labels: ${{ steps.meta.outputs.labels }}
 ```
 
-使用此配置，构建摘要仍会生成，但不包含下载构建记录存档的链接。
+With this configuration, the build summary is still generated, but does not
+contain a link to download the build record archive.
 
-## 限制
+## Limitations
 
-以下情况目前不支持构建摘要：
+Build summaries are currently not supported for:
 
-- 使用 [Docker Build Cloud](/manuals/build-cloud/_index.md) 的构建。计划在未来版本中支持 Docker Build Cloud。
-- 托管在 GitHub Enterprise Servers 上的仓库。摘要只能在托管于 GitHub.com 上的仓库中查看。
+- Builds using [Docker Build Cloud](/manuals/build-cloud/_index.md). Support for Docker
+  Build Cloud is planned for a future release.
+- Repositories hosted on GitHub Enterprise Servers. Summaries can only be
+  viewed for repositories hosted on GitHub.com.

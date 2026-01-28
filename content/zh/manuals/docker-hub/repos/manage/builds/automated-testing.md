@@ -1,7 +1,7 @@
 ---
-description: 自动测试
+description: Automated tests
 keywords: Automated, testing, repository
-title: 仓库自动测试
+title: Automated repository tests
 weight: 30
 aliases:
 - /docker-hub/builds/automated-testing/
@@ -9,18 +9,26 @@ aliases:
 
 > [!NOTE]
 >
-> 自动构建需要 Docker Pro、Team 或 Business 订阅。
+> Automated builds require a
+> Docker Pro, Team, or Business subscription.
 
-Docker Hub 可以使用容器自动测试您源代码仓库的更改。您可以在任何 Docker Hub 仓库上启用 `Autotest`（自动测试），对源代码仓库的每个拉取请求运行测试，从而创建持续集成测试服务。
+Docker Hub can automatically test changes to your source code repositories
+using containers. You can enable `Autotest` on any Docker Hub repository
+to run tests on each pull request to the source code repository to create a
+continuous integration testing service.
 
-启用 `Autotest` 会为测试目的构建镜像，但不会自动将构建的镜像推送到 Docker 仓库。如果您想将构建的镜像推送到 Docker Hub 仓库，请启用[自动构建](index.md)。
+Enabling `Autotest` builds an image for testing purposes, but does not
+automatically push the built image to the Docker repository. If you want to push
+built images to your Docker Hub repository, enable [Automated Builds](index.md).
 
-## 设置自动测试文件
+## Set up automated test files
 
-要设置自动测试，请创建一个 `docker-compose.test.yml` 文件，其中定义一个 `sut` 服务来列出要运行的测试。
-`docker-compose.test.yml` 文件应位于包含用于构建镜像的 Dockerfile 的同一目录中。
+To set up your automated tests, create a `docker-compose.test.yml` file which
+defines a `sut` service that lists the tests to be run.
+The `docker-compose.test.yml` file should be located in the same directory that
+contains the Dockerfile used to build the image.
 
-例如：
+For example:
 
 ```yaml
 services:
@@ -29,63 +37,88 @@ services:
     command: run_tests.sh
 ```
 
-上面的示例构建仓库，并使用构建的镜像在容器内运行 `run_tests.sh` 文件。
+The previous example builds the repository, and runs the `run_tests.sh` file inside
+a container using the built image.
 
-您可以在此文件中定义任意数量的链接服务。唯一的要求是必须定义 `sut`。它的返回码决定测试是否通过。如果 `sut` 服务返回 `0`，则测试通过，否则测试失败。
+You can define any number of linked services in this file. The only requirement
+is that `sut` is defined. Its return code determines if tests passed or not.
+Tests pass if the `sut` service returns `0`, and fail otherwise.
+
+> [!NOTE]
+> 
+> Only the `sut` service and all other services listed in
+> [`depends_on`](/reference/compose-file/services.md#depends_on) are
+> started. If you have services that poll for changes in other services, be sure
+> to include the polling services in the [`depends_on`](/reference/compose-file/services.md#depends_on)
+> list to make sure all of your services start.
+
+You can define more than one `docker-compose.test.yml` file if needed. Any file
+that ends in `.test.yml` is used for testing, and the tests run sequentially.
+You can also use [custom build hooks](advanced.md#override-build-test-or-push-commands)
+to further customize your test behavior.
 
 > [!NOTE]
 >
-> 只有 `sut` 服务以及 [`depends_on`](/reference/compose-file/services.md#depends_on) 中列出的所有其他服务会被启动。如果您有轮询其他服务变化的服务，请确保将轮询服务包含在 [`depends_on`](/reference/compose-file/services.md#depends_on) 列表中，以确保所有服务都能启动。
+> If you enable automated builds, they also run any tests defined
+in the `test.yml` files.
 
-如果需要，您可以定义多个 `docker-compose.test.yml` 文件。任何以 `.test.yml` 结尾的文件都用于测试，测试按顺序运行。
-您还可以使用[自定义构建钩子](advanced.md#override-build-test-or-push-commands)来进一步自定义测试行为。
+## Enable automated tests on a repository
 
-> [!NOTE]
->
-> 如果您启用了自动构建，它们也会运行 `test.yml` 文件中定义的任何测试。
+To enable testing on a source code repository, you must first create an
+associated build-repository in Docker Hub. Your `Autotest` settings are
+configured on the same page as [automated builds](index.md), however
+you do not need to enable autobuilds to use autotest. Autobuild is enabled per
+branch or tag, and you do not need to enable it at all.
 
-## 在仓库上启用自动测试
+Only branches that are configured to use autobuild push images to the
+Docker repository, regardless of the Autotest settings.
 
-要在源代码仓库上启用测试，您必须首先在 Docker Hub 中创建一个关联的构建仓库。您的 `Autotest` 设置在与[自动构建](index.md)相同的页面上配置，但是您不需要启用自动构建就可以使用自动测试。自动构建是按分支或标签启用的，您完全不需要启用它。
+1. Sign in to Docker Hub and select **My Hub** > **Repositories**.
 
-只有配置为使用自动构建的分支才会将镜像推送到 Docker 仓库，无论 Autotest 设置如何。
+2. Select the repository you want to enable `Autotest` on.
 
-1. 登录 Docker Hub 并选择 **My Hub** > **Repositories**。
+3. From the repository view, select the **Builds** tab.
 
-2. 选择您想要启用 `Autotest` 的仓库。
+4. Select **Configure automated builds**.
 
-3. 从仓库视图中，选择 **Builds** 选项卡。
+5. Configure the automated build settings as explained in [Automated builds](index.md).
 
-4. 选择 **Configure automated builds**。
+    At minimum you must configure:
 
-5. 按照[自动构建](index.md)中的说明配置自动构建设置。
+    * The source code repository
+    * The build location
+    * At least one build rule
 
-    至少您必须配置：
+6. Choose your **Autotest** option.
 
-    * 源代码仓库
-    * 构建位置
-    * 至少一个构建规则
+    The following options are available:
 
-6. 选择您的 **Autotest** 选项。
+    * `Off`: No additional test builds. Tests only run if they're configured
+    as part of an automated build.
 
-    可用的选项如下：
+    * `Internal pull requests`: Run a test build for any pull requests
+    to branches that match a build rule, but only when the pull request comes
+    from the same source repository.
 
-    * `Off`：不进行额外的测试构建。仅当测试被配置为自动构建的一部分时才运行测试。
-
-    * `Internal pull requests`：对匹配构建规则的分支的任何拉取请求运行测试构建，但仅当拉取请求来自同一源仓库时。
-
-    * `Internal and external pull requests`：对匹配构建规则的分支的任何拉取请求运行测试构建，包括拉取请求来自外部源仓库的情况。
+    * `Internal and external pull requests`: Run a test build for any
+    pull requests to branches that match a build rule, including when the
+    pull request originated in an external source repository.
 
     > [!IMPORTANT]
     >
-    >出于安全目的，公共仓库上的外部拉取请求的自动测试受到限制。私有镜像不会被拉取，Docker Hub 中定义的环境变量也不可用。自动构建继续正常工作。
+    >For security purposes, autotest on external pull requests is
+    limited on public repositories. Private images are not pulled and
+    environment variables defined in Docker Hub are not
+    available. Automated builds continue to work as usual.
 
-7. 选择 **Save** 保存设置，或选择 **Save and build** 保存并运行初始测试。
+7. Select **Save** to save the settings, or select **Save and build** to save and
+run an initial test.
 
-## 检查测试结果
+## Check your test results
 
-在仓库的详情页面中，选择 **Timeline**。
+From the repository's details page, select **Timeline**.
 
-从此选项卡，您可以查看仓库的任何待处理、进行中、成功和失败的构建及测试运行。
+From this tab you can see any pending, in-progress, successful, and failed
+builds and test runs for the repository.
 
-您可以选择任何时间线条目来查看每次测试运行的日志。
+You can choose any timeline entry to view the logs for each test run.

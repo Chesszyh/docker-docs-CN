@@ -1,69 +1,90 @@
 ---
-title: 管理账户
+title: Manage an account
 weight: 20
-description: 了解如何管理您 Docker 账户的设置。
+description: Learn how to manage settings for your Docker account.
 keywords: accounts, docker ID, account settings, account management, docker home
 ---
 
-您可以使用 Docker Home 集中管理您的 Docker 账户设置。在这里，您还可以对账户执行管理操作并管理账户安全。
+You can centrally manage your Docker account settings using Docker Home. Here
+you can also take administrative actions for your account and manage your
+account security.
 
 > [!TIP]
 >
-> 如果您的账户与强制执行单点登录（SSO）的组织关联，您可能没有权限更新账户设置。您必须联系管理员来更新您的设置。
+> If your account is associated with an organization that enforces single
+> sign-on (SSO), you may not have permissions to update your account settings.
+> You must contact your administrator to update your settings.
 
-## 更新常规设置
+## Update general settings
 
-1. 登录您的 [Docker 账户](https://app.docker.com/login)。
-2. 选择右上角的头像，然后选择 **Account settings**。
+1. Sign in to your [Docker account](https://app.docker.com/login).
+2. Select your avatar in the top-right corner and select **Account settings**.
 
-从账户设置页面，您可以执行以下任何操作。
+From the Account settings page, you can take any of the following actions.
 
-### 更新账户信息
+### Update account information
 
-账户信息在 Docker Hub 的账户个人资料中可见。您可以更新以下账户信息：
+Account information is visible on your account profile in Docker Hub. You can
+update the following account information:
 
-- 全名（Full name）
-- 公司（Company）
-- 位置（Location）
-- 网站（Website）
-- Gravatar 电子邮件：要为您的 Docker 账户添加头像，请创建一个 [Gravatar 账户](https://gravatar.com/)并创建您的头像。然后，将您的 Gravatar 电子邮件添加到 Docker 账户设置中。您的头像可能需要一些时间才能在 Docker 中更新。
+- Full name
+- Company
+- Location
+- Website
+- Gravatar email: To add an avatar to your Docker account, create a
+[Gravatar account](https://gravatar.com/) and create your avatar. Next, add your
+Gravatar email to your Docker account settings. It may take some time for your
+avatar to update in Docker.
 
-在此处进行更改，然后选择 **Save** 保存您的设置。
+Make your changes here, then select **Save** to save your settings.
 
-### 更新电子邮件地址
+### Update email address
 
-要更新您的电子邮件地址，选择 **Email**：
+To update your email address, select **Email**:
 
-1. 输入您的新电子邮件地址。
-2. 输入您的密码以确认更改。
-3. 选择 **Send verification email** 向您的新电子邮件地址发送验证邮件。
+1. Enter your new email address.
+2. Enter your password to confirm the change.
+3. Select **Send verification email** to send a verification email to your new
+email address.
 
-验证电子邮件地址后，您的账户信息将会更新。
+Once you verify your email address, your account information will update.
 
-### 更改密码
+### Change your password
 
-您可以通过电子邮件发起密码重置来更改密码。
+You can change your password by initiating a password reset via email.
 
-要更改密码，选择 **Password**，然后选择 **Reset password**。按照密码重置邮件中的说明操作。
+To change your password, select **Password** and then **Reset password**.
+Follow the instructions in the password reset email.
 
-## 管理安全设置
+## Manage security settings
 
-要更新双重身份验证（2FA）设置，选择 **2FA**。有关账户双重身份验证（2FA）的信息，请参阅[启用双重身份验证](../security/for-developers/2fa/_index.md)以开始使用。
+To update your two-factor authentication (2FA) settings, select **2FA**.
+For information on two-factor authentication (2FA) for your account, see
+[Enable two-factor authentication](../security/for-developers/2fa/_index.md)
+to get started.
 
-要管理个人访问令牌，选择 **Personal access tokens**。有关个人访问令牌的信息，请参阅[创建和管理访问令牌](../security/for-developers/access-tokens.md)。
+To manage personal access tokens, select **Personal access tokens**.
+For information on personal access tokens, see
+[Create and manage access tokens](../security/for-developers/access-tokens.md).
 
-## 管理关联账户
+## Manage connected accounts
 
-您可以使用账户设置页面取消关联与 Docker 账户关联的 Google 或 GitHub 账户：
+You can unlink Google or GitHub accounts that are linked to your Docker account
+using the Account settings page:
 
-1. 选择 **Connected accounts**。
-2. 在您的关联账户上选择 **Disconnect**。
-3. 要完全取消关联您的 Docker 账户，您还必须从 Google 或 GitHub 取消关联 Docker。有关更多信息，请参阅 Google 或 GitHub 的文档：
-    - [管理 Google 账户与第三方之间的连接](https://support.google.com/accounts/answer/13533235?hl=en)
-    - [审查和撤销 GitHub Apps 的授权](https://docs.github.com/en/apps/using-github-apps/reviewing-and-revoking-authorization-of-github-apps)
+1. Select **Connected accounts**.
+2. Select **Disconnect** on your connected account.
+3. To fully unlink your Docker account, you must also unlink Docker from Google
+or GitHub. See Google or GitHub's documentation for more information:
+    - [Manage connections between your Google Account and third-parties](https://support.google.com/accounts/answer/13533235?hl=en)
+    - [Reviewing and revoking authorization of GitHub Apps](https://docs.github.com/en/apps/using-github-apps/reviewing-and-revoking-authorization-of-github-apps)
 
-## 账户管理
+## Account management
 
-要将您的账户转换为组织，选择 **Convert**。有关转换账户的更多信息，请参阅[将账户转换为组织](../admin/organization/convert-account.md)。
+To convert your account into an organization, select **Convert**.
+For more information on converting your account, see
+[Convert an account into an organization](../admin/organization/convert-account.md).
 
-要停用您的账户，选择 **Deactivate**。有关停用账户的信息，请参阅[停用用户账户](./deactivate-user-account.md)。
+To deactivate your account, select **Deactivate**.
+For information on deactivating your account, see
+[Deactivating a user account](./deactivate-user-account.md).

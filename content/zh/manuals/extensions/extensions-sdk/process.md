@@ -1,55 +1,55 @@
 ---
-description: 了解创建扩展的流程。
-title: 构建和发布流程
+description: Understand the process of creating an extension.
+title: The build and publish process
 keyword: Docker Extensions, sdk, build, create, publish
 aliases:
  - /desktop/extensions-sdk/process/
 weight: 10
 ---
 
-本文档的结构与创建扩展时需要采取的步骤相匹配。
+This documentation is structured so that it matches the steps you need to take when creating your extension. 
 
-创建 Docker 扩展主要有两个部分：
+There are two main parts to creating a Docker extension:
 
-1. 构建基础
-2. 发布扩展
+1. Build the foundations
+2. Publish the extension
 
 > [!NOTE]
 >
-> 创建 Docker 扩展不需要付费。[Docker Extension SDK](https://www.npmjs.com/package/@docker/extension-api-client) 采用 Apache 2.0 许可证，可免费使用。任何人都可以创建新扩展并无限制地分享。
->
-> 对于每个扩展应该如何授权也没有限制，这由您在创建新扩展时自行决定。
+> You do not need to pay to create a Docker extension. The [Docker Extension SDK](https://www.npmjs.com/package/@docker/extension-api-client) is licensed under the Apache 2.0 License and is free to use. Anyone can create new extensions and share them without constraints.
+> 
+> There is also no constraint on how each extension should be licensed, this is up to you to decide when creating a new extension.
 
-## 第一部分：构建基础
+## Part one: Build the foundations
 
-构建流程包括：
+The build process consists of:
 
-- 安装最新版本的 Docker Desktop。
-- 设置包含文件的目录，包括扩展的源代码和所需的扩展特定文件。
-- 创建 `Dockerfile` 以在 Docker Desktop 中构建、发布和运行您的扩展。
-- 配置元数据文件，这是镜像文件系统根目录所必需的。
-- 构建和安装扩展。
+- Installing the latest version of Docker Desktop.
+- Setting up the directory with files, including the extension’s source code and the required extension-specific files.
+- Creating the `Dockerfile` to build, publish, and run your extension in Docker Desktop.
+- Configuring the metadata file which is required at the root of the image filesystem.
+- Building and installing the extension.
 
-如需更多灵感，请参阅 [samples 文件夹](https://github.com/docker/extensions-sdk/tree/main/samples)中的其他示例。
+For further inspiration, see the other examples in the [samples folder](https://github.com/docker/extensions-sdk/tree/main/samples).
 
 > [!TIP]
 >
-> 在创建扩展时，请确保遵循[设计](design/design-guidelines.md)和 [UI 样式](design/_index.md)指南，以确保视觉一致性和 [AA 级无障碍标准](https://www.w3.org/WAI/WCAG2AA-Conformance)。
+> Whilst creating your extension, make sure you follow the [design](design/design-guidelines.md) and [UI styling](design/_index.md) guidelines to ensure visual consistency and [level AA accessibility standards](https://www.w3.org/WAI/WCAG2AA-Conformance).
 
-## 第二部分：发布和分发您的扩展
+## Part two: Publish and distribute your extension
 
-Docker Desktop 在扩展市场中显示已发布的扩展。扩展市场是一个精选空间，开发者可以在这里发现改善开发体验的扩展，并上传自己的扩展与全世界分享。
+Docker Desktop displays published extensions in the Extensions Marketplace. The Extensions Marketplace is a curated space where developers can discover extensions to improve their developer experience and upload their own extension to share with the world.
 
-如果您想将扩展发布到市场，请阅读[发布文档](extensions/publish.md)。
+If you want your extension published in the Marketplace, read the [publish documentation](extensions/publish.md).
 
 {{% include "extensions-form.md" %}}
 
-## 下一步
+## What’s next?
 
-如果您想快速开始创建 Docker 扩展，请参阅[快速入门指南](quickstart.md)。
+If you want to get up and running with creating a Docker Extension, see the [Quickstart guide](quickstart.md).
 
-或者，从阅读"第一部分：构建"部分开始，获取有关扩展创建过程每个步骤的更深入信息。
+Alternatively, get started with reading the "Part one: Build" section for more in-depth information about each step of the extension creation process.
 
-有关完整构建过程的深入教程，我们推荐以下来自 DockerCon 2022 的视频演示。
+For an in-depth tutorial of the entire build process, we recommend the following video walkthrough from DockerCon 2022.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/Yv7OG-EGJsg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>

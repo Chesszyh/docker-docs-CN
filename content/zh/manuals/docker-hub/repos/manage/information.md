@@ -1,125 +1,159 @@
 ---
-description: 了解如何描述和优化您的 Docker Hub 仓库以提高可发现性。
+description: Learn how to describe and optimize your Docker Hub repositories for better discoverability.
 keywords: Docker Hub, Hub, repository information, repository discoverability, best practices
-title: 仓库信息
+title: Repository information
 toc_max: 3
 weight: 40
 aliases:
 - /docker-hub/repos/categories/
 ---
 
-每个仓库都可以包含描述、概述和类别，以帮助用户了解其用途和使用方法。添加清晰的仓库信息可确保其他人能够找到您的镜像并有效地使用它们。
+Each repository can include a description, an overview, and categories to help
+users understand its purpose and usage. Adding clear repository information
+ensures that others can find your images and use them effectively.
 
-您只能修改未归档仓库的仓库信息。如果仓库已归档，您必须先取消归档才能修改信息。有关更多详情，请参阅[取消归档仓库](../archive.md#unarchive-a-repository)。
+You can only modify the repository information of repositories that aren't
+archived. If a repository is archived, you must unarchive it to modify the
+information. For more details, see [Unarchive a repository](../archive.md#unarchive-a-repository).
 
-## 仓库描述
+## Repository description
 
-描述会出现在使用 `docker search` 命令的搜索结果中以及 Docker Hub 的搜索结果中。
+The description appears in search results when using the `docker search` command
+and in the search results on Docker Hub.
 
-请考虑以下仓库描述最佳实践。
+Consider the following repository description best practices.
 
-- 总结用途。以简洁具体的方式清楚说明镜像的功能。如果它是用于特定应用程序、工具或平台，或具有独特的用例，请明确说明。
-- 突出关键功能或优势。简要提及区分该镜像的主要优势或独特功能。例如高性能、易于使用、轻量级构建，或与特定框架或操作系统的兼容性。
-- 包含相关关键词。使用用户可能搜索的关键词来提高可见性，例如技术栈、用例或环境。
-- 保持简洁。描述最多可以有 100 个字符。尽量将描述控制在一到两句话以内，以确保在搜索结果中易于阅读。用户应该能够快速了解镜像的价值。
-- 关注受众。考虑您的目标受众（开发人员、系统管理员等），并编写直接满足他们需求的描述。
+- Summarize the purpose. Clearly state what the image does in a concise and
+  specific manner. Make it clear if it's for a particular application, tool, or
+  platform, or has a distinct use case.
+- Highlight key features or benefits. Briefly mention the primary benefits or
+  unique features that differentiate the image. Examples include high
+  performance, ease of use, lightweight build, or compatibility with specific
+  frameworks or operating systems.
+- Include relevant keywords. Use keywords that users may search for to increase
+  visibility, such as technology stacks, use cases, or environments.
+- Keep it concise. The description can be a maximum of 100 characters. Aim to
+  stay within one or two sentences for the description to ensure it's easy to
+  read in search results. Users should quickly understand the image's value.
+- Focus on the audience. Consider your target audience (developers, system
+  administrators, etc.) and write the description to address their needs
+  directly.
 
-遵循这些做法可以帮助使描述在搜索结果中更具吸引力和效果，为您的仓库带来更多相关流量。
+Following these practices can help make the description more engaging and
+effective in search results, driving more relevant traffic to your repository.
 
-### 添加或更新仓库描述
+### Add or update a repository description
 
-1. 登录 [Docker Hub](https://hub.docker.com)。
+1. Sign in to [Docker Hub](https://hub.docker.com).
 
-2. 选择 **My Hub** > **Repositories**。
+2. Select **My Hub** > **Repositories**.
 
-   您的仓库列表会出现。
+   A list of your repositories appears.
 
-3. 选择一个仓库。
+3. Select a repository.
 
-   仓库的 **General** 页面会出现。
+   The **General** page for the repository appears.
 
-4. 选择描述字段下的铅笔图标。
+4. Select the pencil icon under the description field.
 
-5. 指定描述。
+5. Specify a description.
 
-   描述最长可达 100 个字符。
+   The description can be up to 100 characters long.
 
-6. 选择 **Update**。
+6. Select **Update**.
 
-## 仓库概述
+## Repository overview
 
-概述描述您的镜像是什么以及如何运行它。当仓库至少有一个镜像时，它会显示在仓库的公共视图中。如果启用了自动构建，概述将在每次成功构建时从源代码仓库的 `README.md` 文件同步。
+An overview describes what your image does and how to run it. It displays in the
+public view of your repository when the repository has at least one image. If
+automated builds are enabled, the overview will be synced from the source code
+repository's `README.md` file on each successful build.
 
-请考虑以下仓库概述最佳实践。
+Consider the following repository overview best practices.
 
-- 描述镜像是什么、它提供的功能以及为什么应该使用它。可以包含使用示例或项目背后的团队。
-- 解释如何开始使用镜像运行容器。您可以包含在 Dockerfile 中使用镜像的最小示例。
-- 列出使用的关键镜像变体和标签，以及变体的用例。
-- 链接到文档或支持站点、社区或邮件列表以获取额外资源。
-- 提供镜像维护者的联系信息。
-- 包含镜像的许可证以及在需要时可以找到更多详情的位置。
+- Describe what the image is, the features it offers, and why it should be used.
+  Can include examples of usage or the team behind the project.
+- Explain how to get started with running a container using the image. You can
+  include a minimal example of how to use the image in a Dockerfile.
+- List the key image variants and tags to use them, as well as use cases for the
+  variants.
+- Link to documentation or support sites, communities, or mailing lists for
+  additional resources.
+- Provide contact information for the image maintainers.
+- Include the license for the image and where to find more details if needed.
 
-### 添加或更新仓库概述
+### Add or update a repository overview
 
-1. 登录 [Docker Hub](https://hub.docker.com)。
+1. Sign in to [Docker Hub](https://hub.docker.com).
 
-2. 选择 **My Hub** > **Repositories**。
+2. Select **My Hub** > **Repositories**.
 
-   您的仓库列表会出现。
+   A list of your repositories appears.
 
-3. 选择一个仓库。
+3. Select a repository.
 
-   仓库的 **General** 页面会出现。
+   The **General** page for the repository appears.
 
-4. 在 **Repository overview** 下，选择 **Edit** 或 **Add overview**。
+4. Under **Repository overview**, select **Edit** or **Add overview**.
 
-   会出现 **Write** 和 **Preview** 标签。
+   The **Write** and **Preview** tabs appear.
 
-5. 在 **Write** 下，指定您的仓库概述。
+5. Under **Write**, specify your repository overview.
 
-   您可以使用基本的 Markdown 并使用 **Preview** 标签预览格式。
+   You can use basic Markdown and use the **Preview** tab to preview the formatting.
 
-6. 选择 **Update**。
+6. Select **Update**.
 
-## 仓库类别
+## Repository categories
 
-您可以为 Docker Hub 仓库添加类别标签，代表镜像的主要预期用例。这让用户可以更轻松地找到和探索他们感兴趣的问题域的内容。
+You can tag Docker Hub repositories with categories, representing the primary
+intended use cases for your images. This lets users more easily find and
+explore content for the problem domain that they're interested in.
 
-### 可用类别
+### Available categories
 
-Docker Hub 内容团队维护着一个精选的类别列表。
+The Docker Hub content team maintains a curated list of categories.
 
 {{% include "hub-categories.md" %}}
 
-### 自动生成的类别
+### Auto-generated categories
 
 > [!NOTE]
 >
-> 自动生成的类别仅适用于 Docker Verified Publishers 和 Docker-Sponsored Open Source 计划参与者。
+> Auto-generated categories only apply to Docker Verified Publishers and
+> Docker-Sponsored Open Source program participants.
 
-对于在 Docker Hub 类别功能之前创建的仓库，已使用 OpenAI 根据仓库标题和描述自动生成并应用了类别。
+For repositories that pre-date the Categories feature in Docker Hub,
+categories have been automatically generated and applied, using OpenAI, based
+on the repository title and description.
 
-作为已被自动分类的仓库的所有者，如果您认为类别不准确，可以手动编辑类别。请参阅[管理仓库类别](#管理仓库类别)。
+As an owner of a repository that has been auto-categorized, you can manually
+edit the categories if you think they're inaccurate. See [Manage categories for
+a repository](#manage-categories-for-a-repository).
 
-自动生成分类是一次性工作，旨在帮助为在该功能存在之前创建的仓库添加类别。新仓库不会自动分配类别。
+The auto-generated categorization was a one-time effort to help seed categories
+onto repositories created before the feature existed. Categories are not
+assigned to new repositories automatically.
 
-### 管理仓库类别
+### Manage categories for a repository
 
-您最多可以为仓库添加三个类别标签。
+You can tag a repository with up to three categories.
 
-要编辑仓库的类别：
+To edit the categories of a repository:
 
-1. 登录 [Docker Hub](https://hub.docker.com)。
-2. 选择 **My Hub** > **Repositories**。
+1. Sign in to [Docker Hub](https://hub.docker.com).
+2. Select **My Hub** > **Repositories**.
 
-   您的仓库列表会出现。
+   A list of your repositories appears.
 
-3. 选择一个仓库。
+3. Select a repository.
 
-   仓库的 **General** 页面会出现。
+   The **General** page for the repository appears.
 
-4. 选择描述字段下的铅笔图标。
-5. 选择您想要应用的类别。
-6. 选择 **Update**。
+4. Select the pencil icon under the description field.
+5. Select the categories you want to apply.
+6. Select **Update**.
 
-如果您缺少某个类别，请使用[反馈链接](https://docker.qualtrics.com/jfe/form/SV_03CrMyAkCWVylKu)告诉我们您希望看到哪些类别。
+If you're missing a category, use the
+[Give feedback link](https://docker.qualtrics.com/jfe/form/SV_03CrMyAkCWVylKu)
+to let us know what categories you'd like to see.

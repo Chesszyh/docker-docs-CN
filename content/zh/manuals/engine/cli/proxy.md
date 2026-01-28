@@ -8,31 +8,36 @@ aliases:
   - /network/proxy/
 ---
 
-本页面介绍如何通过容器中的环境变量配置 Docker CLI 使用代理。
+This page describes how to configure the Docker CLI to use proxies via
+environment variables in containers.
 
-本页面不介绍如何为 Docker Desktop 配置代理。
-有关说明，请参阅[配置 Docker Desktop 使用 HTTP/HTTPS 代理](/manuals/desktop/settings-and-maintenance/settings.md#proxies)。
+This page doesn't describe how to configure proxies for Docker Desktop.
+For instructions, see [configuring Docker Desktop to use HTTP/HTTPS proxies](/manuals/desktop/settings-and-maintenance/settings.md#proxies).
 
-如果您在没有 Docker Desktop 的情况下运行 Docker Engine，请参阅
-[配置 Docker 守护进程使用代理](/manuals/engine/daemon/proxy.md)
-以了解如何为 Docker 守护进程 (`dockerd`) 本身配置代理服务器。
+If you're running Docker Engine without Docker Desktop, refer to
+[Configure the Docker daemon to use a proxy](/manuals/engine/daemon/proxy.md)
+to learn how to configure a proxy server for the Docker daemon (`dockerd`) itself.
 
-如果您的容器需要使用 HTTP、HTTPS 或 FTP 代理服务器，您可以通过不同的方式进行配置：
+If your container needs to use an HTTP, HTTPS, or FTP proxy server, you can
+configure it in different ways:
 
-- [配置 Docker 客户端](#configure-the-docker-client)
-- [使用 CLI 设置代理](#set-proxy-using-the-cli)
+- [Configure the Docker client](#configure-the-docker-client)
+- [Set proxy using the CLI](#set-proxy-using-the-cli)
 
 > [!NOTE]
 >
-> 不幸的是，没有标准定义 Web 客户端应该如何处理代理环境变量，或定义它们的格式。
+> Unfortunately, there's no standard that defines how web clients should handle proxy 
+> environment variables, or the format for defining them.
 >
-> 如果您对这些变量的历史感兴趣，请查看 GitLab 团队关于此主题的博客文章：
-> [We need to talk: Can we standardize NO_PROXY?](https://about.gitlab.com/blog/2021/01/27/we-need-to-talk-no-proxy/)。
+> If you're interested in the history of these variables, check out this blog
+> post on the subject, by the GitLab team:
+> [We need to talk: Can we standardize NO_PROXY?](https://about.gitlab.com/blog/2021/01/27/we-need-to-talk-no-proxy/).
 
-## 配置 Docker 客户端
+## Configure the Docker client
 
-您可以使用位于 `~/.docker/config.json` 的 JSON 配置文件为 Docker 客户端添加代理配置。
-构建和容器使用此文件中指定的配置。
+You can add proxy configurations for the Docker client using a JSON
+configuration file, located in `~/.docker/config.json`.
+Builds and containers use the configuration specified in this file.
 
 ```json
 {
@@ -48,30 +53,43 @@ aliases:
 
 > [!WARNING]
 >
-> 代理设置可能包含敏感信息。例如，一些代理服务器要求在其 URL 中包含身份验证信息，或者其地址可能会暴露您公司环境的 IP 地址或主机名。
+> Proxy settings may contain sensitive information. For example, some proxy servers
+> require authentication information to be included in their URL, or their
+> address may expose IP-addresses or hostnames of your company's environment.
 >
-> 环境变量以纯文本形式存储在容器的配置中，因此可以通过远程 API 检查或在使用 `docker commit` 时提交到镜像中。
+> Environment variables are stored as plain text in the container's configuration,
+> and as such can be inspected through the remote API or committed to an image
+> when using `docker commit`.
 
-配置在保存文件后生效，您不需要重启 Docker。但是，配置仅适用于新容器和构建，不影响现有容器。
+The configuration becomes active after saving the file, you don't need to
+restart Docker. However, the configuration only applies to new containers and
+builds, and doesn't affect existing containers.
 
-下表描述了可用的配置参数。
+The following table describes the available configuration parameters.
 
-| 属性         | 描述                                                                                |
+| Property     | Description                                                                         |
 | :----------- | :---------------------------------------------------------------------------------- |
-| `httpProxy`  | 设置 `HTTP_PROXY` 和 `http_proxy` 环境变量和构建参数。                              |
-| `httpsProxy` | 设置 `HTTPS_PROXY` 和 `https_proxy` 环境变量和构建参数。                            |
-| `ftpProxy`   | 设置 `FTP_PROXY` 和 `ftp_proxy` 环境变量和构建参数。                                |
-| `noProxy`    | 设置 `NO_PROXY` 和 `no_proxy` 环境变量和构建参数。                                  |
-| `allProxy`   | 设置 `ALL_PROXY` 和 `all_proxy` 环境变量和构建参数。                                |
+| `httpProxy`  | Sets the `HTTP_PROXY` and `http_proxy` environment variables and build arguments.   |
+| `httpsProxy` | Sets the `HTTPS_PROXY` and `https_proxy` environment variables and build arguments. |
+| `ftpProxy`   | Sets the `FTP_PROXY` and `ftp_proxy` environment variables and build arguments.     |
+| `noProxy`    | Sets the `NO_PROXY` and `no_proxy` environment variables and build arguments.       |
+| `allProxy`   | Sets the `ALL_PROXY` and `all_proxy` environment variables and build arguments.     |
 
-这些设置用于为容器配置代理环境变量，而不是用作 Docker CLI 或 Docker Engine 本身的代理设置。
-请参阅[环境变量](/reference/cli/docker/#environment-variables)和[配置 Docker 守护进程使用代理服务器](/manuals/engine/daemon/proxy.md)部分，以配置 CLI 和守护进程的代理设置。
+These settings are used to configure proxy environment variables for containers
+only, and not used as proxy settings for the Docker CLI or the Docker Engine
+itself.
+Refer to the [environment variables](/reference/cli/docker/#environment-variables)
+and [configure the Docker daemon to use a proxy server](/manuals/engine/daemon/proxy.md)
+sections for configuring proxy settings for the CLI and daemon.
 
-### 使用代理配置运行容器
+### Run containers with a proxy configuration
 
-当您启动容器时，其代理相关的环境变量会被设置为反映 `~/.docker/config.json` 中的代理配置。
+When you start a container, its proxy-related environment variables are set
+to reflect your proxy configuration in `~/.docker/config.json`.
 
-例如，假设代理配置如[前面部分](#configure-the-docker-client)中的示例所示，您运行的容器的环境变量设置如下：
+For example, assuming a proxy configuration like the example
+shown in the [earlier section](#configure-the-docker-client), environment
+variables for containers that you run are set as follows:
 
 ```console
 $ docker run --rm alpine sh -c 'env | grep -i  _PROXY'
@@ -83,11 +101,15 @@ no_proxy=*.test.example.com,.example.org,127.0.0.0/8
 NO_PROXY=*.test.example.com,.example.org,127.0.0.0/8
 ```
 
-### 使用代理配置进行构建
+### Build with a proxy configuration
 
-当您调用构建时，代理相关的构建参数会根据 Docker 客户端配置文件中的代理设置自动预填充。
+When you invoke a build, proxy-related build arguments are pre-populated
+automatically, based on the proxy settings in your Docker client configuration
+file.
 
-假设代理配置如[前面部分](#configure-the-docker-client)中的示例所示，在构建期间环境设置如下：
+Assuming a proxy configuration like the example shown in the
+[earlier section](#configure-the-docker-client), environment
+are set as follows during builds:
 
 ```console
 $ docker build \
@@ -110,12 +132,16 @@ EOF
 #5 DONE 0.1s
 ```
 
-### 为每个守护进程配置代理设置
+### Configure proxy settings per daemon
 
-`~/.docker/config.json` 中 `proxies` 下的 `default` 键为客户端连接的所有守护进程配置代理设置。
-要为各个守护进程配置代理，请使用守护进程的地址代替 `default` 键。
+The `default` key under `proxies` in `~/.docker/config.json` configures the proxy
+settings for all daemons that the client connects to.
+To configure the proxies for individual daemons,
+use the address of the daemon instead of the `default` key.
 
-以下示例同时配置了默认代理配置，以及地址为 `tcp://docker-daemon1.example.com` 的 Docker 守护进程的 no-proxy 覆盖：
+The following example configures both a default proxy config,
+and a no-proxy override for the Docker daemon on address
+`tcp://docker-daemon1.example.com`:
 
 ```json
 {
@@ -132,28 +158,34 @@ EOF
 }
 ```
 
-## 使用 CLI 设置代理
+## Set proxy using the CLI
 
-您可以在调用 `docker build` 和 `docker run` 命令时在命令行上指定代理配置，而不是[配置 Docker 客户端](#configure-the-docker-client)。
+Instead of [configuring the Docker client](#configure-the-docker-client),
+you can specify proxy configurations on the command-line when you invoke the
+`docker build` and `docker run` commands.
 
-命令行上的代理配置对于构建使用 `--build-arg` 标志，对于要使用代理运行容器时使用 `--env` 标志。
+Proxy configuration on the command-line uses the `--build-arg` flag for builds,
+and the `--env` flag for when you want to run containers with a proxy.
 
 ```console
 $ docker build --build-arg HTTP_PROXY="http://proxy.example.com:3128" .
 $ docker run --env HTTP_PROXY="http://proxy.example.com:3128" redis
 ```
 
-有关可以与 `docker build` 命令一起使用的所有代理相关构建参数的列表，请参阅
-[预定义 ARG](/reference/dockerfile.md#predefined-args)。
-这些代理值仅在构建容器中可用。
-它们不包含在构建输出中。
+For a list of all the proxy-related build arguments that you can use with the
+`docker build` command, see
+[Predefined ARGs](/reference/dockerfile.md#predefined-args).
+These proxy values are only available in the build container.
+They're not included in the build output.
 
-## 代理作为构建的环境变量
+## Proxy as environment variable for builds
 
-不要使用 `ENV` Dockerfile 指令为构建指定代理设置。
-请改用构建参数。
+Don't use the `ENV` Dockerfile instruction to specify proxy settings for builds.
+Use build arguments instead.
 
-使用环境变量设置代理会将配置嵌入到镜像中。
-如果代理是内部代理，从该镜像创建的容器可能无法访问它。
+Using environment variables for proxies embeds the configuration into the image.
+If the proxy is an internal proxy, it might not be accessible for containers
+created from that image.
 
-将代理设置嵌入镜像也会带来安全风险，因为这些值可能包含敏感信息。
+Embedding proxy settings in images also poses a security risk, as the values
+may include sensitive information.

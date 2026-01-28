@@ -1,111 +1,160 @@
 ---
-description: 了解如何在管理控制台中管理域名和用户
+description: Learn how to manage domains and users in the Admin Console
 keywords: domain management, security, identify users, manage users
-title: 域名管理
+title: Domain management
 weight: 55
 ---
 
 {{< summary-bar feature_name="Domain management" >}}
 
-域名管理（Domain management）允许您添加和验证域名，并为用户启用自动配置（auto-provisioning）。当用户使用与已验证域名匹配的电子邮件地址登录时，自动配置会将用户添加到您的组织。
+Domain management lets you add and verify domains, and enable
+auto-provisioning for users. Auto-provisioning adds users to your
+organization when they sign in with an email address that matches a verified
+domain.
 
-这简化了用户管理，确保一致的安全设置，并降低了未受管用户在没有可见性或控制的情况下访问 Docker 的风险。
+This simplifies user management, ensures consistent security settings, and
+reduces the risk of unmanaged users accessing Docker without visibility
+or control.
 
-## 添加域名
+## Add a domain
 
-1. 登录 [Docker Home](https://app.docker.com) 并选择您的组织。如果您的组织属于某个公司，请选择该公司并在公司级别为组织配置域名。
-1. 选择 **Admin Console**，然后选择 **Domain management**。
-1. 选择 **Add a domain**。
-1. 输入您的域名并选择 **Add domain**。
-1. 在弹出的模态框中，复制 **TXT Record Value** 以验证您的域名。
+1. Sign in to [Docker Home](https://app.docker.com) and select
+your organization. If your organization is part of a company, select the company
+and configure the domain for the organization at the company level.
+1. Select **Admin Console**, then **Domain management**.
+1. Select **Add a domain**.
+1. Enter your domain and select **Add domain**.
+1. In the pop-up modal, copy the **TXT Record Value** to verify your domain.
 
-## 验证域名
+## Verify a domain
 
-验证域名可确认您拥有该域名。要进行验证，请使用 Docker 提供的值将 TXT 记录添加到您的域名系统（DNS）主机。该值用于证明所有权并指示您的 DNS 发布该记录。
+Verifying your domain confirms that you own it. To verify, add a TXT record to
+your Domain Name System (DNS) host using the value provided by Docker. This
+value proves ownership and instructs your DNS to publish the record.
 
-DNS 更改可能需要最多 72 小时才能生效。一旦识别到更改，Docker 会自动检查记录并确认所有权。
+It can take up to 72 hours for the DNS change to propagate. Docker automatically
+checks for the record and confirms ownership once the change is recognized.
 
-请按照您的 DNS 提供商的文档添加 **TXT Record Value**。如果您的提供商未在下面列出，请使用其他提供商的步骤。
+Follow your DNS provider’s documentation to add the **TXT Record Value**. If
+your provider isn't listed, use the steps for other providers.
 
 > [!TIP]
 >
-> 记录名称字段决定 TXT 记录在您的域名中添加的位置（根域名或子域名）。通常，添加记录名称时请参考以下提示：
+> The record name field determines where the TXT record is added in your domain
+(root or subdomain). In general, refer to the following tips for
+adding a record name:
 >
-> - 对于 `example.com` 等根域名，根据您的提供商，使用 `@` 或将记录名称留空。
-> - 不要输入 `docker`、`docker-verification`、`www` 或您的域名等值。这些值可能会指向错误的位置。
+> - Use `@` or leave the record name empty for root domains like `example.com`,
+depending on your provider.
+> - Don't enter values like `docker`, `docker-verification`, `www`, or your
+domain name. These values may direct to the wrong place.
 >
-> 请查阅您的 DNS 提供商文档以验证记录名称要求。
+> Check your DNS provider's documentation to verify record name requirements.
 
 {{< tabs >}}
 {{< tab name="AWS Route 53" >}}
 
-1. 要将 TXT 记录添加到 AWS，请参阅 [Creating records by using the Amazon Route 53 console](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resource-record-sets-creating.html)。
-1. TXT 记录验证可能需要 72 小时。等待 TXT 记录验证完成后，返回[管理控制台](https://app.docker.com/admin)的 **Domain management** 页面，在您的域名旁边选择 **Verify**。
+1. To add your TXT record to AWS, see [Creating records by using the Amazon Route 53 console](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resource-record-sets-creating.html).
+1. TXT record verification can take 72 hours. Once you have waited for
+TXT record verification, return to the **Domain management** page of the
+[Admin Console](https://app.docker.com/admin) and select **Verify** next to
+your domain name.
 
 {{< /tab >}}
 {{< tab name="Google Cloud DNS" >}}
 
-1. 要将 TXT 记录添加到 Google Cloud DNS，请参阅 [Verifying your domain with a TXT record](https://cloud.google.com/identity/docs/verify-domain-txt)。
-1. TXT 记录验证可能需要 72 小时。等待 TXT 记录验证完成后，返回[管理控制台](https://app.docker.com/admin)的 **Domain management** 页面，在您的域名旁边选择 **Verify**。
+1. To add your TXT record to Google Cloud DNS, see [Verifying your domain with a TXT record](https://cloud.google.com/identity/docs/verify-domain-txt).
+1. TXT record verification can take 72 hours. Once you have waited for TXT
+record verification, return to the **Domain management** page of the
+[Admin Console](https://app.docker.com/admin) and select **Verify** next to
+your domain name.
 
 {{< /tab >}}
 {{< tab name="GoDaddy" >}}
 
-1. 要将 TXT 记录添加到 GoDaddy，请参阅 [Add a TXT record](https://www.godaddy.com/help/add-a-txt-record-19232)。
-1. TXT 记录验证可能需要 72 小时。等待 TXT 记录验证完成后，返回[管理控制台](https://app.docker.com/admin)的 **Domain management** 页面，在您的域名旁边选择 **Verify**。
+1. To add your TXT record to GoDaddy, see [Add a TXT record](https://www.godaddy.com/help/add-a-txt-record-19232).
+1. TXT record verification can take 72 hours. Once you have waited for TXT
+record verification, return to the **Domain management** page of the
+[Admin Console](https://app.docker.com/admin) and select **Verify** next to your
+domain name.
 
 {{< /tab >}}
 {{< tab name="Other providers" >}}
 
-1. 登录您的域名主机。
-1. 将 TXT 记录添加到您的 DNS 设置并保存记录。
-1. TXT 记录验证可能需要 72 小时。等待 TXT 记录验证完成后，返回[管理控制台](https://app.docker.com/admin)的 **Domain management** 页面，在您的域名旁边选择 **Verify**。
+1. Sign in to your domain host.
+1. Add a TXT record to your DNS settings and save the record.
+1. TXT record verification can take 72 hours. Once you have waited for TXT
+record verification, return to the **Domain management** page of the
+[Admin Console](https://app.docker.com/admin) and select **Verify** next to
+your domain name.
 
 {{< /tab >}}
 {{< /tabs >}}
 
-## 删除域名
+## Delete a domain
 
-删除域名会移除已分配的 TXT 记录值。要删除域名：
+Deleting a domain removes the assigned TXT record value. To delete a domain:
 
-1. 登录 [Docker Home](https://app.docker.com) 并选择您的组织。如果您的组织属于某个公司，请选择该公司并在公司级别为组织配置域名。
-1. 选择 **Admin Console**，然后选择 **Domain management**。
-1. 对于要删除的域名，选择 **Actions** 菜单，然后选择 **Delete domain**。
-1. 要确认，请在弹出的模态框中选择 **Delete domain**。
+1. Sign in to [Docker Home](https://app.docker.com) and select
+your organization. If your organization is part of a company, select the company
+and configure the domain for the organization at the company level.
+1. Select **Admin Console**, then **Domain management**.
+1. For the domain you want to delete, section the **Actions** menu, then
+**Delete domain**.
+1. To confirm, select **Delete domain** in the pop-up modal.
 
-## 自动配置
+## Auto-provisioning
 
-您必须先添加并验证域名，然后才能启用自动配置。这可以确认您的组织拥有该域名。一旦域名通过验证，Docker 可以自动将匹配的用户与您的组织关联。自动配置不需要 SSO 连接。
+You must add and verify a domain before enabling auto-provisioning. This
+confirms your organization owns the domain. Once a domain is verified,
+Docker can automatically associate matching users with your organization.
+Auto-provisioning does not require an SSO connection.
 
 > [!IMPORTANT]
 >
-> 对于属于 SSO 连接的域名，即时配置（Just-in-Time，JIT）会覆盖自动配置来将用户添加到组织。
+> For domains that are part of an SSO connection, Just-in-Time (JIT) overrides
+auto-provisioning to add users to an organization.
 
-### 工作原理
+### How it works
 
-当为已验证的域名启用自动配置后，下次用户使用与您已验证域名关联的电子邮件地址登录 Docker 时，他们会自动被添加到您的组织。自动配置不会为新用户创建账户，它会将现有的未关联用户添加到您的组织。用户*不会*体验到任何登录或用户体验方面的变化。
+When auto-provisioning is enabled for a verified domain, the next time a user
+signs into Docker with an email address that is associated with your verified
+domain, they are automatically added to your organization. Auto-provisioning
+does not create accounts for new users, it adds existing unassociated users to
+your organization. Users will *not* experience any sign in or user experience
+changes.
 
-当新用户被自动配置时，公司和组织所有者将收到电子邮件通知，告知有新用户已添加到其组织。如果您需要为组织添加更多席位以容纳新用户，请参阅[管理席位](/manuals/subscription/manage-seats.md)。
+When a new user is auto-provisioned, company and organization owners will
+receive an email notifying them that a new user has been added to their
+organization. If you need to add more seats to your organization to
+to accomodate new users, see [Manage seats](/manuals/subscription/manage-seats.md).
 
-### 启用自动配置
+### Enable auto-provisioning
 
-自动配置按用户启用。要启用自动配置：
+Auto-provisioning is enabled per user. To enable
+auto-provisioning:
 
-1. 登录 [Docker Home](https://app.docker.com) 并选择您的组织。如果您的组织属于某个公司，请选择该公司并在公司级别为组织配置域名。
-1. 选择 **Admin Console**，然后选择 **Domain management**。
-1. 在要为其启用自动配置的用户旁边选择 **Actions menu**。
-1. 选择 **Enable auto-provisioning**。
-1. 可选。如果在公司级别启用自动配置，请为用户选择一个组织。
-1. 选择 **Enable** 确认。
+1. Sign in to [Docker Home](https://app.docker.com) and select
+your organization. If your organization is part of a company, select the company
+and configure the domain for the organization at the company level.
+1. Select **Admin Console**, then **Domain management**.
+1. Select the **Actions menu** next to the user you want to enable
+auto-provisioning for.
+1. Select **Enable auto-provisioning**.
+1. Optional. If enabling auto-provisioning at the company level, select an
+organization for the user.
+1. Select **Enable** to confirm.
 
-**Auto-provisioning** 列将更新为 **Enabled**。
+The **Auto-provisioning** column will update to **Enabled**.
 
-### 禁用自动配置
+### Disable auto-provisioning
 
-要为用户禁用自动配置：
+To disable auto-provisioning for a user:
 
-1. 登录 [Docker Home](https://app.docker.com) 并选择您的组织。如果您的组织属于某个公司，请选择该公司并在公司级别为组织配置域名。
-1. 选择 **Admin Console**，然后选择 **Domain management**。
-1. 在您的用户旁边选择 **Actions menu**。
-1. 选择 **Disable auto-provisioning**。
-1. 选择 **Disable**。
+1. Sign in to [Docker Home](https://app.docker.com) and select
+your organization. If your organization is part of a company, select the company
+and configure the domain for the organization at the company level.
+1. Select **Admin Console**, then **Domain management**.
+1. Select the **Actions menu** next to your user.
+1. Select **Disable auto-provisioning**.
+1. Select **Disable**.

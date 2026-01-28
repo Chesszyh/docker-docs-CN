@@ -1,25 +1,39 @@
 ---
 description: Use the routing mesh to publish services externally to a swarm
 keywords: guide, swarm mode, swarm, network, ingress, routing mesh
-title: 使用 Swarm 模式路由网格
+title: Use Swarm mode routing mesh
 ---
 
-Docker Engine Swarm 模式使得将服务端口发布到 swarm 外部资源变得容易。所有节点都参与 ingress 路由网格。路由网格使 swarm 中的每个节点都能在已发布端口上接受 swarm 中任何服务的连接，即使该节点上没有运行任务。路由网格将所有传入请求路由到可用节点上的活动容器上的已发布端口。
+Docker Engine Swarm mode makes it easy to publish ports for services to make
+them available to resources outside the swarm. All nodes participate in an
+ingress routing mesh. The routing mesh enables each node in the swarm to
+accept connections on published ports for any service running in the swarm, even
+if there's no task running on the node. The routing mesh routes all
+incoming requests to published ports on available nodes to an active container.
 
-要在 swarm 中使用 ingress 网络，您需要在启用 Swarm 模式之前在 swarm 节点之间打开以下端口：
+To use the ingress network in the swarm, you need to have the following
+ports open between the swarm nodes before you enable Swarm mode:
 
-* 端口 `7946` TCP/UDP，用于容器网络发现。
-* 端口 `4789` UDP（可配置），用于容器 ingress 网络。
+* Port `7946` TCP/UDP for container network discovery.
+* Port `4789` UDP (configurable) for the container ingress network.
 
-在 Swarm 中设置网络时，应特别注意。请参阅[教程](swarm-tutorial/_index.md#open-protocols-and-ports-between-the-hosts)以获取概述。
+When setting up networking in a Swarm, special care should be taken. Consult
+the [tutorial](swarm-tutorial/_index.md#open-protocols-and-ports-between-the-hosts)
+for an overview.
 
-您还必须在 swarm 节点和任何需要访问该端口的外部资源（如外部负载均衡器）之间打开已发布的端口。
+You must also open the published port between the swarm nodes and any external
+resources, such as an external load balancer, that require access to the port.
 
-您还可以为给定服务[绕过路由网格](#bypass-the-routing-mesh)。
+You can also [bypass the routing mesh](#bypass-the-routing-mesh) for a given
+service.
 
-## 为服务发布端口
+## Publish a port for a service
 
-创建服务时使用 `--publish` 标志来发布端口。`target` 用于指定容器内的端口，`published` 用于指定要绑定到路由网格上的端口。如果省略 `published` 端口，则会为每个服务任务绑定一个随机的高端口号。您需要检查任务以确定端口。
+Use the `--publish` flag to publish a port when you create a service. `target`
+is used to specify the port inside the container, and `published` is used to
+specify the port to bind on the routing mesh. If you leave off the `published`
+port, a random high-numbered port is bound for each service task. You
+need to inspect the task to determine the port.
 
 ```console
 $ docker service create \
@@ -30,11 +44,18 @@ $ docker service create \
 
 > [!NOTE]
 >
-> 此语法的旧形式是用冒号分隔的字符串，其中已发布端口在前，目标端口在后，例如 `-p 8080:80`。新语法更受推荐，因为它更易于阅读并允许更大的灵活性。
+> The older form of this syntax is a colon-separated string, where
+> the published port is first and the target port is second, such as
+> `-p 8080:80`. The new syntax is preferred because it is easier to read and
+> allows more flexibility.
 
-`<PUBLISHED-PORT>` 是 swarm 使服务可用的端口。如果省略它，则会绑定一个随机的高端口号。`<CONTAINER-PORT>` 是容器监听的端口。此参数是必需的。
+The `<PUBLISHED-PORT>` is the port where the swarm makes the service available.
+If you omit it, a random high-numbered port is bound.
+The `<CONTAINER-PORT>` is the port where the container listens. This parameter
+is required.
 
-例如，以下命令将 nginx 容器中的端口 80 发布到 swarm 中任何节点的端口 8080：
+For example, the following command publishes port 80 in the nginx container to
+port 8080 for any node in the swarm:
 
 ```console
 $ docker service create \
@@ -44,13 +65,19 @@ $ docker service create \
   nginx
 ```
 
-当您访问任何节点上的端口 8080 时，Docker 会将您的请求路由到活动容器。在 swarm 节点本身上，端口 8080 实际上可能没有被绑定，但路由网格知道如何路由流量并防止任何端口冲突发生。
+When you access port 8080 on any node, Docker routes your request to an active
+container. On the swarm nodes themselves, port 8080 may not actually be bound,
+but the routing mesh knows how to route the traffic and prevents any port
+conflicts from happening.
 
-路由网格在分配给节点的任何 IP 地址上的已发布端口上监听。对于外部可路由的 IP 地址，该端口可从主机外部访问。对于所有其他 IP 地址，访问仅在主机内可用。
+The routing mesh listens on the published port for any IP address assigned to
+the node. For externally routable IP addresses, the port is available from
+outside the host. For all other IP addresses the access is only available from
+within the host.
 
 ![Service ingress image](images/ingress-routing-mesh.webp)
 
-您可以使用以下命令为现有服务发布端口：
+You can publish a port for an existing service using the following command:
 
 ```console
 $ docker service update \
@@ -58,7 +85,9 @@ $ docker service update \
   <SERVICE>
 ```
 
-您可以使用 `docker service inspect` 查看服务的已发布端口。例如：
+You can use `docker service inspect` to view the service's published port. For
+instance:
+
 
 ```console
 $ docker service inspect --format="{{json .Endpoint.Spec.Ports}}" my-web
@@ -66,15 +95,21 @@ $ docker service inspect --format="{{json .Endpoint.Spec.Ports}}" my-web
 [{"Protocol":"tcp","TargetPort":80,"PublishedPort":8080}]
 ```
 
-输出显示容器的 `<CONTAINER-PORT>`（标记为 `TargetPort`）和节点为服务监听请求的 `<PUBLISHED-PORT>`（标记为 `PublishedPort`）。
 
-### 仅发布 TCP 端口或仅发布 UDP 端口
+The output shows the `<CONTAINER-PORT>` (labeled `TargetPort`) from the containers and the
+`<PUBLISHED-PORT>` (labeled `PublishedPort`) where nodes listen for requests for the service.
 
-默认情况下，当您发布端口时，它是 TCP 端口。您可以专门发布 UDP 端口，而不是或除了 TCP 端口。当您同时发布 TCP 和 UDP 端口时，如果省略协议说明符，端口将作为 TCP 端口发布。如果使用较长的语法（推荐），请将 `protocol` 键设置为 `tcp` 或 `udp`。
+### Publish a port for TCP only or UDP only
 
-#### 仅 TCP
+By default, when you publish a port, it is a TCP port. You can
+specifically publish a UDP port instead of or in addition to a TCP port. When
+you publish both TCP and UDP ports, if you omit the protocol specifier,
+the port is published as a TCP port. If you use the longer syntax (recommended),
+set the `protocol` key to either `tcp` or `udp`.
 
-长语法：
+#### TCP only
+
+Long syntax:
 
 ```console
 $ docker service create --name dns-cache \
@@ -82,7 +117,7 @@ $ docker service create --name dns-cache \
   dns-cache
 ```
 
-短语法：
+Short syntax:
 
 ```console
 $ docker service create --name dns-cache \
@@ -90,9 +125,9 @@ $ docker service create --name dns-cache \
   dns-cache
 ```
 
-#### TCP 和 UDP
+#### TCP and UDP
 
-长语法：
+Long syntax:
 
 ```console
 $ docker service create --name dns-cache \
@@ -101,7 +136,7 @@ $ docker service create --name dns-cache \
   dns-cache
 ```
 
-短语法：
+Short syntax:
 
 ```console
 $ docker service create --name dns-cache \
@@ -110,9 +145,9 @@ $ docker service create --name dns-cache \
   dns-cache
 ```
 
-#### 仅 UDP
+#### UDP only
 
-长语法：
+Long syntax:
 
 ```console
 $ docker service create --name dns-cache \
@@ -120,7 +155,7 @@ $ docker service create --name dns-cache \
   dns-cache
 ```
 
-短语法：
+Short syntax:
 
 ```console
 $ docker service create --name dns-cache \
@@ -128,17 +163,34 @@ $ docker service create --name dns-cache \
   dns-cache
 ```
 
-## 绕过路由网格
+## Bypass the routing mesh
 
-默认情况下，发布端口的 swarm 服务使用路由网格来实现。当您连接到任何 swarm 节点上的已发布端口时（无论它是否运行给定服务），您都会被透明地重定向到运行该服务的工作节点。实际上，Docker 充当 swarm 服务的负载均衡器。
+By default, swarm services which publish ports do so using the routing mesh.
+When you connect to a published port on any swarm node (whether it is running a
+given service or not), you are redirected to a worker which is running that
+service, transparently. Effectively, Docker acts as a load balancer for your
+swarm services.
 
-您可以绕过路由网格，这样当您访问给定节点上的绑定端口时，您始终访问该节点上运行的服务实例。这称为 `host` 模式。有几点需要注意。
+You can bypass the routing mesh, so that when you access the bound port on a
+given node, you are always accessing the instance of the service running on
+that node. This is referred to as `host` mode. There are a few things to keep
+in mind.
 
-- 如果您访问未运行服务任务的节点，则该服务不会在该端口上监听。可能什么都没有监听，或者完全不同的应用程序在监听。
+- If you access a node which is not running a service task, the service does not
+  listen on that port. It is possible that nothing is listening, or
+  that a completely different application is listening.
 
-- 如果您期望在每个节点上运行多个服务任务（例如，当您有 5 个节点但运行 10 个副本时），则无法指定静态目标端口。要么让 Docker 分配一个随机的高端口号（通过省略 `published`），要么通过使用全局服务而不是复制服务或使用放置约束来确保每个给定节点上只运行一个服务实例。
+- If you expect to run multiple service tasks on each node (such as when you
+  have 5 nodes but run 10 replicas), you cannot specify a static target port.
+  Either allow Docker to assign a random high-numbered port (by leaving off the
+  `published`), or ensure that only a single instance of the service runs on a
+  given node, by using a global service rather than a replicated one, or by
+  using placement constraints.
 
-要绕过路由网格，您必须使用长 `--publish` 服务并将 `mode` 设置为 `host`。如果省略 `mode` 键或将其设置为 `ingress`，则使用路由网格。以下命令使用 `host` 模式创建全局服务并绕过路由网格。
+To bypass the routing mesh, you must use the long `--publish` service and
+set `mode` to `host`. If you omit the `mode` key or set it to `ingress`, the
+routing mesh is used. The following command creates a global service using
+`host` mode and bypassing the routing mesh.
 
 ```console
 $ docker service create --name dns-cache \
@@ -147,19 +199,26 @@ $ docker service create --name dns-cache \
   dns-cache
 ```
 
-## 配置外部负载均衡器
+## Configure an external load balancer
 
-您可以为 swarm 服务配置外部负载均衡器，可以与路由网格结合使用，也可以完全不使用路由网格。
+You can configure an external load balancer for swarm services, either in
+combination with the routing mesh or without using the routing mesh at all.
 
-### 使用路由网格
+### Using the routing mesh
 
-您可以配置外部负载均衡器将请求路由到 swarm 服务。例如，您可以配置 [HAProxy](https://www.haproxy.org) 来平衡发布到端口 8080 的 nginx 服务的请求。
+You can configure an external load balancer to route requests to a swarm
+service. For example, you could configure [HAProxy](https://www.haproxy.org) to
+balance requests to an nginx service published to port 8080.
 
 ![Ingress with external load balancer image](images/ingress-lb.webp)
 
-在这种情况下，负载均衡器和 swarm 中的节点之间必须打开端口 8080。swarm 节点可以位于代理服务器可访问但公共不可访问的私有网络上。
+In this case, port 8080 must be open between the load balancer and the nodes in
+the swarm. The swarm nodes can reside on a private network that is accessible to
+the proxy server, but that is not publicly accessible.
 
-您可以将负载均衡器配置为在 swarm 中的每个节点之间平衡请求，即使该节点上没有调度任务。例如，您可以在 `/etc/haproxy/haproxy.cfg` 中有以下 HAProxy 配置：
+You can configure the load balancer to balance requests between every node in
+the swarm even if there are no tasks scheduled on the node. For example, you
+could have the following HAProxy configuration in `/etc/haproxy/haproxy.cfg`:
 
 ```bash
 global
@@ -181,16 +240,29 @@ backend http_back
    server node3 192.168.99.102:8080 check
 ```
 
-当您在端口 80 访问 HAProxy 负载均衡器时，它会将请求转发到 swarm 中的节点。swarm 路由网格将请求路由到活动任务。如果由于任何原因 swarm 调度程序将任务分派到不同的节点，您不需要重新配置负载均衡器。
+When you access the HAProxy load balancer on port 80, it forwards requests to
+nodes in the swarm. The swarm routing mesh routes the request to an active task.
+If, for any reason the swarm scheduler dispatches tasks to different nodes, you
+don't need to reconfigure the load balancer.
 
-您可以配置任何类型的负载均衡器将请求路由到 swarm 节点。要了解有关 HAProxy 的更多信息，请参阅 [HAProxy 文档](https://cbonte.github.io/haproxy-dconv/)。
+You can configure any type of load balancer to route requests to swarm nodes.
+To learn more about HAProxy, see the [HAProxy documentation](https://cbonte.github.io/haproxy-dconv/).
 
-### 不使用路由网格
+### Without the routing mesh
 
-要使用外部负载均衡器而不使用路由网格，请将 `--endpoint-mode` 设置为 `dnsrr` 而不是默认值 `vip`。在这种情况下，没有单个虚拟 IP。相反，Docker 为服务设置 DNS 条目，以便对服务名称的 DNS 查询返回 IP 地址列表，客户端直接连接到其中一个。
+To use an external load balancer without the routing mesh, set `--endpoint-mode`
+to `dnsrr` instead of the default value of `vip`. In this case, there is not a
+single virtual IP. Instead, Docker sets up DNS entries for the service such that
+a DNS query for the service name returns a list of IP addresses, and the client
+connects directly to one of these.
 
-您不能将 `--endpoint-mode dnsrr` 与 `--publish mode=ingress` 一起使用。您必须在服务前面运行自己的负载均衡器。Docker 主机上对服务名称的 DNS 查询返回运行服务的节点的 IP 地址列表。配置您的负载均衡器使用此列表并在节点之间平衡流量。请参阅[配置服务发现](networking.md#configure-service-discovery)。
+You can't use `--endpoint-mode dnsrr` together with `--publish mode=ingress`.
+You must run your own load balancer in front of the service. A DNS query for
+the service name on the Docker host returns a list of IP addresses for the
+nodes running the service. Configure your load balancer to consume this list
+and balance the traffic across the nodes.
+See [Configure service discovery](networking.md#configure-service-discovery).
 
-## 了解更多
+## Learn more
 
-* [将服务部署到 swarm](services.md)
+* [Deploy services to a swarm](services.md)

@@ -1,57 +1,82 @@
 ---
-title: Docker Scout 修复
-description: 了解 Docker Scout 如何使用修复功能帮助您自动改善软件质量
+title: Remediation with Docker Scout
+description: Learn how Docker Scout can help you improve your software quality automatically, using remediation
 keywords: scout, supply chain, security, remediation, automation
 ---
 
 {{< summary-bar feature_name="Remediation with Docker Scout" >}}
 
-Docker Scout 通过基于策略评估结果提供建议来帮助您修复供应链或安全问题。建议是您可以采取的操作，可以改善策略合规性，或向镜像添加元数据，使 Docker Scout 能够提供更好的评估结果和建议。
+Docker Scout helps you remediate supply chain or security issues by providing
+recommendations based on policy evaluation results. Recommendations are
+suggested actions you can take that improve policy compliance, or that add
+metadata to images which enables Docker Scout to provide better evaluation
+results and recommendations.
 
-Docker Scout 为以下策略类型的默认策略提供修复建议：
+Docker Scout provides remediation advice for the default policies of the
+following policy types:
 
-- [Up-to-Date Base Images 修复](#up-to-date-base-images-remediation)
-- [Supply Chain Attestations 修复](#supply-chain-attestations-remediation)
+- [Up-to-Date Base Images](#up-to-date-base-images-remediation)
+- [Supply Chain Attestations](#supply-chain-attestations-remediation)
 
 <!-- TODO(dvdksn): verify the following -->
 > [!NOTE]
-> 自定义策略不支持引导式修复。
+> Guided remediation is not supported for custom policies.
 
-对于违反策略的镜像，建议侧重于解决合规问题和修复违规。对于 Docker Scout 无法确定合规性的镜像，建议会向您展示如何满足先决条件，以确保 Docker Scout 能够成功评估策略。
+For images that violate policy, the recommendations focus on addressing
+compliance issues and fixing violations. For images where Docker Scout is
+unable to determine compliance, recommendations show you how to meet the
+prerequisites that ensure Docker Scout can successfully evaluate the policy.
 
-## 查看建议
+## View recommendations
 
-建议出现在 Docker Scout 仪表板的策略详情页面上。要进入此页面：
+Recommendations appear on the policy details pages of the Docker Scout
+Dashboard. To get to this page:
 
-1. 前往 Docker Scout 仪表板中的[策略页面](https://scout.docker.com/reports/policy)。
-2. 在列表中选择一个策略。
+1. Go to the [Policies page](https://scout.docker.com/reports/policy) in the Docker Scout Dashboard.
+2. Select a policy in the list.
 
-策略详情页面根据策略状态将评估结果分为两个不同的标签页：
+The policy details page groups evaluation results into two different tabs
+depending on the policy status:
 
-- Violations（违规）
-- Compliance unknown（合规性未知）
+- Violations
+- Compliance unknown
 
-**Violations** 标签页列出不符合所选策略的镜像。**Compliance unknown** 标签页列出 Docker Scout 无法确定其合规状态的镜像。当合规性未知时，Docker Scout 需要有关镜像的更多信息。
+The **Violations** tab lists images that don't comply with the selected policy.
+The **Compliance unknown** tab lists images that Docker Scout is unable to
+determine the compliance status for. When compliance is unknown, Docker Scout
+needs more information about the image.
 
-要查看镜像的建议操作，请将鼠标悬停在列表中的某个镜像上，以显示 **View fixes** 按钮。
+To view recommended actions for an image, hover over one of the images in the
+list to reveal a **View fixes** button.
 
-![策略违规的修复](../images/remediation.png)
+![Remediation for policy violations](../images/remediation.png)
 
-选择 **View fixes** 按钮以打开包含镜像建议操作的修复侧边栏。
+Select the **View fixes** button to opens the remediation side panel containing
+recommended actions for your image.
 
-如果有多个建议可用，主要建议显示为 **Recommended fix**。其他建议列为 **Quick fixes**。快速修复通常是提供临时解决方案的操作。
+If there are more than one recommendations available, the primary
+recommendation displays as the **Recommended fix**. Additional recommendations
+are listed as **Quick fixes**. Quick fixes are usually actions that provide a
+temporary solution.
 
-侧边栏还可能包含与可用建议相关的一个或多个帮助部分。
+The side panel may also contain one or more help sections related to the
+available recommendations.
 
-## Up-to-Date Base Images 修复
+## Up-to-Date Base Images remediation
 
-**Up-to-Date Base Images** 策略检查您使用的基础镜像是否是最新的。修复侧边栏中显示的建议操作取决于 Docker Scout 拥有的关于您镜像的信息量。可用信息越多，建议就越好。
+The **Up-to-Date Base Images** policy checks whether the base image you use is
+up-to-date. The recommended actions displayed in the remediation side panel
+depend on how much information Docker Scout has about your image. The more
+information that's available, the better the recommendations.
 
-以下场景概述了根据镜像可用信息的不同建议。
+The following scenarios outline the different recommendations depending on the
+information available about the image.
 
-### 无来源证明
+### No provenance attestations
 
-为了让 Docker Scout 能够评估此策略，您必须向镜像添加[来源证明](/manuals/build/metadata/attestations/slsa-provenance.md)。如果您的镜像没有来源证明，合规性将无法确定。
+For Docker Scout to be able to evaluate this policy, you must add [provenance
+attestations](/manuals/build/metadata/attestations/slsa-provenance.md) to your image. If
+your image doesn't have provenance attestations, compliance is undeterminable.
 
 <!--
   TODO(dvdksn): no support for the following, yet
@@ -67,21 +92,38 @@ Docker Scout 为以下策略类型的默认策略提供修复建议：
   https://github.com/docker/docs/pull/18961#discussion_r1447186845
 -->
 
-### 有来源证明
+### Provenance attestations available
 
-添加来源证明后，Docker Scout 可以正确检测您正在使用的基础镜像版本。证明中找到的版本会与相应标签的当前版本进行交叉引用，以确定它是否是最新的。
+With provenance attestations added, Docker Scout can correctly detect the base
+image version that you're using. The version found in the attestations is
+cross-referenced against the current version of the corresponding tag to
+determine if it's up-to-date.
 
-如果存在策略违规，建议的操作会显示如何将基础镜像版本更新到最新版本，同时将基础镜像版本固定到特定摘要。有关更多信息，请参阅[固定基础镜像版本](/manuals/build/building/best-practices.md#pin-base-image-versions)。
+If there's a policy violation, the recommended actions show how to update your
+base image version to the latest version, while also pinning the base image
+version to a specific digest. For more information, see [Pin base image
+versions](/manuals/build/building/best-practices.md#pin-base-image-versions).
 
-### 启用 GitHub 集成
+### GitHub integration enabled
 
-如果您在 GitHub 上托管镜像的源代码，可以启用 [GitHub 集成](../integrations/source-code-management/github.md)。此集成使 Docker Scout 能够提供更有用的修复建议，并让您可以直接从 Docker Scout 仪表板启动违规修复。
+If you're hosting the source code for your image on GitHub, you can enable the
+[GitHub integration](../integrations/source-code-management/github.md). This
+integration enables Docker Scout to provide even more useful remediation
+advice, and lets you initiate remediation for violations directly from the
+Docker Scout Dashboard.
 
-启用 GitHub 集成后，您可以使用修复侧边栏在镜像的 GitHub 仓库上发起拉取请求。拉取请求会自动将 Dockerfile 中的基础镜像版本更新到最新版本。
+With the GitHub integration enabled, you can use the remediation side panel to
+raise a pull request on the GitHub repository of the image. The pull request
+automatically updates the base image version in your Dockerfile to the
+up-to-date version.
 
-这种自动修复会将您的基础镜像固定到特定摘要，同时帮助您在新版本可用时保持更新。将基础镜像固定到摘要对于可重复性很重要，并有助于避免不需要的更改进入您的供应链。
+This automated remediation pins your base image to a specific digest, while
+helping you stay up-to-date as new versions become available. Pinning the base
+image to a digest is important for reproducibility, and helps avoid unwanted
+changes from making their way into your supply chain.
 
-有关基础镜像固定的更多信息，请参阅[固定基础镜像版本](/manuals/build/building/best-practices.md#pin-base-image-versions)。
+For more information about base image pinning, see [Pin base image
+versions](/manuals/build/building/best-practices.md#pin-base-image-versions).
 
 <!--
   TODO(dvdksn): no support for the following, yet
@@ -94,8 +136,14 @@ Docker Scout 为以下策略类型的默认策略提供修复建议：
   https://github.com/docker/docs/pull/18961#discussion_r1447189475
 -->
 
-## Supply Chain Attestations 修复
+## Supply Chain Attestations remediation
 
-默认的 **Supply Chain Attestations** 策略要求镜像具有完整的来源证明和 SBOM 证明。如果您的镜像缺少证明，或者证明不包含足够的信息，则违反策略。
+The default **Supply Chain Attestations** policy requires full provenance and
+SBOM attestations on images. If your image is missing an attestation, or if an
+attestation doesn't contain enough information, the policy is violated.
 
-修复侧边栏中的建议可帮助指导您需要采取哪些操作来解决问题。例如，如果您的镜像有来源证明，但证明不包含足够的信息，建议您使用 [`mode=max`](/manuals/build/metadata/attestations/slsa-provenance.md#max) 来源重新构建镜像。
+The recommendations available in the remediation side panel helps guide you to
+what action you need to take to address the issues. For example, if your image
+has a provenance attestation, but the attestation doesn't contain enough
+information, you're recommended to re-build your image with
+[`mode=max`](/manuals/build/metadata/attestations/slsa-provenance.md#max) provenance.

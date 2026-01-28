@@ -1,22 +1,22 @@
 ---
-title: 持续集成（CI）
-description: 自动测试和验证您的扩展。
+title: Continuous Integration (CI)
+description: Automatically test and validate your extension.
 keywords: Docker, Extensions, sdk, CI, test, regression
-aliases:
+aliases: 
  - /desktop/extensions-sdk/dev/continuous-integration/
 weight: 20
 ---
 
-为了帮助验证您的扩展并确保其功能正常，Extension SDK 提供了工具来帮助您为扩展设置持续集成。
+In order to help validate your extension and ensure it's functional, the Extension SDK provides tools to help you setup continuous integration for your extension.
 
 > [!IMPORTANT]
 >
-> [Docker Desktop Action](https://github.com/docker/desktop-action) 和 [extension-test-helper 库](https://www.npmjs.com/package/@docker/extension-test-helper)都是[实验性](https://docs.docker.com/release-lifecycle/#experimental)的。
+> The [Docker Desktop Action](https://github.com/docker/desktop-action) and the [extension-test-helper library](https://www.npmjs.com/package/@docker/extension-test-helper) are both [experimental](https://docs.docker.com/release-lifecycle/#experimental).
 
-## 使用 GitHub Actions 设置 CI 环境
+## Setup CI environment with GitHub Actions
 
-您需要 Docker Desktop 才能安装和验证您的扩展。
-您可以使用 [Docker Desktop Action](https://github.com/docker/desktop-action) 在 GitHub Actions 中启动 Docker Desktop，方法是将以下内容添加到工作流文件：
+You need Docker Desktop to be able to install and validate your extension.
+You can start Docker Desktop in GitHub Actions using the [Docker Desktop Action](https://github.com/docker/desktop-action), by adding the following to a workflow file:
 
 ```yaml
 steps:
@@ -26,15 +26,15 @@ steps:
 
 > [!NOTE]
 >
-> 此操作目前仅支持 GitHub Action macOS 运行器。您需要为端到端测试指定 `runs-on: macOS-latest`。
+> This action supports only Github Action macOS runners at the moment. You need to specify `runs-on: macOS-latest` for your end to end tests.
 
-步骤执行后，后续步骤使用 Docker Desktop 和 Docker CLI 来安装和测试扩展。
+Once the step has executed, the next steps use Docker Desktop and the Docker CLI to install and test the extension.
 
-## 使用 Puppeteer 验证您的扩展
+## Validating your extension with Puppeteer
 
-一旦 Docker Desktop 在 CI 中启动，您可以使用 Jest 和 Puppeteer 构建、安装和验证您的扩展。
+Once Docker Desktop starts in CI, you can build, install, and validate your extension with Jest and Puppeteer.
 
-首先，从测试中构建并安装扩展：
+First, build and install the extension from your test:
 
 ```ts
 import { DesktopUI } from "@docker/extension-test-helper";
@@ -55,7 +55,7 @@ beforeAll(async () => {
 });
 ```
 
-然后打开 Docker Desktop 仪表板并在扩展的 UI 中运行一些测试：
+Then open the Docker Desktop Dashboard and run some tests in your extension's UI:
 
 ```ts
 describe("Test my extension", () => {
@@ -70,7 +70,7 @@ describe("Test my extension", () => {
 });
 ```
 
-最后，关闭 Docker Desktop 仪表板并卸载您的扩展：
+Finally, close the Docker Desktop Dashboard and uninstall your extension:
 
 ```ts
 afterAll(async () => {
@@ -79,8 +79,8 @@ afterAll(async () => {
 });
 ```
 
-## 下一步
+## What's next
 
-- 构建[高级前端](/manuals/extensions/extensions-sdk/build/frontend-extension-tutorial.md)扩展。
-- 了解更多关于扩展[架构](../architecture/_index.md)的信息。
-- 了解如何[发布您的扩展](../extensions/_index.md)。
+- Build an [advanced frontend](/manuals/extensions/extensions-sdk/build/frontend-extension-tutorial.md) extension.
+- Learn more about extensions [architecture](../architecture/_index.md).
+- Learn how to [publish your extension](../extensions/_index.md).

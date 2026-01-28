@@ -1,8 +1,8 @@
 ---
-description: 了解如何使用桌面设置报告仪表板
+description: Understand how to use the Desktop settings reporting dashboard
 keywords: Settings Management, docker desktop, hardened desktop, reporting, compliance
-title: 桌面设置报告
-linkTitle: 桌面设置报告
+title: Desktop settings reporting
+linkTitle: Desktop settings reporting
 weight: 30
 params:
   sidebar:
@@ -13,123 +13,132 @@ params:
 
 {{< summary-bar feature_name="Compliance reporting" >}}
 
-桌面设置报告（Desktop settings reporting）是桌面设置管理的一项功能，用于
-跟踪和报告用户对分配给他们的设置策略的合规情况。这使管理员能够跟踪设置的应用情况，
-并监控需要采取哪些措施来使用户合规。
+Desktop settings reporting is a feature of Desktop Settings Management that
+tracks and reports user compliance with the settings policies that are assigned
+to them. This lets administrators track the application of settings and
+monitor what actions they need to take to make users compliant.
 
-本指南提供了访问桌面设置报告、查看合规状态以及解决不合规用户的步骤。
+This guide provides steps for accessing Desktop settings reporting, viewing
+compliance status, and resolving non-compliant users.
 
-## 访问桌面设置报告
+## Access Desktop settings reporting
 
 > [!IMPORTANT]
 >
-> 桌面设置报告处于早期访问（Early Access）阶段，正在逐步推出。
-> 您可能暂时在 Admin Console 中看不到此设置。
+> Desktop settings reporting is in Early Access and is being rolled out
+> gradually. You may not see this setting in the Admin Console yet.
 
-1. 登录 [Docker Home](https://app.docker.com) 并选择
-您的组织。
-1. 选择 **Admin Console**，然后选择 **Desktop settings reporting**。
+1. Sign in to [Docker Home](https://app.docker.com) and select
+your organization.
+1. Select **Admin Console**, then **Desktop settings reporting**.
 
-这将打开桌面设置报告页面。在此页面，您可以：
+This opens the Desktop settings reporting page. From here you can:
 
-- 使用 **Search** 字段按用户名或电子邮件地址搜索
-- 按策略筛选
-- 隐藏或取消隐藏合规用户
-- 查看用户的合规状态以及分配给用户的策略
-- 下载用户合规信息的 CSV 文件
+- Use the **Search** field to search by username or email address
+- Filter by policies
+- Hide or un-hide compliant users
+- View a user’s compliance status and what policy is assigned to the user
+- Download a CSV file of user compliance information
 
-## 查看合规状态
+## View compliance status
 
 > [!WARNING]
 >
-> 使用 Docker Desktop 4.40 之前版本的用户可能显示为不合规，
-> 因为较旧版本无法报告合规性。为确保准确的
-> 合规状态，用户必须更新到 Docker Desktop 4.40 及更高版本。
+> Users on Docker Desktop versions older than 4.40 may appear non-compliant
+> because older versions can't report compliance. To ensure accurate
+> compliance status, users must update to Docker Desktop version 4.40 and later.
 
-1. 登录 [Docker Home](https://app.docker.com) 并选择
-您的组织。
-1. 选择 **Admin Console**，然后选择 **Desktop settings reporting**。
-1. 可选。选择 **Hide compliant users** 复选框以同时显示合规
-和不合规用户。
-1. 使用 **Search** 字段按用户名或电子邮件地址搜索。
-1. 将鼠标悬停在用户的合规状态指示器上以快速查看其状态。
-1. 选择用户名以查看有关其合规状态的更多详细信息，以及
-解决不合规用户的步骤。
+1. Sign in to [Docker Home](https://app.docker.com) and select
+your organization.
+1. Select **Admin Console**, then **Desktop settings reporting**.
+1. Optional. Select the **Hide compliant users** checkbox to show both compliant
+and non-compliant users.
+1. Use the **Search** field to search by username or email address.
+1. Hover over a user’s compliance status indicator to quickly view their status.
+1. Select a username to view more details about their compliance status, and for
+steps to resolve non-compliant users.
 
-## 理解合规状态
+## Understand compliance status
 
-Docker 根据以下内容评估合规状态：
+Docker evaluates compliance status based on:
 
-- 合规状态：用户是否已获取并应用了最新设置。这是报告页面上显示的主要标签。
-- 域状态：用户的电子邮件是否匹配已验证的域。
-- 设置状态：是否已向用户应用设置策略。
+- Compliance status: Whether a user has fetched and applied the latest settings. This is the primary label shown on the reporting page.
+- Domain status: Whether the user's email matches a verified domain.
+- Settings status: Whether a settings policy is applied to the user.
 
-这些状态的组合决定了您需要采取的措施。
+The combination of these statuses determines what actions you need to take.
 
-### 合规状态参考
+### Compliance status reference
 
-此参考解释了报告仪表板中如何根据用户域和设置数据确定每种状态。Admin Console 根据以下规则显示
-最高优先级的适用状态。
+This reference explains how each status is determined in the reporting dashboard
+based on user domain and settings data. The Admin Console displays the
+highest-priority applicable status according to the following rules.
 
-**合规状态**
+**Compliance status**
 
-| 合规状态 | 含义 |
+| Compliance status | What it means |
 |-------------------|---------------|
-| Uncontrolled domain | 用户的电子邮件域未经验证。 |
-| No policy assigned | 用户没有分配任何策略。 |
-| Non-compliant | 用户获取了正确的策略，但尚未应用。 |
-| Outdated | 用户获取的是策略的旧版本。 |
-| Compliant | 用户已获取并应用了最新分配的策略。 |
+| Uncontrolled domain | The user's email domain is not verified. |
+| No policy assigned | The user does not have any policy assigned to them. |
+| Non-compliant | The user fetched the correct policy, but hasn't applied it. |
+| Outdated | The user fetched a previous version of the policy. |
+| Compliant | The user fetched and applied the latest assigned policy. |
 
-**域状态**
+**Domain status**
 
-这反映了根据组织的域设置如何评估用户的电子邮件域。
+This reflects how the user’s email domain is evaluated based on the organization’s domain setup.
 
-| 域状态 | 含义 |
+| Domain status | What it means |
 |---------------|---------------|
-| Verified | 用户的电子邮件域已验证。 |
-| Guest user | 用户的电子邮件域未经验证。 |
-| Domainless | 您的组织没有已验证的域，用户的域未知。 |
+| Verified | The user’s email domain is verified. |
+| Guest user | The user's email domain is not verified. |
+| Domainless | Your organization has no verified domains, and the user's domain is unknown. |
 
-**设置状态**
+**Settings status**
 
-这显示用户是否以及如何被分配设置策略。
+This shows whether and how the user is assigned a settings policy.
 
-| 设置状态 | 含义 |
+| Settings status | What it means |
 |-----------------|---------------|
-| Global policy | 用户被分配了您组织的默认策略。 |
-| User policy | 用户被分配了特定的自定义策略。 |
-| No policy assigned | 用户未被分配任何策略。 |
+| Global policy | The user is assigned your organzation's default policy. |
+| User policy | The user is assigned a specific custom policy. |
+| No policy assigned | The user is not assigned to any policy. |
 
-## 解决合规状态
+## Resolve compliance status
 
-要解决合规状态，您必须通过从桌面设置报告页面选择用户名来查看用户的合规状态详情。
-这些详情包括以下信息：
+To resolve compliance status, you must view a user's compliance status details
+by selecting their username from the Desktop settings reporting page.
+These details include the following information:
 
-- **Compliance status**：指示用户是否符合应用于他们的设置
-- **Domain status**：指示用户的电子邮件地址是否与已验证的域关联
-- **Settings status**：指示用户是否已应用设置
-- **Resolution steps**：如果用户不合规，这将提供有关如何解决用户合规状态的信息
+- **Compliance status**: Indicates whether the user is compliant with the
+settings applied to them
+- **Domain status**: Indicates whether the user’s email address is associated
+with a verified domain
+- **Settings status**: Indicates whether the user has settings applied to them
+- **Resolution steps**: If a user is non-compliant, this provides information
+on how to resolve the user’s compliance status
 
-### 合规
+### Compliant
 
-当用户合规时，桌面设置报告仪表板上其名称旁边会显示 **Compliant** 图标。选择合规用户以打开其
-合规状态详情。合规用户具有以下状态详情：
+When a user is compliant, a **Compliant** icon appears next to their name on the
+Desktop settings reporting dashboard. Select a compliant user to open their
+compliance status details. Compliant users have the following status details:
 
-- **Compliance status**：Compliant
-- **Domain status**：Verified
-- **Settings status**：Global policy 或 user policy
-- **User is compliant** 指示器
+- **Compliance status**: Compliant
+- **Domain status**: Verified
+- **Settings status**: Global policy or user policy
+- **User is compliant** indicator
 
-合规用户无需解决步骤。
+No resolution steps are needed for compliant users.
 
-### 不合规
+### Non-compliant
 
-当用户不合规时，桌面设置报告仪表板上其名称旁边会显示 **Non-compliant** 或 **Unknown** 图标。不合规
-用户必须解决其合规状态：
+When a user is non-compliant, a **Non-compliant** or **Unknown** icon appears
+next to their name on the Desktop settings reporting dashboard. Non-compliant
+users must have their compliance status resolved:
 
-1. 从桌面设置报告仪表板选择用户名。
-1. 在合规状态详情页面，按照提供的解决步骤
-解决合规状态。
-1. 刷新页面以确保解决步骤已解决合规
-状态。
+1. Select a username from the Desktop settings reporting dashboard.
+1. On the compliance status details page, follow the resolution steps provided
+to resolve the compliance status.
+1. Refresh the page to ensure the resolution steps resolved the compliance
+status.

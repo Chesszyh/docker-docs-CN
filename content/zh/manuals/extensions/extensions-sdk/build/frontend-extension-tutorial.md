@@ -1,6 +1,6 @@
 ---
-title: 创建高级前端扩展
-description: 高级前端扩展教程
+title: Create an advanced frontend extension
+description: Advanced frontend extension tutorial
 keywords: Docker, extensions, sdk, build
 aliases:
  - /desktop/extensions-sdk/tutorials/react-extension/
@@ -11,19 +11,23 @@ aliases:
 weight: 20
 ---
 
-要开始创建您的扩展，您首先需要一个包含文件的目录，这些文件从扩展的源代码到所需的扩展特定文件。本页面提供了如何设置具有更高级前端的扩展的信息。
+To start creating your extension, you first need a directory with files which range from the extension’s source code to the required extension-specific files. This page provides information on how to set up an extension with a more advanced frontend.
 
-在开始之前，请确保您已安装最新版本的 [Docker Desktop](/manuals/desktop/release-notes.md)。
+Before you start, make sure you have installed the latest version of [Docker Desktop](/manuals/desktop/release-notes.md).
 
-## 扩展文件夹结构
+## Extension folder structure
 
-创建新扩展的最快方法是运行 `docker extension init my-extension`，如[快速入门](../quickstart.md)中所述。这将创建一个新目录 `my-extension`，其中包含一个功能完整的扩展。
+The quickest way to create a new extension is to run `docker extension init my-extension` as in the
+[Quickstart](../quickstart.md). This creates a new directory `my-extension` that contains a fully functional extension.
 
 > [!TIP]
 >
-> `docker extension init` 生成基于 React 的扩展。但您仍然可以将其作为您自己扩展的起点，并使用任何其他前端框架，如 Vue、Angular、Svelte 等，或者甚至使用原生 Javascript。
+> The `docker extension init` generates a React based extension. But you can still use it as a starting point for
+> your own extension and use any other frontend framework, like Vue, Angular, Svelte, etc. or even stay with
+> vanilla Javascript.
 
-虽然您可以从空目录或 `react-extension` [示例文件夹](https://github.com/docker/extensions-sdk/tree/main/samples)开始，但强烈建议您从 `docker extension init` 命令开始，然后根据需要进行修改。
+Although you can start from an empty directory or from the `react-extension` [sample folder](https://github.com/docker/extensions-sdk/tree/main/samples),
+it's highly recommended that you start from the `docker extension init` command and change it to suit your needs.
 
 ```bash
 .
@@ -41,20 +45,23 @@ weight: 20
 └── metadata.json # (6)
 ```
 
-1. 包含构建扩展并在 Docker Desktop 中运行所需的所有内容。
-2. 包含前端应用程序源代码的高级文件夹。
-3. 未编译或动态生成的资源存储在此处。这些可以是静态资源，如徽标或 robots.txt 文件。
-4. src 或源文件夹包含所有 React 组件、外部 CSS 文件以及引入到组件文件中的动态资源。
-5. 显示在 Docker Desktop 仪表板左侧菜单中的图标。
-6. 提供有关扩展信息的文件，如名称、描述和版本。
+1. Contains everything required to build the extension and run it in Docker Desktop.
+2. High-level folder containing your front-end app source code.
+3. Assets that aren’t compiled or dynamically generated are stored here. These can be static assets like logos or the robots.txt file.
+4. The src, or source folder contains all the React components, external CSS files, and dynamic assets that are brought into the component files.
+5. The icon that is displayed in the left-menu of the Docker Desktop Dashboard.
+6. A file that provides information about the extension such as the name, description, and version.
 
-## 调整 Dockerfile
+## Adapting the Dockerfile
 
 > [!NOTE]
 >
-> 使用 `docker extension init` 时，它会创建一个已经包含 React 扩展所需内容的 `Dockerfile`。
+> When using the `docker extension init`, it creates a `Dockerfile` that already contains what is needed for a React
+> extension.
 
-创建扩展后，您需要配置 `Dockerfile` 来构建扩展，并配置用于在市场中填充扩展卡片的标签。以下是 React 扩展的 `Dockerfile` 示例：
+Once the extension is created, you need to configure the `Dockerfile` to build the extension and configure the labels
+that are used to populate the extension's card in the Marketplace. Here is an example of a `Dockerfile` for a React
+extension:
 
 {{< tabs group="framework" >}}
 {{< tab name="React" >}}
@@ -92,38 +99,39 @@ COPY --from=client-builder /ui/build ui
 ```
 > Note
 >
-> 在示例 Dockerfile 中，您可以看到镜像标签 `com.docker.desktop.extension.icon` 设置为图标 URL。扩展市场在未安装扩展的情况下显示此图标。Dockerfile 还包含 `COPY docker.svg .` 以将图标文件复制到镜像中。第二个图标文件用于在扩展安装后在仪表板中显示扩展 UI。
+> In the example Dockerfile, you can see that the image label `com.docker.desktop.extension.icon` is set to an icon URL. The Extensions Marketplace displays this icon without installing the extension. The Dockerfile also includes `COPY docker.svg .` to copy an icon file inside the image. This second icon file is used to display the extension UI in the Dashboard, once the extension is installed.
 
 {{< /tab >}}
 {{< tab name="Vue" >}}
 
 > [!IMPORTANT]
 >
-> 我们目前还没有 Vue 的可用 Dockerfile。[填写表单](https://docs.google.com/forms/d/e/1FAIpQLSdxJDGFJl5oJ06rG7uqtw1rsSBZpUhv_s9HHtw80cytkh2X-Q/viewform?usp=pp_url&entry.1333218187=Vue)
-> 告诉我们您是否需要 Vue 的 Dockerfile。
+> We don't have a working Dockerfile for Vue yet. [Fill out the form](https://docs.google.com/forms/d/e/1FAIpQLSdxJDGFJl5oJ06rG7uqtw1rsSBZpUhv_s9HHtw80cytkh2X-Q/viewform?usp=pp_url&entry.1333218187=Vue)
+> and let us know if you'd like a Dockerfile for Vue.
 
 {{< /tab >}}
 {{< tab name="Angular" >}}
 
 > [!IMPORTANT]
 >
-> 我们目前还没有 Angular 的可用 Dockerfile。[填写表单](https://docs.google.com/forms/d/e/1FAIpQLSdxJDGFJl5oJ06rG7uqtw1rsSBZpUhv_s9HHtw80cytkh2X-Q/viewform?usp=pp_url&entry.1333218187=Angular)
-> 告诉我们您是否需要 Angular 的 Dockerfile。
+> We don't have a working Dockerfile for Angular yet. [Fill out the form](https://docs.google.com/forms/d/e/1FAIpQLSdxJDGFJl5oJ06rG7uqtw1rsSBZpUhv_s9HHtw80cytkh2X-Q/viewform?usp=pp_url&entry.1333218187=Angular)
+> and let us know if you'd like a Dockerfile for Angular.
 
 {{< /tab >}}
 {{< tab name="Svelte" >}}
 
 > [!IMPORTANT]
 >
-> 我们目前还没有 Svelte 的可用 Dockerfile。[填写表单](https://docs.google.com/forms/d/e/1FAIpQLSdxJDGFJl5oJ06rG7uqtw1rsSBZpUhv_s9HHtw80cytkh2X-Q/viewform?usp=pp_url&entry.1333218187=Svelte)
-> 告诉我们您是否需要 Svelte 的 Dockerfile。
+> We don't have a working Dockerfile for Svelte yet. [Fill out the form](https://docs.google.com/forms/d/e/1FAIpQLSdxJDGFJl5oJ06rG7uqtw1rsSBZpUhv_s9HHtw80cytkh2X-Q/viewform?usp=pp_url&entry.1333218187=Svelte)
+> and let us know if you'd like a Dockerfile for Svelte.
 
 {{< /tab >}}
 {{< /tabs >}}
 
-## 配置元数据文件
+## Configure the metadata file
 
-为了在 Docker Desktop 中为您的扩展添加一个选项卡，您必须在扩展目录根目录的 `metadata.json` 文件中进行配置。
+In order to add a tab in Docker Desktop for your extension, you have to configure it in the `metadata.json`
+file the root of your extension directory.
 
 ```json
 {
@@ -138,37 +146,41 @@ COPY --from=client-builder /ui/build ui
 }
 ```
 
-`title` 属性是显示在 Docker Desktop 仪表板左侧菜单中的扩展名称。
-`root` 属性是扩展容器文件系统中前端应用程序的路径，系统使用它在主机上部署应用程序。
-`src` 属性是 `root` 文件夹中前端应用程序 HTML 入口点的路径。
+The `title` property is the name of the extension that is displayed in the left-menu of the Docker Desktop Dashboard.
+The `root` property is the path to the frontend application in the extension's container filesystem used by the
+system to deploy it on the host.
+The `src` property is the path to the HTML entry point of the frontend application within the `root` folder.
 
-有关 `metadata.json` 中 `ui` 部分的更多信息，请参阅[元数据](../architecture/metadata.md#ui-section)。
+For more information on the `ui` section of the `metadata.json`, see [Metadata](../architecture/metadata.md#ui-section).
 
-## 构建并安装扩展
+## Build the extension and install it
 
-现在您已配置好扩展，需要构建 Docker Desktop 将用于安装它的扩展镜像。
+Now that you have configured the extension, you need to build the extension image that Docker Desktop will use to
+install it.
 
 ```bash
 docker build --tag=awesome-inc/my-extension:latest .
 ```
 
-这将构建一个标记为 `awesome-inc/my-extension:latest` 的镜像，您可以运行 `docker inspect awesome-inc/my-extension:latest` 来查看更多详细信息。
+This built an image tagged `awesome-inc/my-extension:latest`, you can run `docker inspect
+awesome-inc/my-extension:latest` to see more details about it.
 
-最后，您可以安装扩展并在 Docker Desktop 仪表板中看到它出现。
+Finally, you can install the extension and see it appearing in the Docker Desktop Dashboard.
 
 ```bash
 docker extension install awesome-inc/my-extension:latest
 ```
 
-## 使用 Extension APIs 客户端
+## Use the Extension APIs client
 
-要使用 Extension APIs 并与 Docker Desktop 执行操作，扩展必须首先导入 `@docker/extension-api-client` 库。要安装它，请运行以下命令：
+To use the Extension APIs and perform actions with Docker Desktop, the extension must first import the
+`@docker/extension-api-client` library. To install it, run the command below:
 
 ```bash
 npm install @docker/extension-api-client
 ```
 
-然后调用 `createDockerDesktopClient` 函数创建一个客户端对象来调用扩展 APIs。
+Then call the `createDockerDesktopClient` function to create a client object to call the extension APIs.
 
 ```js
 import { createDockerDesktopClient } from '@docker/extension-api-client';
@@ -176,20 +188,22 @@ import { createDockerDesktopClient } from '@docker/extension-api-client';
 const ddClient = createDockerDesktopClient();
 ```
 
-使用 Typescript 时，您还可以将 `@docker/extension-api-client-types` 作为开发依赖项安装。这将为您提供扩展 APIs 的类型定义和 IDE 中的自动补全。
+When using Typescript, you can also install `@docker/extension-api-client-types` as a dev dependency. This will
+provide you with type definitions for the extension APIs and auto-completion in your IDE.
 
 ```bash
 npm install @docker/extension-api-client-types --save-dev
 ```
 
-![IDE 中的自动补全](images/types-autocomplete.png)
+![Auto completion in an IDE](images/types-autocomplete.png)
 
-例如，您可以使用 `docker.cli.exec` 函数通过 `docker ps --all` 命令获取所有容器的列表，并在表格中显示结果。
+For example, you can use the `docker.cli.exec` function to get the list of all the containers via the `docker ps --all`
+command and display the result in a table.
 
 {{< tabs group="framework" >}}
 {{< tab name="React" >}}
 
-将 `ui/src/App.tsx` 文件替换为以下代码：
+Replace the `ui/src/App.tsx` file with the following code:
 
 ```tsx
 
@@ -268,74 +282,77 @@ export function App() {
 
 ```
 
-![容器列表截图](images/react-extension.png)
+![Screenshot of the container list.](images/react-extension.png)
 
 {{< /tab >}}
 {{< tab name="Vue" >}}
 
 > [!IMPORTANT]
 >
-> 我们目前还没有 Vue 的示例。[填写表单](https://docs.google.com/forms/d/e/1FAIpQLSdxJDGFJl5oJ06rG7uqtw1rsSBZpUhv_s9HHtw80cytkh2X-Q/viewform?usp=pp_url&entry.1333218187=Vue)
-> 告诉我们您是否需要 Vue 的示例。
+> We don't have an example for Vue yet. [Fill out the form](https://docs.google.com/forms/d/e/1FAIpQLSdxJDGFJl5oJ06rG7uqtw1rsSBZpUhv_s9HHtw80cytkh2X-Q/viewform?usp=pp_url&entry.1333218187=Vue)
+> and let us know if you'd like a sample with Vue.
 
 {{< /tab >}}
 {{< tab name="Angular" >}}
 
 > [!IMPORTANT]
 >
-> 我们目前还没有 Angular 的示例。[填写表单](https://docs.google.com/forms/d/e/1FAIpQLSdxJDGFJl5oJ06rG7uqtw1rsSBZpUhv_s9HHtw80cytkh2X-Q/viewform?usp=pp_url&entry.1333218187=Angular)
-> 告诉我们您是否需要 Angular 的示例。
+> We don't have an example for Angular yet. [Fill out the form](https://docs.google.com/forms/d/e/1FAIpQLSdxJDGFJl5oJ06rG7uqtw1rsSBZpUhv_s9HHtw80cytkh2X-Q/viewform?usp=pp_url&entry.1333218187=Angular)
+> and let us know if you'd like a sample with Angular.
 
 {{< /tab >}}
 {{< tab name="Svelte" >}}
 
 > [!IMPORTANT]
 >
-> 我们目前还没有 Svelte 的示例。[填写表单](https://docs.google.com/forms/d/e/1FAIpQLSdxJDGFJl5oJ06rG7uqtw1rsSBZpUhv_s9HHtw80cytkh2X-Q/viewform?usp=pp_url&entry.1333218187=Svelte)
-> 告诉我们您是否需要 Svelte 的示例。
+> We don't have an example for Svelte yet. [Fill out the form](https://docs.google.com/forms/d/e/1FAIpQLSdxJDGFJl5oJ06rG7uqtw1rsSBZpUhv_s9HHtw80cytkh2X-Q/viewform?usp=pp_url&entry.1333218187=Svelte)
+> and let us know if you'd like a sample with Svelte.
 
 {{< /tab >}}
 {{< /tabs >}}
 
-## 前端代码的强制策略
+## Policies enforced for the front-end code
 
-扩展 UI 代码在单独的 electron 会话中渲染，没有初始化 node.js 环境，也没有直接访问 electron APIs 的权限。
+Extension UI code is rendered in a separate electron session and doesn't have a node.js environment initialized, nor direct access to the electron APIs. 
 
-这是为了限制对整体 Docker 仪表板可能产生的意外副作用。
+This is to limit the possible unexpected side effects to the overall Docker Dashboard.
 
-扩展 UI 代码不能执行特权任务，如对系统进行更改或生成子进程，除非使用扩展框架提供的 SDK APIs。扩展 UI 代码也只能通过扩展 SDK APIs 与 Docker Desktop 进行交互，例如导航到仪表板中的各个位置。
+The extension UI code can't perform privileged tasks, such as making changes to the system, or spawning sub-processes, except by using the SDK APIs provided with the extension framework.
+The Extension UI code can also perform interactions with Docker Desktop, such as navigating to various places in the Dashboard, only through the extension SDK APIs.
 
-扩展 UI 部分彼此隔离，扩展 UI 代码在每个扩展的自己的会话中运行。扩展无法访问其他扩展的会话数据。
+Extensions UI parts are isolated from each other and extension UI code is running in its own session for each extension. Extensions can't access other extensions’ session data.
 
-`localStorage` 是浏览器 Web 存储的机制之一。它允许用户将数据作为键值对保存在浏览器中以供以后使用。`localStorage` 在浏览器（扩展面板）关闭时不会清除数据。这使其非常适合在从扩展导航到 Docker Desktop 的其他部分时持久化数据。
+`localStorage` is one of the mechanisms of a browser’s web storage. It allows users to save data as key-value pairs in the browser for later use. `localStorage` doesn't clear data when the browser (the extension pane) closes. This makes it ideal for persisting data when navigating out of the extension to other parts of Docker Desktop.
 
-如果您的扩展使用 `localStorage` 存储数据，Docker Desktop 中运行的其他扩展无法访问您扩展的本地存储。即使 Docker Desktop 停止或重新启动，扩展的本地存储也会保留，而当扩展被卸载时，其本地存储会被完全删除。
+If your extension uses `localStorage` to store data, other extensions running in Docker Desktop can't access the local storage of your extension. The extension’s local storage is persisted even after Docker Desktop is stopped or restarted. When an extension is upgraded, its local storage is persisted, whereas when it is uninstalled, its local storage is completely removed.
 
-## 重新构建扩展并更新
+## Re-build the extension and update it
 
-由于您修改了扩展的代码，您必须重新构建扩展。
+Since you have modified the code of the extension, you must build again the extension.
 
 ```console
 $ docker build --tag=awesome-inc/my-extension:latest .
 ```
 
-构建完成后，您需要更新它。
+Once built, you need to update it.
 
 ```console
 $ docker extension update awesome-inc/my-extension:latest
 ```
 
-现在您可以在 Docker Desktop 仪表板的容器选项卡中看到后端服务正在运行，并在需要调试时查看日志。
+Now you can see the backend service running in the containers tab of the Docker Desktop Dashboard and watch the logs
+when you need to debug it.
 
 > [!TIP]
 >
-> 您可以开启[热重载](../dev/test-debug.md#hot-reloading-whilst-developing-the-ui)以避免每次更改时都需要重新构建扩展。
+> You can turn on [hot reloading](../dev/test-debug.md#hot-reloading-whilst-developing-the-ui) to avoid the need to
+> rebuild the extension every time you make a change.
 
-## 下一步
+## What's next?
 
-- 为您的扩展添加[后端](backend-extension-tutorial.md)。
-- 了解如何[测试和调试](../dev/test-debug.md)您的扩展。
-- 了解如何[为您的扩展设置 CI](../dev/continuous-integration.md)。
-- 了解更多关于扩展[架构](../architecture/_index.md)的信息。
-- 有关构建 UI 的更多信息和指南，请参阅[设计和 UI 样式部分](../design/design-guidelines.md)。
-- 如果您想为扩展设置用户身份验证，请参阅[身份验证](../guides/oauth2-flow.md)。
+- Add a [backend](backend-extension-tutorial.md) to your extension.
+- Learn how to [test and debug](../dev/test-debug.md) your extension.
+- Learn how to [setup CI for your extension](../dev/continuous-integration.md).
+- Learn more about extensions [architecture](../architecture/_index.md).
+- For more information and guidelines on building the UI, see the [Design and UI styling section](../design/design-guidelines.md).
+- If you want to set up user authentication for the extension, see [Authentication](../guides/oauth2-flow.md).

@@ -1,24 +1,35 @@
 ---
-description: 如何将 Docker Scout 与 GitHub Actions 集成
+description: How to integrate Docker Scout with GitHub Actions
 keywords: supply chain, security, ci, continuous integration, github actions
-title: 将 Docker Scout 与 GitHub Actions 集成
+title: Integrate Docker Scout with GitHub Actions
 linkTitle: GitHub Actions
 ---
 
-以下示例展示了如何使用 GitHub Actions 设置 Docker Scout 工作流。当拉取请求触发时，该 Action 会构建镜像并使用 Docker Scout 将新版本与在生产环境中运行的镜像版本进行比较。
+The following example shows how to set up a Docker Scout workflow with GitHub
+Actions. Triggered by a pull request, the action builds the image and uses
+Docker Scout to compare the new version to the version of that image running in
+production.
 
-此工作流使用 [docker/scout-action](https://github.com/docker/scout-action) GitHub Action 来运行 `docker scout compare` 命令，以可视化拉取请求的镜像与您在生产环境中运行的镜像之间的差异。
+This workflow uses the
+[docker/scout-action](https://github.com/docker/scout-action) GitHub Action to
+run the `docker scout compare` command to visualize how images for pull request
+stack up against the image you run in production.
 
-## 前提条件
+## Prerequisites
 
-- 此示例假设您有一个现有的镜像仓库（在 Docker Hub 或其他镜像仓库中），并且已启用 Docker Scout。
-- 此示例使用[环境](../environment/_index.md)，将拉取请求中构建的镜像与名为 `production` 的环境中相同镜像的不同版本进行比较。
+- This example assumes that you have an existing image repository, in Docker Hub
+  or in another registry, where you've enabled Docker Scout.
+- This example makes use of [environments](../environment/_index.md), to compare
+  the image built in the pull request with a different version of the same image
+  in an environment called `production`.
 
-## 步骤
+## Steps
 
-首先，设置 GitHub Action 工作流来构建镜像。这里没有特定于 Docker Scout 的内容，但您需要构建一个镜像才能进行比较。
+First, set up the GitHub Action workflow to build an image. This isn't specific
+to Docker Scout here, but you'll need to build an image to have
+something to compare with.
 
-将以下内容添加到 GitHub Actions YAML 文件：
+Add the following to a GitHub Actions YAML file:
 
 ```yaml
 name: Docker
@@ -52,7 +63,7 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ secrets.REGISTRY_USER }}
           password: ${{ secrets.REGISTRY_TOKEN }}
-
+      
       - name: Setup Docker buildx
         uses: docker/setup-buildx-action@v3
 
@@ -85,20 +96,26 @@ jobs:
           cache-to: type=gha,mode=max
 ```
 
-这创建了以下工作流步骤：
+This creates workflow steps to:
 
-1. 设置 Docker buildx。
-2. 向镜像仓库进行身份验证。
-3. 从 Git 引用和 GitHub 事件中提取元数据。
-4. 构建 Docker 镜像并将其推送到镜像仓库。
+1. Set up Docker buildx.
+2. Authenticate to the registry.
+3. Extract metadata from Git reference and GitHub events.
+4. Build and push the Docker image to the registry.
 
 > [!NOTE]
 >
-> 此 CI 工作流对您的镜像运行本地分析和评估。要在本地评估镜像，您必须确保镜像已加载到运行器的本地镜像存储中。
+> This CI workflow runs a local analysis and evaluation of your image. To
+> evaluate the image locally, you must ensure that the image is loaded the
+> local image store of your runner.
 >
-> 如果您将镜像推送到镜像仓库，或者构建的镜像无法加载到运行器的本地镜像存储，此比较将不起作用。例如，多平台镜像或带有 SBOM 或来源证明的镜像无法加载到本地镜像存储。
+> This comparison doesn't work if you push the image to a registry, or if you
+> build an image that can't be loaded to the runner's local image store. For
+> example, multi-platform images or images with SBOM or provenance attestation
+> can't be loaded to the local image store.
 
-完成此设置后，您可以添加以下步骤来运行镜像比较：
+With this setup out of the way, you can add the following steps to run the
+image comparison:
 
 ```yaml
       # You can skip this step if Docker Hub is your registry
@@ -123,12 +140,20 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-compare 命令分析镜像并评估策略合规性，并将结果与 `production` 环境中相应镜像进行交叉引用。此示例仅包含严重和高危漏洞，并排除两个镜像中都存在的漏洞，仅显示已更改的内容。
+The compare command analyzes the image and evaluates policy compliance, and
+cross-references the results with the corresponding image in the `production`
+environment. This example only includes critical and high-severity
+vulnerabilities, and excludes vulnerabilities that exist in both images,
+showing only what's changed.
 
-GitHub Action 默认将比较结果输出到拉取请求评论中。
+The GitHub Action outputs the comparison results in a pull request comment by
+default.
 
-![在 GitHub Action 中显示 Docker Scout 输出结果的截图](../../images/gha-output.webp)
+![A screenshot showing the results of Docker Scout output in a GitHub Action](../../images/gha-output.webp)
 
-展开 **Policies** 部分可查看两个镜像之间策略合规性的差异。请注意，虽然此示例中的新镜像尚未完全合规，但输出显示与基准相比，新镜像的情况有所改善。
+Expand the **Policies** section to view the difference in policy compliance
+between the two images. Note that while the new image in this example isn't
+fully compliant, the output shows that the standing for the new image has
+improved compared to the baseline.
 
-![GHA 策略评估输出](../../images/gha-policy-eval.webp)
+![GHA policy evaluation output](../../images/gha-policy-eval.webp)

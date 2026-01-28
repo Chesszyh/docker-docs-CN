@@ -1,16 +1,16 @@
 ---
 title: Docker
-description: Docker 扩展 API
+description: Docker extension API
 keywords: Docker, extensions, sdk, API
-aliases:
+aliases: 
  - /desktop/extensions-sdk/dev/api/docker/
 ---
 
-## Docker 对象
+## Docker objects
 
 ▸ **listContainers**(`options?`): `Promise`<`unknown`\>
 
-获取容器列表：
+To get the list of containers:
 
 ```typescript
 const containers = await ddClient.docker.listContainers();
@@ -18,17 +18,17 @@ const containers = await ddClient.docker.listContainers();
 
 ▸ **listImages**(`options?`): `Promise`<`unknown`\>
 
-获取本地容器镜像列表：
+To get the list of local container images:
 
 ```typescript
 const images = await ddClient.docker.listImages();
 ```
 
-有关这些方法的详细信息，请参阅 [Docker API 参考](/reference/api/extensions-sdk/Docker.md)。
+See the [Docker API reference](/reference/api/extensions-sdk/Docker.md) for details about these methods.
 
-> 已弃用的 Docker 对象访问
+> Deprecated access to Docker objects
 >
-> 以下方法已被弃用，将在未来版本中移除。请使用上面指定的方法。
+> The methods below are deprecated and will be removed in a future version. Use the methods specified above.
 
 ```typescript
 const containers = await window.ddClient.listContainers();
@@ -36,9 +36,9 @@ const containers = await window.ddClient.listContainers();
 const images = await window.ddClient.listImages();
 ```
 
-## Docker 命令
+## Docker commands
 
-扩展也可以直接执行 `docker` 命令行。
+Extensions can also directly execute the `docker` command line.
 
 ▸ **exec**(`cmd`, `args`): `Promise`<[`ExecResult`](/reference/api/extensions-sdk/ExecResult.md)\>
 
@@ -49,7 +49,7 @@ const result = await ddClient.docker.cli.exec("info", [
 ]);
 ```
 
-结果包含执行命令的标准输出和标准错误：
+The result contains both the standard output and the standard error of the executed command:
 
 ```json
 {
@@ -58,17 +58,17 @@ const result = await ddClient.docker.cli.exec("info", [
 }
 ```
 
-在此示例中，命令输出是 JSON。
-为方便起见，命令结果对象还具有易于解析的方法：
+In this example, the command output is JSON.
+For convenience, the command result object also has methods to easily parse it:
 
-- `result.lines(): string[]` 分割输出行。
-- `result.parseJsonObject(): any` 解析格式良好的 json 输出。
-- `result.parseJsonLines(): any[]` 将每个输出行解析为 json 对象。
+- `result.lines(): string[]` splits output lines.
+- `result.parseJsonObject(): any` parses a well-formed json output.
+- `result.parseJsonLines(): any[]` parses each output line as a json object.
 
 ▸ **exec**(`cmd`, `args`, `options`): `void`
 
-上述命令流式输出执行 Docker 命令的结果。
-如果您需要将输出作为流获取，或者命令的输出太长，这将很有用。
+The command above streams the output as a result of the execution of a Docker command.
+This is useful if you need to get the output as a stream or the output of the command is too long.
 
 ```typescript
 await ddClient.docker.cli.exec("logs", ["-f", "..."], {
@@ -91,8 +91,8 @@ await ddClient.docker.cli.exec("logs", ["-f", "..."], {
 });
 ```
 
-当您关闭 Docker Desktop 中的仪表板或退出扩展 UI 时，扩展创建的子进程会自动被终止（`SIGTERM`）。
-如果需要，您还可以使用 `exec(streamOptions)` 调用的结果来终止（`SIGTERM`）该进程。
+The child process created by the extension is killed (`SIGTERM`) automatically when you close the dashboard in Docker Desktop or when you exit the extension UI.
+If needed, you can also use the result of the `exec(streamOptions)` call in order to kill (`SIGTERM`) the process.
 
 ```typescript
 const logListener = await ddClient.docker.cli.exec("logs", ["-f", "..."], {
@@ -105,7 +105,7 @@ const logListener = await ddClient.docker.cli.exec("logs", ["-f", "..."], {
 logListener.close();
 ```
 
-此 `exec(streamOptions)` API 也可用于监听 docker 事件：
+This `exec(streamOptions)` API can also be used to listen to docker events:
 
 ```typescript
 await ddClient.docker.cli.exec(
@@ -132,15 +132,15 @@ await ddClient.docker.cli.exec(
 
 > [!NOTE]
 >
->您不能在单个 `exec()` 调用中使用命令链（如 `docker kill $(docker ps -q)` 或在命令之间使用管道）。
+>You cannot use this to chain commands in a single `exec()` invocation (like `docker kill $(docker ps -q)` or using pipe between commands).
 >
-> 您需要为每个命令调用 `exec()`，并在需要时解析结果以将参数传递给下一个命令。
+> You need to invoke `exec()` for each command and parse results to pass parameters to the next command if needed.
 
-有关这些方法的详细信息，请参阅 [Exec API 参考](/reference/api/extensions-sdk/Exec.md)。
+See the [Exec API reference](/reference/api/extensions-sdk/Exec.md) for details about these methods.
 
-> 已弃用的 Docker 命令执行
+> Deprecated execution of Docker commands
 >
-> 此方法已被弃用，将在未来版本中移除。请使用下面指定的方法。
+> This method is deprecated and will be removed in a future version. Use the one specified just below.
 
 ```typescript
 const output = await window.ddClient.execDockerCmd(

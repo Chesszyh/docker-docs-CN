@@ -1,6 +1,6 @@
 ---
-title: 创建公司
-description: 了解如何创建公司以集中管理多个组织。
+title: Create a company
+description: Learn how to create a company to centrally manage multiple organizations.
 keywords: company, hub, organization, company owner, Admin Console, company management
 aliases:
 - /docker-hub/new-company/
@@ -8,34 +8,35 @@ aliases:
 
 {{< summary-bar feature_name="Company" >}}
 
-您可以在 Docker Admin Console 中创建新公司。在开始之前，您必须：
-- 是您要添加到公司的组织的所有者
-- 拥有 Docker Business 订阅
+You can create a new company in the Docker Admin Console. Before you begin, you must:
+- Be the owner of the organization you want to add to your company
+- Have a Docker Business subscription
 
-## 创建公司
+## Create a company
 
-要创建新公司：
+To create a new company:
 
-1. 登录 [Docker Home](https://app.docker.com/) 并选择您的组织。
-1. 选择 **Admin Console**，然后选择 **Company management**。
-1. 选择 **Create a company**。
-1. 为您的公司输入一个唯一的名称，然后选择 **Continue**。
+1. Sign in to [Docker Home](https://app.docker.com/) and select your
+organization.
+1. Select **Admin Console**, then **Company management**.
+1. Select **Create a company**.
+1. Enter a unique name for your company, then select **Continue**.
 
     > [!TIP]
     >
-    > 您的公司名称不能与现有的用户、组织或公司命名空间相同。
+    > The name for your company can't be the same as an existing user, organization, or company namespace.
 
-1. 查看公司迁移详情，然后选择 **Create company**。
+1. Review the company migration details and then select **Create company**.
 
-有关如何将组织添加到公司的更多信息，请参阅[将组织添加到公司](./organizations.md#add-organizations-to-a-company)。
+For more information on how you can add organizations to your company, see [Add organizations to a company](./organizations.md#add-organizations-to-a-company).
 
 
-## 后续步骤
+## Next steps
 
-- [管理组织](./organizations.md)
-- [管理公司用户](./users.md)
-- [管理公司所有者](./owners.md)
+- [Manage organizations](./organizations.md)
+- [Manage company users](./users.md)
+- [Manage company owners](./owners.md)
 
-## 更多资源
+## More resources
 
-- [视频：创建公司](https://youtu.be/XZ5_i6qiKho?feature=shared&t=359)
+- [Video: Create a company](https://youtu.be/XZ5_i6qiKho?feature=shared&t=359)

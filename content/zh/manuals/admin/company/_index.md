@@ -1,39 +1,41 @@
 ---
-title: 公司管理
+title: Company administration
 weight: 20
-description: 了解如何使用公司管理多个组织，包括管理用户、所有者和安全。
+description: Learn how to manage multiple organizations using companies, including managing users, owners, and security.
 keywords: company, multiple organizations, manage companies
 grid:
-- title: 创建公司
-  description: 通过学习如何创建公司来入门。
+- title: Create a company
+  description: Get started by learning how to create a company.
   icon: apartment
   link: /admin/company/new-company/
-- title: 管理组织
-  description: 了解如何在公司内添加和管理组织以及席位。
+- title: Manage organizations
+  description: Learn how to add and manage organizations as well as seats within your
+    company.
   icon: store
   link: /admin/company/organizations/
-- title: 管理用户
-  description: 探索如何管理所有组织中的用户。
+- title: Manage users
+  description: Explore how to manage users in all organizations.
   icon: group_add
   link: /admin/company/users/
-- title: 管理公司所有者
-  description: 进一步了解公司所有者以及如何管理他们。
+- title: Manage company owners
+  description: Find out more about company owners and how to manage them.
   icon: supervised_user_circle
   link: /admin/company/owners/
-- title: 配置单点登录
-  description: 了解如何为整个公司配置 SSO。
+- title: Configure Single Sign-On
+  description: Discover how to configure SSO for your entire company.
   icon: key
   link: /security/for-admins/single-sign-on/
-- title: 设置 SCIM
-  description: 设置 SCIM 以自动配置和取消配置公司中的用户。
+- title: Set up SCIM
+  description: Set up SCIM to automatically provision and deprovision users in your
+    company.
   icon: checklist
   link: /security/for-admins/provisioning/scim/
-- title: 域名管理
-  description: 添加和验证您的域名。
+- title: Domain management
+  description: Add and verify your domains.
   icon: domain_verification
   link: /security/for-admins/domain-management/
-- title: 常见问题
-  description: 探索常见的公司常见问题。
+- title: FAQs
+  description: Explore common company FAQs.
   link: /faq/admin/company-faqs/
   icon: help
 aliases:
@@ -44,6 +46,6 @@ aliases:
 
 {{% include "admin-company-overview.md" %}}
 
-在以下章节中了解如何管理公司。
+Learn how to administer a company in the following sections.
 
 {{< grid >}}

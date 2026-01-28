@@ -1,8 +1,8 @@
 ---
-title: 在容器环境中设置环境变量
-linkTitle: 设置环境变量
+title: Set environment variables within your container's environment
+linkTitle: Set environment variables
 weight: 10
-description: 如何使用 Compose 设置、使用和管理环境变量
+description: How to set, use, and manage environment variables with Compose
 keywords: compose, orchestration, environment, environment variables, container environment variables
 aliases:
 - /compose/env/
@@ -10,19 +10,19 @@ aliases:
 - /compose/environment-variables/set-environment-variables/
 ---
 
-除非在服务配置中有明确的条目，否则容器的环境不会被设置。使用 Compose，你可以通过 Compose 文件以两种方式在容器中设置环境变量。
+A container's environment is not set until there's an explicit entry in the service configuration to make this happen. With Compose, there are two ways you can set environment variables in your containers with your Compose file. 
 
 >[!TIP]
 >
-> 不要使用环境变量将敏感信息（如密码）传递到容器中。请改用 [secrets](../use-secrets.md)。
+> Don't use environment variables to pass sensitive information, such as passwords, in to your containers. Use [secrets](../use-secrets.md) instead.
 
 
-## 使用 `environment` 属性
+## Use the `environment` attribute
 
-你可以使用 `compose.yaml` 中的
-[`environment` 属性](/reference/compose-file/services.md#environment)直接在容器环境中设置环境变量。
+You can set environment variables directly in your container's environment with the
+[`environment` attribute](/reference/compose-file/services.md#environment) in your `compose.yaml`.
 
-它支持列表和映射两种语法：
+It supports both list and mapping syntax:
 
 ```yaml
 services:
@@ -30,7 +30,7 @@ services:
     environment:
       DEBUG: "true"
 ```
-等同于
+is equivalent to 
 ```yaml
 services:
   webapp:
@@ -38,19 +38,19 @@ services:
       - DEBUG=true
 ```
 
-有关如何使用它的更多示例，请参阅 [`environment` 属性](/reference/compose-file/services.md#environment)。
+See [`environment` attribute](/reference/compose-file/services.md#environment) for more examples on how to use it. 
 
-### 附加信息
+### Additional information 
 
-- 你可以选择不设置值，直接将环境变量从 shell 传递到容器。它的工作方式与 `docker run -e VARIABLE ...` 相同：
+- You can choose not to set a value and pass the environment variables from your shell straight through to your containers. It works in the same way as `docker run -e VARIABLE ...`:
   ```yaml
   web:
     environment:
       - DEBUG
   ```
-容器中 `DEBUG` 变量的值取自运行 Compose 的 shell 中同名变量的值。注意，如果 shell 环境中的 `DEBUG` 变量未设置，则不会发出警告。
+The value of the `DEBUG` variable in the container is taken from the value for the same variable in the shell in which Compose is run. Note that in this case no warning is issued if the `DEBUG` variable in the shell environment is not set. 
 
-- 你还可以利用[插值](variable-interpolation.md#interpolation-syntax)。在以下示例中，结果与上面类似，但如果 shell 环境或项目目录中的 `.env` 文件中未设置 `DEBUG` 变量，Compose 会给你一个警告。
+- You can also take advantage of [interpolation](variable-interpolation.md#interpolation-syntax). In the following example, the result is similar to the one above but Compose gives you a warning if the `DEBUG` variable is not set in the shell environment or in an `.env` file in the project directory.
 
   ```yaml
   web:
@@ -58,9 +58,9 @@ services:
       - DEBUG=${DEBUG}
   ```
 
-## 使用 `env_file` 属性
+## Use the `env_file` attribute
 
-容器的环境也可以使用 [`.env` 文件](variable-interpolation.md#env-file)配合 [`env_file` 属性](/reference/compose-file/services.md#env_file)来设置。
+A container's environment can also be set using [`.env` files](variable-interpolation.md#env-file) along with the [`env_file` attribute](/reference/compose-file/services.md#env_file).
 
 ```yaml
 services:
@@ -68,55 +68,55 @@ services:
     env_file: "webapp.env"
 ```
 
-使用 `.env` 文件可以让你使用同一个文件用于普通的 `docker run --env-file ...` 命令，或在多个服务之间共享同一个 `.env` 文件，而无需重复冗长的 `environment` YAML 块。
+Using an `.env` file lets you use the same file for use by a plain `docker run --env-file ...` command, or to share the same `.env` file within multiple services without the need to duplicate a long `environment` YAML block.
 
-它还可以帮助你将环境变量与主配置文件分开，提供更有组织和安全的方式来管理敏感信息，因为你不需要将 `.env` 文件放在项目目录的根目录中。
+It can also help you keep your environment variables separate from your main configuration file, providing a more organized and secure way to manage sensitive information, as you do not need to place your `.env` file in the root of your project's directory.
 
-[`env_file` 属性](/reference/compose-file/services.md#env_file)还允许你在 Compose 应用程序中使用多个 `.env` 文件。
+The [`env_file` attribute](/reference/compose-file/services.md#env_file) also lets you use multiple `.env` files in your Compose application.  
 
-在 `env_file` 属性中指定的 `.env` 文件路径是相对于 `compose.yaml` 文件位置的。
+The paths to your `.env` file, specified in the `env_file` attribute, are relative to the location of your `compose.yaml` file.
 
 > [!IMPORTANT]
 >
-> `.env` 文件中的插值是 Docker Compose CLI 功能。
+> Interpolation in `.env` files is a Docker Compose CLI feature.
 >
-> 运行 `docker run --env-file ...` 时不支持此功能。
+> It is not supported when running `docker run --env-file ...`.
 
-### 附加信息
+### Additional information 
 
-- 如果指定了多个文件，它们会按顺序计算，后面的文件可以覆盖前面文件中设置的值。
-- 从 Docker Compose 2.24.0 版本开始，你可以使用 `required` 字段将 `env_file` 属性定义的 `.env` 文件设置为可选。当 `required` 设置为 `false` 且 `.env` 文件缺失时，Compose 会静默忽略该条目。
+- If multiple files are specified, they are evaluated in order and can override values set in previous files.
+- As of Docker Compose version 2.24.0, you can set your `.env` file, defined by the `env_file` attribute, to be optional by using the `required` field. When `required` is set to `false` and the `.env` file is missing, Compose silently ignores the entry.
   ```yaml
   env_file:
     - path: ./default.env
-      required: true # 默认值
+      required: true # default
     - path: ./override.env
       required: false
-  ```
-- 从 Docker Compose 2.30.0 版本开始，你可以使用 `format` 属性为 `env_file` 使用替代文件格式。有关更多信息，请参阅 [`format`](/reference/compose-file/services.md#format)。
-- `.env` 文件中的值可以通过使用 [`docker compose run -e`](#set-environment-variables-with-docker-compose-run---env) 从命令行覆盖。
+  ``` 
+- As of Docker Compose version 2.30.0, you can use an alternative file format for the `env_file` with the `format` attribute. For more information, see [`format`](/reference/compose-file/services.md#format).
+- Values in your `.env` file can be overridden from the command line by using [`docker compose run -e`](#set-environment-variables-with-docker-compose-run---env). 
 
-## 使用 `docker compose run --env` 设置环境变量
+## Set environment variables with `docker compose run --env`
 
-类似于 `docker run --env`，你可以使用 `docker compose run --env` 或其简写形式 `docker compose run -e` 临时设置环境变量：
+Similar to `docker run --env`, you can set environment variables temporarily with `docker compose run --env` or its short form `docker compose run -e`:
 
 ```console
 $ docker compose run -e DEBUG=1 web python console.py
 ```
 
-### 附加信息
+### Additional information 
 
-- 你也可以通过不给变量赋值来从 shell 或环境文件传递变量：
+- You can also pass a variable from the shell or your environment files by not giving it a value:
 
   ```console
   $ docker compose run -e DEBUG web python console.py
   ```
 
-容器中 `DEBUG` 变量的值取自运行 Compose 的 shell 中同名变量的值或环境文件中的值。
+The value of the `DEBUG` variable in the container is taken from the value for the same variable in the shell in which Compose is run or from the environment files.
 
-## 更多资源
+## Further resources
 
-- [了解环境变量优先级](envvars-precedence.md)。
-- [设置或更改预定义环境变量](envvars.md)
-- [探索最佳实践](best-practices.md)
-- [了解插值](variable-interpolation.md)
+- [Understand environment variable precedence](envvars-precedence.md).
+- [Set or change predefined environment variables](envvars.md)
+- [Explore best practices](best-practices.md)
+- [Understand interpolation](variable-interpolation.md)

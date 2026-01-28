@@ -1,18 +1,20 @@
 ---
-title: 扩展元数据
-linkTitle: 元数据
-description: Docker 扩展元数据
+title: Extension metadata
+linkTitle: Metadata
+description: Docker extension metadata
 keywords: Docker, extensions, sdk, metadata
 aliases:
  - /desktop/extensions-sdk/extensions/METADATA
  - /desktop/extensions-sdk/architecture/metadata/
 ---
 
-## metadata.json 文件
+## The metadata.json file
 
-`metadata.json` 文件是扩展的入口点。它包含扩展的元数据，如名称、版本和描述。它还包含构建和运行扩展所需的信息。Docker 扩展的镜像必须在其文件系统的根目录包含一个 `metadata.json` 文件。
+The `metadata.json` file is the entry point for your extension. It contains the metadata for your extension, such as the
+name, version, and description. It also contains the information needed to build and run your extension. The image for
+a Docker extension must include a `metadata.json` file at the root of its filesystem.
 
-`metadata.json` 文件的格式必须为：
+The format of the `metadata.json` file must be:
 
 ```json
 {
@@ -23,11 +25,11 @@ aliases:
 }
 ```
 
-`ui`、`vm` 和 `host` 部分是可选的，取决于给定扩展提供什么。它们描述要安装的扩展内容。
+The `ui`, `vm`, and `host` sections are optional and depend on what a given extension provides. They describe the extension content to be installed.
 
-### UI 部分
+### UI section
 
-`ui` 部分定义添加到 Docker Desktop 仪表板的新选项卡。其格式如下：
+The `ui` section defines a new tab that's added to the dashboard in Docker Desktop. It follows the form:
 
 ```json
 "ui":{
@@ -40,14 +42,15 @@ aliases:
 }
 ```
 
-`root` 指定 UI 代码在扩展镜像文件系统中的文件夹位置。
-`src` 指定应在扩展选项卡中加载的入口点。
+`root` specifies the folder where the UI code is within the extension image filesystem.
+`src` specifies the entrypoint that should be loaded in the extension tab.
 
-将来会提供其他 UI 扩展点。
+Other UI extension points will be available in the future.
 
-### VM 部分
+### VM section
 
-`vm` 部分定义在 Desktop 虚拟机内运行的后端服务。它必须定义一个 `image` 或一个 `compose.yaml` 文件，以指定在 Desktop 虚拟机中运行什么服务。
+The `vm` section defines a backend service that runs inside the Desktop VM. It must define either an `image` or a
+`compose.yaml` file that specifies what service to run in the Desktop VM.
 
 ```json
 "vm": {
@@ -55,10 +58,11 @@ aliases:
 },
 ```
 
-当您使用 `image` 时，会为扩展生成默认的 compose 文件。
+When you use `image`, a default compose file is generated for the extension.
 
-> `${DESKTOP_PLUGIN_IMAGE}` 是一个特殊关键字，提供了一种简单的方式来引用打包扩展的镜像。
-> 也可以在这里指定任何其他完整的镜像名称。但是，在许多情况下使用相同的镜像会使扩展开发更容易。
+> `${DESKTOP_PLUGIN_IMAGE}` is a specific keyword that allows an easy way to refer to the image packaging the extension.
+> It is also possible to specify any other full image name here. However, in many cases using the same image makes
+> things easier for extension development.
 
 ```json
 "vm": {
@@ -66,7 +70,7 @@ aliases:
 },
 ```
 
-例如，带有卷定义的 Compose 文件如下所示：
+The Compose file, with a volume definition for example, would look like:
 
 ```yaml
 services:
@@ -76,9 +80,9 @@ services:
       - /host/path:/container/path
 ```
 
-### Host 部分
+### Host section
 
-`host` 部分定义 Docker Desktop 复制到主机上的可执行文件。
+The `host` section defines executables that Docker Desktop copies on the host.
 
 ```json
   "host": {
@@ -104,8 +108,8 @@ services:
   }
 ```
 
-`binaries` 定义 Docker Desktop 从扩展镜像复制到主机的二进制文件列表。
+`binaries` defines a list of binaries Docker Desktop copies from the extension image to the host.
 
-`path` 指定镜像文件系统中的二进制文件路径。Docker Desktop 负责将这些文件复制到其自己的位置，JavaScript API 允许调用这些二进制文件。
+`path` specifies the binary path in the image filesystem. Docker Desktop is responsible for copying these files in its own location, and the JavaScript API allows invokes these binaries.
 
-了解如何[调用可执行文件](../guides/invoke-host-binaries.md)。
+Learn how to [invoke executables](../guides/invoke-host-binaries.md).

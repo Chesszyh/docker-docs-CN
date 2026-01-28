@@ -1,16 +1,19 @@
 ---
-title: 使用 GitHub Actions 构建多平台镜像
+title: Multi-platform image with GitHub Actions
 linkTitle: Multi-platform image
-description: 使用 GitHub Actions 通过 QEMU 模拟或多个原生构建器为多种架构构建
+description: Build for multiple architectures with GitHub Actions using QEMU emulation or multiple native builders
 keywords: ci, github actions, gha, buildkit, buildx, multi-platform
 ---
 
-您可以使用 `platforms` 选项构建[多平台镜像](../../building/multi-platform.md)，如以下示例所示：
+You can build [multi-platform images](../../building/multi-platform.md) using
+the `platforms` option, as shown in the following example:
 
 > [!NOTE]
 >
-> - 有关可用平台的列表，请参阅 [Docker Setup Buildx](https://github.com/marketplace/actions/docker-setup-buildx) action。
-> - 如果您需要支持更多平台，可以使用 [Docker Setup QEMU](https://github.com/docker/setup-qemu-action) action 配合 QEMU。
+> - For a list of available platforms, see the [Docker Setup Buildx](https://github.com/marketplace/actions/docker-setup-buildx)
+>   action.
+> - If you want support for more platforms, you can use QEMU with the [Docker Setup QEMU](https://github.com/docker/setup-qemu-action)
+>   action.
 
 ```yaml
 name: ci
@@ -42,13 +45,20 @@ jobs:
           tags: user/app:latest
 ```
 
-## 构建和加载多平台镜像
+## Build and load multi-platform images
 
-GitHub Actions 运行器的默认 Docker 设置不支持在构建后将多平台镜像加载到运行器的本地镜像存储中。要加载多平台镜像，您需要为 Docker Engine 启用 containerd 镜像存储选项。
+The default Docker setup for GitHub Actions runners does not support loading
+multi-platform images to the local image store of the runner after building
+them. To load a multi-platform image, you need to enable the containerd image
+store option for the Docker Engine.
 
-无法直接配置 GitHub Actions 运行器中的默认 Docker 设置，但您可以使用 `docker/setup-docker-action` 来自定义作业的 Docker Engine 和 CLI 设置。
+There is no way to configure the default Docker setup in the GitHub Actions
+runners directly, but you can use `docker/setup-docker-action` to customize the
+Docker Engine and CLI settings for a job.
 
-以下示例工作流启用 containerd 镜像存储，构建多平台镜像，并将结果加载到 GitHub 运行器的本地镜像存储中。
+The following example workflow enables the containerd image store, builds a
+multi-platform image, and loads the results into the GitHub runner's local
+image store.
 
 ```yaml
 name: ci
@@ -88,13 +98,19 @@ jobs:
           tags: user/app:latest
 ```
 
-## 在多个运行器之间分发构建
+## Distribute build across multiple runners
 
-在前面的示例中，每个平台都在同一个运行器上构建，这可能需要很长时间，具体取决于平台数量和您的 Dockerfile。
+In the previous example, each platform is built on the same runner which can
+take a long time depending on the number of platforms and your Dockerfile.
 
-要解决这个问题，您可以使用矩阵策略将每个平台的构建分发到多个运行器，并使用 [`buildx imagetools create` 命令](/reference/cli/docker/buildx/imagetools/create.md)创建清单列表。
+To solve this issue you can use a matrix strategy to distribute the build for
+each platform across multiple runners and create manifest list using the
+[`buildx imagetools create` command](/reference/cli/docker/buildx/imagetools/create.md).
 
-以下工作流将使用矩阵策略在专用运行器上为每个平台构建镜像，并按摘要推送。然后，`merge` 作业将创建清单列表并推送到 Docker Hub。[`metadata` action](https://github.com/docker/metadata-action) 用于设置标签和标注。
+The following workflow will build the image for each platform on a dedicated
+runner using a matrix strategy and push by digest. Then, the `merge` job will
+create manifest lists and push them to Docker Hub. The [`metadata` action](https://github.com/docker/metadata-action)
+is used to set tags and labels.
 
 ```yaml
 name: ci
@@ -204,13 +220,15 @@ jobs:
           docker buildx imagetools inspect ${{ env.REGISTRY_IMAGE }}:${{ steps.meta.outputs.version }}
 ```
 
-### 使用 Bake
+### With Bake
 
-也可以使用 Bake 和 [bake action](https://github.com/docker/bake-action) 在多个运行器上构建。
+It's also possible to build on multiple runners using Bake, with the
+[bake action](https://github.com/docker/bake-action).
 
-您可以在[这个 GitHub 仓库](https://github.com/crazy-max/docker-linguist)中找到一个实际示例。
+You can find a live example [in this GitHub repository](https://github.com/crazy-max/docker-linguist).
 
-以下示例实现了与[上一节](#distribute-build-across-multiple-runners)中描述的相同结果。
+The following example achieves the same results as described in
+[the previous section](#distribute-build-across-multiple-runners).
 
 ```hcl
 variable "DEFAULT_TAG" {
@@ -311,7 +329,7 @@ jobs:
         with:
           name: bake-meta
           path: ${{ runner.temp }}
-
+      
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:

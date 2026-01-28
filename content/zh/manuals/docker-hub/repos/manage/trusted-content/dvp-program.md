@@ -1,6 +1,6 @@
 ---
-description: 了解 Docker 认证发布者计划及其运作方式
-title: Docker 认证发布者计划
+description: Learn what the Docker Verified Publisher Program is and how it works
+title: Docker Verified Publisher Program
 aliases:
 - /docker-hub/publish/publish/
 - /docker-hub/publish/customer_faq/
@@ -16,75 +16,89 @@ aliases:
 - /trusted-content/dvp-program/
 ---
 
-[Docker 认证发布者计划](https://hub.docker.com/search?q=&image_filter=store) 提供由 Docker 验证的商业发布者提供的高质量镜像。
+[The Docker Verified Publisher Program](https://hub.docker.com/search?q=&image_filter=store) provides high-quality images from commercial publishers verified by Docker.
 
-这些镜像帮助开发团队构建安全的软件供应链，在流程早期最大限度地减少对恶意内容的暴露，从而在后期节省时间和金钱。
+These images help development teams build secure software supply chains, minimizing exposure to malicious content early in the process to save time and money later.
 
-属于此计划的镜像在 Docker Hub 上有一个特殊徽章，使用户更容易识别 Docker 已验证为高质量商业发布者的项目。
+Images that are part of this program have a special badge on Docker Hub making it easier for users to identify projects that Docker has verified as high-quality commercial publishers.
 
 ![Docker-Sponsored Open Source badge](../../../images/verified-publisher-badge-iso.png)
 
-Docker 认证发布者计划 (DVP) 为 Docker Hub 发布者提供多项功能和福利。该计划根据参与层级授予以下特权：
+The Docker Verified Publisher Program (DVP) provides several features and benefits to Docker
+Hub publishers. The program grants the following perks based on participation tier:
 
-- 仓库徽标
-- 认证发布者徽章
-- Docker Hub 搜索优先排名
-- 洞察与分析
-- 漏洞分析
-- 额外的 Docker Business 席位
-- 为开发者移除速率限制
-- 联合营销机会
+- Repository logo
+- Verified publisher badge
+- Priority search ranking in Docker Hub
+- Insights and analytics
+- Vulnerability analysis
+- Additional Docker Business seats
+- Removal of rate limiting for developers
+- Co-marketing opportunities
 
-### 仓库徽标
+### Repository logo
 
-DVP 组织可以为 Docker Hub 上的单个仓库上传自定义图像。这允许您在每个仓库的基础上覆盖默认的组织级徽标。
+DVP organizations can upload custom images for individual repositories on Docker Hub.
+This lets you override the default organization-level logo on a per-repository basis.
 
-只有对仓库具有管理权限（所有者或具有管理员权限的团队成员）的用户才能更改仓库徽标。
+Only a user with administrative access (owner or team member with administrator permission)
+over the repository can change the repository logo.
 
-#### 图像要求
+#### Image requirements
 
-- 徽标图像支持的文件类型为 JPEG 和 PNG。
-- 允许的最小图像尺寸（像素）为 120×120。
-- 允许的最大图像尺寸（像素）为 1000×1000。
-- 允许的最大图像文件大小为 5MB。
+- The supported filetypes for the logo image are JPEG and PNG.
+- The minimum allowed image size in pixels is 120×120.
+- The maximum allowed image size in pixels is 1000×1000.
+- The maximum allowed image file size is 5MB.
 
-#### 设置仓库徽标
+#### Set the repository logo
 
-1. 登录 [Docker Hub](https://hub.docker.com)。
-2. 转到您想要更改徽标的仓库页面。
-3. 选择上传徽标按钮，由覆盖在当前仓库徽标上的相机图标 ({{< inline-image
-   src="../../../images/upload_logo_sm.png" alt="camera icon" >}}) 表示。
-4. 在打开的对话框中，选择您要上传的 PNG 图像以将其设置为仓库的徽标。
+1. Sign in to [Docker Hub](https://hub.docker.com).
+2. Go to the page of the repository that you want to change the logo for.
+3. Select the upload logo button, represented by a camera icon ({{< inline-image
+   src="../../../images/upload_logo_sm.png" alt="camera icon" >}}) overlaying the
+current repository logo.
+4. In the dialog that opens, select the PNG image that you want to upload to
+   set it as the logo for the repository.
 
-#### 移除徽标
+#### Remove the logo
 
-选择 **Clear** 按钮 ({{< inline-image src="../../../images/clear_logo_sm.png"
-alt="clear button" >}}) 以移除徽标。
+Select the **Clear** button ({{< inline-image src="../../../images/clear_logo_sm.png"
+alt="clear button" >}}) to remove a logo.
 
-移除徽标会使仓库默认使用组织徽标（如果已设置），否则使用以下默认徽标。
+Removing the logo makes the repository default to using the organization logo, if set, or the following default logo if not.
 
 ![Default logo which is a 3D grey cube](../../../images/default_logo_sm.png)
 
-### 认证发布者徽章
+### Verified publisher badge
 
-属于此计划的镜像在 Docker Hub 上有一个徽章，使开发者更容易识别 Docker 已验证为高质量发布者且内容可信赖的项目。
+Images that are part of this program have a badge on Docker Hub making it easier for developers
+to identify projects that Docker has verified as high quality publishers and with content they can trust.
 
 ![Docker, Inc. org with a verified publisher badge](../../../images/verified-publisher-badge.png)
 
-### 洞察与分析
+### Insights and analytics
 
-[洞察与分析](./insights-analytics.md) 服务提供社区如何使用 Docker 镜像的使用指标，让您深入了解用户行为。
+The [insights and analytics](./insights-analytics.md) service provides usage metrics for how
+the community uses Docker images, granting insight into user behavior.
 
-使用指标显示按标签或按摘要的镜像拉取次数，以及按地理位置、云提供商、客户端等的细分。
+The usage metrics show the number of image pulls by tag or by digest, and breakdowns by
+geolocation, cloud provider, client, and more.
 
-您可以选择要查看分析数据的时间跨度。您还可以以摘要或原始格式导出数据。
+You can select the time span for which you want to view analytics data. You can also export the data in either a summary or raw format.
 
-### 漏洞分析
+### Vulnerability analysis
 
-[Docker Scout](/scout/) 为发布到 Docker Hub 的 DVP 镜像提供自动漏洞分析。扫描镜像可确保发布的内容是安全的，并向开发者证明他们可以信任该镜像。
+[Docker Scout](/scout/) provides automatic vulnerability analysis
+for DVP images published to Docker Hub.
+Scanning images ensures that the published content is secure, and proves to
+developers that they can trust the image.
 
-您可以在每个仓库的基础上启用分析。有关使用此功能的更多信息，请参阅 [基本漏洞扫描](/docker-hub/repos/manage/vulnerability-scanning/)。
+You can enable analysis on a per-repository
+basis. For more about using this feature, see [Basic vulnerability scanning](/docker-hub/repos/manage/vulnerability-scanning/).
 
-### 谁有资格成为认证发布者？
+### Who's eligible to become a verified publisher?
 
-任何在 Docker Hub 上分发软件的独立软件供应商都可以加入认证发布者计划。前往 [Docker 认证发布者计划](https://www.docker.com/partners/programs) 页面了解更多信息。
+Any independent software vendor who distributes software on Docker Hub can join
+the Verified Publisher Program. Find out more by heading to the
+[Docker Verified Publisher Program](https://www.docker.com/partners/programs) page.

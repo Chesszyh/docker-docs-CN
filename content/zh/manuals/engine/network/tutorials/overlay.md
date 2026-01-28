@@ -1,55 +1,87 @@
 ---
-title: 使用 overlay 网络进行网络连接
-description: 在多个 Docker 守护进程上使用 swarm 服务和独立容器进行网络连接的教程
+title: Networking with overlay networks
+description: Tutorials for networking with swarm services and standalone containers
+  on multiple Docker daemons
 keywords: networking, bridge, routing, ports, swarm, overlay
 aliases:
 - /engine/userguide/networking/get-started-overlay/
 - /network/network-tutorial-overlay/
 ---
 
-本系列教程介绍 swarm 服务的网络连接。有关独立容器的网络连接，请参阅[独立容器网络连接](/manuals/engine/network/tutorials/standalone.md)。如果您需要了解更多关于 Docker 网络的一般知识，请参阅[概述](/manuals/engine/network/_index.md)。
+This series of tutorials deals with networking for swarm services.
+For networking with standalone containers, see
+[Networking with standalone containers](/manuals/engine/network/tutorials/standalone.md). If you need to
+learn more about Docker networking in general, see the [overview](/manuals/engine/network/_index.md).
 
-此页面包含以下教程。您可以在 Linux、Windows 或 Mac 上运行每个教程，但对于最后一个教程，您需要在其他地方运行第二个 Docker 主机。
+This page includes the following tutorials. You can run each of them on
+Linux, Windows, or a Mac, but for the last one, you need a second Docker
+host running elsewhere.
 
-- [使用默认 overlay 网络](#使用默认-overlay-网络)演示如何使用 Docker 在您初始化或加入 swarm 时自动为您设置的默认 overlay 网络。此网络不是生产系统的最佳选择。
+- [Use the default overlay network](#use-the-default-overlay-network) demonstrates
+  how to use the default overlay network that Docker sets up for you
+  automatically when you initialize or join a swarm. This network is not the
+  best choice for production systems.
 
-- [使用用户定义的 overlay 网络](#使用用户定义的-overlay-网络)展示如何创建和使用您自己的自定义 overlay 网络来连接服务。这是生产环境中运行服务的推荐方式。
+- [Use user-defined overlay networks](#use-a-user-defined-overlay-network) shows
+  how to create and use your own custom overlay networks, to connect services.
+  This is recommended for services running in production.
 
-- [为独立容器使用 overlay 网络](#为独立容器使用-overlay-网络)展示如何使用 overlay 网络在不同 Docker 守护进程上的独立容器之间进行通信。
+- [Use an overlay network for standalone containers](#use-an-overlay-network-for-standalone-containers)
+  shows how to communicate between standalone containers on different Docker
+  daemons using an overlay network.
 
-## 先决条件
+## Prerequisites
 
-这些教程要求您至少有一个单节点 swarm，这意味着您已经在主机上启动了 Docker 并运行了 `docker swarm init`。您也可以在多节点 swarm 上运行这些示例。
+These require you to have at least a single-node swarm, which means that
+you have started Docker and run `docker swarm init` on the host. You can run
+the examples on a multi-node swarm as well.
 
-## 使用默认 overlay 网络
+## Use the default overlay network
 
-在此示例中，您将启动一个 `alpine` 服务，并从各个服务容器的角度检查网络的特性。
+In this example, you start an `alpine` service and examine the characteristics
+of the network from the point of view of the individual service containers.
 
-本教程不涉及 overlay 网络实现方式的操作系统特定细节，而是专注于从服务的角度来看 overlay 是如何工作的。
+This tutorial does not go into operation-system-specific details about how
+overlay networks are implemented, but focuses on how the overlay functions from
+the point of view of a service.
 
-### 先决条件
+### Prerequisites
 
-本教程需要三台可以相互通信的物理或虚拟 Docker 主机。本教程假设三台主机在同一网络上运行，没有涉及防火墙。
+This tutorial requires three physical or virtual Docker hosts which can all
+communicate with one another. This tutorial assumes that the three hosts are
+running on the same network with no firewall involved.
 
-这些主机将被称为 `manager`、`worker-1` 和 `worker-2`。`manager` 主机将同时充当管理者和工作者，这意味着它既可以运行服务任务，也可以管理 swarm。`worker-1` 和 `worker-2` 将仅充当工作者。
+These hosts will be referred to as `manager`, `worker-1`, and `worker-2`. The
+`manager` host will function as both a manager and a worker, which means it can
+both run service tasks and manage the swarm. `worker-1` and `worker-2` will
+function as workers only,
 
-如果您没有三台主机，一个简单的解决方案是在云服务提供商（如 Amazon EC2）上设置三台 Ubuntu 主机，它们都在同一网络上，允许该网络上所有主机之间的所有通信（使用 EC2 安全组等机制），然后按照 [Ubuntu 上 Docker Engine - Community 的安装说明](/manuals/engine/install/ubuntu.md)进行操作。
+If you don't have three hosts handy, an easy solution is to set up three
+Ubuntu hosts on a cloud provider such as Amazon EC2, all on the same network
+with all communications allowed to all hosts on that network (using a mechanism
+such as EC2 security groups), and then to follow the
+[installation instructions for Docker Engine - Community on Ubuntu](/manuals/engine/install/ubuntu.md).
 
-### 演练
+### Walkthrough
 
-#### 创建 swarm
+#### Create the swarm
 
-在此过程结束时，所有三个 Docker 主机都将加入 swarm，并将使用名为 `ingress` 的 overlay 网络连接在一起。
+At the end of this procedure, all three Docker hosts will be joined to the swarm
+and will be connected together using an overlay network called `ingress`.
 
-1.  在 `manager` 上初始化 swarm。如果主机只有一个网络接口，则 `--advertise-addr` 标志是可选的。
+1.  On `manager`. initialize the swarm. If the host only has one network
+    interface, the `--advertise-addr` flag is optional.
 
     ```console
     $ docker swarm init --advertise-addr=<IP-ADDRESS-OF-MANAGER>
     ```
 
-    记下打印出来的文本，因为它包含您将用于将 `worker-1` 和 `worker-2` 加入 swarm 的令牌。最好将令牌存储在密码管理器中。
+    Make a note of the text that is printed, as this contains the token that
+    you will use to join `worker-1` and `worker-2` to the swarm. It is a good
+    idea to store the token in a password manager.
 
-2.  在 `worker-1` 上加入 swarm。如果主机只有一个网络接口，则 `--advertise-addr` 标志是可选的。
+2.  On `worker-1`, join the swarm. If the host only has one network interface,
+    the `--advertise-addr` flag is optional.
 
     ```console
     $ docker swarm join --token <TOKEN> \
@@ -57,7 +89,8 @@ aliases:
       <IP-ADDRESS-OF-MANAGER>:2377
     ```
 
-3.  在 `worker-2` 上加入 swarm。如果主机只有一个网络接口，则 `--advertise-addr` 标志是可选的。
+3.  On `worker-2`, join the swarm. If the host only has one network interface,
+    the `--advertise-addr` flag is optional.
 
     ```console
     $ docker swarm join --token <TOKEN> \
@@ -65,7 +98,8 @@ aliases:
       <IP-ADDRESS-OF-MANAGER>:2377
     ```
 
-4.  在 `manager` 上列出所有节点。此命令只能从管理者执行。
+4.  On `manager`, list all the nodes. This command can only be done from a
+    manager.
 
     ```console
     $ docker node ls
@@ -76,7 +110,7 @@ aliases:
     ouvx2l7qfcxisoyms8mtkgahw     ip-172-31-36-89     Ready               Active
     ```
 
-    您也可以使用 `--filter` 标志按角色过滤：
+    You can also use the `--filter` flag to filter by role:
 
     ```console
     $ docker node ls --filter role=manager
@@ -91,7 +125,10 @@ aliases:
     ouvx2l7qfcxisoyms8mtkgahw     ip-172-31-36-89     Ready               Active
     ```
 
-5.  在 `manager`、`worker-1` 和 `worker-2` 上列出 Docker 网络，并注意它们现在都有一个名为 `ingress` 的 overlay 网络和一个名为 `docker_gwbridge` 的桥接网络。这里只显示 `manager` 的列表：
+5.  List the Docker networks on `manager`, `worker-1`, and `worker-2` and notice
+    that each of them now has an overlay network called `ingress` and a bridge
+    network called `docker_gwbridge`. Only the listing for `manager` is shown
+    here:
 
     ```console
     $ docker network ls
@@ -104,23 +141,33 @@ aliases:
     c8357deec9cb        none                null                local
     ```
 
-`docker_gwbridge` 将 `ingress` 网络连接到 Docker 主机的网络接口，以便流量可以流入和流出 swarm 管理者和工作者。如果您创建 swarm 服务而不指定网络，它们将连接到 `ingress` 网络。建议您为每个将一起工作的应用程序或应用程序组使用单独的 overlay 网络。在下一个过程中，您将创建两个 overlay 网络并将服务连接到每个网络。
+The `docker_gwbridge` connects the `ingress` network to the Docker host's
+network interface so that traffic can flow to and from swarm managers and
+workers. If you create swarm services and do not specify a network, they are
+connected to the `ingress` network. It is recommended that you use separate
+overlay networks for each application or group of applications which will work
+together. In the next procedure, you will create two overlay networks and
+connect a service to each of them.
 
-#### 创建服务
+#### Create the services
 
-1.  在 `manager` 上创建一个名为 `nginx-net` 的新 overlay 网络：
+1.  On `manager`, create a new overlay network called `nginx-net`:
 
     ```console
     $ docker network create -d overlay nginx-net
     ```
 
-    您不需要在其他节点上创建 overlay 网络，因为当其中一个节点开始运行需要它的服务任务时，它将自动创建。
+    You don't need to create the overlay network on the other nodes, because it
+    will be automatically created when one of those nodes starts running a
+    service task which requires it.
 
-2.  在 `manager` 上创建一个连接到 `nginx-net` 的 5 副本 Nginx 服务。该服务将向外部发布 80 端口。所有服务任务容器可以相互通信，而无需打开任何端口。
+2.  On `manager`, create a 5-replica Nginx service connected to `nginx-net`. The
+    service will publish port 80 to the outside world. All of the service
+    task containers can communicate with each other without opening any ports.
 
     > [!NOTE]
     >
-    > 服务只能在管理者上创建。
+    > Services can only be created on a manager.
 
     ```console
     $ docker service create \
@@ -131,15 +178,31 @@ aliases:
       nginx
       ```
 
-      当您不为 `--publish` 标志指定 `mode` 时，使用的默认发布模式是 `ingress`，这意味着如果您浏览到 `manager`、`worker-1` 或 `worker-2` 的 80 端口，您将连接到 5 个服务任务中某一个的 80 端口，即使您浏览的节点上当前没有运行任务。如果您想使用 `host` 模式发布端口，您可以在 `--publish` 输出中添加 `mode=host`。但是，在这种情况下，您还应该使用 `--mode global` 而不是 `--replicas=5`，因为在给定节点上只有一个服务任务可以绑定给定端口。
+      The default publish mode of `ingress`, which is used when you do not
+      specify a `mode` for the `--publish` flag, means that if you browse to
+      port 80 on `manager`, `worker-1`, or `worker-2`, you will be connected to
+      port 80 on one of the 5 service tasks, even if no tasks are currently
+      running on the node you browse to. If you want to publish the port using
+      `host` mode, you can add `mode=host` to the `--publish` output. However,
+      you should also use `--mode global` instead of `--replicas=5` in this case,
+      since only one service task can bind a given port on a given node.
 
-3.  运行 `docker service ls` 来监控服务启动的进度，这可能需要几秒钟。
+3.  Run `docker service ls` to monitor the progress of service bring-up, which
+    may take a few seconds.
 
-4.  在 `manager`、`worker-1` 和 `worker-2` 上检查 `nginx-net` 网络。请记住，您不需要在 `worker-1` 和 `worker-2` 上手动创建它，因为 Docker 为您创建了它。输出会很长，但请注意 `Containers` 和 `Peers` 部分。`Containers` 列出了从该主机连接到 overlay 网络的所有服务任务（或独立容器）。
+4.  Inspect the `nginx-net` network on `manager`, `worker-1`, and `worker-2`.
+    Remember that you did not need to create it manually on `worker-1` and
+    `worker-2` because Docker created it for you. The output will be long, but
+    notice the `Containers` and `Peers` sections. `Containers` lists all
+    service tasks (or standalone containers) connected to the overlay network
+    from that host.
 
-5.  从 `manager` 上使用 `docker service inspect my-nginx` 检查服务，并注意有关服务使用的端口和端点的信息。
+5.  From `manager`, inspect the service using `docker service inspect my-nginx`
+    and notice the information about the ports and endpoints used by the
+    service.
 
-6.  创建一个新网络 `nginx-net-2`，然后更新服务以使用此网络而不是 `nginx-net`：
+6.  Create a new network `nginx-net-2`, then update the service to use this
+    network instead of `nginx-net`:
 
     ```console
     $ docker network create -d overlay nginx-net-2
@@ -152,34 +215,42 @@ aliases:
       my-nginx
     ```
 
-7.  运行 `docker service ls` 验证服务已更新并且所有任务已重新部署。运行 `docker network inspect nginx-net` 验证没有容器连接到它。对 `nginx-net-2` 运行相同的命令，并注意所有服务任务容器都连接到它。
+7.  Run `docker service ls` to verify that the service has been updated and all
+    tasks have been redeployed. Run `docker network inspect nginx-net` to verify
+    that no containers are connected to it. Run the same command for
+    `nginx-net-2` and notice that all the service task containers are connected
+    to it.
 
     > [!NOTE]
     >
-    > 即使 overlay 网络会在 swarm 工作节点上根据需要自动创建，但它们不会自动删除。
+    > Even though overlay networks are automatically created on swarm
+    > worker nodes as needed, they are not automatically removed.
 
-8.  从 `manager` 清理服务和网络。运行以下命令。管理者将指示工作者自动删除网络。
+8.  Clean up the service and the networks. From `manager`, run the following
+    commands. The manager will direct the workers to remove the networks
+    automatically.
 
     ```console
     $ docker service rm my-nginx
     $ docker network rm nginx-net nginx-net-2
     ```
 
-## 使用用户定义的 overlay 网络
+## Use a user-defined overlay network
 
-### 先决条件
+### Prerequisites
 
-本教程假设 swarm 已经设置好，并且您在管理者上。
+This tutorial assumes the swarm is already set up and you are on a manager.
 
-### 演练
+### Walkthrough
 
-1.  创建用户定义的 overlay 网络。
+1.  Create the user-defined overlay network.
 
     ```console
     $ docker network create -d overlay my-overlay
     ```
 
-2.  使用 overlay 网络启动服务，并将 80 端口发布到 Docker 主机上的 8080 端口。
+2.  Start a service using the overlay network and publishing port 80 to port
+    8080 on the Docker host.
 
     ```console
     $ docker service create \
@@ -190,9 +261,10 @@ aliases:
       nginx:latest
     ```
 
-3.  运行 `docker network inspect my-overlay`，通过查看 `Containers` 部分验证 `my-nginx` 服务任务是否连接到它。
+3.  Run `docker network inspect my-overlay` and verify that the `my-nginx`
+    service task is connected to it, by looking at the `Containers` section.
 
-4.  删除服务和网络。
+4.  Remove the service and the network.
 
     ```console
     $ docker service rm my-nginx
@@ -200,34 +272,45 @@ aliases:
     $ docker network rm my-overlay
     ```
 
-## 为独立容器使用 overlay 网络
+## Use an overlay network for standalone containers
 
-此示例演示 DNS 容器发现——具体来说，是如何使用 overlay 网络在不同 Docker 守护进程上的独立容器之间进行通信。步骤如下：
+This example demonstrates DNS container discovery -- specifically, how to
+communicate between standalone containers on different Docker daemons using an
+overlay network. Steps are:
 
-- 在 `host1` 上，将节点初始化为 swarm（管理者）。
-- 在 `host2` 上，将节点加入 swarm（工作者）。
-- 在 `host1` 上，创建一个可附加的 overlay 网络（`test-net`）。
-- 在 `host1` 上，在 `test-net` 上运行一个交互式 [alpine](https://hub.docker.com/_/alpine/) 容器（`alpine1`）。
-- 在 `host2` 上，在 `test-net` 上运行一个交互式且分离的 [alpine](https://hub.docker.com/_/alpine/) 容器（`alpine2`）。
-- 在 `host1` 上，从 `alpine1` 的会话中 ping `alpine2`。
+- On `host1`, initialize the node as a swarm (manager).
+- On `host2`, join the node to the swarm (worker).
+- On `host1`, create an attachable overlay network (`test-net`).
+- On `host1`, run an interactive [alpine](https://hub.docker.com/_/alpine/) container (`alpine1`) on `test-net`.
+- On `host2`, run an interactive, and detached, [alpine](https://hub.docker.com/_/alpine/) container (`alpine2`) on `test-net`.
+- On `host1`, from within a session of `alpine1`, ping `alpine2`.
 
-### 先决条件
+### Prerequisites
 
-对于此测试，您需要两个可以相互通信的不同 Docker 主机。每个主机必须在两个 Docker 主机之间打开以下端口：
+For this test, you need two different Docker hosts that can communicate with
+each other. Each host must have the following ports open between the two Docker
+hosts:
 
-- TCP 端口 2377
-- TCP 和 UDP 端口 7946
-- UDP 端口 4789
+- TCP port 2377
+- TCP and UDP port 7946
+- UDP port 4789
 
-设置此环境的一个简单方法是拥有两个虚拟机（在本地或在 AWS 等云服务提供商上），每个虚拟机都安装并运行 Docker。如果您使用 AWS 或类似的云计算平台，最简单的配置是使用安全组，该安全组在两个主机之间打开所有入站端口，并从您客户端的 IP 地址打开 SSH 端口。
+One easy way to set this up is to have two VMs (either local or on a cloud
+provider like AWS), each with Docker installed and running. If you're using AWS
+or a similar cloud computing platform, the easiest configuration is to use a
+security group that opens all incoming ports between the two hosts and the SSH
+port from your client's IP address.
 
-此示例将 swarm 中的两个节点称为 `host1` 和 `host2`。此示例还使用 Linux 主机，但相同的命令在 Windows 上也可以工作。
+This example refers to the two nodes in our swarm as `host1` and `host2`. This
+example also uses Linux hosts, but the same commands work on Windows.
 
-### 演练
+### Walk-through
 
-1.  设置 swarm。
+1.  Set up the swarm.
 
-    a.  在 `host1` 上，初始化一个 swarm（如果提示，使用 `--advertise-addr` 指定与 swarm 中其他主机通信的接口的 IP 地址，例如 AWS 上的私有 IP 地址）：
+    a.  On `host1`, initialize a swarm (and if prompted, use `--advertise-addr`
+        to specify the IP address for the interface that communicates with other
+        hosts in the swarm, for instance, the private IP address on AWS):
 
 
     ```console
@@ -241,32 +324,34 @@ aliases:
     To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
     ```
 
-    b.  在 `host2` 上，按照上面的说明加入 swarm：
+    b.  On `host2`, join the swarm as instructed above:
 
     ```console
     $ docker swarm join --token <your_token> <your_ip_address>:2377
     This node joined a swarm as a worker.
     ```
 
-    如果节点无法加入 swarm，`docker swarm join` 命令会超时。要解决此问题，在 `host2` 上运行 `docker swarm leave --force`，验证您的网络和防火墙设置，然后重试。
+    If the node fails to join the swarm, the `docker swarm join` command times
+    out. To resolve, run `docker swarm leave --force` on `host2`, verify your
+    network and firewall settings, and try again.
 
-2.  在 `host1` 上，创建一个名为 `test-net` 的可附加 overlay 网络：
+2.  On `host1`, create an attachable overlay network called `test-net`:
 
     ```console
     $ docker network create --driver=overlay --attachable test-net
     uqsof8phj3ak0rq9k86zta6ht
     ```
 
-    > 注意返回的 **NETWORK ID** —— 当您从 `host2` 连接到它时会再次看到它。
+    > Notice the returned **NETWORK ID** -- you will see it again when you connect to it from `host2`.
 
-3.  在 `host1` 上，启动一个连接到 `test-net` 的交互式（`-it`）容器（`alpine1`）：
+3.  On `host1`, start an interactive (`-it`) container (`alpine1`) that connects to `test-net`:
 
     ```console
     $ docker run -it --name alpine1 --network test-net alpine
     / #
     ```
 
-4.  在 `host2` 上，列出可用的网络——注意 `test-net` 尚不存在：
+4.  On `host2`, list the available networks -- notice that `test-net` does not yet exist:
 
     ```console
     $ docker network ls
@@ -278,7 +363,7 @@ aliases:
     b65c952a4b2b        none                null                local
     ```
 
-5.  在 `host2` 上，启动一个连接到 `test-net` 的分离（`-d`）且交互式（`-it`）的容器（`alpine2`）：
+5.  On `host2`, start a detached (`-d`) and interactive (`-it`) container (`alpine2`) that connects to `test-net`:
 
     ```console
     $ docker run -dit --name alpine2 --network test-net alpine
@@ -287,9 +372,9 @@ aliases:
 
     > [!NOTE]
     >
-    > 自动 DNS 容器发现仅适用于唯一的容器名称。
+    > Automatic DNS container discovery only works with unique container names.
 
-6. 在 `host2` 上，验证 `test-net` 已创建（并且与 `host1` 上的 `test-net` 具有相同的 NETWORK ID）：
+6. On `host2`, verify that `test-net` was created (and has the same NETWORK ID as `test-net` on `host1`):
 
     ```console
     $ docker network ls
@@ -298,7 +383,7 @@ aliases:
     uqsof8phj3ak        test-net            overlay             swarm
     ```
 
-7.  在 `host1` 上，在 `alpine1` 的交互终端中 ping `alpine2`：
+7.  On `host1`, ping `alpine2` within the interactive terminal of `alpine1`:
 
     ```console
     / # ping -c 2 alpine2
@@ -311,7 +396,10 @@ aliases:
     round-trip min/avg/max = 0.555/0.577/0.600 ms
     ```
 
-    两个容器使用连接两个主机的 overlay 网络进行通信。如果您在 `host2` 上运行另一个_非分离_的 alpine 容器，您可以从 `host2` ping `alpine1`（这里我们添加了 [remove 选项](/reference/cli/docker/container/run/#rm)以自动清理容器）：
+    The two containers communicate with the overlay network connecting the two
+    hosts. If you run another alpine container on `host2` that is _not detached_,
+    you can ping `alpine1` from `host2` (and here we add the
+    [remove option](/reference/cli/docker/container/run/#rm) for automatic container cleanup):
 
     ```sh
     $ docker run -it --rm --name alpine3 --network test-net alpine
@@ -319,17 +407,20 @@ aliases:
     / # exit
     ```
 
-8.  在 `host1` 上，关闭 `alpine1` 会话（这也会停止容器）：
+8.  On `host1`, close the `alpine1` session (which also stops the container):
 
     ```console
     / # exit
     ```
 
-9.  清理您的容器和网络：
+9.  Clean up your containers and networks:
 
-    您必须在每个主机上独立停止和删除容器，因为 Docker 守护进程独立运行，这些是独立容器。您只需要在 `host1` 上删除网络，因为当您在 `host2` 上停止 `alpine2` 时，`test-net` 会消失。
+    You must stop and remove the containers on each host independently because
+    Docker daemons operate independently and these are standalone containers.
+    You only have to remove the network on `host1` because when you stop
+    `alpine2` on `host2`, `test-net` disappears.
 
-    a.  在 `host2` 上，停止 `alpine2`，检查 `test-net` 是否已删除，然后删除 `alpine2`：
+    a.  On `host2`, stop `alpine2`, check that `test-net` was removed, then remove `alpine2`:
 
     ```console
     $ docker container stop alpine2
@@ -337,15 +428,15 @@ aliases:
     $ docker container rm alpine2
     ```
 
-    a.  在 `host1` 上，删除 `alpine1` 和 `test-net`：
+    a.  On `host1`, remove `alpine1` and `test-net`:
 
     ```console
     $ docker container rm alpine1
     $ docker network rm test-net
     ```
 
-## 其他网络教程
+## Other networking tutorials
 
-- [主机网络教程](/manuals/engine/network/tutorials/host.md)
-- [独立网络教程](/manuals/engine/network/tutorials/standalone.md)
-- [Macvlan 网络教程](/manuals/engine/network/tutorials/macvlan.md)
+- [Host networking tutorial](/manuals/engine/network/tutorials/host.md)
+- [Standalone networking tutorial](/manuals/engine/network/tutorials/standalone.md)
+- [Macvlan networking tutorial](/manuals/engine/network/tutorials/macvlan.md)

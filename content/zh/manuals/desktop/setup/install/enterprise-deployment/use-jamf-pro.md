@@ -1,6 +1,6 @@
 ---
-title: 使用 Jamf Pro 部署
-description: 使用 Jamf Pro 部署 Docker Desktop for Mac
+title: Deploy with Jamf Pro
+description: Use Jamf Pro to deploy Docker Desktop for Mac
 keywords: jamf, mac, docker desktop, deploy, mdm, enterprise, administrator, pkg
 tags: [admin]
 weight: 50
@@ -8,25 +8,25 @@ weight: 50
 
 {{< summary-bar feature_name="Jamf Pro" >}}
 
-了解如何使用 Jamf Pro 部署 Docker Desktop for Mac，包括上传安装程序和创建部署策略。
+Learn how to deploy Docker Desktop for Mac using Jamf Pro, including uploading the installer and creating a deployment policy.
 
-首先，上传软件包：
+First, upload the package:
 
-1. 从 Jamf Pro 控制台，导航到 **Computers** > **Management Settings** > **Computer Management** > **Packages**。
-2. 选择 **New** 添加新软件包。
-3. 上传 `Docker.pkg` 文件。
+1. From the Jamf Pro console, navigate to **Computers** > **Management Settings** > **Computer Management** > **Packages**.
+2. Select **New** to add a new package.
+3. Upload the `Docker.pkg` file.
 
-接下来，创建部署策略：
+Next, create a policy for deployment:
 
-1. 导航到 **Computers** > **Policies**。
-2. 选择 **New** 创建新策略。
-3. 输入策略名称，例如 "Deploy Docker Desktop"。
-4. 在 **Packages** 选项卡下，添加您上传的 Docker 软件包。
-5. 配置范围以定位要安装 Docker 的设备或设备组。
-6. 保存策略并部署。
+1. Navigate to **Computers** > **Policies**.
+2. Select **New** to create a new policy.
+3. Enter a name for the policy, for example "Deploy Docker Desktop".
+4. Under the **Packages** tab, add the Docker package you uploaded.
+5. Configure the scope to target the devices or device groups on which you want to install Docker.
+6. Save the policy and deploy.
 
-有关更多信息，请参阅 [Jamf Pro 官方文档](https://learn.jamf.com/en-US/bundle/jamf-pro-documentation-current/page/Policies.html)。
+For more information, see [Jamf Pro's official documentation](https://learn.jamf.com/en-US/bundle/jamf-pro-documentation-current/page/Policies.html). 
 
-## 其他资源
+## Additional resources
 
-- 了解如何为您的用户[强制登录](/manuals/security/for-admins/enforce-sign-in/_index.md)。
+- Learn how to [enforce sign-in](/manuals/security/for-admins/enforce-sign-in/_index.md) for your users.

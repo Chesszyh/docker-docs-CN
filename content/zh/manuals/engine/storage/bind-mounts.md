@@ -1,6 +1,6 @@
 ---
 description: Using bind mounts
-title: 绑定挂载
+title: Bind mounts
 weight: 20
 keywords: storage, persistence, data persistence, mounts, bind mounts
 aliases:
@@ -8,118 +8,162 @@ aliases:
   - /storage/bind-mounts/
 ---
 
-当你使用绑定挂载（bind mount）时，主机上的文件或目录会从主机挂载到容器中。相比之下，当你使用卷时，会在 Docker 主机的存储目录中创建一个新目录，由 Docker 管理该目录的内容。
+When you use a bind mount, a file or directory on the host machine is mounted
+from the host into a container. By contrast, when you use a volume, a new
+directory is created within Docker's storage directory on the host machine, and
+Docker manages that directory's contents.
 
-## 何时使用绑定挂载
+## When to use bind mounts
 
-绑定挂载适用于以下类型的用例：
+Bind mounts are appropriate for the following types of use case:
 
-- 在 Docker 主机上的开发环境和容器之间共享源代码或构建产物。
+- Sharing source code or build artifacts between a development environment on
+  the Docker host and a container.
 
-- 当你希望在容器中创建或生成文件，并将文件持久化到主机文件系统时。
+- When you want to create or generate files in a container and persist the
+  files onto the host's filesystem.
 
-- 将配置文件从主机共享到容器。这就是 Docker 默认为容器提供 DNS 解析的方式，通过将主机的 `/etc/resolv.conf` 挂载到每个容器中。
+- Sharing configuration files from the host machine to containers. This is how
+  Docker provides DNS resolution to containers by default, by mounting
+  `/etc/resolv.conf` from the host machine into each container.
 
-绑定挂载也可用于构建：你可以将源代码从主机绑定挂载到构建容器中，以测试、lint 或编译项目。
+Bind mounts are also available for builds: you can bind mount source code from
+the host into the build container to test, lint, or compile a project.
 
-## 在现有数据上进行绑定挂载
+## Bind-mounting over existing data
 
-如果你将文件或目录绑定挂载到容器中已存在文件或目录的目录，则预先存在的文件会被挂载遮盖。这类似于在 Linux 主机上将文件保存到 `/mnt`，然后将 USB 驱动器挂载到 `/mnt`。`/mnt` 的内容会被 USB 驱动器的内容遮盖，直到 USB 驱动器被卸载。
+If you bind mount file or directory into a directory in the container in which
+files or directories exist, the pre-existing files are obscured by the mount.
+This is similar to if you were to save files into `/mnt` on a Linux host, and
+then mounted a USB drive into `/mnt`. The contents of `/mnt` would be obscured
+by the contents of the USB drive until the USB drive was unmounted.
 
-对于容器，没有直接的方法来移除挂载以显示被遮盖的文件。最好的选择是重新创建不带该挂载的容器。
+With containers, there's no straightforward way of removing a mount to reveal
+the obscured files again. Your best option is to recreate the container without
+the mount.
 
-## 注意事项和约束
+## Considerations and constraints
 
-- 默认情况下，绑定挂载对主机上的文件具有写入权限。
+- Bind mounts have write access to files on the host by default.
 
-  使用绑定挂载的一个副作用是，你可以通过在容器中运行的进程来更改主机文件系统，包括创建、修改或删除重要的系统文件或目录。这种能力可能会带来安全隐患。例如，它可能会影响主机系统上的非 Docker 进程。
+  One side effect of using bind mounts is that you can change the host
+  filesystem via processes running in a container, including creating,
+  modifying, or deleting important system files or directories. This capability
+  can have security implications. For example, it may affect non-Docker
+  processes on the host system.
 
-  你可以使用 `readonly` 或 `ro` 选项来阻止容器写入挂载。
+  You can use the `readonly` or `ro` option to prevent the container from
+  writing to the mount.
 
-- 绑定挂载是在 Docker 守护进程主机上创建的，而不是客户端。
+- Bind mounts are created to the Docker daemon host, not the client.
 
-  如果你使用的是远程 Docker 守护进程，则无法创建绑定挂载来访问容器中客户端机器上的文件。
+  If you're using a remote Docker daemon, you can't create a bind mount to
+  access files on the client machine in a container.
 
-  对于 Docker Desktop，守护进程在 Linux 虚拟机内运行，而不是直接在本机主机上运行。Docker Desktop 具有内置机制，可以透明地处理绑定挂载，允许你将本机主机文件系统路径与在虚拟机中运行的容器共享。
+  For Docker Desktop, the daemon runs inside a Linux VM, not directly on the
+  native host. Docker Desktop has built-in mechanisms that transparently handle
+  bind mounts, allowing you to share native host filesystem paths with
+  containers running in the virtual machine.
 
-- 使用绑定挂载的容器与主机紧密绑定。
+- Containers with bind mounts are strongly tied to the host.
 
-  绑定挂载依赖于主机具有特定的目录结构可用。这种依赖性意味着如果在没有相同目录结构的其他主机上运行，使用绑定挂载的容器可能会失败。
+  Bind mounts rely on the host machine's filesystem having a specific directory
+  structure available. This reliance means that containers with bind mounts may
+  fail if run on a different host without the same directory structure.
 
-## 语法
+## Syntax
 
-要创建绑定挂载，你可以使用 `--mount` 或 `--volume` 标志。
+To create a bind mount, you can use either the `--mount` or `--volume` flag.
 
 ```console
 $ docker run --mount type=bind,src=<host-path>,dst=<container-path>
 $ docker run --volume <host-path>:<container-path>
 ```
 
-通常，推荐使用 `--mount`。主要区别在于 `--mount` 标志更加明确，并支持所有可用选项。
+In general, `--mount` is preferred. The main difference is that the `--mount`
+flag is more explicit and supports all the available options.
 
-如果你使用 `--volume` 绑定挂载一个在 Docker 主机上尚不存在的文件或目录，Docker 会自动在主机上为你创建该目录。它始终被创建为目录。
+If you use `--volume` to bind-mount a file or directory that does not yet
+exist on the Docker host, Docker automatically creates the directory on the
+host for you. It's always created as a directory.
 
-如果指定的挂载路径在主机上不存在，`--mount` 不会自动创建目录。相反，它会产生错误：
+`--mount` does not automatically create a directory if the specified mount
+path does not exist on the host. Instead, it produces an error:
 
 ```console
 $ docker run --mount type=bind,src=/dev/noexist,dst=/mnt/foo alpine
 docker: Error response from daemon: invalid mount config for type "bind": bind source path does not exist: /dev/noexist.
 ```
 
-### --mount 的选项
+### Options for --mount
 
-`--mount` 标志由多个键值对组成，用逗号分隔，每个键值对由一个 `<key>=<value>` 元组组成。键的顺序不重要。
+The `--mount` flag consists of multiple key-value pairs, separated by commas
+and each consisting of a `<key>=<value>` tuple. The order of the keys isn't
+significant.
 
 ```console
 $ docker run --mount type=bind,src=<host-path>,dst=<container-path>[,<key>=<value>...]
 ```
 
-`--mount type=bind` 的有效选项包括：
+Valid options for `--mount type=bind` include:
 
-| 选项                           | 描述                                                                                                     |
+| Option                         | Description                                                                                                     |
 | ------------------------------ | --------------------------------------------------------------------------------------------------------------- |
-| `source`, `src`                | 主机上文件或目录的位置。可以是绝对路径或相对路径。                    |
-| `destination`, `dst`, `target` | 文件或目录在容器中挂载的路径。必须是绝对路径。                     |
-| `readonly`, `ro`               | 如果存在，会将绑定挂载以[只读方式挂载到容器中](#use-a-read-only-bind-mount)。 |
-| `bind-propagation`             | 如果存在，更改[绑定传播](#configure-bind-propagation)。                                        |
+| `source`, `src`                | The location of the file or directory on the host. This can be an absolute or relative path.                    |
+| `destination`, `dst`, `target` | The path where the file or directory is mounted in the container. Must be an absolute path.                     |
+| `readonly`, `ro`               | If present, causes the bind mount to be [mounted into the container as read-only](#use-a-read-only-bind-mount). |
+| `bind-propagation`             | If present, changes the [bind propagation](#configure-bind-propagation).                                        |
 
 ```console {title="Example"}
 $ docker run --mount type=bind,src=.,dst=/project,ro,bind-propagation=rshared
 ```
 
-### --volume 的选项
+### Options for --volume
 
-`--volume` 或 `-v` 标志由三个字段组成，用冒号字符 (`:`) 分隔。这些字段必须按正确顺序排列。
+The `--volume` or `-v` flag consists of three fields, separated by colon
+characters (`:`). The fields must be in the correct order.
 
 ```console
 $ docker run -v <host-path>:<container-path>[:opts]
 ```
 
-第一个字段是要绑定挂载到容器中的主机路径。第二个字段是文件或目录在容器中挂载的路径。
+The first field is the path on the host to bind mount into the container. The
+second field is the path where the file or directory is mounted in the
+container.
 
-第三个字段是可选的，是一个逗号分隔的选项列表。绑定挂载的 `--volume` 有效选项包括：
+The third field is optional, and is a comma-separated list of options. Valid
+options for `--volume` with a bind mount include:
 
-| 选项                 | 描述                                                                                                        |
+| Option               | Description                                                                                                        |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `readonly`, `ro`     | 如果存在，会将绑定挂载以[只读方式挂载到容器中](#use-a-read-only-bind-mount)。    |
-| `z`, `Z`             | 配置 SELinux 标签。参见[配置 SELinux 标签](#configure-the-selinux-label)                       |
-| `rprivate`（默认）   | 为此挂载设置绑定传播为 `rprivate`。参见[配置绑定传播](#configure-bind-propagation)。 |
-| `private`            | 为此挂载设置绑定传播为 `private`。参见[配置绑定传播](#configure-bind-propagation)。  |
-| `rshared`            | 为此挂载设置绑定传播为 `rshared`。参见[配置绑定传播](#configure-bind-propagation)。  |
-| `shared`             | 为此挂载设置绑定传播为 `shared`。参见[配置绑定传播](#configure-bind-propagation)。   |
-| `rslave`             | 为此挂载设置绑定传播为 `rslave`。参见[配置绑定传播](#configure-bind-propagation)。   |
-| `slave`              | 为此挂载设置绑定传播为 `slave`。参见[配置绑定传播](#configure-bind-propagation)。    |
+| `readonly`, `ro`     | If present, causes the bind mount to be [mounted into the container as read-only](#use-a-read-only-bind-mount).    |
+| `z`, `Z`             | Configures SELinux labeling. See [Configure the SELinux label](#configure-the-selinux-label)                       |
+| `rprivate` (default) | Sets bind propagation to `rprivate` for this mount. See [Configure bind propagation](#configure-bind-propagation). |
+| `private`            | Sets bind propagation to `private` for this mount. See [Configure bind propagation](#configure-bind-propagation).  |
+| `rshared`            | Sets bind propagation to `rshared` for this mount. See [Configure bind propagation](#configure-bind-propagation).  |
+| `shared`             | Sets bind propagation to `shared` for this mount. See [Configure bind propagation](#configure-bind-propagation).   |
+| `rslave`             | Sets bind propagation to `rslave` for this mount. See [Configure bind propagation](#configure-bind-propagation).   |
+| `slave`              | Sets bind propagation to `slave` for this mount. See [Configure bind propagation](#configure-bind-propagation).    |
 
 ```console {title="Example"}
 $ docker run -v .:/project:ro,rshared
 ```
 
-## 使用绑定挂载启动容器
+## Start a container with a bind mount
 
-假设你有一个 `source` 目录，当你构建源代码时，产物保存到另一个目录 `source/target/`。你希望产物在容器的 `/app/` 位置可用，并且每次在开发主机上构建源代码时，容器都能访问新的构建。使用以下命令将 `target/` 目录绑定挂载到容器的 `/app/`。从 `source` 目录内运行该命令。`$(pwd)` 子命令在 Linux 或 macOS 主机上展开为当前工作目录。
-如果你在 Windows 上，另请参阅 [Windows 上的路径转换](/manuals/desktop/troubleshoot-and-support/troubleshoot/topics.md)。
+Consider a case where you have a directory `source` and that when you build the
+source code, the artifacts are saved into another directory, `source/target/`.
+You want the artifacts to be available to the container at `/app/`, and you
+want the container to get access to a new build each time you build the source
+on your development host. Use the following command to bind-mount the `target/`
+directory into your container at `/app/`. Run the command from within the
+`source` directory. The `$(pwd)` sub-command expands to the current working
+directory on Linux or macOS hosts.
+If you're on Windows, see also [Path conversions on Windows](/manuals/desktop/troubleshoot-and-support/troubleshoot/topics.md).
 
-以下 `--mount` 和 `-v` 示例产生相同的结果。除非在运行第一个示例后删除 `devtest` 容器，否则无法同时运行它们。
+The following `--mount` and `-v` examples produce the same result. You can't
+run them both unless you remove the `devtest` container after running the first
+one.
 
 {{< tabs >}}
 {{< tab name="`--mount`" >}}
@@ -146,7 +190,8 @@ $ docker run -d \
 {{< /tab >}}
 {{< /tabs >}}
 
-使用 `docker inspect devtest` 验证绑定挂载是否正确创建。查看 `Mounts` 部分：
+Use `docker inspect devtest` to verify that the bind mount was created
+correctly. Look for the `Mounts` section:
 
 ```json
 "Mounts": [
@@ -161,21 +206,29 @@ $ docker run -d \
 ],
 ```
 
-这显示挂载是一个 `bind` 挂载，显示了正确的源和目标，显示挂载是可读写的，并且传播设置为 `rprivate`。
+This shows that the mount is a `bind` mount, it shows the correct source and
+destination, it shows that the mount is read-write, and that the propagation is
+set to `rprivate`.
 
-停止并删除容器：
+Stop and remove the container:
 
 ```console
 $ docker container rm -fv devtest
 ```
 
-### 挂载到容器中的非空目录
+### Mount into a non-empty directory on the container
 
-如果你将目录绑定挂载到容器中的非空目录，该目录的现有内容会被绑定挂载遮盖。这可能是有益的，例如当你想测试应用程序的新版本而无需构建新镜像时。然而，这也可能令人意外，这种行为与[卷](volumes.md)的行为不同。
+If you bind-mount a directory into a non-empty directory on the container, the
+directory's existing contents are obscured by the bind mount. This can be
+beneficial, such as when you want to test a new version of your application
+without building a new image. However, it can also be surprising and this
+behavior differs from that of [volumes](volumes.md).
 
-这个示例比较极端，但它用主机上的 `/tmp/` 目录替换了容器的 `/usr/` 目录的内容。在大多数情况下，这会导致容器无法运行。
+This example is contrived to be extreme, but replaces the contents of the
+container's `/usr/` directory with the `/tmp/` directory on the host machine. In
+most cases, this would result in a non-functioning container.
 
-`--mount` 和 `-v` 示例有相同的最终结果。
+The `--mount` and `-v` examples have the same end result.
 
 {{< tabs >}}
 {{< tab name="`--mount`" >}}
@@ -208,19 +261,24 @@ starting container process caused "exec: \"nginx\": executable file not found in
 {{< /tab >}}
 {{< /tabs >}}
 
-容器被创建但无法启动。删除它：
+The container is created but does not start. Remove it:
 
 ```console
 $ docker container rm broken-container
 ```
 
-## 使用只读绑定挂载
+## Use a read-only bind mount
 
-对于某些开发应用程序，容器需要写入绑定挂载，以便将更改传播回 Docker 主机。在其他时候，容器只需要读取访问权限。
+For some development applications, the container needs to
+write into the bind mount, so changes are propagated back to the
+Docker host. At other times, the container only needs read access.
 
-此示例修改了之前的示例，通过在容器内的挂载点后面添加 `ro` 到（默认为空的）选项列表中，将目录挂载为只读绑定挂载。当存在多个选项时，用逗号分隔它们。
+This example modifies the previous one, but mounts the directory as a read-only
+bind mount, by adding `ro` to the (empty by default) list of options, after the
+mount point within the container. Where multiple options are present, separate
+them by commas.
 
-`--mount` 和 `-v` 示例有相同的结果。
+The `--mount` and `-v` examples have the same result.
 
 {{< tabs >}}
 {{< tab name="`--mount`" >}}
@@ -247,7 +305,8 @@ $ docker run -d \
 {{< /tab >}}
 {{< /tabs >}}
 
-使用 `docker inspect devtest` 验证绑定挂载是否正确创建。查看 `Mounts` 部分：
+Use `docker inspect devtest` to verify that the bind mount was created
+correctly. Look for the `Mounts` section:
 
 ```json
 "Mounts": [
@@ -262,52 +321,73 @@ $ docker run -d \
 ],
 ```
 
-停止并删除容器：
+Stop and remove the container:
 
 ```console
 $ docker container rm -fv devtest
 ```
 
-## 递归挂载
+## Recursive mounts
 
-当你绑定挂载一个本身包含挂载的路径时，默认情况下这些子挂载也会包含在绑定挂载中。此行为是可配置的，使用 `--mount` 的 `bind-recursive` 选项。此选项仅支持 `--mount` 标志，不支持 `-v` 或 `--volume`。
+When you bind mount a path that itself contains mounts, those submounts are
+also included in the bind mount by default. This behavior is configurable,
+using the `bind-recursive` option for `--mount`. This option is only supported
+with the `--mount` flag, not with `-v` or `--volume`.
 
-如果绑定挂载是只读的，Docker 引擎会尽力尝试使子挂载也变为只读。这称为递归只读挂载。递归只读挂载需要 Linux 内核版本 5.12 或更高版本。如果你运行的是较旧的内核版本，默认情况下子挂载会自动以可读写方式挂载。在 5.12 之前的内核版本上尝试使用 `bind-recursive=readonly` 选项将子挂载设置为只读会导致错误。
+If the bind mount is read-only, the Docker Engine makes a best-effort attempt
+at making the submounts read-only as well. This is referred to as recursive
+read-only mounts. Recursive read-only mounts require Linux kernel version 5.12
+or later. If you're running an older kernel version, submounts are
+automatically mounted as read-write by default. Attempting to set submounts to
+be read-only on a kernel version earlier than 5.12, using the
+`bind-recursive=readonly` option, results in an error.
 
-`bind-recursive` 选项支持的值有：
+Supported values for the `bind-recursive` option are:
 
-| 值                  | 描述                                                                                                       |
+| Value               | Description                                                                                                       |
 | :------------------ | :---------------------------------------------------------------------------------------------------------------- |
-| `enabled`（默认）   | 如果内核版本为 v5.12 或更高，只读挂载会递归设置为只读。否则，子挂载为可读写。 |
-| `disabled`          | 忽略子挂载（不包含在绑定挂载中）。                                                           |
-| `writable`          | 子挂载为可读写。                                                                                         |
-| `readonly`          | 子挂载为只读。需要内核 v5.12 或更高版本。                                                          |
+| `enabled` (default) | Read-only mounts are made recursively read-only if kernel is v5.12 or later. Otherwise, submounts are read-write. |
+| `disabled`          | Submounts are ignored (not included in the bind mount).                                                           |
+| `writable`          | Submounts are read-write.                                                                                         |
+| `readonly`          | Submounts are read-only. Requires kernel v5.12 or later.                                                          |
 
-## 配置绑定传播
+## Configure bind propagation
 
-绑定传播（bind propagation）对于绑定挂载和卷默认都是 `rprivate`。它仅对绑定挂载可配置，并且仅在 Linux 主机上可配置。绑定传播是一个高级主题，许多用户永远不需要配置它。
+Bind propagation defaults to `rprivate` for both bind mounts and volumes. It is
+only configurable for bind mounts, and only on Linux host machines. Bind
+propagation is an advanced topic and many users never need to configure it.
 
-绑定传播是指在给定绑定挂载内创建的挂载是否可以传播到该挂载的副本。考虑一个挂载点 `/mnt`，它也被挂载在 `/tmp` 上。传播设置控制 `/tmp/a` 上的挂载是否也在 `/mnt/a` 上可用。每个传播设置都有一个递归对应项。在递归的情况下，假设 `/tmp/a` 也被挂载为 `/foo`。传播设置控制 `/mnt/a` 和/或 `/tmp/a` 是否存在。
+Bind propagation refers to whether or not mounts created within a given
+bind-mount can be propagated to replicas of that mount. Consider
+a mount point `/mnt`, which is also mounted on `/tmp`. The propagation settings
+control whether a mount on `/tmp/a` would also be available on `/mnt/a`. Each
+propagation setting has a recursive counterpoint. In the case of recursion,
+consider that `/tmp/a` is also mounted as `/foo`. The propagation settings
+control whether `/mnt/a` and/or `/tmp/a` would exist.
 
 > [!NOTE]
-> 挂载传播不适用于 Docker Desktop。
+> Mount propagation doesn't work with Docker Desktop.
 
-| 传播设置    | 描述                                                                                                                                                                                                         |
+| Propagation setting | Description                                                                                                                                                                                                         |
 | :------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `shared`            | 原始挂载的子挂载会暴露给副本挂载，副本挂载的子挂载也会传播到原始挂载。                                                                         |
-| `slave`             | 类似于共享挂载，但只是单向的。如果原始挂载暴露了一个子挂载，副本挂载可以看到它。然而，如果副本挂载暴露了一个子挂载，原始挂载看不到它。 |
-| `private`           | 挂载是私有的。其中的子挂载不会暴露给副本挂载，副本挂载的子挂载也不会暴露给原始挂载。                                                               |
-| `rshared`           | 与 shared 相同，但传播也扩展到和来自嵌套在任何原始或副本挂载点内的挂载点。                                                                            |
-| `rslave`            | 与 slave 相同，但传播也扩展到和来自嵌套在任何原始或副本挂载点内的挂载点。                                                                             |
-| `rprivate`          | 默认值。与 private 相同，意味着原始或副本挂载点内任何位置的挂载点都不会在任一方向传播。                                                                  |
+| `shared`            | Sub-mounts of the original mount are exposed to replica mounts, and sub-mounts of replica mounts are also propagated to the original mount.                                                                         |
+| `slave`             | similar to a shared mount, but only in one direction. If the original mount exposes a sub-mount, the replica mount can see it. However, if the replica mount exposes a sub-mount, the original mount cannot see it. |
+| `private`           | The mount is private. Sub-mounts within it are not exposed to replica mounts, and sub-mounts of replica mounts are not exposed to the original mount.                                                               |
+| `rshared`           | The same as shared, but the propagation also extends to and from mount points nested within any of the original or replica mount points.                                                                            |
+| `rslave`            | The same as slave, but the propagation also extends to and from mount points nested within any of the original or replica mount points.                                                                             |
+| `rprivate`          | The default. The same as private, meaning that no mount points anywhere within the original or replica mount points propagate in either direction.                                                                  |
 
-在挂载点上设置绑定传播之前，主机文件系统需要已经支持绑定传播。
+Before you can set bind propagation on a mount point, the host filesystem needs
+to already support bind propagation.
 
-有关绑定传播的更多信息，请参阅[Linux 内核共享子树文档](https://www.kernel.org/doc/Documentation/filesystems/sharedsubtree.txt)。
+For more information about bind propagation, see the
+[Linux kernel documentation for shared subtree](https://www.kernel.org/doc/Documentation/filesystems/sharedsubtree.txt).
 
-以下示例将 `target/` 目录挂载到容器中两次，第二次挂载同时设置了 `ro` 选项和 `rslave` 绑定传播选项。
+The following example mounts the `target/` directory into the container twice,
+and the second mount sets both the `ro` option and the `rslave` bind propagation
+option.
 
-`--mount` 和 `-v` 示例有相同的结果。
+The `--mount` and `-v` examples have the same result.
 
 {{< tabs >}}
 {{< tab name="`--mount`" >}}
@@ -336,24 +416,33 @@ $ docker run -d \
 {{< /tab >}}
 {{< /tabs >}}
 
-现在如果你创建 `/app/foo/`，`/app2/foo/` 也会存在。
+Now if you create `/app/foo/`, `/app2/foo/` also exists.
 
-## 配置 SELinux 标签
+## Configure the SELinux label
 
-如果你使用 SELinux，可以添加 `z` 或 `Z` 选项来修改被挂载到容器中的主机文件或目录的 SELinux 标签。这会影响主机上的文件或目录本身，并可能产生超出 Docker 范围的后果。
+If you use SELinux, you can add the `z` or `Z` options to modify the SELinux
+label of the host file or directory being mounted into the container. This
+affects the file or directory on the host machine itself and can have
+consequences outside of the scope of Docker.
 
-- `z` 选项表示绑定挂载内容在多个容器之间共享。
-- `Z` 选项表示绑定挂载内容是私有的且不共享。
+- The `z` option indicates that the bind mount content is shared among multiple
+  containers.
+- The `Z` option indicates that the bind mount content is private and unshared.
 
-使用这些选项时要格外小心。使用 `Z` 选项绑定挂载系统目录（如 `/home` 或 `/usr`）会使你的主机无法操作，你可能需要手动重新标记主机文件。
+Use extreme caution with these options. Bind-mounting a system directory
+such as `/home` or `/usr` with the `Z` option renders your host machine
+inoperable and you may need to relabel the host machine files by hand.
 
 > [!IMPORTANT]
 >
-> 当在服务中使用绑定挂载时，SELinux 标签（`:Z` 和 `:z`）以及 `:ro` 会被忽略。详情请参见 [moby/moby #32579](https://github.com/moby/moby/issues/32579)。
+> When using bind mounts with services, SELinux labels
+> (`:Z` and `:z`), as well as `:ro` are ignored. See
+> [moby/moby #32579](https://github.com/moby/moby/issues/32579) for details.
 
-此示例设置 `z` 选项以指定多个容器可以共享绑定挂载的内容：
+This example sets the `z` option to specify that multiple containers can share
+the bind mount's contents:
 
-使用 `--mount` 标志无法修改 SELinux 标签。
+It is not possible to modify the SELinux label using the `--mount` flag.
 
 ```console
 $ docker run -d \
@@ -363,9 +452,9 @@ $ docker run -d \
   nginx:latest
 ```
 
-## 使用 Docker Compose 进行绑定挂载
+## Use a bind mount with Docker Compose
 
-使用绑定挂载的单个 Docker Compose 服务如下所示：
+A single Docker Compose service with a bind mount looks like this:
 
 ```yaml
 services:
@@ -379,10 +468,13 @@ volumes:
   myapp:
 ```
 
-有关在 Compose 中使用 `bind` 类型卷的更多信息，请参阅 [Compose 卷参考](/reference/compose-file/services.md#volumes)和 [Compose 卷配置参考](/reference/compose-file/services.md#volumes)。
+For more information about using volumes of the `bind` type with Compose, see
+[Compose reference on volumes](/reference/compose-file/services.md#volumes).
+and
+[Compose reference on volume configuration](/reference/compose-file/services.md#volumes).
 
-## 后续步骤
+## Next steps
 
-- 了解[卷](./volumes.md)。
-- 了解 [tmpfs 挂载](./tmpfs.md)。
-- 了解[存储驱动程序](/engine/storage/drivers/)。
+- Learn about [volumes](./volumes.md).
+- Learn about [tmpfs mounts](./tmpfs.md).
+- Learn about [storage drivers](/engine/storage/drivers/).

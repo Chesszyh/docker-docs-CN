@@ -1,10 +1,10 @@
 ---
-description: 了解如何在 32 位 Raspberry Pi OS 系统上安装 Docker Engine。这些说明涵盖
-  不同的安装方法、如何卸载以及后续步骤。
+description: Learn how to install Docker Engine on a 32-bit Raspberry Pi OS system. These instructions cover
+  the different installation methods, how to uninstall, and next steps.
 keywords: requirements, apt, installation, install docker engine, Raspberry Pi OS, install, uninstall, upgrade,
   update
-title: 在 Raspberry Pi OS（32 位）上安装 Docker Engine
-linkTitle: Raspberry Pi OS（32 位）
+title: Install Docker Engine on Raspberry Pi OS (32-bit)
+linkTitle: Raspberry Pi OS (32-bit)
 weight: 50
 toc_max: 4
 aliases:
@@ -13,98 +13,98 @@ aliases:
 download-url-base: https://download.docker.com/linux/raspbian
 ---
 
-要在 Raspberry Pi OS 上开始使用 Docker Engine，请确保您
-[满足前提条件](#prerequisites)，然后按照
-[安装步骤](#installation-methods)进行操作。
+To get started with Docker Engine on Raspberry Pi OS, make sure you
+[meet the prerequisites](#prerequisites), and then follow the
+[installation steps](#installation-methods).
 
 > [!IMPORTANT]
 >
-> 此安装说明针对的是 32 位（armhf）版本的
-> Raspberry Pi OS。如果您使用的是 64 位（arm64）版本，请按照
-> [Debian](debian.md) 的说明进行操作。
+> This installation instruction refers to the 32-bit (armhf) version of
+> Raspberry Pi OS. If you're using the 64-bit (arm64) version, follow the
+> instructions for [Debian](debian.md).
 
-## 前提条件
+## Prerequisites
 
-### 防火墙限制
+### Firewall limitations
 
 > [!WARNING]
 >
-> 在安装 Docker 之前，请确保您考虑以下
-> 安全影响和防火墙不兼容性。
+> Before you install Docker, make sure you consider the following
+> security implications and firewall incompatibilities.
 
-- 如果您使用 ufw 或 firewalld 管理防火墙设置，请注意
-  当您使用 Docker 暴露容器端口时，这些端口会绕过您的
-  防火墙规则。有关更多信息，请参阅
-  [Docker 和 ufw](/manuals/engine/network/packet-filtering-firewalls.md#docker-and-ufw)。
-- Docker 仅与 `iptables-nft` 和 `iptables-legacy` 兼容。
-  在安装了 Docker 的系统上不支持使用 `nft` 创建的防火墙规则。
-  确保您使用的任何防火墙规则集都是使用 `iptables` 或 `ip6tables` 创建的，
-  并将它们添加到 `DOCKER-USER` 链中，
-  请参阅[数据包过滤和防火墙](/manuals/engine/network/packet-filtering-firewalls.md)。
+- If you use ufw or firewalld to manage firewall settings, be aware that
+  when you expose container ports using Docker, these ports bypass your
+  firewall rules. For more information, refer to
+  [Docker and ufw](/manuals/engine/network/packet-filtering-firewalls.md#docker-and-ufw).
+- Docker is only compatible with `iptables-nft` and `iptables-legacy`.
+  Firewall rules created with `nft` are not supported on a system with Docker installed.
+  Make sure that any firewall rulesets you use are created with `iptables` or `ip6tables`,
+  and that you add them to the `DOCKER-USER` chain,
+  see [Packet filtering and firewalls](/manuals/engine/network/packet-filtering-firewalls.md).
 
-### 操作系统要求
+### OS requirements
 
-要安装 Docker Engine，您需要以下操作系统版本之一：
+To install Docker Engine, you need one of the following OS versions:
 
-- 32 位 Raspberry Pi OS Bookworm 12 (stable)
-- 32 位 Raspberry Pi OS Bullseye 11 (oldstable)
+- 32-bit Raspberry Pi OS Bookworm 12 (stable)
+- 32-bit Raspberry Pi OS Bullseye 11 (oldstable)
 
-### 卸载旧版本
+### Uninstall old versions
 
-在安装 Docker Engine 之前，您需要卸载任何冲突的软件包。
+Before you can install Docker Engine, you need to uninstall any conflicting packages.
 
-您的 Linux 发行版可能提供非官方的 Docker 软件包，这些软件包可能与
-Docker 提供的官方软件包冲突。您必须在安装官方版本的 Docker Engine 之前
-卸载这些软件包。
+Your Linux distribution may provide unofficial Docker packages, which may conflict
+with the official packages provided by Docker. You must uninstall these packages
+before you install the official version of Docker Engine.
 
-需要卸载的非官方软件包有：
+The unofficial packages to uninstall are:
 
 - `docker.io`
 - `docker-compose`
 - `docker-doc`
 - `podman-docker`
 
-此外，Docker Engine 依赖于 `containerd` 和 `runc`。Docker Engine
-将这些依赖项捆绑为一个包：`containerd.io`。如果您之前
-安装了 `containerd` 或 `runc`，请卸载它们以避免
-与 Docker Engine 捆绑的版本冲突。
+Moreover, Docker Engine depends on `containerd` and `runc`. Docker Engine
+bundles these dependencies as one bundle: `containerd.io`. If you have
+installed the `containerd` or `runc` previously, uninstall them to avoid
+conflicts with the versions bundled with Docker Engine.
 
-运行以下命令卸载所有冲突的软件包：
+Run the following command to uninstall all conflicting packages:
 
 ```console
 $ for pkg in docker.io docker-doc docker-compose podman-docker containerd runc; do sudo apt-get remove $pkg; done
 ```
 
-`apt-get` 可能会报告您没有安装这些软件包。
+`apt-get` might report that you have none of these packages installed.
 
-卸载 Docker 时，存储在 `/var/lib/docker/` 中的镜像、容器、卷和网络
-不会被自动删除。如果您想从全新安装开始，
-并且希望清理任何现有数据，请阅读
-[卸载 Docker Engine](#uninstall-docker-engine) 部分。
+Images, containers, volumes, and networks stored in `/var/lib/docker/` aren't
+automatically removed when you uninstall Docker. If you want to start with a
+clean installation, and prefer to clean up any existing data, read the
+[uninstall Docker Engine](#uninstall-docker-engine) section.
 
-## 安装方法
+## Installation methods
 
-您可以根据需要以不同方式安装 Docker Engine：
+You can install Docker Engine in different ways, depending on your needs:
 
-- Docker Engine 与
-  [Docker Desktop for Linux](/manuals/desktop/setup/install/linux/_index.md) 捆绑在一起。这是
-  最简单、最快速的入门方式。
+- Docker Engine comes bundled with
+  [Docker Desktop for Linux](/manuals/desktop/setup/install/linux/_index.md). This is
+  the easiest and quickest way to get started.
 
-- 从
-  [Docker 的 `apt` 仓库](#install-using-the-repository)设置和安装 Docker Engine。
+- Set up and install Docker Engine from
+  [Docker's `apt` repository](#install-using-the-repository).
 
-- [手动安装](#install-from-a-package)并手动管理升级。
+- [Install it manually](#install-from-a-package) and manage upgrades manually.
 
-- 使用[便捷脚本](#install-using-the-convenience-script)。仅
-  推荐用于测试和开发环境。
+- Use a [convenience script](#install-using-the-convenience-script). Only
+  recommended for testing and development environments.
 
-### 使用 `apt` 仓库安装 {#install-using-the-repository}
+### Install using the `apt` repository {#install-using-the-repository}
 
-在新主机上首次安装 Docker Engine 之前，您
-需要设置 Docker `apt` 仓库。之后，您可以从仓库安装和更新
-Docker。
+Before you install Docker Engine for the first time on a new host machine, you
+need to set up the Docker `apt` repository. Afterward, you can install and update
+Docker from the repository.
 
-1. 设置 Docker 的 `apt` 仓库。
+1. Set up Docker's `apt` repository.
 
    ```bash
    # Add Docker's official GPG key:
@@ -122,22 +122,22 @@ Docker。
    sudo apt-get update
    ```
 
-2. 安装 Docker 软件包。
+2. Install the Docker packages.
 
    {{< tabs >}}
    {{< tab name="Latest" >}}
 
-   要安装最新版本，请运行：
+   To install the latest version, run:
 
    ```console
    $ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
    ```
-
+  
    {{< /tab >}}
    {{< tab name="Specific version" >}}
 
-   要安装特定版本的 Docker Engine，首先列出仓库中的
-   可用版本：
+   To install a specific version of Docker Engine, start by listing the
+   available versions in the repository:
 
    ```console
    # List the available versions:
@@ -148,7 +148,7 @@ Docker。
    ...
    ```
 
-   选择所需版本并安装：
+   Select the desired version and install:
 
    ```console
    $ VERSION_STRING=5:{{% param "docker_ce_version" %}}-1~raspbian.12~bookworm
@@ -158,41 +158,41 @@ Docker。
    {{< /tab >}}
    {{< /tabs >}}
 
-3. 通过运行 `hello-world` 镜像验证安装是否成功：
+3. Verify that the installation is successful by running the `hello-world` image:
 
    ```console
    $ sudo docker run hello-world
    ```
 
-   此命令下载一个测试镜像并在容器中运行它。当
-   容器运行时，它会打印一条确认消息并退出。
+   This command downloads a test image and runs it in a container. When the
+   container runs, it prints a confirmation message and exits.
 
-您现在已成功安装并启动了 Docker Engine。
+You have now successfully installed and started Docker Engine.
 
 {{% include "root-errors.md" %}}
 
-#### 升级 Docker Engine
+#### Upgrade Docker Engine
 
-要升级 Docker Engine，请按照
-[安装说明](#install-using-the-repository)的步骤 2 进行操作，
-选择您要安装的新版本。
+To upgrade Docker Engine, follow step 2 of the
+[installation instructions](#install-using-the-repository),
+choosing the new version you want to install.
 
-### 从软件包安装 {#install-from-a-package}
+### Install from a package
 
-如果您无法使用 Docker 的 `apt` 仓库安装 Docker Engine，可以
-下载适用于您版本的 `deb` 文件并手动安装。每次要
-升级 Docker Engine 时都需要下载新文件。
+If you can't use Docker's `apt` repository to install Docker Engine, you can
+download the `deb` file for your release and install it manually. You need to
+download a new file each time you want to upgrade Docker Engine.
 
 <!-- markdownlint-disable-next-line -->
-1. 前往 [`{{% param "download-url-base" %}}/dists/`]({{% param "download-url-base" %}}/dists/)。
+1. Go to [`{{% param "download-url-base" %}}/dists/`]({{% param "download-url-base" %}}/dists/).
 
-2. 在列表中选择您的 Raspberry Pi OS 版本。
+2. Select your Raspberry Pi OS version in the list.
 
-3. 前往 `pool/stable/` 并选择适用的架构（`amd64`、
-   `armhf`、`arm64` 或 `s390x`）。
+3. Go to `pool/stable/` and select the applicable architecture (`amd64`,
+   `armhf`, `arm64`, or `s390x`).
 
-4. 下载 Docker Engine、CLI、containerd
-   和 Docker Compose 软件包的以下 `deb` 文件：
+4. Download the following `deb` files for the Docker Engine, CLI, containerd,
+   and Docker Compose packages:
 
    - `containerd.io_<version>_<arch>.deb`
    - `docker-ce_<version>_<arch>.deb`
@@ -200,8 +200,8 @@ Docker。
    - `docker-buildx-plugin_<version>_<arch>.deb`
    - `docker-compose-plugin_<version>_<arch>.deb`
 
-5. 安装 `.deb` 软件包。将以下示例中的路径更新为
-   您下载 Docker 软件包的位置。
+5. Install the `.deb` packages. Update the paths in the following example to
+   where you downloaded the Docker packages.
 
    ```console
    $ sudo dpkg -i ./containerd.io_<version>_<arch>.deb \
@@ -211,54 +211,54 @@ Docker。
      ./docker-compose-plugin_<version>_<arch>.deb
    ```
 
-   Docker 守护进程会自动启动。
+   The Docker daemon starts automatically.
 
-6. 通过运行 `hello-world` 镜像验证安装是否成功：
+6. Verify that the installation is successful by running the `hello-world` image:
 
    ```console
    $ sudo service docker start
    $ sudo docker run hello-world
    ```
 
-   此命令下载一个测试镜像并在容器中运行它。当
-   容器运行时，它会打印一条确认消息并退出。
+   This command downloads a test image and runs it in a container. When the
+   container runs, it prints a confirmation message and exits.
 
-您现在已成功安装并启动了 Docker Engine。
+You have now successfully installed and started Docker Engine.
 
 {{% include "root-errors.md" %}}
 
-#### 升级 Docker Engine
+#### Upgrade Docker Engine
 
-要升级 Docker Engine，请下载较新的软件包文件并重复
-[安装过程](#install-from-a-package)，指向新文件。
+To upgrade Docker Engine, download the newer package files and repeat the
+[installation procedure](#install-from-a-package), pointing to the new files.
 
 {{% include "install-script.md" %}}
 
-## 卸载 Docker Engine
+## Uninstall Docker Engine
 
-1. 卸载 Docker Engine、CLI、containerd 和 Docker Compose 软件包：
+1. Uninstall the Docker Engine, CLI, containerd, and Docker Compose packages:
 
    ```console
    $ sudo apt-get purge docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin docker-ce-rootless-extras
    ```
 
-2. 主机上的镜像、容器、卷或自定义配置文件
-   不会被自动删除。要删除所有镜像、容器和卷：
+2. Images, containers, volumes, or custom configuration files on your host
+   aren't automatically removed. To delete all images, containers, and volumes:
 
    ```console
    $ sudo rm -rf /var/lib/docker
    $ sudo rm -rf /var/lib/containerd
    ```
 
-3. 删除源列表和密钥环
+3. Remove source list and keyrings
 
    ```console
    $ sudo rm /etc/apt/sources.list.d/docker.list
    $ sudo rm /etc/apt/keyrings/docker.asc
    ```
 
-您必须手动删除任何已编辑的配置文件。
+You have to delete any edited configuration files manually.
 
-## 后续步骤
+## Next steps
 
-- 继续阅读 [Linux 安装后步骤](linux-postinstall.md)。
+- Continue to [Post-installation steps for Linux](linux-postinstall.md).

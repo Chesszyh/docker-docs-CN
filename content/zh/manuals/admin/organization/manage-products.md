@@ -1,13 +1,15 @@
 ---
-title: 管理 Docker 产品
+title: Manage Docker products
 weight: 45
-description: 了解如何为您的组织管理 Docker 产品
+description: Learn how to manage Docker products for your organization
 keywords: organization, tools, products
 ---
 
 {{< summary-bar feature_name="Admin orgs" >}}
 
-在本节中，了解如何管理组织的 Docker 产品访问权限和查看使用情况。有关每个产品的更详细信息，包括如何设置和配置它们，请参阅以下手册：
+In this section, learn how to manage access and view usage of the Docker
+products for your organization. For more detailed information about each
+product, including how to set up and configure them, see the following manuals:
 
 - [Docker Build Cloud](../../build-cloud/_index.md)
 - [Docker Desktop](../../desktop/_index.md)
@@ -15,59 +17,93 @@ keywords: organization, tools, products
 - [Docker Scout](../../scout/_index.md)
 - [Testcontainers Cloud](https://testcontainers.com/cloud/docs/#getting-started)
 
-## 管理 Docker 产品访问权限
+## Manage access to Docker products
 
-订阅中包含的 Docker 产品的访问权限默认为所有用户启用。包含的产品有：
+Access to Docker products included in your subscription is enabled by default
+for all users. The included products are:
 
 - Docker Hub
 - Docker Build Cloud
 - Docker Desktop
 - Docker Scout
 
-Testcontainers Cloud 默认未启用。要启用 Testcontainers Cloud，请参阅 Testcontainers [入门指南](https://testcontainers.com/cloud/docs/#getting-started)。
+Testcontainers Cloud is not enabled by default. To enable Testcontainers Cloud, see the Testcontainers [Getting Started](https://testcontainers.com/cloud/docs/#getting-started) guide.
 
-以下章节介绍如何启用或禁用这些产品的访问权限。
+The following sections describe how to enable or disable access for these products.
 
-### 管理 Docker Build Cloud 访问权限
+### Manage access to Docker Build Cloud
 
-要了解如何初始设置和配置 Docker Build Cloud，请登录 [Docker Build Cloud Dashboard](https://app.docker.com/build) 并按照屏幕上的说明操作。
+To learn how to initially set up and configure Docker Build Cloud, sign in to
+the [Docker Build Cloud Dashboard](https://app.docker.com/build) and follow the
+on-screen instructions.
 
-要管理 Docker Build Cloud 的访问权限，请以组织所有者身份登录 [Docker Build Cloud](http://app.docker.com/build)，选择 **Account settings**，然后在 **Lock Docker Build Cloud** 下管理访问权限。
+To manage access to Docker Build Cloud, sign in to [Docker Build
+Cloud](http://app.docker.com/build) as an organization owner, select **Account
+settings**, and then manage access under **Lock Docker Build Cloud**.
 
-### 管理 Docker Scout 访问权限
+### Manage access to Docker Scout
 
-要了解如何初始设置和配置 Docker Scout 用于远程仓库，请登录 [Docker Scout Dashboard](https://scout.docker.com/) 并按照屏幕上的说明操作。
+To learn how to initially set up and configure Docker Scout for remote
+repositories, sign in to the [Docker Scout Dashboard](https://scout.docker.com/)
+and follow the on-screen instructions.
 
-要管理 Docker Scout 用于远程仓库的访问权限，请登录 [Docker Scout Dashboard](https://scout.docker.com/) 并配置[集成](../../scout/explore/dashboard.md#integrations)和[仓库设置](../../scout/explore/dashboard.md#repository-settings)。
+To manage access to Docker Scout for use on remote repositories, sign in to the
+[Docker Scout Dashboard](https://scout.docker.com/) and configure
+[integrations](../../scout/explore/dashboard.md#integrations) and [repository
+settings](../../scout/explore/dashboard.md#repository-settings).
 
-要管理 Docker Scout 在 Docker Desktop 中用于本地镜像的访问权限，请使用[设置管理](../../security/for-admins/hardened-desktop/settings-management/_index.md)并将 `sbomIndexing` 设置为 `false` 以禁用，或设置为 `true` 以启用。
+To manage access to Docker Scout for use on local images with Docker Desktop, use
+[Settings
+Management](../../security/for-admins/hardened-desktop/settings-management/_index.md)
+and set `sbomIndexing` to `false` to disable, or to `true` to enable.
 
-### 管理 Docker Hub 访问权限
+### Manage access to Docker Hub
 
-要管理 Docker Hub 的访问权限，请登录 [Docker Admin Console](https://app.docker.com/admin) 并配置[注册表访问管理](../../security/for-admins/hardened-desktop/registry-access-management.md)或[镜像访问管理](../../security/for-admins/hardened-desktop/image-access-management.md)。
+To manage access to Docker Hub, sign in to the [Docker Admin Console](https://app.docker.com/admin) and configure [Registry Access
+Management](../../security/for-admins/hardened-desktop/registry-access-management.md)
+or [Image Access
+Management](../../security/for-admins/hardened-desktop/image-access-management.md).
 
-### 管理 Testcontainers Cloud 访问权限
+### Manage access to Testcontainers Cloud
 
-要了解如何初始设置和配置 Testcontainers Cloud，请登录 [Testcontainers Cloud](https://app.testcontainers.cloud/) 并按照屏幕上的说明操作。
+To learn how to initially set up and configure Testcontainers Cloud, sign in to
+[Testcontainers Cloud](https://app.testcontainers.cloud/) and follow the
+on-screen instructions.
 
-要管理 Testcontainers Cloud 的访问权限，请以组织所有者身份登录 [Testcontainers Cloud 设置页面](https://app.testcontainers.cloud/dashboard/settings)，然后在 **Lock Testcontainers Cloud** 下管理访问权限。
+To manage access to Testcontainers Cloud, sign in to the [Testcontainers Cloud
+Settings page](https://app.testcontainers.cloud/dashboard/settings) as
+an organization owner, and then manage access under **Lock Testcontainers
+Cloud**.
 
-### 管理 Docker Desktop 访问权限
+### Manage access to Docker Desktop
 
-要管理 Docker Desktop 的访问权限，您可以[强制登录](../../security/for-admins/enforce-sign-in/_index.md)，然后[手动](./members.md)管理成员或使用[配置](../../security/for-admins/provisioning/_index.md)。强制登录后，只有您组织的成员才能在登录后使用 Docker Desktop。
+To manage access to Docker Desktop, you can [enforce
+sign-in](../../security/for-admins/enforce-sign-in/_index.md), then and manage
+members [manually](./members.md) or use
+[provisioning](../../security/for-admins/provisioning/_index.md). With sign-in
+enforced, only users who are a member of your organization can use Docker
+Desktop after signing in.
 
-## 查看 Docker 产品使用情况
+## View Docker product usage
 
-在以下页面查看产品使用情况：
+View usage for the products on the following pages:
 
-- Docker Build Cloud：在 [Docker Build Cloud Dashboard](http://app.docker.com/build) 中查看 **Build minutes** 页面。
+- Docker Build Cloud: View the **Build minutes** page in the [Docker Build Cloud
+  Dashboard](http://app.docker.com/build).
 
-- Docker Scout：在 Docker Scout Dashboard 中查看 [**Repository settings** 页面](https://scout.docker.com/settings/repos)。
+- Docker Scout: View the [**Repository settings**
+  page](https://scout.docker.com/settings/repos) in the Docker Scout
+  Dashboard.
 
-- Docker Hub：在 Docker Hub 中查看 [**Usage** 页面](https://hub.docker.com/usage)。
+- Docker Hub: View the [**Usage** page](https://hub.docker.com/usage) in Docker
+  Hub.
 
-- Testcontainers Cloud：在 Testcontainers Cloud Dashboard 中查看 [**Billing** 页面](https://app.testcontainers.cloud/dashboard/billing)。
+- Testcontainers Cloud: View the [**Billing**
+  page](https://app.testcontainers.cloud/dashboard/billing) in the
+  Testcontainers Cloud Dashboard.
 
-- Docker Desktop：在 [Docker Home](https://app.docker.com/) 中查看 **Insights** 页面。有关更多详细信息，请参阅[洞察](./insights.md)。
+- Docker Desktop: View the **Insights** page in [Docker Home](https://app.docker.com/). For more details, see
+  [Insights](./insights.md).
 
-如果您的使用量超过订阅额度，您可以[扩展您的订阅](../../subscription/scale.md)以满足您的需求。
+If your usage exceeds your subscription amount, you can [scale your
+subscription](../../subscription/scale.md) to meet your needs.

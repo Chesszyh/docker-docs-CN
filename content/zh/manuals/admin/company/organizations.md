@@ -1,49 +1,50 @@
 ---
-description: 了解如何管理公司中的组织。
+description: Learn how to manage organizations in a company.
 keywords: company, multiple organizations, manage organizations
-title: 管理公司组织
+title: Manage company organizations
 ---
 
 {{< summary-bar feature_name="Company" >}}
 
-您可以在 Docker Admin Console 中管理公司中的组织。
+You can manage the organizations in a company in the Docker Admin Console.
 
-## 查看所有组织
+## View all organizations
 
-1. 登录 [Docker Home](https://app.docker.com) 并选择您的公司。
-1. 选择 **Admin Console**，然后选择 **Organizations**。
+1. Sign in to the [Docker Home](https://app.docker.com) and choose
+your company.
+1. Select **Admin Console**, then **Organizations**.
 
-**Organizations** 视图显示您公司下的所有组织。
+The **Organizations** view displays all organizations under your company.
 
-## 为组织添加席位
+## Add seats to an organization
 
-当您拥有[自助服务](../../subscription/details.md#self-serve)订阅且没有待处理的订阅变更时，您可以使用以下步骤添加席位。如果您拥有销售协助订阅，您可以联系 Docker 支持或销售人员来添加席位。
+When you have a [self-serve](../../subscription/details.md#self-serve) subscription that has no pending subscription changes, you can add seats using the following steps. If you have a sales-assisted subscription, you can contact Docker support or sales to add seats.
 
-有关添加席位的更多信息，请参阅[管理席位](/manuals/subscription/manage-seats.md#add-seats)。
+For more information about adding seats, see [Manage seats](/manuals/subscription/manage-seats.md#add-seats).
 
-## 将组织添加到公司
+## Add organizations to a company
 
-您必须是公司所有者才能将组织添加到公司。您还必须是您要添加的组织的组织所有者。公司层下可以拥有的组织数量没有限制。所有组织必须拥有 Business 订阅。
+You must be a company owner to add an organization to a company. You must also be an organization owner of the organization you want to add. There is no limit to the number of organizations you can have under a company layer. All organizations must have a Business subscription.
 
 > [!IMPORTANT]
 >
-> 一旦您将组织添加到公司，就无法将其从公司中移除。
+> Once you add an organization to a company, you can't remove it from the company.
 
-1. 登录 [Docker Home](https://app.docker.com) 并选择您的公司。
-1. 选择 **Admin Console**，然后选择 **Organizations**。
-1. 选择 **Add organization**。
-1. 从下拉菜单中选择您要添加的组织。
-1. 选择 **Add organization** 以确认。
+1. Sign in to [Docker Home](https://app.docker.com) and select your company.
+1. Select **Admin Console**, then **Organizations**.
+1. Select **Add organization**.
+1. Choose the organization you want to add from the drop-down menu.
+1. Select **Add organization** to confirm.
 
-## 管理组织
+## Manage an organization
 
-1. 登录 [Docker Home](https://app.docker.com) 并选择您的公司。
-1. 选择 **Admin Console**，然后选择 **Organizations**。
-1. 选择您要管理的组织。
+1. Sign in to [Docker Home](https://app.docker.com) and select your company.
+1. Select **Admin Console**, then **Organizations**.
+1. Select the organization you want to manage.
 
-有关管理组织的更多详情，请参阅[组织管理](../organization/_index.md)。
+For more details about managing an organization, see [Organization administration](../organization/_index.md).
 
-## 更多资源
+## More resources
 
-- [视频：管理公司和嵌套组织](https://youtu.be/XZ5_i6qiKho?feature=shared&t=229)
-- [视频：将嵌套组织添加到公司](https://youtu.be/XZ5_i6qiKho?feature=shared&t=454)
+- [Video: Managing a company and nested organizations](https://youtu.be/XZ5_i6qiKho?feature=shared&t=229)
+- [Video: Adding nested organizations to a company](https://youtu.be/XZ5_i6qiKho?feature=shared&t=454)

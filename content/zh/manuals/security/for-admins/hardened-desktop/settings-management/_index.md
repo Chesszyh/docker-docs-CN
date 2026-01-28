@@ -1,9 +1,10 @@
 ---
-description: 了解设置管理的工作原理、适用对象及其优势
+description: Understand how Settings Management works, who it is for, and what the
+  benefits are
 keywords: Settings Management, rootless, docker desktop, hardened desktop
 tags: [admin]
-title: 什么是设置管理？
-linkTitle: 设置管理
+title: What is Settings Management?
+linkTitle: Settings Management
 aliases:
  - /desktop/hardened-desktop/settings-management/
 weight: 10
@@ -11,70 +12,74 @@ weight: 10
 
 {{< summary-bar feature_name="Hardened Docker Desktop" >}}
 
-设置管理（Settings Management）允许管理员在终端用户机器上配置和强制执行 Docker Desktop
-设置。它有助于在组织内保持一致的配置并增强安全性。
+Settings Management lets administrators configure and enforce Docker Desktop
+settings across end-user machines. It helps maintain consistent configurations
+and enhances security within your organization.
 
-## 适用对象
+## Who is it for?
 
-设置管理专为以下组织设计：
+Settings Management is designed for organizations that:
 
-- 需要对 Docker Desktop 配置进行集中控制。
-- 希望在团队间标准化 Docker Desktop 环境。
-- 在受监管环境中运营，需要强制执行合规性。
+- Require centralized control over Docker Desktop configurations.
+- Aim to standardize Docker Desktop environments across teams.
+- Operate in regulated environments and need to enforce compliance.
 
-此功能需要 Docker Business 订阅。
+This feature is available with a Docker Business subscription.
 
-## 工作原理
+## How it works
 
-管理员可以使用以下方法之一定义设置：
+Administrators can define settings using one of the following methods:
 
-- [管理控制台](/manuals/security/for-admins/hardened-desktop/settings-management/configure-admin-console.md)：通过
-Docker Admin Console 创建和分配设置策略。
-- [`admin-settings.json` 文件](/manuals/security/for-admins/hardened-desktop/settings-management/configure-json-file.md)：在
-用户机器上放置配置文件以强制执行设置。
+- [Admin Console](/manuals/security/for-admins/hardened-desktop/settings-management/configure-admin-console.md): Create and assign settings policies through the
+Docker Admin Console.
+- [`admin-settings.json` file](/manuals/security/for-admins/hardened-desktop/settings-management/configure-json-file.md): Place a configuration file on the
+user's machine to enforce settings.
 
-强制执行的设置会覆盖用户定义的配置，开发人员无法修改这些设置。
+Enforced settings override user-defined configurations and can't be modified
+by developers.
 
-## 可配置的设置
+## Configurable settings
 
-设置管理支持广泛的 Docker Desktop 功能，
-包括代理、网络配置和容器隔离。
+Settings Management supports a broad range of Docker Desktop features,
+including proxies, network configurations, and container isolation.
 
-有关可强制执行的完整设置列表，请参阅[设置参考](/manuals/security/for-admins/hardened-desktop/settings-management/settings-reference.md)。
+For a full list of settings you can enforce, see the [Settings reference](/manuals/security/for-admins/hardened-desktop/settings-management/settings-reference.md).
 
-## 设置设置管理
+## Set up Settings Management
 
-1. [强制登录](/manuals/security/for-admins/enforce-sign-in/_index.md)以
-确保所有开发人员使用您的组织进行身份验证。
-2. 选择配置方法：
-    - 在 [macOS](/manuals/desktop/setup/install/mac-install.md#install-from-the-command-line) 或 [Windows](/manuals/desktop/setup/install/windows-install.md#install-from-the-command-line) 上使用 `--admin-settings` 安装程序标志自动创建 `admin-settings.json`。
-    - 手动创建和配置 [`admin-settings.json` 文件](/manuals/security/for-admins/hardened-desktop/settings-management/configure-json-file.md)。
-    - 在 [Docker Admin Console](configure-admin-console.md) 中创建设置策略。
+1. [Enforce sign-in](/manuals/security/for-admins/enforce-sign-in/_index.md) to
+ensure all developers authenticate with your organization.
+2. Choose a configuration method:
+    - Use the `--admin-settings` installer flag on [macOS](/manuals/desktop/setup/install/mac-install.md#install-from-the-command-line) or [Windows](/manuals/desktop/setup/install/windows-install.md#install-from-the-command-line) to automatically create the `admin-settings.json`.
+    - Manually create and configure the [`admin-settings.json` file](/manuals/security/for-admins/hardened-desktop/settings-management/configure-json-file.md).
+    - Create a settings policy in the [Docker Admin Console](configure-admin-console.md).
 
-配置完成后，开发人员在以下情况下会收到强制执行的设置：
+After configuration, developers receive the enforced setting when they:
 
-- 退出并重新启动 Docker Desktop，然后登录。
-- 首次启动并登录 Docker Desktop。
+- Quit and relaunch Docker Desktop, then sign in.
+- Launch and sign in to Docker Desktop for the first time.
 
 > [!NOTE]
 >
-> Docker Desktop 不会在设置更改后自动提示用户重新启动或重新进行身份验证。
+> Docker Desktop does not automatically prompt users to restart or re-authenticate
+after a settings change.
 
-## 开发人员体验
+## Developer experience
 
-当设置被强制执行时：
+When settings are enforced:
 
-- 选项在 Docker Desktop 中显示为灰色，无法通过
-Dashboard、CLI 或配置文件进行修改。
-- 如果启用了增强容器隔离（Enhanced Container Isolation），开发人员无法使用特权
-容器或类似方法在 Docker Desktop Linux VM 内更改强制执行的设置。
+- Options appear grayed out in Docker Desktop and can't be modified via the
+Dashboard, CLI, or configuration files.
+- If Enhanced Container Isolation is enabled, developers can't use privileged
+containers or similar methods to alter enforced settings within the Docker
+Desktop Linux VM.
 
-## 下一步
+## What's next?
 
-- [使用 `admin-settings.json` 文件配置设置管理](configure-json-file.md)
-- [使用 Docker Admin Console 配置设置管理](configure-admin-console.md)
+- [Configure Settings Management with the `admin-settings.json` file](configure-json-file.md)
+- [Configure Settings Management with the Docker Admin Console](configure-admin-console.md)
 
-## 了解更多
+## Learn more
 
-- 要了解每个 Docker Desktop 设置如何在 Docker Dashboard、`admin-settings.json` 文件和 Admin Console 之间映射，请参阅[设置参考](settings-reference.md)。
-- 阅读[设置管理博客文章](https://www.docker.com/blog/settings-management-for-docker-desktop-now-generally-available-in-the-admin-console/)。
+- To see how each Docker Desktop setting maps across the Docker Dashboard, `admin-settings.json` file, and Admin Console, see the [Settings reference](settings-reference.md).
+- Read the [Settings Management blog post](https://www.docker.com/blog/settings-management-for-docker-desktop-now-generally-available-in-the-admin-console/).

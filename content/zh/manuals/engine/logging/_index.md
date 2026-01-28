@@ -1,8 +1,8 @@
 ---
 description: Learn how to write to, view, and configure a container's logs
 keywords: docker, logging
-title: 查看容器日志
-linkTitle: 日志和指标
+title: View container logs
+linkTitle: Logs and metrics
 weight: 70
 aliases:
   - /engine/admin/logging/
@@ -10,22 +10,47 @@ aliases:
   - /config/containers/logging/
 ---
 
-`docker logs` 命令显示正在运行的容器所记录的信息。`docker service logs` 命令显示参与某个服务的所有容器所记录的信息。记录的信息以及日志的格式几乎完全取决于容器的端点命令。
+The `docker logs` command shows information logged by a running container. The
+`docker service logs` command shows information logged by all containers
+participating in a service. The information that's logged and the format of the
+log depends almost entirely on the container's endpoint command.
 
-默认情况下，`docker logs` 或 `docker service logs` 显示命令的输出，就像你在终端中交互式运行该命令时一样。Unix 和 Linux 命令在运行时通常会打开三个 I/O 流，分别称为 `STDIN`、`STDOUT` 和 `STDERR`。`STDIN` 是命令的输入流，可能包含来自键盘的输入或来自另一个命令的输入。`STDOUT` 通常是命令的正常输出，而 `STDERR` 通常用于输出错误消息。默认情况下，`docker logs` 显示命令的 `STDOUT` 和 `STDERR`。要阅读更多关于 I/O 和 Linux 的内容，请参阅 [Linux 文档项目关于 I/O 重定向的文章](https://tldp.org/LDP/abs/html/io-redirection.html)。
+By default, `docker logs` or `docker service logs` shows the command's output
+just as it would appear if you ran the command interactively in a terminal. Unix
+and Linux commands typically open three I/O streams when they run, called
+`STDIN`, `STDOUT`, and `STDERR`. `STDIN` is the command's input stream, which
+may include input from the keyboard or input from another command. `STDOUT` is
+usually a command's normal output, and `STDERR` is typically used to output
+error messages. By default, `docker logs` shows the command's `STDOUT` and
+`STDERR`. To read more about I/O and Linux, see the
+[Linux Documentation Project article on I/O redirection](https://tldp.org/LDP/abs/html/io-redirection.html).
 
-在某些情况下，除非你采取额外的步骤，否则 `docker logs` 可能不会显示有用的信息。
+In some cases, `docker logs` may not show useful information unless you take
+additional steps.
 
-- 如果你使用将日志发送到文件、外部主机、数据库或其他日志后端的[日志驱动程序](configure.md)，并且禁用了["双重日志"](dual-logging.md)，则 `docker logs` 可能不会显示有用的信息。
-- 如果你的镜像运行的是非交互式进程（如 Web 服务器或数据库），该应用程序可能会将其输出发送到日志文件而不是 `STDOUT` 和 `STDERR`。
+- If you use a [logging driver](configure.md) which sends logs to a file, an
+  external host, a database, or another logging back-end, and have ["dual logging"](dual-logging.md)
+  disabled, `docker logs` may not show useful information.
+- If your image runs a non-interactive process such as a web server or a
+  database, that application may send its output to log files instead of `STDOUT`
+  and `STDERR`.
 
-在第一种情况下，你的日志以其他方式处理，你可以选择不使用 `docker logs`。在第二种情况下，官方 `nginx` 镜像展示了一种解决方法，官方 Apache `httpd` 镜像展示了另一种方法。
+In the first case, your logs are processed in other ways and you may choose not
+to use `docker logs`. In the second case, the official `nginx` image shows one
+workaround, and the official Apache `httpd` image shows another.
 
-官方 `nginx` 镜像创建了一个从 `/var/log/nginx/access.log` 到 `/dev/stdout` 的符号链接，并创建了另一个从 `/var/log/nginx/error.log` 到 `/dev/stderr` 的符号链接，覆盖了日志文件并使日志被发送到相关的特殊设备。请参阅 [Dockerfile](https://github.com/nginxinc/docker-nginx/blob/8921999083def7ba43a06fabd5f80e4406651353/mainline/jessie/Dockerfile#L21-L23)。
+The official `nginx` image creates a symbolic link from `/var/log/nginx/access.log`
+to `/dev/stdout`, and creates another symbolic link
+from `/var/log/nginx/error.log` to `/dev/stderr`, overwriting the log files and
+causing logs to be sent to the relevant special device instead. See the
+[Dockerfile](https://github.com/nginxinc/docker-nginx/blob/8921999083def7ba43a06fabd5f80e4406651353/mainline/jessie/Dockerfile#L21-L23).
 
-官方 `httpd` 驱动程序更改了 `httpd` 应用程序的配置，将其正常输出直接写入 `/proc/self/fd/1`（即 `STDOUT`），将错误写入 `/proc/self/fd/2`（即 `STDERR`）。请参阅 [Dockerfile](https://github.com/docker-library/httpd/blob/b13054c7de5c74bbaa6d595dbe38969e6d4f860c/2.2/Dockerfile#L72-L75)。
+The official `httpd` driver changes the `httpd` application's configuration to
+write its normal output directly to `/proc/self/fd/1` (which is `STDOUT`) and
+its errors to `/proc/self/fd/2` (which is `STDERR`). See the
+[Dockerfile](https://github.com/docker-library/httpd/blob/b13054c7de5c74bbaa6d595dbe38969e6d4f860c/2.2/Dockerfile#L72-L75).
 
-## 后续步骤
+## Next steps
 
-- 配置[日志驱动程序](configure.md)。
-- 编写 [Dockerfile](/reference/dockerfile.md)。
+- Configure [logging drivers](configure.md).
+- Write a [Dockerfile](/reference/dockerfile.md).

@@ -1,11 +1,14 @@
 ---
-title: 使用 GitHub Actions 管理标签和标注
+title: Manage tags and labels with GitHub Actions
 linkTitle: Tags and labels
-description: 使用 GitHub Actions 自动为镜像分配标签和标注
+description: Assign tags and labels to images automatically with GitHub Actions
 keywords: ci, github actions, gha, buildkit, buildx, tags, labels
 ---
 
-如果您想要"自动化"标签管理和符合 [OCI Image Format Specification](https://github.com/opencontainers/image-spec/blob/master/annotations.md) 的标注，您可以在专用的设置步骤中完成。以下工作流将使用 [Docker Metadata Action](https://github.com/docker/metadata-action) 基于 GitHub Actions 事件和 Git 元数据来处理标签和标注：
+If you want an "automatic" tag management and [OCI Image Format Specification](https://github.com/opencontainers/image-spec/blob/master/annotations.md)
+for labels, you can do it in a dedicated setup step. The following workflow
+will use the [Docker Metadata Action](https://github.com/docker/metadata-action)
+to handle tags and labels based on GitHub Actions events and Git metadata:
 
 ```yaml
 name: ci

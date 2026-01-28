@@ -1,6 +1,6 @@
 ---
-title: 停用组织
-description: 了解如何停用 Docker 组织。
+title: Deactivate an organization
+description: Learn how to deactivate a Docker organization.
 keywords: Docker Hub, delete, deactivate organization, account, organization management
 weight: 42
 aliases:
@@ -9,48 +9,50 @@ aliases:
 
 {{< summary-bar feature_name="General admin" >}}
 
-您可以随时停用帐户。本节介绍停用组织帐户的前提条件和步骤。有关停用用户帐户的信息，请参阅[停用用户帐户](../../accounts/deactivate-user-account.md)。
+You can deactivate an account at any time. This section describes the prerequisites and steps to deactivate an organization account. For information on deactivating a user account, see [Deactivate a user account](../../accounts/deactivate-user-account.md).
 
 > [!WARNING]
 >
-> 停用帐户后，所有使用您的 Docker 帐户或组织帐户的 Docker 产品和服务都将无法访问。
+> All Docker products and services that use your Docker account or organization account will be inaccessible after deactivating your account.
 
-## 前提条件
+## Prerequisites
 
-在停用组织之前，请完成以下操作：
+Before deactivating an organization, complete the following:
 
-- 下载您想要保留的任何镜像和标签：
-  `docker pull -a <image>:<tag>`。
-- 如果您有活跃的 Docker 订阅，请[将其降级为免费订阅](../../subscription/change.md)。
-- 移除组织内的所有其他成员。
-- 取消关联您的 [Github 和 Bitbucket 帐户](../../docker-hub/repos/manage/builds/link-source.md#unlink-a-github-user-account)。
-- 对于 Business 组织，[移除您的 SSO 连接](../../security/for-admins/single-sign-on/manage/#remove-an-organization)。
+- Download any images and tags you want to keep:
+  `docker pull -a <image>:<tag>`.
+- If you have an active Docker subscription, [downgrade it to a free subscription](../../subscription/change.md).
+- Remove all other members within the organization.
+- Unlink your [Github and Bitbucket accounts](../../docker-hub/repos/manage/builds/link-source.md#unlink-a-github-user-account).
+- For Business organizations, [remove your SSO connection](../../security/for-admins/single-sign-on/manage/#remove-an-organization).
 
-## 停用
+## Deactivate
 
-完成所有上述步骤后，您可以停用您的组织。
+Once you have completed all the previous steps, you can deactivate your organization.
 
 > [!WARNING]
 >
-> 此操作无法撤销。请确保在停用组织之前已从组织中收集了所有需要的数据。
+> This cannot be undone. Be sure you've gathered all the data you need from your organization before deactivating it.
 
 {{< tabs >}}
 {{< tab name="Admin Console" >}}
 
-1. 登录 [Docker Home](https://app.docker.com) 并选择您要停用的组织。
-1. 选择 **Admin Console**，然后选择 **Deactivate**。如果此按钮显示为灰色，您必须完成[前提条件](#前提条件)。
-1. 输入组织名称以确认停用。
-1. 选择 **Deactivate organization**。
+1. Sign in to [Docker Home](https://app.docker.com) and select the organization
+you want to deactivate.
+1. Select **Admin Console**, then **Deactivate**. If this button is greyed out,
+you must complete the [Prerequisites](#prerequisites).
+1. Enter the organization name to confirm deactivation.
+1. Select **Deactivate organization**.
 
 {{< /tab >}}
 {{< tab name="Docker Hub" >}}
 
 {{% include "hub-org-management.md" %}}
 
-1. 登录 [Docker Hub](https://hub.docker.com)。
-1. 选择您要停用的组织。
-1. 在 **Settings** 中，选择 **Deactivate org**。
-1. 选择 **Deactivate organization**。
+1. Sign in to [Docker Hub](https://hub.docker.com).
+1. Choose the organization you want to deactivate.
+1. In **Settings**, select **Deactivate org**.
+1. Select **Deactivate organization**.
 
 {{< /tab >}}
 {{< /tabs >}}

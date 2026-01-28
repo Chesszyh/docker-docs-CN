@@ -1,8 +1,8 @@
 ---
-description: 自动构建
+description: Automated builds
 keywords: automated, build, images
-title: 自动构建和自动测试的高级选项
-linkTitle: 高级选项
+title: Advanced options for autobuild and autotest
+linkTitle: Advanced options
 weight: 40
 aliases:
 - /docker-hub/builds/advanced/
@@ -10,27 +10,34 @@ aliases:
 
 > [!NOTE]
 >
-> 自动构建需要 Docker Pro、Team 或 Business 订阅。
+> Automated builds require a
+> Docker Pro, Team, or Business subscription.
 
-以下选项允许您自定义自动构建和自动测试流程。
+The following options allow you to customize your automated build and automated
+test processes.
 
-## 构建和测试的环境变量
+## Environment variables for building and testing
 
-构建过程会设置若干实用的环境变量，这些变量在自动构建、自动测试以及执行钩子时可用。
+Several utility environment variables are set by the build process, and are
+available during automated builds, automated tests, and while executing
+hooks.
 
 > [!NOTE]
 >
-> 这些环境变量仅对构建和测试过程可用，不会影响您服务的运行环境。
+> These environment variables are only available to the build and test
+processes and don't affect your service's run environment.
 
-* `SOURCE_BRANCH`：当前正在测试的分支或标签的名称。
-* `SOURCE_COMMIT`：正在测试的提交的 SHA1 哈希值。
-* `COMMIT_MSG`：正在测试和构建的提交的消息。
-* `DOCKER_REPO`：正在构建的 Docker 仓库的名称。
-* `DOCKERFILE_PATH`：当前正在构建的 dockerfile 路径。
-* `DOCKER_TAG`：正在构建的 Docker 仓库标签。
-* `IMAGE_NAME`：正在构建的 Docker 仓库的名称和标签。（此变量是 `DOCKER_REPO`:`DOCKER_TAG` 的组合。）
+* `SOURCE_BRANCH`: the name of the branch or the tag that is currently being tested.
+* `SOURCE_COMMIT`: the SHA1 hash of the commit being tested.
+* `COMMIT_MSG`: the message from the commit being tested and built.
+* `DOCKER_REPO`: the name of the Docker repository being built.
+* `DOCKERFILE_PATH`: the dockerfile currently being built.
+* `DOCKER_TAG`: the Docker repository tag being built.
+* `IMAGE_NAME`: the name and tag of the Docker repository being built. (This variable is a combination of `DOCKER_REPO`:`DOCKER_TAG`.)
 
-如果您在 `docker-compose.test.yml` 文件中使用这些构建环境变量进行自动测试，请在 `sut` 服务的 environment 中声明它们，如下所示。
+If you are using these build environment variables in a
+`docker-compose.test.yml` file for automated testing, declare them in your `sut`
+service's environment as shown below.
 
 ```yaml
 services:
@@ -42,41 +49,66 @@ services:
 ```
 
 
-## 覆盖构建、测试或推送命令
+## Override build, test or push commands
 
-Docker Hub 允许您在自动构建和测试过程中使用钩子（hooks）来覆盖和自定义 `build`、`test` 和 `push` 命令。例如，您可以使用构建钩子来设置仅在构建过程中使用的构建参数。您还可以设置[自定义构建阶段钩子](#custom-build-phase-hooks)来在这些命令之间执行操作。
+Docker Hub allows you to override and customize the `build`, `test` and `push`
+commands during automated build and test processes using hooks. For example, you
+might use a build hook to set build arguments used only during the build
+process. You can also set up [custom build phase hooks](#custom-build-phase-hooks)
+to perform actions in between these commands.
 
 > [!IMPORTANT]
 >
->请谨慎使用这些钩子。这些钩子文件的内容会替换基本的 `docker` 命令，因此您必须在钩子中包含类似的构建、测试或推送命令，否则您的自动化流程将无法完成。
+>Use these hooks with caution. The contents of these hook files replace the
+basic `docker` commands, so you must include a similar build, test or push
+command in the hook or your automated process does not complete.
 
-要覆盖这些阶段，请在源代码仓库中与 Dockerfile 同级的目录下创建一个名为 `hooks` 的文件夹。创建名为 `hooks/build`、`hooks/test` 或 `hooks/push` 的文件，并包含构建器进程可以执行的命令，例如 `docker` 和 `bash` 命令（需要适当地以 `#!/bin/bash` 作为前缀）。
+To override these phases, create a folder called `hooks` in your source code
+repository at the same directory level as your Dockerfile. Create a file called
+`hooks/build`, `hooks/test`, or `hooks/push` and include commands that the
+builder process can execute, such as `docker` and `bash` commands (prefixed
+appropriately with `#!/bin/bash`).
 
-这些钩子在 [Ubuntu](https://releases.ubuntu.com/) 实例上运行，该实例包含 Perl 或 Python 等解释器，以及 `git` 或 `curl` 等实用工具。请参阅 [Ubuntu 文档](https://ubuntu.com/) 获取可用解释器和实用工具的完整列表。
+These hooks run on an instance of [Ubuntu](https://releases.ubuntu.com/),
+which includes interpreters
+such as Perl or Python, and utilities such as `git` or `curl`. Refer to the
+[Ubuntu documentation](https://ubuntu.com/)
+for the full list of available interpreters and utilities.
 
-## 自定义构建阶段钩子
+## Custom build phase hooks
 
-您可以通过创建钩子在构建过程的各阶段之间运行自定义命令。钩子允许您为自动构建和自动测试流程提供额外的指令。
+You can run custom commands between phases of the build process by creating
+hooks. Hooks allow you to provide extra instructions to the autobuild and
+autotest processes.
 
-在源代码仓库中与 Dockerfile 同级的目录下创建一个名为 `hooks` 的文件夹。将定义钩子的文件放在该文件夹中。钩子文件可以包含 `docker` 命令和 `bash` 命令，只要它们以 `#!/bin/bash` 作为适当的前缀。构建器会在每个步骤之前和之后执行文件中的命令。
+Create a folder called `hooks` in your source code repository at the same
+directory level as your Dockerfile. Place files that define the hooks in that
+folder. Hook files can include both `docker` commands, and `bash` commands as
+long as they are prefixed appropriately with `#!/bin/bash`. The builder executes
+the commands in the files before and after each step.
 
-可用的钩子如下：
+The following hooks are available:
 
 * `hooks/post_checkout`
 * `hooks/pre_build`
 * `hooks/post_build`
 * `hooks/pre_test`
 * `hooks/post_test`
-* `hooks/pre_push`（仅在执行构建规则或[自动构建](index.md)时使用）
-* `hooks/post_push`（仅在执行构建规则或[自动构建](index.md)时使用）
+* `hooks/pre_push` (only used when executing a build rule or [Automated build](index.md) )
+* `hooks/post_push` (only used when executing a build rule or [Automated build](index.md) )
 
-### 构建钩子示例
+### Build hook examples
 
-#### 覆盖 "build" 阶段以设置变量
+#### Override the "build" phase to set variables
 
-Docker Hub 允许您在钩子文件中或从自动构建界面定义构建环境变量，然后可以在钩子中引用这些变量。
+Docker Hub allows you to define build environment variables either in the hook
+files, or from the automated build interface, which you can then reference in hooks.
 
-以下示例定义了一个构建钩子，该钩子使用 `docker build` 参数根据 Docker Hub 构建设置中定义的变量值来设置 `CUSTOM` 变量。`$DOCKERFILE_PATH` 是您提供的要构建的 Dockerfile 名称的变量，`$IMAGE_NAME` 是正在构建的镜像的名称。
+The following example defines a build hook that uses `docker build` arguments to
+set the variable `CUSTOM` based on the value of variable defined using the
+Docker Hub build settings. `$DOCKERFILE_PATH` is a variable that you provide
+with the name of the Dockerfile you want to build, and `$IMAGE_NAME` is the name
+of the image being built.
 
 ```console
 $ docker build --build-arg CUSTOM=$VAR -f $DOCKERFILE_PATH -t $IMAGE_NAME .
@@ -84,32 +116,44 @@ $ docker build --build-arg CUSTOM=$VAR -f $DOCKERFILE_PATH -t $IMAGE_NAME .
 
 > [!IMPORTANT]
 >
-> `hooks/build` 文件会覆盖构建器使用的基本 `docker build` 命令，因此您必须在钩子中包含类似的构建命令，否则自动构建将失败。
+> A `hooks/build` file overrides the basic `docker build` command used by the builder, so you must include a similar build command in the hook or
+the automated build fails.
 
-请参阅 [docker build 文档](/reference/cli/docker/buildx/build.md#build-arg)了解更多关于 Docker 构建时变量的信息。
+Refer to the [docker build documentation](/reference/cli/docker/buildx/build.md#build-arg)
+to learn more about Docker build-time variables.
 
-#### 推送到多个仓库
+#### Push to multiple repositories
 
-默认情况下，构建过程仅将镜像推送到配置了构建设置的仓库。如果您需要将同一镜像推送到多个仓库，可以设置 `post_push` 钩子来添加额外的标签并推送到更多仓库。
+By default the build process pushes the image only to the repository where the
+build settings are configured. If you need to push the same image to multiple
+repositories, you can set up a `post_push` hook to add additional tags and push
+to more repositories.
 
 ```console
 $ docker tag $IMAGE_NAME $DOCKER_REPO:$SOURCE_COMMIT
 $ docker push $DOCKER_REPO:$SOURCE_COMMIT
 ```
 
-## 源仓库或分支克隆
+## Source repository or branch clones
 
-当 Docker Hub 从源代码仓库拉取分支时，它执行浅克隆（shallow clone），仅克隆指定分支的最新提交。这样做的优点是可以最大限度地减少从仓库传输的数据量，并加快构建速度，因为它只拉取必要的最少代码。
+When Docker Hub pulls a branch from a source code repository, it performs
+a shallow clone, it clones only the tip of the specified branch. This has the advantage
+of minimizing the amount of data transfer necessary from the repository and
+speeding up the build because it pulls only the minimal code necessary.
 
-因此，如果您需要执行依赖于其他分支的自定义操作，例如 `post_push` 钩子，您将无法检出该分支，除非您执行以下操作之一：
+As a result, if you need to perform a custom action that relies on a different
+branch, such as a `post_push` hook, you can't checkout that branch unless
+you do one of the following:
 
-* 您可以通过以下方式获取目标分支的浅检出：
+* You can get a shallow checkout of the target branch by doing the following:
 
     ```console
     $ git fetch origin branch:mytargetbranch --depth 1
     ```
 
-* 您也可以"取消浅克隆"（unshallow），这会获取整个 Git 历史记录（可能需要很长时间/传输大量数据），方法是在 fetch 命令中使用 `--unshallow` 标志：
+* You can also "unshallow" the clone, which fetches the whole Git history (and
+  potentially takes a long time / moves a lot of data) by using the `--unshallow`
+  flag on the fetch:
 
     ```console
     $ git fetch --unshallow origin

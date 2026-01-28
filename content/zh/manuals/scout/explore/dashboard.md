@@ -1,159 +1,181 @@
 ---
-description: Docker Scout 仪表板帮助审查和分享镜像分析结果。
+description: The Docker Scout Dashboard helps review and share the analysis of images.
 keywords: scout, scanning, analysis, vulnerabilities, Hub, supply chain, security, report,
   reports, dashboard
-title: 仪表板
+title: Dashboard
 aliases:
 - /scout/reports/
 - /scout/web-app/
 - /scout/dashboard/
 ---
 
-[Docker Scout 仪表板](https://scout.docker.com/)帮助您与团队分享组织中镜像的分析结果。
-开发人员现在可以从 Docker Hub 查看所有镜像的安全状态概览，
-并触手可得地获取修复建议。它帮助担任安全、合规和运营等角色的团队成员了解他们需要关注的漏洞和问题。
+The [Docker Scout Dashboard](https://scout.docker.com/) helps you share the
+analysis of images in an organization with your team. Developers can now see an
+overview of their security status across all their images from Docker Hub, and
+get remediation advice at their fingertips. It helps team members in roles such
+as security, compliance, and operations to know what vulnerabilities and issues
+they need to focus on.
 
-## 概览
+## Overview
 
-![Docker Scout 仪表板概览截图](../images/dashboard-overview.webp?border=true)
+![A screenshot of the Docker Scout Dashboard overview](../images/dashboard-overview.webp?border=true)
 
-**概览**选项卡提供所选组织中仓库的摘要。
+The **Overview** tab provides a summary for the repositories in the selected
+organization.
 
-在此页面顶部，您可以选择要查看的**环境**。
-默认显示最近推送的镜像。要了解更多关于环境的信息，
-请参阅[环境监控](/manuals/scout/integrations/environment/_index.md)。
+At the top of this page, you can select which **Environment** to view.
+By default, the most recently pushed images are shown. To learn more about
+environments, see [Environment monitoring](/manuals/scout/integrations/environment/_index.md).
 
-**策略**框显示每个策略的当前合规率，以及所选环境的趋势指示。
-趋势描述了最新镜像与前一版本相比的策略增量。
-有关策略的更多信息，请参阅[策略评估](/manuals/scout/policy/_index.md)。
+The **Policy** boxes show your current compliance rating for each policy, and a
+trend indication for the selected environment. The trend describes the policy
+delta for the most recent images compared to the previous version.
+For more information about policies, see [Policy Evaluation](/manuals/scout/policy/_index.md).
 
-漏洞图表显示所选环境中镜像随时间的漏洞总数。
-您可以使用下拉菜单配置图表的时间范围。
+The vulnerability chart shows the total number of vulnerabilities for images in
+the selected environment over time. You can configure the timescale for the
+chart using the drop-down menu.
 
-使用网站顶部的标题菜单访问 Docker Scout 仪表板的不同主要部分：
+Use the header menu at the top of the website to access the different main
+sections of the Docker Scout Dashboard:
 
-- **策略**：显示组织的策略合规情况，请参阅[策略](#策略)
-- **镜像**：列出组织中所有启用 Docker Scout 的仓库，请参阅[镜像](#镜像)
-- **基础镜像**：列出组织中仓库使用的所有基础镜像
-- **软件包**：列出组织中各仓库的所有软件包
-- **漏洞**：列出组织镜像中的所有 CVE，请参阅[漏洞](#漏洞)
-- **集成**：创建和管理第三方集成，请参阅[集成](#集成)
-- **设置**：管理仓库设置，请参阅[设置](#设置)
+- **Policies**: shows the policy compliance for the organization, see [Policies](#policies)
+- **Images**: lists all Docker Scout-enabled repositories in the organization, see [Images](#images)
+- **Base images**: lists all base images used by repositories in an organization
+- **Packages**: lists all packages across repositories in the organization
+- **Vulnerabilities**: lists all CVEs in the organization's images, see [Vulnerabilities](#vulnerabilities)
+- **Integrations**: create and manage third-party integrations, see [Integrations](#integrations)
+- **Settings**: manage repository settings, see [Settings](#settings)
 
-## 策略
+## Policies
 
-**策略**视图显示所选组织和环境中所有镜像的策略合规性分解。
-您可以使用**镜像**下拉菜单查看特定环境的策略分解。
+The **Policies** view shows a breakdown of policy compliance for all of the
+images in the selected organization and environment. You can use the **Image**
+drop-down menu to view a policy breakdown for a specific environment.
 
-有关策略的更多信息，请参阅[策略评估](/manuals/scout/policy/_index.md)。
+For more information about policies, see [Policy Evaluation](/manuals/scout/policy/_index.md).
 
-## 镜像
+## Images
 
-**镜像**视图显示所选环境中启用 Scout 的仓库中的所有镜像。
-您可以通过选择不同的环境或使用文本过滤器按仓库名称过滤列表。
+The **Images** view shows all images in Scout-enabled repositories for the selected environment.
+You can filter the list by selecting a different environment, or by repository name using the text filter.
 
-![镜像视图截图](../images/dashboard-images.webp)
+![Screenshot of the images view](../images/dashboard-images.webp)
 
-对于每个仓库，列表显示以下详细信息：
+For each repository, the list displays the following details:
 
-- 仓库名称（不带标签或摘要的镜像引用）
-- 所选环境中镜像的最新标签
-- 最新标签的操作系统和架构
-- 最新标签的漏洞状态
-- 最新标签的策略状态
+- The repository name (image reference without the tag or digest)
+- The most recent tag of the image in the selected environment
+- Operating systems and architectures for the most recent tag
+- Vulnerabilities status for the most recent tag
+- Policy status for the most recent tag
 
-选择仓库链接会转到该仓库中已分析的所有镜像列表。
-从这里您可以查看特定镜像的完整分析结果，
-并比较标签以查看软件包和漏洞的差异。
+Selecting a repository link takes you to a list of all images in that repository that have been analyzed.
+From here you can view the full analysis results for a specific image,
+and compare tags to view the differences in packages and vulnerabilities
 
-选择镜像链接会转到所选标签或摘要的详细信息视图。
-此视图包含两个选项卡，详细说明镜像的组成和策略合规性：
+Selecting an image link takes you to a details view for the selected tag or digest.
+This view contains two tabs that detail the composition and policy compliance for the image:
 
-- **策略状态**显示所选镜像的策略评估结果。
-  这里还有关于策略违规详情的链接。
+- **Policy status** shows the policy evaluation results for the selected image.
+  Here you also have links for details about the policy violations.
 
-  有关策略的更多信息，请参阅[策略评估](/manuals/scout/policy/_index.md)。
+  For more information about policy, see [Policy Evaluation](/manuals/scout/policy/_index.md).
 
-- **镜像层**显示镜像分析结果的分解。
-  您可以获取镜像包含的漏洞的完整视图，
-  并了解它们是如何进入的。
+- **Image layers** shows a breakdown of the image analysis results.
+  You can get a complete view of the vulnerabilities your image contains
+  and understand how they got in.
 
-## 漏洞
+## Vulnerabilities
 
-**漏洞**视图显示组织中镜像的所有漏洞列表。
-此列表包括 CVE 的详细信息，如严重程度和通用漏洞评分系统（CVSS）评分，
-以及是否有可用的修复版本。
-此处显示的 CVSS 评分是所有可用[来源](/manuals/scout/deep-dive/advisory-db-sources.md)中的最高评分。
+The **Vulnerabilities** view shows a list of all vulnerabilities for images in the organization.
+This list includes details about CVE such as the severity and Common Vulnerability Scoring System (CVSS) score,
+as well as whether there's a fix version available.
+The CVSS score displayed here is the highest score out of all available [sources](/manuals/scout/deep-dive/advisory-db-sources.md).
 
-选择此页面上的链接会打开漏洞详情页面，
-此页面是一个公开可见的页面，显示有关 CVE 的详细信息。
-您可以与其他人分享特定 CVE 描述的链接，
-即使他们不是您 Docker 组织的成员或未登录 Docker Scout。
+Selecting the links on this page opens the vulnerability details page,
+This page is a publicly visible page, and shows detailed information about a CVE.
+You can share the link to a particular CVE description with other people
+even if they're not a member of your Docker organization or signed in to Docker Scout.
 
-如果您已登录，此页面上的**我的镜像**选项卡列出所有受该 CVE 影响的镜像。
+If you are signed in, the **My images** tab on this page lists all of your images
+affected by the CVE.
 
-## 集成
+## Integrations
 
-**集成**页面让您创建和管理 Docker Scout 集成，
-例如环境集成和镜像仓库集成。有关如何开始使用集成的更多信息，
-请参阅[将 Docker Scout 与其他系统集成](/manuals/scout/integrations/_index.md)。
+The **Integrations** page lets you create and manage your Docker Scout
+integrations, such as environment integrations and registry integrations. For
+more information on how to get started with integrations, see
+[Integrating Docker Scout with other systems](/manuals/scout/integrations/_index.md).
 
-## 设置
+## Settings
 
-Docker Scout 仪表板中的设置菜单包含：
+The settings menu in the Docker Scout Dashboard contains:
 
-- [**仓库设置**](#仓库设置)用于启用和禁用仓库
-- [**通知**](#通知设置)用于管理您的 Docker Scout 通知偏好设置。
+- [**Repository settings**](#repository-settings) for enabling and disabling repositories
+- [**Notifications**](#notification-settings) for managing your notification preferences for Docker Scout.
 
-### 仓库设置
+### Repository settings
 
-当您为仓库启用 Docker Scout 时，
-Docker Scout 会在您推送到该仓库时自动分析新标签。
-要启用 Amazon ECR、Azure ACR 或其他第三方镜像仓库中的仓库，
-您首先需要集成它们。
-请参阅[容器镜像仓库集成](/manuals/scout/integrations/_index.md#container-registries)
+When you enable Docker Scout for a repository,
+Docker Scout analyzes new tags automatically when you push to that repository.
+To enable repositories in Amazon ECR, Azure ACR, or other third-party registries,
+you first need to integrate them.
+See [Container registry integrations](/manuals/scout/integrations/_index.md#container-registries)
 
-### 通知设置
+### Notification settings
 
-[通知设置](https://scout.docker.com/settings/notifications)
-页面是您可以更改从 Docker Scout 接收通知偏好设置的地方。
-通知设置是个人的，更改通知设置只影响您的个人账户，不影响整个组织。
+The [Notification settings](https://scout.docker.com/settings/notifications)
+page is where you can change the preferences for receiving notifications from
+Docker Scout. Notification settings are personal, and changing notification
+settings only affects your personal account, not the entire organization.
 
-Docker Scout 中通知的目的是提高对影响您的上游变更的意识。
-当安全公告中披露新漏洞，并且它影响您的一个或多个镜像时，
-Docker Scout 会通知您。您不会收到由于推送新镜像而导致的漏洞暴露或策略合规性变更的通知。
+The purpose of notifications in Docker Scout is to raise awareness about
+upstream changes that affect you. Docker Scout will notify you about when a new
+vulnerability is disclosed in a security advisory, and it affects one or more
+of your images. You will not receive notifications about changes to
+vulnerability exposure or policy compliance as a result of pushing a new image.
 
 > [!NOTE]
 >
-> 通知仅针对每个仓库的*最后推送*的镜像标签触发。
-> "最后推送"指的是最近推送到镜像仓库并由 Docker Scout 分析的镜像标签。
-> 如果最后推送的镜像不受新披露的 CVE 影响，
-> 则不会触发通知。
+> Notifications are only triggered for the *last pushed* image tags for each
+> repository. "Last pushed" refers to the image tag that was most recently
+> pushed to the registry and analyzed by Docker Scout. If the last pushed image
+> is not affected by a newly disclosed CVE, then no notification will be
+> triggered.
 
-可用的通知设置包括：
+The available notification settings are:
 
-- **仓库范围**
+- **Repository scope**
 
-  在这里您可以选择是否要为所有仓库启用通知，
-  或仅为特定仓库启用。这些设置适用于当前选择的组织，
-  并且可以为您所属的每个组织进行更改。
+  Here you can select whether you want to enable notifications for all
+  repositories, or only for specific repositories. These settings apply to the
+  currently selected organization, and can be changed for each organization you
+  are a member of.
 
-  - **所有仓库**：选择此选项以接收您有权访问的所有仓库的通知。
-  - **特定仓库**：选择此选项以接收特定仓库的通知。
-    然后您可以输入您希望接收通知的仓库名称。
+  - **All repositories**: select this option to receive notifications for all
+    repositories that you have access to.
+  - **Specific repositories**: select this option to receive notifications for
+    specific repositories. You can then enter the names of repositories you
+    want to receive notifications for.
 
-- **递送偏好设置**
+- **Delivery preferences**
 
-  这些设置控制您如何从 Docker Scout 接收通知。
-  它们适用于您所属的所有组织。
+  These settings control how you receive notifications from Docker Scout. They
+  apply to all organizations that you're a member of.
 
-  - **通知弹出窗口**：选中此复选框以在 Docker Scout 仪表板中接收通知弹出消息。
-  - **操作系统通知**：选中此复选框以在浏览器中打开 Docker Scout 仪表板标签页时，
-    从浏览器接收操作系统级别的通知。
+  - **Notification pop-ups**: select this check-box to receive notification
+    pop-up messages in the Docker Scout Dashboard.
+  - **OS notifications**: select this check-box to receive OS-level notifications
+    from your browser if you have the Docker Scout Dashboard open in a browser
+    tab.
+  
+  To enable OS notifications, Docker Scout needs permissions to send
+  notifications using the browser API.
 
-  要启用操作系统通知，Docker Scout 需要使用浏览器 API 发送通知的权限。
+From this page, you can also go to the settings for Team collaboration
+integrations, such as the [Slack](/manuals/scout/integrations/team-collaboration/slack.md)
+integration.
 
-从此页面，您还可以转到团队协作集成的设置，
-例如 [Slack](/manuals/scout/integrations/team-collaboration/slack.md) 集成。
-
-您还可以通过转到**设置** > **通知**在 Docker Desktop 中配置通知设置。
+You can also configure your notification settings in Docker Desktop by going
+to **Settings** > **Notifications**.

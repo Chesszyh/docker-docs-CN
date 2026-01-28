@@ -1,11 +1,14 @@
 ---
-description: 如何将 Docker Scout 与 Jenkins 集成
+description: How to integrate Docker Scout with Jenkins
 keywords: supply chain, security, ci, continuous integration, jenkins
-title: 将 Docker Scout 与 Jenkins 集成
+title: Integrate Docker Scout with Jenkins
 linkTitle: Jenkins
 ---
 
-您可以将以下阶段和步骤定义添加到 `Jenkinsfile` 中，以将 Docker Scout 作为 Jenkins 流水线的一部分运行。该流水线需要一个名为 `DOCKER_HUB` 的凭据，其中包含用于向 Docker Hub 进行身份验证的用户名和密码。它还需要为镜像和标签定义环境变量。
+You can add the following stage and steps definition to a `Jenkinsfile` to run
+Docker Scout as part of a Jenkins pipeline. The pipeline needs a `DOCKER_HUB`
+credential containing the username and password for authenticating to Docker
+Hub. It also needs an environment variable defined for the image and tag.
 
 ```groovy
 pipeline {
@@ -35,8 +38,13 @@ pipeline {
 }
 ```
 
-这会安装 Docker Scout，登录到 Docker Hub，然后运行 Docker Scout 为镜像和标签生成 CVE 报告。它仅显示严重或高危漏洞。
+This installs Docker Scout, logs into Docker Hub, and then runs Docker Scout to
+generate a CVE report for an image and tag. It only shows critical or
+high-severity vulnerabilities.
 
 > [!NOTE]
 >
-> 如果您看到与镜像缓存相关的 `permission denied` 错误，请尝试将 [`DOCKER_SCOUT_CACHE_DIR`](/manuals/scout/how-tos/configure-cli.md) 环境变量设置为可写目录。或者，使用 `DOCKER_SCOUT_NO_CACHE=true` 完全禁用本地缓存。
+> If you're seeing a `permission denied` error related to the image cache, try
+> setting the [`DOCKER_SCOUT_CACHE_DIR`](/manuals/scout/how-tos/configure-cli.md) environment
+> variable to a writable directory. Or alternatively, disable local caching
+> entirely with `DOCKER_SCOUT_NO_CACHE=true`.

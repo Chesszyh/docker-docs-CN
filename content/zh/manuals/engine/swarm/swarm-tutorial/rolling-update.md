@@ -1,16 +1,22 @@
 ---
 description: Apply rolling updates to a service on the swarm
 keywords: tutorial, cluster management, swarm, service, rolling-update
-title: 对服务应用滚动更新
+title: Apply rolling updates to a service
 weight: 70
 notoc: true
 ---
 
-在本教程的前一步中，你[扩展](scale-service.md)了服务的实例数量。在本教程的这一部分，你将部署一个基于 Redis 7.4.0 容器标签的服务。然后使用滚动更新将服务升级到使用 Redis 7.4.1 容器镜像。
+In a previous step of the tutorial, you [scaled](scale-service.md) the number of
+instances of a service. In this part of the tutorial, you deploy a service based
+on the Redis 7.4.0 container tag. Then you upgrade the service to use the
+Redis 7.4.1 container image using rolling updates.
 
-1.  如果你还没有，打开终端并 ssh 到运行管理节点的机器。例如，本教程使用名为 `manager1` 的机器。
+1.  If you haven't already, open a terminal and ssh into the machine where you
+    run your manager node. For example, the tutorial uses a machine named
+    `manager1`.
 
-2.  将你的 Redis 标签部署到 swarm，并配置 10 秒的更新延迟。注意以下示例显示的是较旧的 Redis 标签：
+2.  Deploy your Redis tag to the swarm and configure the swarm with a 10 second
+    update delay. Note that the following example shows an older Redis tag:
 
     ```console
     $ docker service create \
@@ -22,15 +28,25 @@ notoc: true
     0u6a4s31ybk7yw2wyvtikmu50
     ```
 
-    你在服务部署时配置滚动更新策略。
+    You configure the rolling update policy at service deployment time.
 
-    `--update-delay` 标志配置服务任务或任务集之间的更新时间延迟。你可以将时间 `T` 描述为秒数 `Ts`、分钟数 `Tm` 或小时数 `Th` 的组合。因此 `10m30s` 表示 10 分 30 秒的延迟。
+    The `--update-delay` flag configures the time delay between updates to a
+    service task or sets of tasks. You can describe the time `T` as a
+    combination of the number of seconds `Ts`, minutes `Tm`, or hours `Th`. So
+    `10m30s` indicates a 10 minute 30 second delay.
 
-    默认情况下，调度器一次更新 1 个任务。你可以传递 `--update-parallelism` 标志来配置调度器同时更新的最大服务任务数。
+    By default the scheduler updates 1 task at a time. You can pass the
+    `--update-parallelism` flag to configure the maximum number of service tasks
+    that the scheduler updates simultaneously.
 
-    默认情况下，当对单个任务的更新返回 `RUNNING` 状态时，调度器会调度另一个任务进行更新，直到所有任务都更新完毕。如果在更新过程中任何时候某个任务返回 `FAILED`，调度器会暂停更新。你可以使用 `docker service create` 或 `docker service update` 的 `--update-failure-action` 标志来控制行为。
+    By default, when an update to an individual task returns a state of
+    `RUNNING`, the scheduler schedules another task to update until all tasks
+    are updated. If at any time during an update a task returns `FAILED`, the
+    scheduler pauses the update. You can control the behavior using the
+    `--update-failure-action` flag for `docker service create` or
+    `docker service update`.
 
-3.  检查 `redis` 服务：
+3.  Inspect the `redis` service:
 
     ```console
     $ docker service inspect --pretty redis
@@ -50,22 +66,26 @@ notoc: true
     Endpoint Mode:  vip
     ```
 
-4.  现在你可以更新 `redis` 的容器镜像。swarm 管理节点根据 `UpdateConfig` 策略将更新应用到节点：
+4.  Now you can update the container image for `redis`. The swarm  manager
+    applies the update to nodes according to the `UpdateConfig` policy:
 
     ```console
     $ docker service update --image redis:7.4.1 redis
     redis
     ```
 
-    调度器默认按如下方式应用滚动更新：
+    The scheduler applies rolling updates as follows by default:
 
-    * 停止第一个任务。
-    * 为已停止的任务调度更新。
-    * 启动更新后任务的容器。
-    * 如果任务的更新返回 `RUNNING`，等待指定的延迟期后再启动下一个任务。
-    * 如果在更新过程中任何时候任务返回 `FAILED`，暂停更新。
+    * Stop the first task.
+    * Schedule update for the stopped task.
+    * Start the container for the updated task.
+    * If the update to a task returns `RUNNING`, wait for the
+      specified delay period then start the next task.
+    * If, at any time during the update, a task returns `FAILED`, pause the
+      update.
 
-5.  运行 `docker service inspect --pretty redis` 查看期望状态中的新镜像：
+5.  Run `docker service inspect --pretty redis` to see the new image in the
+    desired state:
 
     ```console
     $ docker service inspect --pretty redis
@@ -85,7 +105,7 @@ notoc: true
     Endpoint Mode:  vip
     ```
 
-    `service inspect` 的输出会显示你的更新是否因失败而暂停：
+    The output of `service inspect` shows if your update paused due to failure:
 
     ```console
     $ docker service inspect --pretty redis
@@ -100,15 +120,16 @@ notoc: true
     ...snip...
     ```
 
-    要重新启动暂停的更新，请运行 `docker service update <SERVICE-ID>`。例如：
+    To restart a paused update run `docker service update <SERVICE-ID>`. For example:
 
     ```console
     $ docker service update redis
     ```
 
-    为避免重复某些更新失败，你可能需要通过向 `docker service update` 传递标志来重新配置服务。
+    To avoid repeating certain update failures, you may need to reconfigure the
+    service by passing flags to `docker service update`.
 
-6.  运行 `docker service ps <SERVICE-ID>` 观察滚动更新：
+6.  Run `docker service ps <SERVICE-ID>` to watch the rolling update:
 
     ```console
     $ docker service ps redis
@@ -122,10 +143,12 @@ notoc: true
      \_ redis.3.ctzktfddb2tepkr45qcmqln04  redis:7.4.0  mmanager1  Shutdown       Shutdown 2 minutes ago
     ```
 
-    在 Swarm 更新所有任务之前，你可以看到一些正在运行 `redis:7.4.0`，而另一些正在运行 `redis:7.4.1`。上面的输出显示了滚动更新完成后的状态。
+    Before Swarm updates all of the tasks, you can see that some are running
+    `redis:7.4.0` while others are running `redis:7.4.1`. The output above shows
+    the state once the rolling updates are done.
 
-## 下一步
+## Next steps
 
-接下来，你将学习如何排空 swarm 中的节点。
+Next, you'll learn how to drain a node in the swarm.
 
-{{< button text="排空节点" url="drain-node.md" >}}
+{{< button text="Drain a node" url="drain-node.md" >}}

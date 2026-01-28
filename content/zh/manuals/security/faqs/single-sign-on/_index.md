@@ -1,5 +1,5 @@
 ---
 build:
   render: never
-title: 单点登录
+title: Single sign-on
 ---

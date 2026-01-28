@@ -7,9 +7,12 @@ aliases:
   - /config/completion/
 ---
 
-您可以使用 `docker completion` 命令为 Docker CLI 生成 shell 补全脚本。当您在终端中输入时按下 `<Tab>` 键，补全脚本可以为命令、标志和 Docker 对象（如容器和卷名称）提供单词补全。
+You can generate a shell completion script for the Docker CLI using the `docker
+completion` command. The completion script gives you word completion for
+commands, flags, and Docker objects (such as container and volume names) when
+you hit `<Tab>` as you type into your terminal.
 
-您可以为以下 shell 生成补全脚本：
+You can generate completion scripts for the following shells:
 
 - [Bash](#bash)
 - [Zsh](#zsh)
@@ -17,7 +20,9 @@ aliases:
 
 ## Bash
 
-要在 Bash 中获得 Docker CLI 补全功能，您首先需要安装 `bash-completion` 包，该包包含许多用于 shell 补全的 Bash 函数。
+To get Docker CLI completion with Bash, you first need to install the
+`bash-completion` package which contains a number of Bash functions for shell
+completion.
 
 ```bash
 # Install using APT:
@@ -32,7 +37,8 @@ brew install bash-completion
 sudo pacman -S bash-completion
 ```
 
-安装 `bash-completion` 后，在您的 shell 配置文件（在本例中为 `.bashrc`）中 source 该脚本：
+After installing `bash-completion`, source the script in your shell
+configuration file (in this example, `.bashrc`):
 
 ```bash
 # On Linux:
@@ -48,13 +54,13 @@ cat <<EOT >> ~/.bash_profile
 EOT
 ```
 
-然后重新加载您的 shell 配置：
+And reload your shell configuration:
 
 ```console
 $ source ~/.bashrc
 ```
 
-现在您可以使用 `docker completion` 命令生成 Bash 补全脚本：
+Now you can generate the Bash completion script using the `docker completion` command:
 
 ```console
 $ mkdir -p ~/.local/share/bash-completion/completions
@@ -63,16 +69,19 @@ $ docker completion bash > ~/.local/share/bash-completion/completions/docker
 
 ## Zsh
 
-只要可以使用 `FPATH` 来 source 补全脚本，Zsh [补全系统](http://zsh.sourceforge.net/Doc/Release/Completion-System.html)就会处理这些事情。
+The Zsh [completion system](http://zsh.sourceforge.net/Doc/Release/Completion-System.html)
+takes care of things as long as the completion can be sourced using `FPATH`.
 
-如果您使用 Oh My Zsh，您可以通过将补全脚本存储在 `~/.oh-my-zsh/completions` 目录中来安装补全功能，而无需修改 `~/.zshrc`。
+If you use Oh My Zsh, you can install completions without modifying `~/.zshrc`
+by storing the completion script in the `~/.oh-my-zsh/completions` directory.
 
 ```console
 $ mkdir -p ~/.oh-my-zsh/completions
 $ docker completion zsh > ~/.oh-my-zsh/completions/_docker
 ```
 
-如果您没有使用 Oh My Zsh，请将补全脚本存储在您选择的目录中，并在 `.zshrc` 中将该目录添加到 `FPATH`。
+If you're not using Oh My Zsh, store the completion script in a directory of
+your choice and add the directory to `FPATH` in your `.zshrc`.
 
 ```console
 $ mkdir -p ~/.docker/completions
@@ -89,8 +98,8 @@ EOT
 
 ## Fish
 
-fish shell 原生支持[补全系统](https://fishshell.com/docs/current/#tab-completion)。
-要激活 Docker 命令的补全功能，请将补全脚本复制或符号链接到您的 fish shell `completions/` 目录：
+fish shell supports a [completion system](https://fishshell.com/docs/current/#tab-completion) natively.
+To activate completion for Docker commands, copy or symlink the completion script to your fish shell `completions/` directory:
 
 ```console
 $ mkdir -p ~/.config/fish/completions

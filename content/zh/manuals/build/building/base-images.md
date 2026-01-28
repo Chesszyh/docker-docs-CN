@@ -1,7 +1,7 @@
 ---
-title: 基础镜像
+title: Base images
 weight: 70
-description: 了解基础镜像及其创建方式
+description: Learn about base images and how they're created
 keywords: images, base image, examples
 aliases:
 - /articles/baseimages/
@@ -10,33 +10,52 @@ aliases:
 - /develop/develop-images/baseimages/
 ---
 
-所有 Dockerfile 都从一个基础镜像（base image）开始。
-基础镜像是你的镜像所扩展的镜像。
-它指的是 Dockerfile 中 `FROM` 指令的内容。
+All Dockerfiles start from a base image.
+A base is the image that your image extends.
+It refers to the contents of the `FROM` instruction in the Dockerfile.
 
 ```dockerfile
 FROM debian
 ```
 
-在大多数情况下，你不需要创建自己的基础镜像。Docker Hub 包含大量适合作为构建基础镜像的 Docker 镜像库。[Docker 官方镜像](../../docker-hub/image-library/trusted-content.md#docker-official-images)具有清晰的文档、推广最佳实践，并且定期更新。此外还有 [Docker 认证发布者](../../docker-hub/image-library/trusted-content.md#verified-publisher-images)镜像，由可信的发布合作伙伴创建，经过 Docker 验证。
+For most cases, you don't need to create your own base image. Docker Hub
+contains a vast library of Docker images that are suitable for use as a base
+image in your build. [Docker Official
+Images](../../docker-hub/image-library/trusted-content.md#docker-official-images)
+have clear documentation, promote best practices, and are regularly updated.
+There are also [Docker Verified
+Publisher](../../docker-hub/image-library/trusted-content.md#verified-publisher-images)
+images, created by trusted publishing partners, verified by Docker.
 
-## 创建基础镜像
+## Create a base image
 
-如果你需要完全控制镜像的内容，你可以从你选择的 Linux 发行版创建自己的基础镜像，或者使用特殊的 `FROM scratch` 基础：
+If you need to completely control the contents of your image, you can create
+your own base image from a Linux distribution of your choosing, or use the
+special `FROM scratch` base:
 
 ```dockerfile
 FROM scratch
 ```
 
-`scratch` 镜像通常用于创建仅包含应用程序所需内容的最小镜像。参见[使用 scratch 创建最小基础镜像](#使用-scratch-创建最小基础镜像)。
+The `scratch` image is typically used to create minimal images containing only
+just what an application needs. See [Create a minimal base image using scratch](#create-a-minimal-base-image-using-scratch).
 
-要创建发行版基础镜像，你可以使用打包为 `tar` 文件的根文件系统，并使用 `docker import` 将其导入到 Docker。创建自己的基础镜像的过程取决于你想要打包的 Linux 发行版。参见[使用 tar 创建完整镜像](#使用-tar-创建完整镜像)。
+To create a distribution base image, you can use a root filesystem, packaged as
+a `tar` file, and import it to Docker with `docker import`. The process for
+creating your own base image depends on the Linux distribution you want to
+package. See [Create a full image using tar](#create-a-full-image-using-tar).
 
-## 使用 scratch 创建最小基础镜像
+## Create a minimal base image using scratch
 
-保留的最小 `scratch` 镜像作为构建容器的起点。使用 `scratch` 镜像向构建过程发出信号，表示你希望 `Dockerfile` 中的下一条命令成为镜像中的第一个文件系统层。
+The reserved, minimal `scratch` image serves as a starting point for
+building containers. Using the `scratch` image signals to the build process
+that you want the next command in the `Dockerfile` to be the first filesystem
+layer in your image.
 
-虽然 `scratch` 出现在 Docker 的 [Docker Hub 仓库](https://hub.docker.com/_/scratch)中，但你无法拉取、运行它，或使用名称 `scratch` 标记任何镜像。相反，你可以在你的 `Dockerfile` 中引用它。例如，使用 `scratch` 创建一个最小容器：
+While `scratch` appears in Docker's [repository on Docker Hub](https://hub.docker.com/_/scratch),
+you can't pull it, run it, or tag any image with the name `scratch`.
+Instead, you can refer to it in your `Dockerfile`.
+For example, to create a minimal container using `scratch`:
 
 ```dockerfile
 # syntax=docker/dockerfile:1
@@ -45,31 +64,42 @@ ADD hello /
 CMD ["/hello"]
 ```
 
-假设在[构建上下文](/manuals/build/concepts/context.md)的根目录存在一个名为 `hello` 的可执行二进制文件。你可以使用以下 `docker build` 命令构建这个 Docker 镜像：
+Assuming an executable binary named `hello` exists at the root of the [build context](/manuals/build/concepts/context.md).
+You can build this Docker image using the following `docker build` command:
 
 ```console
 $ docker build --tag hello .
 ```
 
-要运行你的新镜像，使用 `docker run` 命令：
+To run your new image, use the `docker run` command:
 
 ```console
 $ docker run --rm hello
 ```
 
-只有当 `hello` 二进制文件没有任何运行时依赖时，这个示例镜像才能成功执行。计算机程序往往依赖于运行时环境中存在的某些其他程序或资源。例如：
+This example image can only be successfully executed as long as the `hello` binary
+doesn't have any runtime dependencies. Computer programs tend to depend on
+certain other programs or resources to exist in the runtime environment. For
+example:
 
-- 编程语言运行时
-- 动态链接的 C 库
-- CA 证书
+- Programming language runtimes
+- Dynamically linked C libraries
+- CA certificates
 
-在构建基础镜像或任何镜像时，这是一个需要考虑的重要方面。这就是为什么使用 `FROM scratch` 创建基础镜像可能很困难，除非是小型、简单的程序。另一方面，只在镜像中包含你需要的内容也很重要，以减少镜像大小和攻击面。
+When building a base image, or any image, this is an important aspect to
+consider. And this is why creating a base image using `FROM scratch` can be
+difficult, for anything other than small, simple programs. On the other hand,
+it's also important to include only the things you need in your image, to
+reduce the image size and attack surface.
 
-## 使用 tar 创建完整镜像
+## Create a full image using tar
 
-通常，从运行你想要打包为基础镜像的发行版的工作机器开始，尽管对于某些工具（如 Debian 的 [Debootstrap](https://wiki.debian.org/Debootstrap)）这不是必需的，你也可以使用它来构建 Ubuntu 镜像。
+In general, start with a working machine that is running
+the distribution you'd like to package as a base image, though that is
+not required for some tools like Debian's [Debootstrap](https://wiki.debian.org/Debootstrap),
+which you can also use to build Ubuntu images.
 
-例如，要创建 Ubuntu 基础镜像：
+For example, to create an Ubuntu base image:
 
 ```dockerfile
 $ sudo debootstrap noble noble > /dev/null
@@ -85,12 +115,13 @@ DISTRIB_CODENAME=noble
 DISTRIB_DESCRIPTION="Ubuntu 24.04.2 LTS"
 ```
 
-在 [Moby GitHub 仓库](https://github.com/moby/moby/blob/master/contrib)中有更多创建基础镜像的示例脚本。
+There are more example scripts for creating base images in
+[the Moby GitHub repository](https://github.com/moby/moby/blob/master/contrib).
 
-## 更多资源
+## More resources
 
-有关构建镜像和编写 Dockerfile 的更多信息，请参阅：
+For more information about building images and writing Dockerfiles, see:
 
-* [Dockerfile 参考](/reference/dockerfile.md)
-* [Dockerfile 最佳实践](/manuals/build/building/best-practices.md)
-* [Docker 官方镜像](../../docker-hub/image-library/trusted-content.md#docker-official-images)
+* [Dockerfile reference](/reference/dockerfile.md)
+* [Dockerfile best practices](/manuals/build/building/best-practices.md)
+* [Docker Official Images](../../docker-hub/image-library/trusted-content.md#docker-official-images)

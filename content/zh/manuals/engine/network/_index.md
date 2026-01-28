@@ -1,8 +1,8 @@
 ---
-title: 网络概述
-linkTitle: 网络
+title: Networking overview
+linkTitle: Networking
 weight: 30
-description: 从容器的角度了解网络是如何工作的
+description: Learn how networking works from the container's point of view
 keywords: networking, container, standalone, IP address, DNS resolution
 aliases:
 - /articles/networking/
@@ -17,94 +17,96 @@ aliases:
 - /network/
 ---
 
-容器网络是指容器连接到其他容器
-或非 Docker 工作负载并与之通信的能力。
+Container networking refers to the ability for containers to connect to and
+communicate with each other, or to non-Docker workloads.
 
-容器默认启用网络，它们可以进行出站
-连接。容器不知道它连接到什么类型的网络，
-也不知道它的对等端是否也是 Docker 工作负载。容器
-只能看到一个具有 IP 地址、网关、
-路由表、DNS 服务和其他网络详细信息的网络接口。也就是说，除非
-容器使用 `none` 网络驱动程序。
+Containers have networking enabled by default, and they can make outgoing
+connections. A container has no information about what kind of network it's
+attached to, or whether their peers are also Docker workloads or not. A
+container only sees a network interface with an IP address, a gateway, a
+routing table, DNS services, and other networking details. That is, unless the
+container uses the `none` network driver.
 
-本页从容器的角度描述网络，
-以及容器网络相关的概念。
-本页不描述 Docker 网络工作原理的操作系统特定细节。
-有关 Docker 如何在 Linux 上操作 `iptables` 规则的信息，
-请参阅[数据包过滤和防火墙](packet-filtering-firewalls.md)。
+This page describes networking from the point of view of the container,
+and the concepts around container networking.
+This page doesn't describe OS-specific details about how Docker networks work.
+For information about how Docker manipulates `iptables` rules on Linux,
+see [Packet filtering and firewalls](packet-filtering-firewalls.md).
 
-## 用户定义网络
+## User-defined networks
 
-你可以创建自定义的用户定义网络，并将多个容器
-连接到同一网络。一旦连接到用户定义网络，容器就可以
-使用容器 IP 地址或容器名称相互通信。
+You can create custom, user-defined networks, and connect multiple containers
+to the same network. Once connected to a user-defined network, containers can
+communicate with each other using container IP addresses or container names.
 
-以下示例使用 `bridge` 网络驱动程序创建网络并
-在创建的网络中运行容器：
+The following example creates a network using the `bridge` network driver and
+running a container in the created network:
 
 ```console
 $ docker network create -d bridge my-net
 $ docker run --network=my-net -itd --name=container3 busybox
 ```
 
-### 驱动程序
+### Drivers
 
-以下网络驱动程序默认可用，并提供核心
-网络功能：
+The following network drivers are available by default, and provide core
+networking functionality:
 
-| 驱动程序    | 描述                                                              |
+| Driver    | Description                                                              |
 | :-------- | :----------------------------------------------------------------------- |
-| `bridge`  | 默认网络驱动程序。                                              |
-| `host`    | 移除容器和 Docker 主机之间的网络隔离。      |
-| `none`    | 将容器与主机和其他容器完全隔离。       |
-| `overlay` | Overlay 网络将多个 Docker 守护进程连接在一起。               |
-| `ipvlan`  | IPvlan 网络提供对 IPv4 和 IPv6 地址的完全控制。 |
-| `macvlan` | 为容器分配 MAC 地址。                                     |
+| `bridge`  | The default network driver.                                              |
+| `host`    | Remove network isolation between the container and the Docker host.      |
+| `none`    | Completely isolate a container from the host and other containers.       |
+| `overlay` | Overlay networks connect multiple Docker daemons together.               |
+| `ipvlan`  | IPvlan networks provide full control over both IPv4 and IPv6 addressing. |
+| `macvlan` | Assign a MAC address to a container.                                     |
 
-有关不同驱动程序的更多信息，请参阅[网络驱动程序
-概述](./drivers/_index.md)。
+For more information about the different drivers, see [Network drivers
+overview](./drivers/_index.md).
 
-### 连接到多个网络
+### Connecting to multiple networks
 
-一个容器可以连接到多个网络。
+A container can be connected to multiple networks.
 
-例如，一个前端容器可能连接到一个具有外部访问权限的桥接网络，
-以及一个
-[`--internal`](/reference/cli/docker/network/create/#internal) 网络
-用于与运行不需要外部网络访问的后端服务的容器通信。
+For example, a frontend container may be connected to a bridge network
+with external access, and a
+[`--internal`](/reference/cli/docker/network/create/#internal) network
+to communicate with containers running backend services that do not need
+external network access.
 
-容器也可以连接到不同类型的网络。例如，
-一个 `ipvlan` 网络用于提供互联网访问，一个 `bridge` 网络用于
-访问本地服务。
+A container may also be connected to different types of network. For example,
+an `ipvlan` network to provide internet access, and a `bridge` network for
+access to local services.
 
-发送数据包时，如果目的地是直接连接网络中的地址，
-数据包会发送到该网络。否则，数据包会发送到
-默认网关进行路由到目的地。在上面的示例中，
-`ipvlan` 网络的网关必须是默认网关。
+When sending packets, if the destination is an address in a directly connected
+network, packets are sent to that network. Otherwise, packets are sent to
+a default gateway for routing to their destination. In the example above,
+the `ipvlan` network's gateway must be the default gateway.
 
-默认网关由 Docker 选择，并且可能在
-容器的网络连接发生变化时改变。
-要让 Docker 在创建容器或连接新网络时选择特定的默认网关，
-可以设置网关优先级。参见 [`docker run`](/reference/cli/docker/container/run.md) 和
-[`docker network connect`](/reference/cli/docker/network/connect.md) 命令的 `gw-priority` 选项。
+The default gateway is selected by Docker, and may change whenever a
+container's network connections change.
+To make Docker choose a specific default gateway when creating the container
+or connecting a new network, set a gateway priority. See option `gw-priority`
+for the [`docker run`](/reference/cli/docker/container/run.md) and
+[`docker network connect`](/reference/cli/docker/network/connect.md) commands.
 
-默认的 `gw-priority` 是 `0`，具有最高优先级的网络中的网关
-是默认网关。因此，当一个网络应该始终
-是默认网关时，将其 `gw-priority` 设置为 `1` 就足够了。
+The default `gw-priority` is `0` and the gateway in the network with the
+highest priority is the default gateway. So, when a network should always
+be the default gateway, it is enough to set its `gw-priority` to `1`.
 
 ```console
 $ docker run --network name=gwnet,gw-priority=1 --network anet1 --name myctr myimage
 $ docker network connect anet2 myctr
 ```
 
-## 容器网络
+## Container networks
 
-除了用户定义网络之外，你还可以使用 `--network
-container:<name|id>` 标志格式直接将容器附加到另一个
-容器的网络栈。
+In addition to user-defined networks, you can attach a container to another
+container's networking stack directly, using the `--network
+container:<name|id>` flag format.
 
-以下标志不支持使用 `container:`
-网络模式的容器：
+The following flags aren't supported for containers using the `container:`
+networking mode:
 
 - `--add-host`
 - `--hostname`
@@ -116,41 +118,41 @@ container:<name|id>` 标志格式直接将容器附加到另一个
 - `--publish-all`
 - `--expose`
 
-以下示例运行一个 Redis 容器，Redis 绑定到
-`localhost`，然后运行 `redis-cli` 命令并通过 `localhost` 接口连接到 Redis
-服务器。
+The following example runs a Redis container, with Redis binding to
+`localhost`, then running the `redis-cli` command and connecting to the Redis
+server over the `localhost` interface.
 
 ```console
 $ docker run -d --name redis example/redis --bind 127.0.0.1
 $ docker run --rm -it --network container:redis example/redis-cli -h 127.0.0.1
 ```
 
-## 发布端口
+## Published ports
 
-默认情况下，当你使用 `docker create` 或 `docker run` 创建或运行容器时，
-桥接网络上的容器不会向外部世界暴露任何端口。
-使用 `--publish` 或 `-p` 标志使端口可用于
-桥接网络之外的服务。
-这会在主机上创建一条防火墙规则，
-将容器端口映射到 Docker 主机上的端口以供外部访问。
-以下是一些示例：
+By default, when you create or run a container using `docker create` or `docker run`,
+containers on bridge networks don't expose any ports to the outside world.
+Use the `--publish` or `-p` flag to make a port available to services
+outside the bridge network.
+This creates a firewall rule in the host,
+mapping a container port to a port on the Docker host to the outside world.
+Here are some examples:
 
-| 标志值                      | 描述                                                                                                                                             |
+| Flag value                      | Description                                                                                                                                             |
 | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `-p 8080:80`                    | 将 Docker 主机上的端口 `8080` 映射到容器中的 TCP 端口 `80`。                                                                                   |
-| `-p 192.168.1.100:8080:80`      | 将 Docker 主机 IP `192.168.1.100` 上的端口 `8080` 映射到容器中的 TCP 端口 `80`。                                                                |
-| `-p 8080:80/udp`                | 将 Docker 主机上的端口 `8080` 映射到容器中的 UDP 端口 `80`。                                                                                   |
-| `-p 8080:80/tcp -p 8080:80/udp` | 将 Docker 主机上的 TCP 端口 `8080` 映射到容器中的 TCP 端口 `80`，并将 Docker 主机上的 UDP 端口 `8080` 映射到容器中的 UDP 端口 `80`。 |
+| `-p 8080:80`                    | Map port `8080` on the Docker host to TCP port `80` in the container.                                                                                   |
+| `-p 192.168.1.100:8080:80`      | Map port `8080` on the Docker host IP `192.168.1.100` to TCP port `80` in the container.                                                                |
+| `-p 8080:80/udp`                | Map port `8080` on the Docker host to UDP port `80` in the container.                                                                                   |
+| `-p 8080:80/tcp -p 8080:80/udp` | Map TCP port `8080` on the Docker host to TCP port `80` in the container, and map UDP port `8080` on the Docker host to UDP port `80` in the container. |
 
 > [!IMPORTANT]
 >
-> 发布容器端口默认是不安全的。意思是，当你发布
-> 容器的端口时，它不仅对 Docker 主机可用，而且对
-> 外部世界也可用。
+> Publishing container ports is insecure by default. Meaning, when you publish
+> a container's ports it becomes available not only to the Docker host, but to
+> the outside world as well.
 >
-> 如果你在 publish 标志中包含 localhost IP 地址（`127.0.0.1` 或 `::1`），
-> 只有 Docker 主机及其容器可以访问
-> 发布的容器端口。
+> If you include the localhost IP address (`127.0.0.1`, or `::1`) with the
+> publish flag, only the Docker host and its containers can access the
+> published container port.
 >
 > ```console
 > $ docker run -p 127.0.0.1:8080:80 -p '[::1]:8080:80' nginx
@@ -158,78 +160,84 @@ $ docker run --rm -it --network container:redis example/redis-cli -h 127.0.0.1
 >
 > > [!WARNING]
 > >
-> > 在 28.0.0 之前的版本中，同一 L2 网段内的主机（例如，
-> > 连接到同一网络交换机的主机）可以访问发布到 localhost 的端口。
-> > 有关更多信息，请参阅
+> > In releases older than 28.0.0, hosts within the same L2 segment (for example,
+> > hosts connected to the same network switch) can reach ports published to localhost.
+> > For more information, see
 > > [moby/moby#45610](https://github.com/moby/moby/issues/45610)
 
-如果你想让一个容器对其他容器可访问，
-没有必要发布容器的端口。
-你可以通过将容器连接到
-同一网络（通常是[桥接网络](./drivers/bridge.md)）来启用容器间通信。
+If you want to make a container accessible to other containers,
+it isn't necessary to publish the container's ports.
+You can enable inter-container communication by connecting the containers to the
+same network, usually a [bridge network](./drivers/bridge.md).
 
-如果端口映射中没有给出主机 IP，桥接网络仅支持 IPv4，
-并且 `--userland-proxy=true`（默认），主机 IPv6 地址上的端口将映射到容器的 IPv4 地址。
+Ports on the host's IPv6 addresses will map to the container's IPv4 address
+if no host IP is given in a port mapping, the bridge network is IPv4-only,
+and `--userland-proxy=true` (default).
 
-有关端口映射的更多信息，包括如何禁用它并使用
-直接路由到容器，请参阅
-[数据包过滤和防火墙](./packet-filtering-firewalls.md)。
+For more information about port mapping, including how to disable it and use
+direct routing to containers, see
+[packet filtering and firewalls](./packet-filtering-firewalls.md).
 
-## IP 地址和主机名
+## IP address and hostname
 
-创建网络时，默认启用 IPv4 地址分配，可以使用 `--ipv4=false` 禁用。
-可以使用 `--ipv6` 启用 IPv6 地址分配。
+When creating a network, IPv4 address allocation is enabled by default, it
+can be disabled using `--ipv4=false`. IPv6 address allocation can be enabled
+using `--ipv6`.
 
 ```console
 $ docker network create --ipv6 --ipv4=false v6net
 ```
 
-默认情况下，容器为其连接的每个 Docker 网络获取一个 IP 地址。
-容器从网络的 IP 子网中接收 IP 地址。
-Docker 守护进程为容器执行动态子网划分和 IP 地址分配。
-每个网络还有一个默认子网掩码和网关。
+By default, the container gets an IP address for every Docker network it attaches to.
+A container receives an IP address out of the IP subnet of the network.
+The Docker daemon performs dynamic subnetting and IP address allocation for containers.
+Each network also has a default subnet mask and gateway.
 
-你可以将正在运行的容器连接到多个网络，
-在创建容器时多次传递 `--network` 标志，
-或者对已经运行的容器使用 `docker network connect` 命令。
-在这两种情况下，你都可以使用 `--ip` 或 `--ip6` 标志指定容器在特定网络上的 IP 地址。
+You can connect a running container to multiple networks,
+either by passing the `--network` flag multiple times when creating the container,
+or using the `docker network connect` command for already running containers.
+In both cases, you can use the `--ip` or `--ip6` flags to specify the container's IP address on that particular network.
 
-同样，容器的主机名默认为 Docker 中的容器 ID。
-你可以使用 `--hostname` 覆盖主机名。
-使用 `docker network connect` 连接到现有网络时，
-你可以使用 `--alias` 标志为容器在该网络上指定一个额外的网络别名。
+In the same way, a container's hostname defaults to be the container's ID in Docker.
+You can override the hostname using `--hostname`.
+When connecting to an existing network using `docker network connect`,
+you can use the `--alias` flag to specify an additional network alias for the container on that network.
 
-## DNS 服务
+## DNS services
 
-容器默认使用与主机相同的 DNS 服务器，但你可以
-使用 `--dns` 覆盖。
+Containers use the same DNS servers as the host by default, but you can
+override this with `--dns`.
 
-默认情况下，容器继承
-`/etc/resolv.conf` 配置文件中定义的 DNS 设置。
-连接到默认 `bridge` 网络的容器会收到该文件的副本。
-连接到
-[自定义网络](tutorials/standalone.md#use-user-defined-bridge-networks)
-的容器使用 Docker 的内置 DNS 服务器。
-内置 DNS 服务器将外部 DNS 查询转发到主机上配置的 DNS 服务器。
+By default, containers inherit the DNS settings as defined in the
+`/etc/resolv.conf` configuration file.
+Containers that attach to the default `bridge` network receive a copy of this file.
+Containers that attach to a
+[custom network](tutorials/standalone.md#use-user-defined-bridge-networks)
+use Docker's embedded DNS server.
+The embedded DNS server forwards external DNS lookups to the DNS servers configured on the host.
 
-你可以在每个容器的基础上配置 DNS 解析，使用
-`docker run` 或 `docker create` 命令启动容器时使用的标志。
-下表描述了与 DNS 配置相关的可用 `docker run` 标志。
+You can configure DNS resolution on a per-container basis, using flags for the
+`docker run` or `docker create` command used to start the container.
+The following table describes the available `docker run` flags related to DNS
+configuration.
 
-| 标志           | 描述                                                                                                                                                                                                                                           |
+| Flag           | Description                                                                                                                                                                                                                                           |
 | -------------- |-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `--dns`        | DNS 服务器的 IP 地址。要指定多个 DNS 服务器，使用多个 `--dns` 标志。DNS 请求将从容器的网络命名空间转发，因此，例如，`--dns=127.0.0.1` 指的是容器自己的回环地址。 |
-| `--dns-search` | 用于搜索非完全限定主机名的 DNS 搜索域。要指定多个 DNS 搜索前缀，使用多个 `--dns-search` 标志。                                                                                                              |
-| `--dns-opt`    | 表示 DNS 选项及其值的键值对。有关有效选项，请参阅操作系统的 `resolv.conf` 文档。                                                                                                              |
-| `--hostname`   | 容器用于自身的主机名。如果未指定，默认为容器的 ID。                                                                                                                                            |
+| `--dns`        | The IP address of a DNS server. To specify multiple DNS servers, use multiple `--dns` flags. DNS requests will be forwarded from the container's network namespace so, for example, `--dns=127.0.0.1` refers to the container's own loopback address. |
+| `--dns-search` | A DNS search domain to search non-fully qualified hostnames. To specify multiple DNS search prefixes, use multiple `--dns-search` flags.                                                                                                              |
+| `--dns-opt`    | A key-value pair representing a DNS option and its value. See your operating system's documentation for `resolv.conf` for valid options.                                                                                                              |
+| `--hostname`   | The hostname a container uses for itself. Defaults to the container's ID if not specified.                                                                                                                                                            |
 
-### 自定义主机
+### Custom hosts
 
-你的容器将在 `/etc/hosts` 中包含定义
-容器本身主机名的行，以及 `localhost` 和一些其他常见内容。在主机机器的 `/etc/hosts` 中定义的自定义
-主机不会被容器继承。要向容器传递额外的主机，请参阅 `docker run` 参考文档中的[向容器 hosts 文件添加条目](/reference/cli/docker/container/run.md#add-host)。
+Your container will have lines in `/etc/hosts` which define the hostname of the
+container itself, as well as `localhost` and a few other common things. Custom
+hosts, defined in `/etc/hosts` on the host machine, aren't inherited by
+containers. To pass additional hosts into a container, refer to [add entries to
+container hosts file](/reference/cli/docker/container/run.md#add-host) in the
+`docker run` reference documentation.
 
-## 代理服务器
+## Proxy server
 
-如果你的容器需要使用代理服务器，请参阅
-[使用代理服务器](/manuals/engine/daemon/proxy.md)。
+If your container needs to use a proxy server, see
+[Use a proxy server](/manuals/engine/daemon/proxy.md).

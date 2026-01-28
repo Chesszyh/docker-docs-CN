@@ -1,21 +1,21 @@
 ---
-title: 配置 BuildKit
-description: 了解如何为您的构建器配置 BuildKit。
+title: Configure BuildKit
+description: Learn how to configure BuildKit for your builder.
 keywords: build, buildkit, configuration, buildx, network, cni, registry
 ---
 
-如果您使用 Buildx 创建 `docker-container` 或 `kubernetes` 构建器，可以
-通过向 `docker buildx create` 命令传递
-[`--config` 标志](/reference/cli/docker/buildx/create.md#config)
-来应用自定义 [BuildKit 配置](toml-configuration.md)。
+If you create a `docker-container` or `kubernetes` builder with Buildx, you can
+apply a custom [BuildKit configuration](toml-configuration.md) by passing the
+[`--config` flag](/reference/cli/docker/buildx/create.md#config) to
+the `docker buildx create` command.
 
-## 仓库镜像
+## Registry mirror
 
-您可以为构建定义要使用的仓库镜像。这样做会重定向
-BuildKit 从不同的主机名拉取镜像。以下步骤演示了
-为 `docker.io`（Docker Hub）定义镜像到 `mirror.gcr.io`。
+You can define a registry mirror to use for your builds. Doing so redirects
+BuildKit to pull images from a different hostname. The following steps exemplify
+defining a mirror for `docker.io` (Docker Hub) to `mirror.gcr.io`.
 
-1. 在 `/etc/buildkitd.toml` 创建一个 TOML 文件，内容如下：
+1. Create a TOML at `/etc/buildkitd.toml` with the following content:
 
    ```toml
    debug = true
@@ -25,10 +25,10 @@ BuildKit 从不同的主机名拉取镜像。以下步骤演示了
 
    > [!NOTE]
    >
-   > `debug = true` 在 BuildKit 守护进程中开启调试请求，当使用镜像时
-   > 会记录一条消息。
+   > `debug = true` turns on debug requests in the BuildKit daemon, which logs a
+   > message that shows when a mirror is being used.
 
-2. 创建使用此 BuildKit 配置的 `docker-container` 构建器：
+2. Create a `docker-container` builder that uses this BuildKit configuration:
 
    ```console
    $ docker buildx create --use --bootstrap \
@@ -37,7 +37,7 @@ BuildKit 从不同的主机名拉取镜像。以下步骤演示了
      --config /etc/buildkitd.toml
    ```
 
-3. 构建镜像：
+3. Build an image:
 
    ```bash
    docker buildx build --load . -f - <<EOF
@@ -46,8 +46,9 @@ BuildKit 从不同的主机名拉取镜像。以下步骤演示了
    EOF
    ```
 
-此构建器的 BuildKit 日志现在显示它使用了 GCR 镜像。您
-可以通过响应消息包含 `x-goog-*` HTTP 头来判断。
+The BuildKit logs for this builder now shows that it uses the GCR mirror. You
+can tell by the fact that the response messages include the `x-goog-*` HTTP
+headers.
 
 ```console
 $ docker logs buildx_buildkit_mybuilder0
@@ -67,14 +68,14 @@ time="2022-02-06T17:47:48Z" level=debug msg="fetch response received" response.h
 ...
 ```
 
-## 设置仓库证书
+## Setting registry certificates
 
-如果您在 BuildKit 配置中指定仓库证书，守护进程
-会将文件复制到容器的 `/etc/buildkit/certs` 目录下。以下
-步骤展示了如何将自签名仓库证书添加到 BuildKit
-配置。
+If you specify registry certificates in the BuildKit configuration, the daemon
+copies the files into the container under `/etc/buildkit/certs`. The following
+steps show adding a self-signed registry certificate to the BuildKit
+configuration.
 
-1. 将以下配置添加到 `/etc/buildkitd.toml`：
+1. Add the following configuration to `/etc/buildkitd.toml`:
 
    ```toml
    # /etc/buildkitd.toml
@@ -86,10 +87,10 @@ time="2022-02-06T17:47:48Z" level=debug msg="fetch response received" response.h
        cert="/etc/certs/myregistry_cert.pem"
    ```
 
-   这告诉构建器使用指定位置（`/etc/certs`）的证书
-   将镜像推送到 `myregistry.com` 仓库。
+   This tells the builder to push images to the `myregistry.com` registry using
+   the certificates in the specified location (`/etc/certs`).
 
-2. 创建使用此配置的 `docker-container` 构建器：
+2. Create a `docker-container` builder that uses this configuration:
 
    ```console
    $ docker buildx create --use --bootstrap \
@@ -98,8 +99,8 @@ time="2022-02-06T17:47:48Z" level=debug msg="fetch response received" response.h
      --config /etc/buildkitd.toml
    ```
 
-3. 检查构建器的配置文件（`/etc/buildkit/buildkitd.toml`），它
-   显示证书配置现已在构建器中配置。
+3. Inspect the builder's configuration file (`/etc/buildkit/buildkitd.toml`), it
+   shows that the certificate configuration is now configured in the builder.
 
    ```console
    $ docker exec -it buildx_buildkit_mybuilder0 cat /etc/buildkit/buildkitd.toml
@@ -118,28 +119,30 @@ time="2022-02-06T17:47:48Z" level=debug msg="fetch response received" response.h
          key = "/etc/buildkit/certs/myregistry.com/myregistry_key.pem"
    ```
 
-4. 验证证书在容器内：
+4. Verify that the certificates are inside the container:
 
    ```console
    $ docker exec -it buildx_buildkit_mybuilder0 ls /etc/buildkit/certs/myregistry.com/
    myregistry.pem    myregistry_cert.pem   myregistry_key.pem
    ```
 
-现在您可以使用此构建器推送到仓库，它将使用证书进行认证：
+Now you can push to the registry using this builder, and it will authenticate
+using the certificates:
 
 ```console
 $ docker buildx build --push --tag myregistry.com/myimage:latest .
 ```
 
-## CNI 网络
+## CNI networking
 
-构建器的 CNI 网络对于处理并发构建期间的网络端口
-争用非常有用。CNI 在默认的 BuildKit 镜像中[尚不可用](https://github.com/moby/buildkit/issues/28)。但您可以创建自己的包含
-CNI 支持的镜像。
+CNI networking for builders can be useful for dealing with network port
+contention during concurrent builds. CNI is [not yet](https://github.com/moby/buildkit/issues/28)
+available in the default BuildKit image. But you can create your own image that
+includes CNI support.
 
-以下 Dockerfile 示例展示了具有 CNI 支持的自定义 BuildKit 镜像。
-它使用 BuildKit 中[用于集成测试的 CNI 配置](https://github.com/moby/buildkit/blob/master//hack/fixtures/cni.json)
-作为示例。您可以随意包含自己的 CNI 配置。
+The following Dockerfile example shows a custom BuildKit image with CNI support.
+It uses the [CNI config for integration tests](https://github.com/moby/buildkit/blob/master//hack/fixtures/cni.json)
+in BuildKit as an example. Feel free to include your own CNI configuration.
 
 ```dockerfile
 # syntax=docker/dockerfile:1
@@ -162,8 +165,8 @@ COPY --from=cni-plugins /opt/cni/bin /opt/cni/bin
 ADD https://raw.githubusercontent.com/moby/buildkit/${BUILDKIT_VERSION}/hack/fixtures/cni.json /etc/buildkit/cni.json
 ```
 
-现在您可以构建此镜像，并使用
-[`--driver-opt image` 选项](/reference/cli/docker/buildx/create.md#driver-opt)从它创建构建器实例：
+Now you can build this image, and create a builder instance from it using
+[the `--driver-opt image` option](/reference/cli/docker/buildx/create.md#driver-opt):
 
 ```console
 $ docker buildx build --tag buildkit-cni:local --load .
@@ -174,13 +177,13 @@ $ docker buildx create --use --bootstrap \
   --buildkitd-flags "--oci-worker-net=cni"
 ```
 
-## 资源限制
+## Resource limiting
 
-### 最大并行度
+### Max parallelism
 
-您可以限制 BuildKit 求解器的并行度，这对于
-低功耗机器特别有用，可以在创建构建器时使用 [BuildKit 配置](toml-configuration.md)
-配合 [`--config` 标志](/reference/cli/docker/buildx/create.md#config)。
+You can limit the parallelism of the BuildKit solver, which is particularly useful
+for low-powered machines, using a [BuildKit configuration](toml-configuration.md)
+while creating a builder with the [`--config` flags](/reference/cli/docker/buildx/create.md#config).
 
 ```toml
 # /etc/buildkitd.toml
@@ -188,8 +191,8 @@ $ docker buildx create --use --bootstrap \
   max-parallelism = 4
 ```
 
-现在您可以[创建 `docker-container` 构建器](/manuals/build/builders/drivers/docker-container.md)，
-它将使用此 BuildKit 配置来限制并行度。
+Now you can [create a `docker-container` builder](/manuals/build/builders/drivers/docker-container.md)
+that will use this BuildKit configuration to limit parallelism.
 
 ```console
 $ docker buildx create --use \
@@ -198,12 +201,12 @@ $ docker buildx create --use \
   --config /etc/buildkitd.toml
 ```
 
-### TCP 连接限制
+### TCP connection limit
 
-每个仓库的 TCP 连接限制为 4 个同时连接用于
-拉取和推送镜像，外加一个专用于元数据
-请求的额外连接。此连接限制可防止您的构建在
-拉取镜像时卡住。专用的元数据连接有助于减少整体构建
-时间。
+TCP connections are limited to 4 simultaneous connections per registry for
+pulling and pushing images, plus one additional connection dedicated to metadata
+requests. This connection limit prevents your build from getting stuck while
+pulling images. The dedicated metadata connection helps reduce the overall build
+time.
 
-更多信息：[moby/buildkit#2259](https://github.com/moby/buildkit/pull/2259)
+More information: [moby/buildkit#2259](https://github.com/moby/buildkit/pull/2259)

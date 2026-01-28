@@ -1,46 +1,57 @@
 ---
-title: 检查您的构建配置
-linkTitle: 构建检查
+title: Checking your build configuration
+linkTitle: Build checks
 params:
   sidebar:
     badge:
       color: green
-      text: 新功能
+      text: New
 weight: 30
-description: 了解如何使用构建检查来验证您的构建配置。
+description: Learn how to use build checks to validate your build configuration.
 keywords: build, buildx, buildkit, checks, validate, configuration, lint
 ---
 
 {{< summary-bar feature_name="Build checks" >}}
 
-构建检查（Build checks）是 Dockerfile 1.8 中引入的一项功能。它允许您验证构建配置，并在执行构建之前进行一系列检查。可以将其视为 Dockerfile 和构建选项的高级 lint 工具，或者是构建的预运行模式。
+Build checks are a feature introduced in Dockerfile 1.8. It lets you validate
+your build configuration and conduct a series of checks prior to executing your
+build. Think of it as an advanced form of linting for your Dockerfile and build
+options, or a dry-run mode for builds.
 
-您可以在 [构建检查参考](/reference/build-checks/) 中找到可用检查的列表及其描述。
+You can find the list of checks available, and a description of each, in the
+[Build checks reference](/reference/build-checks/).
 
-## 构建检查的工作原理
+## How build checks work
 
-通常，当您运行构建时，Docker 会按照指定的方式执行 Dockerfile 和构建选项中的构建步骤。使用构建检查时，Docker 不会执行构建步骤，而是检查您提供的 Dockerfile 和选项，并报告它检测到的任何问题。
+Typically, when you run a build, Docker executes the build steps in your
+Dockerfile and build options as specified. With build checks, rather than
+executing the build steps, Docker checks the Dockerfile and options you provide
+and reports any issues it detects.
 
-构建检查适用于：
+Build checks are useful for:
 
-- 在运行构建之前验证 Dockerfile 和构建选项。
-- 确保您的 Dockerfile 和构建选项符合最新的最佳实践。
-- 识别 Dockerfile 和构建选项中的潜在问题或反模式。
+- Validating your Dockerfile and build options before running a build.
+- Ensuring that your Dockerfile and build options are up-to-date with the
+  latest best practices.
+- Identifying potential issues or anti-patterns in your Dockerfile and build
+  options.
 
 > [!TIP]
 >
-> 想要在 VS Code 中获得更好的 Dockerfile 编辑体验？
-> 查看 [Docker VS Code 扩展 (Beta)](https://marketplace.visualstudio.com/items?itemName=docker.docker) 以获取 linting、代码导航和漏洞扫描功能。
+> Want a better editing experience for Dockerfiles in VS Code?
+> Check out the [Docker VS Code Extension (Beta)](https://marketplace.visualstudio.com/items?itemName=docker.docker) for linting, code navigation, and vulnerability scanning.
 
-## 带检查的构建
+## Build with checks
 
-以下版本支持构建检查：
+Build checks are supported in:
 
-- Buildx 版本 0.15.0 及更高版本
-- [docker/build-push-action](https://github.com/docker/build-push-action) 版本 6.6.0 及更高版本
-- [docker/bake-action](https://github.com/docker/bake-action) 版本 5.6.0 及更高版本
+- Buildx version 0.15.0 and later
+- [docker/build-push-action](https://github.com/docker/build-push-action) version 6.6.0 and later
+- [docker/bake-action](https://github.com/docker/bake-action) version 5.6.0 and later
 
-调用构建时默认会运行检查，并在构建输出中显示任何违规行为。例如，以下命令既构建镜像又运行检查：
+Invoking a build runs the checks by default, and displays any violations in the
+build output. For example, the following command both builds the image and runs
+the checks:
 
 ```console
 $ docker build .
@@ -52,9 +63,11 @@ $ docker build .
 
 ```
 
-在这个例子中，构建成功运行，但报告了一个 [JSONArgsRecommended](/reference/build-checks/json-args-recommended/) 警告，因为 `CMD` 指令应该使用 JSON 数组语法。
+In this example, the build ran successfully, but a
+[JSONArgsRecommended](/reference/build-checks/json-args-recommended/) warning
+was reported, because `CMD` instructions should use JSON array syntax.
 
-使用 GitHub Actions 时，检查会显示在拉取请求的 diff 视图中。
+With the GitHub Actions, the checks display in the diff view of pull requests.
 
 ```yaml
 name: Build and push Docker images
@@ -69,11 +82,14 @@ jobs:
         uses: docker/build-push-action@v6.6.0
 ```
 
-![GitHub Actions 构建检查注释](./images/gha-check-annotations.png)
+![GitHub Actions build check annotations](./images/gha-check-annotations.png)
 
-### 更详细的输出
+### More verbose output
 
-常规 `docker build` 的检查警告会显示一条简洁的消息，包含规则名称、消息以及 Dockerfile 中问题所在的行号。如果您想查看有关检查的更详细信息，可以使用 `--debug` 标志。例如：
+Check warnings for a regular `docker build` display a concise message
+containing the rule name, the message, and the line number of where in the
+Dockerfile the issue originated. If you want to see more detailed information
+about the checks, you can use the `--debug` flag. For example:
 
 ```console
 $ docker --debug build .
@@ -94,17 +110,22 @@ Dockerfile:4
 
 ```
 
-使用 `--debug` 标志时，输出包括检查文档的链接以及发现问题的 Dockerfile 片段。
+With the `--debug` flag, the output includes a link to the documentation for
+the check, and a snippet of the Dockerfile where the issue was found.
 
-## 检查构建而不构建
+## Check a build without building
 
-要运行构建检查而不实际进行构建，您可以像往常一样使用 `docker build` 命令，但添加 `--check` 标志。示例如下：
+To run build checks without actually building, you can use the `docker build`
+command as you typically would, but with the addition of the `--check` flag.
+Here's an example:
 
 ```console
 $ docker build --check .
 ```
 
-此命令不执行构建步骤，仅运行检查并报告发现的任何问题。如果有任何问题，它们将在输出中报告。例如：
+Instead of executing the build steps, this command only runs the checks and
+reports any issues it finds. If there are any issues, they will be reported in
+the output. For example:
 
 ```text {title="Output with --check"}
 [+] Building 1.5s (5/5) FINISHED
@@ -126,13 +147,19 @@ Dockerfile:7
 --------------------
 ```
 
-使用 `--check` 的此输出显示了检查的[详细消息](#more-verbose-output)。
+This output with `--check` shows the [verbose message](#more-verbose-output)
+for the check.
 
-与常规构建不同，如果在使用 `--check` 标志时报告了任何违规行为，命令将以非零状态代码退出。
+Unlike a regular build, if any violations are reported when using the `--check`
+flag, the command exits with a non-zero status code.
 
-## 检查违规时构建失败
+## Fail build on check violations
 
-默认情况下，构建的检查违规报告为警告，退出代码为 0。您可以配置 Docker 在报告违规时使构建失败，方法是在 Dockerfile 中使用 `check=error=true` 指令。这将导致构建在运行构建检查后、实际构建执行之前报错退出。
+Check violations for builds are reported as warnings, with exit code 0, by
+default. You can configure Docker to fail the build when violations are
+reported, using a `check=error=true` directive in your Dockerfile. This will
+cause the build to error out when after the build checks are run, before the
+actual build gets executed.
 
 ```dockerfile {title=Dockerfile,linenos=true,hl_lines=2}
 # syntax=docker/dockerfile:1
@@ -142,7 +169,9 @@ FROM alpine
 CMD echo "Hello, world!"
 ```
 
-如果没有 `# check=error=true` 指令，此构建将以退出代码 0 完成。但是，使用该指令后，构建检查违规会导致非零退出代码：
+Without the `# check=error=true` directive, this build would complete with an
+exit code of 0. However, with the directive, build check violation results in
+non-zero exit code:
 
 ```console
 $ docker build .
@@ -162,15 +191,19 @@ $ echo $?
 1
 ```
 
-您也可以通过传递 `BUILDKIT_DOCKERFILE_CHECK` 构建参数在 CLI 上设置错误指令：
+You can also set the error directive on the CLI by passing the
+`BUILDKIT_DOCKERFILE_CHECK` build argument:
 
 ```console
 $ docker build --check --build-arg "BUILDKIT_DOCKERFILE_CHECK=error=true" .
 ```
 
-## 跳过检查
+## Skip checks
 
-默认情况下，构建镜像时会运行所有检查。如果您想跳过特定检查，可以在 Dockerfile 中使用 `check=skip` 指令。`skip` 参数接受您想要跳过的检查 ID 的 CSV 字符串。例如：
+By default, all checks are run when you build an image. If you want to skip
+specific checks, you can use the `check=skip` directive in your Dockerfile.
+The `skip` parameter takes a CSV string of the check IDs you want to skip.
+For example:
 
 ```dockerfile {title=Dockerfile}
 # syntax=docker/dockerfile:1
@@ -180,24 +213,27 @@ FROM alpine AS BASE_STAGE
 CMD echo "Hello, world!"
 ```
 
-构建此 Dockerfile 不会产生检查违规。
+Building this Dockerfile results in no check violations.
 
-您也可以通过传递带有您想要跳过的检查 ID 的 CSV 字符串的 `BUILDKIT_DOCKERFILE_CHECK` 构建参数来跳过检查。例如：
+You can also skip checks by passing the `BUILDKIT_DOCKERFILE_CHECK` build
+argument with a CSV string of check IDs you want to skip. For example:
 
 ```console
 $ docker build --check --build-arg "BUILDKIT_DOCKERFILE_CHECK=skip=JSONArgsRecommended,StageNameCasing" .
 ```
 
-要跳过所有检查，请使用 `skip=all` 参数：
+To skip all checks, use the `skip=all` parameter:
 
 ```dockerfile {title=Dockerfile}
 # syntax=docker/dockerfile:1
 # check=skip=all
 ```
 
-## 组合检查指令的 error 和 skip 参数
+## Combine error and skip parameters for check directives
 
-要同时跳过特定检查并在检查违规时报错，请将以分号 (`;`) 分隔的 `skip` 和 `error` 参数传递给 Dockerfile 中的 `check` 指令或构建参数。例如：
+To both skip specific checks and error on check violations, pass both the
+`skip` and `error` parameters separated by a semi-colon (`;`) to the `check`
+directive in your Dockerfile or in a build argument. For example:
 
 ```dockerfile {title=Dockerfile}
 # syntax=docker/dockerfile:1
@@ -208,40 +244,49 @@ $ docker build --check --build-arg "BUILDKIT_DOCKERFILE_CHECK=skip=JSONArgsRecom
 $ docker build --check --build-arg "BUILDKIT_DOCKERFILE_CHECK=skip=JSONArgsRecommended,StageNameCasing;error=true" .
 ```
 
-## 实验性检查
+## Experimental checks
 
-在检查晋升为稳定版之前，它们可能作为实验性检查提供。实验性检查默认处于禁用状态。要查看可用的实验性检查列表，请参阅 [构建检查参考](/reference/build-checks/)。
+Before checks are promoted to stable, they may be available as experimental
+checks. Experimental checks are disabled by default. To see the list of
+experimental checks available, refer to the [Build checks reference](/reference/build-checks/).
 
-要启用所有实验性检查，请将 `BUILDKIT_DOCKERFILE_CHECK` 构建参数设置为 `experimental=all`：
+To enable all experimental checks, set the `BUILDKIT_DOCKERFILE_CHECK` build
+argument to `experimental=all`:
 
 ```console
 $ docker build --check --build-arg "BUILDKIT_DOCKERFILE_CHECK=experimental=all" .
 ```
 
-您也可以使用 `check` 指令在 Dockerfile 中启用实验性检查：
+You can also enable experimental checks in your Dockerfile using the `check`
+directive:
 
 ```dockerfile {title=Dockerfile}
 # syntax=docker/dockerfile:1
 # check=experimental=all
 ```
 
-要选择性地启用实验性检查，您可以将想要启用的检查 ID 的 CSV 字符串传递给 Dockerfile 中的 `check` 指令或作为构建参数。例如：
+To selectively enable experimental checks, you can pass a CSV string of the
+check IDs you want to enable, either to the `check` directive in your Dockerfile
+or as a build argument. For example:
 
 ```dockerfile {title=Dockerfile}
 # syntax=docker/dockerfile:1
 # check=experimental=JSONArgsRecommended,StageNameCasing
 ```
 
-请注意，`experimental` 指令优先于 `skip` 指令，这意味着无论您设置了什么 `skip` 指令，实验性检查都会运行。例如，如果您设置 `skip=all` 并启用实验性检查，实验性检查仍将运行：
+Note that the `experimental` directive takes precedence over the `skip`
+directive, meaning that experimental checks will run regardless of the `skip`
+directive you have set. For example, if you set `skip=all` and enable
+experimental checks, the experimental checks will still run:
 
 ```dockerfile {title=Dockerfile}
 # syntax=docker/dockerfile:1
 # check=skip=all;experimental=all
 ```
 
-## 延伸阅读
+## Further reading
 
-有关使用构建检查的更多信息，请参阅：
+For more information about using build checks, see:
 
-- [构建检查参考](/reference/build-checks/)
-- [使用 GitHub Actions 验证构建配置](/manuals/build/ci/github-actions/checks.md)
+- [Build checks reference](/reference/build-checks/)
+- [Validating build configuration with GitHub Actions](/manuals/build/ci/github-actions/checks.md)

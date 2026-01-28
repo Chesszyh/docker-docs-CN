@@ -1,6 +1,6 @@
 ---
 build:
   render: never
-title: 深入了解
+title: Deep dive
 weight: 60
 ---

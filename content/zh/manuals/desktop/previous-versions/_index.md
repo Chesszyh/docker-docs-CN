@@ -1,7 +1,7 @@
 ---
 build:
   render: never
-title: 历史版本
+title: Previous releases
 weight: 200
 sitemap: false
 ---

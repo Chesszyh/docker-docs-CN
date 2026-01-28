@@ -1,5 +1,5 @@
 ---
 build:
   render: never
-title: 开发者 SDK 工具
+title: Developer SDK tools
 ---

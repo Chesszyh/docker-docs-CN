@@ -1,30 +1,30 @@
 ---
-title: 组织设置
+title: Organization settings
 weight: 60
-description: 了解如何使用 Docker Admin Console 管理组织设置。
+description: Learn how to manage settings for organizations using Docker Admin Console.
 keywords: organization, settings, Admin Console
 ---
 
-本节介绍如何在 Docker Admin Console 中管理组织设置。
+This section describes how to manage organization settings in the Docker Admin Console.
 
-## 配置组织信息
+## Configure organization information
 
-通用组织信息显示在 Admin Console 中的组织落地页上。
+General organization information appears on your organization landing page in the Admin Console.
 
-此信息包括：
+This information includes:
 
- - Organization Name（组织名称）
- - Company（公司）
- - Location（位置）
- - Website（网站）
- - Gravatar email（Gravatar 电子邮件）：要为您的 Docker 帐户添加头像，请创建一个 [Gravatar 帐户](https://gravatar.com/)并创建您的头像。然后，将您的 Gravatar 电子邮件添加到您的 Docker 帐户设置中。您的头像可能需要一些时间才能在 Docker 中更新。
+ - Organization Name
+ - Company
+ - Location
+ - Website
+ - Gravatar email: To add an avatar to your Docker account, create a [Gravatar account](https://gravatar.com/) and create your avatar. Next, add your Gravatar email to your Docker account settings. It may take some time for your avatar to update in Docker.
 
-要编辑此信息：
+To edit this information:
 
-1. 登录 [Admin Console](https://app.docker.com/admin)。
-1. 在 **Choose profile** 页面上选择您的公司。
-1. 指定组织信息并选择 **Save**。
+1. Sign in to the [Admin Console](https://app.docker.com/admin).
+1. Select your company on the **Choose profile** page.
+1. Specify the organization information and select **Save**.
 
-## 后续步骤
+## Next steps
 
-在 **Organization settings** 菜单中，您还可以[配置 SSO](../../security/for-admins/single-sign-on/configure/) 和[设置 SCIM](../../security/for-admins/provisioning/scim.md)。如果您的组织不属于公司，您还可以从这里[管理您的域名](/manuals/security/for-admins/domain-management.md)或[创建公司](new-company.md)。
+In the **Organization settings** menu, you can also [configure SSO](../../security/for-admins/single-sign-on/configure/) and [set up SCIM](../../security/for-admins/provisioning/scim.md). If your organization isn't part of a company, from here you can also [manage your domains](/manuals/security/for-admins/domain-management.md) or [create a company](new-company.md).

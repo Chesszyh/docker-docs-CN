@@ -1,8 +1,8 @@
 ---
-description: 如何为 Docker Desktop 配置设置管理
+description: How to configure Settings Management for Docker Desktop
 keywords: admin, controls, rootless, enhanced container isolation
-title: 使用 JSON 文件配置设置管理
-linkTitle: 使用 JSON 文件
+title: Configure Settings Management with a JSON file
+linkTitle: Use a JSON file
 weight: 10
 aliases:
  - /desktop/hardened-desktop/settings-management/configure/
@@ -11,72 +11,75 @@ aliases:
 
 {{< summary-bar feature_name="Hardened Docker Desktop" >}}
 
-本页说明如何使用 `admin-settings.json` 文件来配置和
-强制执行 Docker Desktop 设置。使用此方法在组织中标准化 Docker
-Desktop 环境。
+This page explains how to use an `admin-settings.json` file to configure and
+enforce Docker Desktop settings. Use this method to standardize Docker
+Desktop environments in your organization.
 
-## 前提条件
+## Prerequisites
 
-- [强制登录](/manuals/security/for-admins/enforce-sign-in/_index.md)以
-确保所有用户使用您的组织进行身份验证。
-- 需要 Docker Business 订阅。
+- [Enforce sign-in](/manuals/security/for-admins/enforce-sign-in/_index.md) to
+ensure all users authenticate with your organization.
+- A Docker Business subscription is required.
 
-只有在身份验证和 Docker Business 许可证检查都成功时，Docker Desktop 才会应用 `admin-settings.json` 文件中的设置。
-
-> [!IMPORTANT]
->
-> 如果用户未登录或不属于 Docker Business 组织，
-设置文件将被忽略。
-
-## 限制
-
-- `admin-settings.json` 文件在气隙（air-gapped）或离线
-环境中不起作用。
-- 该文件与限制
-Docker Hub 身份验证的环境不兼容。
-
-## 第一步：创建设置文件
-
-您可以：
-
-- 使用 `--admin-settings` 安装程序标志自动生成文件。请参阅：
-    - [macOS](/manuals/desktop/setup/install/mac-install.md#install-from-the-command-line) 安装指南
-    - [Windows](/manuals/desktop/setup/install/windows-install.md#install-from-the-command-line) 安装指南
-- 或手动创建并放置在以下位置：
-    - Mac：`/Library/Application\ Support/com.docker.docker/admin-settings.json`
-    - Windows：`C:\ProgramData\DockerDesktop\admin-settings.json`
-    - Linux：`/usr/share/docker-desktop/admin-settings.json`
+Docker Desktop only applies settings from the `admin-settings.json` file if both
+authentication and Docker Business license checks succeed.
 
 > [!IMPORTANT]
 >
-> 将文件放置在受保护的目录中以防止被修改。使用
-[Jamf](https://www.jamf.com/lp/en-gb/apple-mobile-device-management-mdm-jamf-shared/?attr=google_ads-brand-search-shared&gclid=CjwKCAjw1ICZBhAzEiwAFfvFhEXjayUAi8FHHv1JJitFPb47C_q_RCySTmF86twF1qJc_6GST-YDmhoCuJsQAvD_BwE) 等 MDM 工具进行大规模分发。
+> If a user isn't signed in or isn't part of a Docker Business organization,
+the settings file is ignored.
 
-## 第二步：定义设置
+## Limitation
+
+- The `admin-settings.json` file doesn't work in air-gapped or offline
+environments.
+- The file is not compatible with environments that restrict authentication
+with Docker Hub.
+
+## Step one: Create the settings file
+
+You can:
+
+- Use the `--admin-settings` installer flag to auto-generate the file. See:
+    - [macOS](/manuals/desktop/setup/install/mac-install.md#install-from-the-command-line) install guide
+    - [Windows](/manuals/desktop/setup/install/windows-install.md#install-from-the-command-line) install guide
+- Or create it manually and place it in the following locations:
+    - Mac: `/Library/Application\ Support/com.docker.docker/admin-settings.json`
+    - Windows: `C:\ProgramData\DockerDesktop\admin-settings.json`
+    - Linux: `/usr/share/docker-desktop/admin-settings.json`
+
+> [!IMPORTANT]
+>
+> Place the file in a protected directory to prevent modification. Use MDM tools
+like [Jamf](https://www.jamf.com/lp/en-gb/apple-mobile-device-management-mdm-jamf-shared/?attr=google_ads-brand-search-shared&gclid=CjwKCAjw1ICZBhAzEiwAFfvFhEXjayUAi8FHHv1JJitFPb47C_q_RCySTmF86twF1qJc_6GST-YDmhoCuJsQAvD_BwE) to distribute it at scale.
+
+## Step two: Define settings
 
 > [!TIP]
 >
-> 有关可用设置的完整列表、支持的平台以及它们适用的配置方法，请参阅[设置参考](settings-reference.md)。
+> For a complete list of available settings, their supported platforms, and which configuration methods they work with, see the [Settings reference](settings-reference.md).
 
-`admin-settings.json` 文件使用结构化键来定义可以
-配置的内容以及值是否被强制执行。
+The `admin-settings.json` file uses structured keys to define what can
+be configured and whether the values are enforced.
 
-每个设置都支持 `locked` 字段。当 `locked` 设置为 `true` 时，用户
-无法在 Docker Desktop、CLI 或配置文件中更改该值。当
-`locked` 设置为 `false` 时，该值作为默认建议，用户
-仍可以更新它。
+Each setting supports the `locked` field. When `locked` is set to `true`, users
+can't change that value in Docker Desktop, the CLI, or config files. When
+`locked` is set to `false`, the value acts like a default suggestion and users
+can still update it.
 
-如果用户已在 `settings-store.json`、`settings.json` 或 `daemon.json` 中自定义了该值，则 `locked` 设置为 `false` 的设置在现有安装中会被忽略。
+Settings where `locked` is set to `false` are ignored on existing installs if
+a user has already customized that value in `settings-store.json`,
+`settings.json`, or `daemon.json`.
 
 > [!NOTE]
 >
-> 某些设置是平台特定的或需要最低 Docker Desktop
-版本。详情请参阅[设置参考](/manuals/security/for-admins/hardened-desktop/settings-management/settings-reference.md)。
+> Some settings are platform-specific or require a minimum Docker Desktop
+version. See the [Settings reference](/manuals/security/for-admins/hardened-desktop/settings-management/settings-reference.md) for details.
 
-### 示例设置文件
+### Example settings file
 
-以下文件是 `admin-settings.json` 文件的示例。有关
-`admin-settings.json` 文件可配置设置的完整列表，请参阅 [`admin-settings.json` 配置](#admin-settingsjson-配置)。
+The following file is an example `admin-settings.json` file. For a full list
+of configurable settings for the `admin-settings.json` file, see [`admin-settings.json` configurations](#admin-settingsjson-configurations).
 
 ```json {collapse=true}
 {
@@ -203,128 +206,128 @@ Docker Hub 身份验证的环境不兼容。
 }
 ```
 
-## 第三步：重启并应用设置
+## Step three: Restart and apply settings
 
-设置在 Docker Desktop 重启且用户登录后生效。
+Settings apply after Docker Desktop is restarted and the user is signed in.
 
-- 新安装：启动 Docker Desktop 并登录。
-- 现有安装：完全退出 Docker Desktop 并重新启动。
+- New installs: Launch Docker Desktop and sign in.
+- Existing installs: Quit Docker Desktop fully and relaunch it.
 
 > [!IMPORTANT]
 >
-> 从菜单重启 Docker Desktop 是不够的。必须完全
-退出并重新打开。
+> Restarting Docker Desktop from the menu isn't enough. It must be fully
+quit and reopened.
 
-## `admin-settings.json` 配置
+## `admin-settings.json` configurations
 
-### 常规
+### General
 
-|参数|操作系统|描述|版本|
+|Parameter|OS|Description|Version|
 |:-------------------------------|---|:-------------------------------|---|
-|`configurationFileVersion`|   |指定配置文件格式的版本。|   |
-|`analyticsEnabled`|  |如果 `value` 设置为 false，Docker Desktop 不会向 Docker 发送使用统计信息。 |  |
-|`disableUpdate`|  |如果 `value` 设置为 true，将禁用 Docker Desktop 更新检查和通知。|  |
-|`extensionsEnabled`|  |如果 `value` 设置为 false，将禁用 Docker 扩展。 |  |
-| `blockDockerLoad` | | 如果 `value` 设置为 `true`，用户将无法运行 [`docker load`](/reference/cli/docker/image/load/)，尝试时会收到错误。|  |
-| `displayedOnboarding` |  | 如果 `value` 设置为 `true`，将不会向新用户显示引导调查。将 `value` 设置为 `false` 无效。 |  Docker Desktop 4.30 及更高版本 |
-| `desktopTerminalEnabled` |  | 如果 `value` 设置为 `false`，开发人员无法使用 Docker 终端与主机交互并直接从 Docker Desktop 执行命令。 |  |
-|`exposeDockerAPIOnTCP2375`| 仅限 Windows| 在指定端口上公开 Docker API。如果 `value` 设置为 true，Docker API 将在端口 2375 上公开。注意：这是未经身份验证的，仅应在有适当防火墙规则保护时启用。|  |
+|`configurationFileVersion`|   |Specifies the version of the configuration file format.|   |
+|`analyticsEnabled`|  |If `value` is set to false, Docker Desktop doesn't send usage statistics to Docker. |  |
+|`disableUpdate`|  |If `value` is set to true, checking for and notifications about Docker Desktop updates is disabled.|  |
+|`extensionsEnabled`|  |If `value` is set to false, Docker extensions are disabled. |  |
+| `blockDockerLoad` | | If `value` is set to `true`, users are no longer able to run [`docker load`](/reference/cli/docker/image/load/) and receive an error if they try to.|  |
+| `displayedOnboarding` |  | If `value` is set to `true`, the onboarding survey will not be displayed to new users. Setting `value` to `false` has no effect. |  Docker Desktop version 4.30 and later |
+| `desktopTerminalEnabled` |  | If `value` is set to `false`, developers cannot use the Docker terminal to interact with the host machine and execute commands directly from Docker Desktop. |  |
+|`exposeDockerAPIOnTCP2375`| Windows only| Exposes the Docker API on a specified port. If `value` is set to true, the Docker API is exposed on port 2375. Note: This is unauthenticated and should only be enabled if protected by suitable firewall rules.|  |
 
-### 文件共享和模拟
+### File sharing and emulation
 
-|参数|操作系统|描述|版本|
+|Parameter|OS|Description|Version|
 |:-------------------------------|---|:-------------------------------|---|
-| `filesharingAllowedDirectories` |  | 指定开发人员可以添加文件共享的路径。也接受 `$HOME`、`$TMP` 或 `$TEMP` 作为 `path` 变量。添加路径时，其子目录也被允许。如果 `sharedByDefault` 设置为 `true`，该路径将在恢复出厂设置或 Docker Desktop 首次启动时添加。 |  |
-| `useVirtualizationFrameworkVirtioFS`|  仅限 macOS | 如果 `value` 设置为 `true`，VirtioFS 将被设置为文件共享机制。注意：如果 `useVirtualizationFrameworkVirtioFS` 和 `useGrpcfuse` 的 `value` 都设置为 `true`，VirtioFS 优先。同样，如果两者的 `value` 都设置为 `false`，osxfs 将被设置为文件共享机制。 |  |
-| `useGrpcfuse` | 仅限 macOS | 如果 `value` 设置为 `true`，gRPC Fuse 将被设置为文件共享机制。 |  |
-| `useVirtualizationFrameworkRosetta`|  仅限 macOS | 如果 `value` 设置为 `true`，Docker Desktop 将开启 Rosetta 以加速 Apple Silicon 上的 x86_64/amd64 二进制模拟。注意：这也会自动启用 `Use Virtualization framework`。 | Docker Desktop 4.29 及更高版本。 |
+| `filesharingAllowedDirectories` |  | Specify which paths your developers can add file shares to. Also accepts `$HOME`, `$TMP`, or `$TEMP` as `path` variables. When a path is added, its subdirectories are allowed. If `sharedByDefault` is set to `true`, that path will be added upon factory reset or when Docker Desktop first starts. |  |
+| `useVirtualizationFrameworkVirtioFS`|  macOS only | If `value` is set to `true`, VirtioFS is set as the file sharing mechanism. Note: If both `useVirtualizationFrameworkVirtioFS` and `useGrpcfuse` have `value` set to `true`, VirtioFS takes precedence. Likewise, if both `useVirtualizationFrameworkVirtioFS` and `useGrpcfuse` have `value` set to `false`, osxfs is set as the file sharing mechanism. |  |
+| `useGrpcfuse` | macOS only | If `value` is set to `true`, gRPC Fuse is set as the file sharing mechanism. |  |
+| `useVirtualizationFrameworkRosetta`|  macOS only | If `value` is set to `true`, Docker Desktop turns on Rosetta to accelerate x86_64/amd64 binary emulation on Apple Silicon. Note: This also automatically enables `Use Virtualization framework`. | Docker Desktop version 4.29 and later. |
 
 ### Docker Scout
 
-|参数|操作系统|描述|版本|
+|Parameter|OS|Description|Version|
 |:-------------------------------|---|:-------------------------------|---|
-|`scout`| | 将 `useBackgroundIndexing` 设置为 `false` 会禁用自动索引加载到镜像存储的镜像。将 `sbomIndexing` 设置为 `false` 会阻止用户通过在 Docker Desktop 中检查镜像或使用 `docker scout` CLI 命令来索引镜像。 |  |
+|`scout`| | Setting `useBackgroundIndexing` to `false` disables automatic indexing of images loaded to the image store. Setting `sbomIndexing` to `false` prevents users from being able to index image by inspecting them in Docker Desktop or using `docker scout` CLI commands. |  |
 
-### 代理
+### Proxy
 
-|参数|操作系统|描述|版本|
+|Parameter|OS|Description|Version|
 |:-------------------------------|---|:-------------------------------|---|
-|`proxy`|   |如果 `mode` 设置为 `system` 而不是 `manual`，Docker Desktop 从系统获取代理值并忽略为 `http`、`https` 和 `exclude` 设置的值。将 `mode` 更改为 `manual` 以手动配置代理服务器。如果代理端口是自定义的，请在 `http` 或 `https` 属性中指定，例如 `"https": "http://myotherproxy.com:4321"`。`exclude` 属性指定一个逗号分隔的主机和域列表，以绕过代理。 |  |
-|&nbsp; &nbsp; &nbsp; &nbsp;`windowsDockerdPort`| 仅限 Windows | 在此端口上本地公开 Docker Desktop 的内部代理，供 Windows Docker 守护进程连接。如果设置为 0，将选择一个随机可用端口。如果值大于 0，使用该确切值作为端口。默认值为 -1，表示禁用该选项。 |  |
-|&nbsp; &nbsp; &nbsp; &nbsp;`enableKerberosNtlm`|  |设置为 `true` 时，启用 Kerberos 和 NTLM 身份验证。默认为 `false`。有关更多信息，请参阅设置文档。 | Docker Desktop 4.32 及更高版本。 |
+|`proxy`|   |If `mode` is set to `system` instead of `manual`, Docker Desktop gets the proxy values from the system and ignores and values set for `http`, `https` and `exclude`. Change `mode` to `manual` to manually configure proxy servers. If the proxy port is custom, specify it in the `http` or `https` property, for example `"https": "http://myotherproxy.com:4321"`. The `exclude` property specifies a comma-separated list of hosts and domains to bypass the proxy. |  |
+|&nbsp; &nbsp; &nbsp; &nbsp;`windowsDockerdPort`| Windows only | Exposes Docker Desktop's internal proxy locally on this port for the Windows Docker daemon to connect to. If it is set to 0, a random free port is chosen. If the value is greater than 0, use that exact value for the port. The default value is -1 which disables the option. |  |
+|&nbsp; &nbsp; &nbsp; &nbsp;`enableKerberosNtlm`|  |When set to `true`, Kerberos and NTLM authentication is enabled. Default is `false`. For more information, see the settings documentation. | Docker Desktop version 4.32 and later. |
 
-### 容器代理
+### Container proxy
 
-|参数|操作系统|描述|版本|
+|Parameter|OS|Description|Version|
 |:-------------------------------|---|:-------------------------------|---|
-|`containersProxy` | | 创建气隙容器。有关更多信息，请参阅[气隙容器](../air-gapped-containers.md)。| Docker Desktop 4.29 及更高版本。 |
+|`containersProxy` | | Creates air-gapped containers. For more information see [Air-Gapped Containers](../air-gapped-containers.md).| Docker Desktop version 4.29 and later. |
 
 ### Linux VM
 
-|参数|操作系统|描述|版本|
+|Parameter|OS|Description|Version|
 |:-------------------------------|---|:-------------------------------|---|
-| `linuxVM` |   |与 Linux VM 选项相关的参数和设置 - 为方便起见在此处分组。 |  |
-| &nbsp; &nbsp; &nbsp; &nbsp;`wslEngineEnabled`  | 仅限 Windows | 如果 `value` 设置为 true，Docker Desktop 使用基于 WSL 2 的引擎。这会覆盖安装时使用 `--backend=<backend name>` 标志设置的任何内容。 |  |
-| &nbsp; &nbsp; &nbsp; &nbsp;`dockerDaemonOptions` |  |如果 `value` 设置为 true，它会覆盖 Docker Engine 配置文件中的选项。请参阅 [Docker Engine 参考](/reference/cli/dockerd/#daemon-configuration-file)。请注意，为了增加安全性，启用增强容器隔离时，某些配置属性可能会被覆盖。 |  |
-| &nbsp; &nbsp; &nbsp; &nbsp;`vpnkitCIDR` |  |覆盖用于 vpnkit DHCP/DNS 的 `*.docker.internal` 网络范围  |  |
+| `linuxVM` |   |Parameters and settings related to Linux VM options - grouped together here for convenience. |  |
+| &nbsp; &nbsp; &nbsp; &nbsp;`wslEngineEnabled`  | Windows only | If `value` is set to true, Docker Desktop uses the WSL 2 based engine. This overrides anything that may have been set at installation using the `--backend=<backend name>` flag. |  |
+| &nbsp; &nbsp; &nbsp; &nbsp;`dockerDaemonOptions` |  |If `value` is set to true, it overrides the options in the Docker Engine config file. See the [Docker Engine reference](/reference/cli/dockerd/#daemon-configuration-file). Note that for added security, a few of the config attributes may be overridden when Enhanced Container Isolation is enabled. |  |
+| &nbsp; &nbsp; &nbsp; &nbsp;`vpnkitCIDR` |  |Overrides the network range used for vpnkit DHCP/DNS for `*.docker.internal`  |  |
 
-### Windows 容器
+### Windows containers
 
-|参数|操作系统|描述|版本|
+|Parameter|OS|Description|Version|
 |:-------------------------------|---|:-------------------------------|---|
-| `windowsContainers` |  | 与 `windowsContainers` 选项相关的参数和设置 - 为方便起见在此处分组。  |  |
-| &nbsp; &nbsp; &nbsp; &nbsp;`dockerDaemonOptions` |  | 覆盖 Linux 守护进程配置文件中的选项。请参阅 [Docker Engine 参考](/reference/cli/dockerd/#daemon-configuration-file)。|  |
+| `windowsContainers` |  | Parameters and settings related to `windowsContainers` options - grouped together here for convenience.  |  |
+| &nbsp; &nbsp; &nbsp; &nbsp;`dockerDaemonOptions` |  | Overrides the options in the Linux daemon config file. See the [Docker Engine reference](/reference/cli/dockerd/#daemon-configuration-file).|  |
 
 > [!NOTE]
 >
-> 此设置无法通过 Docker Admin Console 配置。
+> This setting is not available to configure via the Docker Admin Console.
 
 ### Kubernetes
 
-|参数|操作系统|描述|版本|
+|Parameter|OS|Description|Version|
 |:-------------------------------|---|:-------------------------------|---|
-|`kubernetes`|  | 如果 `enabled` 设置为 true，Docker Desktop 启动时会启动一个 Kubernetes 单节点集群。如果 `showSystemContainers` 设置为 true，Kubernetes 容器会显示在 Docker Desktop Dashboard 中以及运行 `docker ps` 时。[imagesRepository](../../../../desktop/features/kubernetes.md#configuring-a-custom-image-registry-for-kubernetes-control-plane-images) 设置允许您指定 Docker Desktop 从哪个仓库拉取控制平面 Kubernetes 镜像。 |  |
+|`kubernetes`|  | If `enabled` is set to true, a Kubernetes single-node cluster is started when Docker Desktop starts. If `showSystemContainers` is set to true, Kubernetes containers are displayed in the Docker Desktop Dashboard and when you run `docker ps`. The [imagesRepository](../../../../desktop/features/kubernetes.md#configuring-a-custom-image-registry-for-kubernetes-control-plane-images) setting lets you specify which repository Docker Desktop pulls control-plane Kubernetes images from. |  |
 
 > [!NOTE]
 >
-> 使用 `imagesRepository` 设置和增强容器隔离（ECI）时，请将以下镜像添加到 [ECI Docker socket 挂载镜像列表](#增强容器隔离)：
+> When using the `imagesRepository` setting and Enhanced Container Isolation (ECI), add the following images to the [ECI Docker socket mount image list](#enhanced-container-isolation):
 >
 > * [imagesRepository]/desktop-cloud-provider-kind:*
 > * [imagesRepository]/desktop-containerd-registry-mirror:*
 >
-> 这些容器会挂载 Docker socket，因此您必须将镜像添加到 ECI 镜像列表。否则，ECI 将阻止挂载，Kubernetes 将无法启动。
+> These containers mount the Docker socket, so you must add the images to the ECI images list. If not, ECI will block the mount and Kubernetes won't start.
 
-### 网络
+### Networking
 
-|参数|操作系统|描述|版本|
+|Parameter|OS|Description|Version|
 |:-------------------------------|---|:-------------------------------|---|
-| `defaultNetworkingMode` | 仅限 Windows 和 Mac | 定义新 Docker 网络的默认 IP 协议：`dual-stack`（IPv4 + IPv6，默认）、`ipv4only` 或 `ipv6only`。 | Docker Desktop 4.43 及更高版本。 |
-| `dnsInhibition` | 仅限 Windows 和 Mac | 控制返回给容器的 DNS 记录过滤。选项：`auto`（推荐）、`ipv4`、`ipv6`、`none`| Docker Desktop 4.43 及更高版本。 |
+| `defaultNetworkingMode` | Windows and Mac only | Defines the default IP protocol for new Docker networks: `dual-stack` (IPv4 + IPv6, default), `ipv4only`, or `ipv6only`. | Docker Desktop version 4.43 and later. |
+| `dnsInhibition` | Windows and Mac only | Controls DNS record filtering returned to containers. Options: `auto` (recommended), `ipv4`, `ipv6`, `none`| Docker Desktop version 4.43 and later. |
 
-有关更多信息，请参阅[网络](/manuals/desktop/features/networking.md#networking-mode-and-dns-behaviour-for-mac-and-windows)。
+For more information, see [Networking](/manuals/desktop/features/networking.md#networking-mode-and-dns-behaviour-for-mac-and-windows).
 
-### Beta 功能
+### Beta features
 
 > [!IMPORTANT]
 >
-> 对于 Docker Desktop 4.41 及更早版本，其中一些设置位于 **Features in development** 页面的 **Experimental features** 选项卡下。
+> For Docker Desktop versions 4.41 and earlier, some of these settings lived under the **Experimental features** tab on the **Features in development** page.
 
-| 参数                                            | 操作系统 | 描述                                                                                                                                                                                                                                               | 版本                                 |
+| Parameter                                            | OS | Description                                                                                                                                                                                                                                               | Version                                 |
 |:-----------------------------------------------------|----|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------|
-| `allowBetaFeatures`                                  |    | 如果 `value` 设置为 `true`，启用 beta 功能。                                                                                                                                                                                                   |                                         |
-| `enableDockerAI`                                     |    | 如果 `allowBetaFeatures` 为 true，将 `enableDockerAI` 设置为 `true` 会默认启用 [Docker AI (Ask Gordon)](/manuals/ai/gordon/_index.md)。您可以独立于 `allowBetaFeatures` 设置控制此设置。                            |                                         |
-| `enableInference`                                    |    | 如果 `allowBetaFeatures` 为 true，将 `enableInference` 设置为 `true` 会默认启用 [Docker Model Runner](/manuals/ai/model-runner/_index.md)。您可以独立于 `allowBetaFeatures` 设置控制此设置。                        |                                         |
-| &nbsp; &nbsp; &nbsp; &nbsp; `enableInferenceTCP`     |    | 启用主机端 TCP 支持。此设置需要先启用 Docker Model Runner 设置。                                                                                                                      |                                         |
-| &nbsp; &nbsp; &nbsp; &nbsp; `enableInferenceTCPPort` |    | 指定公开的 TCP 端口。此设置需要先启用 Docker Model Runner 设置。                                                                                                                    |                                         |
-| &nbsp; &nbsp; &nbsp; &nbsp; `enableInferenceCORS`    |    | 指定允许的 CORS 源。空字符串拒绝所有，`*` 接受所有，或逗号分隔的值列表。此设置需要先启用 Docker Model Runner 设置。                                                                                                                                                    |                                         |
-| `enableDockerMCPToolkit`                             |    | 如果 `allowBetaFeatures` 为 true，将 `enableDockerMCPToolkit` 设置为 `true` 会默认启用 [MCP toolkit 功能](/manuals/ai/mcp-catalog-and-toolkit/toolkit.md)。您可以独立于 `allowBetaFeatures` 设置控制此设置。 |                                         |
-| `allowExperimentalFeatures`                          |    | 如果 `value` 设置为 `true`，启用实验性功能。                                                                                                                                           | Docker Desktop 4.41 及更早版本 |
+| `allowBetaFeatures`                                  |    | If `value` is set to `true`, beta features are enabled.                                                                                                                                                                                                   |                                         |
+| `enableDockerAI`                                     |    | If `allowBetaFeatures` is true, setting `enableDockerAI` to `true` enables [Docker AI (Ask Gordon)](/manuals/ai/gordon/_index.md) by default. You can independently control this setting from the `allowBetaFeatures` setting.                            |                                         |
+| `enableInference`                                    |    | If `allowBetaFeatures` is true, setting `enableInference` to `true` enables [Docker Model Runner](/manuals/ai/model-runner/_index.md) by default. You can independently control this setting from the `allowBetaFeatures` setting.                        |                                         |
+| &nbsp; &nbsp; &nbsp; &nbsp; `enableInferenceTCP`     |    | Enable host-side TCP support. This setting requires Docker Model Runner setting to be enabled first.                                                                                                                                                      |                                         |
+| &nbsp; &nbsp; &nbsp; &nbsp; `enableInferenceTCPPort` |    | Specifies the exposed TCP port. This setting requires Docker Model Runner setting to be enabled first.                                                                                                                                                    |                                         |
+| &nbsp; &nbsp; &nbsp; &nbsp; `enableInferenceCORS`    |    | Specifies the allowed CORS origins. Empty string to deny all,`*` to accept all, or a list of comma-separated values. This setting requires Docker Model Runner setting to be enabled first.                                                                                                                                                    |                                         |
+| `enableDockerMCPToolkit`                             |    | If `allowBetaFeatures` is true, setting `enableDockerMCPToolkit` to `true` enables the [MCP toolkit feature](/manuals/ai/mcp-catalog-and-toolkit/toolkit.md) by default. You can independently control this setting from the `allowBetaFeatures` setting. |                                         |
+| `allowExperimentalFeatures`                          |    | If `value` is set to `true`, experimental features are enabled.                                                                                                                                                                                           | Docker Desktop version 4.41 and earlier |
 
-### 增强容器隔离
+### Enhanced Container Isolation
 
-|参数|操作系统|描述|版本|
+|Parameter|OS|Description|Version|
 |:-------------------------------|---|:-------------------------------|---|
-|`enhancedContainerIsolation`|  | 如果 `value` 设置为 true，Docker Desktop 通过 Linux 用户命名空间以非特权方式运行所有容器，防止它们修改 Docker Desktop VM 内的敏感配置，并使用其他高级技术隔离它们。有关更多信息，请参阅[增强容器隔离](../enhanced-container-isolation/_index.md)。|  |
-| &nbsp; &nbsp; &nbsp; &nbsp;`dockerSocketMount` |  | 默认情况下，增强容器隔离会阻止将 Docker Engine socket 绑定挂载到容器中（例如，`docker run -v /var/run/docker.sock:/var/run/docker.sock ...`）。这允许您以受控方式放宽此限制。有关更多信息，请参阅 [ECI 配置](../enhanced-container-isolation/config.md)。 |  |
-| &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; `imageList` |  | 指示允许绑定挂载 Docker Engine socket 的容器镜像。 |  |
-| &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; `commandList` |  | 限制容器可以通过绑定挂载的 Docker Engine socket 发出的命令。 |  |
+|`enhancedContainerIsolation`|  | If `value` is set to true, Docker Desktop runs all containers as unprivileged, via the Linux user-namespace, prevents them from modifying sensitive configurations inside the Docker Desktop VM, and uses other advanced techniques to isolate them. For more information, see [Enhanced Container Isolation](../enhanced-container-isolation/_index.md).|  |
+| &nbsp; &nbsp; &nbsp; &nbsp;`dockerSocketMount` |  | By default, enhanced container isolation blocks bind-mounting the Docker Engine socket into containers (e.g., `docker run -v /var/run/docker.sock:/var/run/docker.sock ...`). This lets you relax this in a controlled way. See [ECI Configuration](../enhanced-container-isolation/config.md) for more info. |  |
+| &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; `imageList` |  | Indicates which container images are allowed to bind-mount the Docker Engine socket. |  |
+| &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; `commandList` |  | Restricts the commands that containers can issue via the bind-mounted Docker Engine socket. |  |

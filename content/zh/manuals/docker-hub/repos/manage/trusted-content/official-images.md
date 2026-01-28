@@ -1,8 +1,8 @@
 ---
-title: Docker 官方镜像
+title: Docker Official Images
 description: |
-  本文介绍 Docker 官方镜像是如何创建的，
-  以及您如何贡献或留下反馈。
+  This article describes how Docker Official Images are created,
+  and how you can contribute or leave feedback.
 keywords: docker official images, doi, contributing, upstream, open source
 aliases:
 - /trusted-content/official-images/contributing/
@@ -10,27 +10,54 @@ aliases:
 - /docker-hub/official_images/
 ---
 
-Docker, Inc. 赞助一个专门的团队，负责审核和发布 Docker 官方镜像中的所有内容。该团队与上游软件维护者、安全专家以及更广泛的 Docker 社区协作工作。
+Docker, Inc. sponsors a dedicated team that's responsible for reviewing and
+publishing all content in Docker Official Images. This team works in
+collaboration with upstream software maintainers, security experts, and the
+broader Docker community.
 
-虽然最好由上游软件作者维护其 Docker 官方镜像，但这不是一个严格的要求。为 Docker 官方镜像创建和维护镜像是一个协作过程。它在 [GitHub 上公开进行](https://github.com/docker-library/official-images)，鼓励参与。任何人都可以提供反馈、贡献代码、建议流程更改，甚至提议新的官方镜像。
+While it's preferable to have upstream software authors maintaining their
+Docker Official Images, this isn't a strict requirement. Creating
+and maintaining images for Docker Official Images is a collaborative process.
+It takes place [openly on GitHub](https://github.com/docker-library/official-images)
+where participation is encouraged. Anyone can provide feedback, contribute
+code, suggest process changes, or even propose a new Official Image.
 
-## 创建 Docker 官方镜像
+## Creating a Docker Official Image
 
-从高层次来看，官方镜像始于以一组 GitHub 拉取请求形式提交的提案。以下 GitHub 仓库详细说明了提案要求：
+From a high level, an Official Image starts out as a proposal in the form
+of a set of GitHub pull requests. The following GitHub repositories detail the proposal requirements:
 
-- [GitHub 上的 Docker 官方镜像仓库](https://github.com/docker-library/official-images#readme)
-- [Docker 官方镜像文档](https://github.com/docker-library/docs#readme)
+- [Docker Official Images repository on GitHub](https://github.com/docker-library/official-images#readme)
+- [Documentation for Docker Official Images](https://github.com/docker-library/docs#readme)
 
-Docker 官方镜像团队在社区贡献者的帮助下，正式审核每个提案并向作者提供反馈。这个初始审核过程可能较长，通常需要一些来回沟通才能接受提案。
+The Docker Official Images team, with help from community contributors, formally
+review each proposal and provide feedback to the author. This initial review
+process can be lengthy, often requiring a bit of back-and-forth before the proposal is accepted.
 
-审核过程中有主观考量。这些主观关注归结为一个基本问题："这个镜像是否普遍有用？"例如，[Python](https://hub.docker.com/_/python/) Docker 官方镜像对于更大的 Python 开发者社区来说"普遍有用"，而上周用 Python 编写的一个晦涩的文字冒险游戏则不是。
+There are subjective considerations during the review process. These
+subjective concerns boil down to the basic question: "is this image generally
+useful?" For example, the [Python](https://hub.docker.com/_/python/)
+Docker Official Image is "generally useful" to the larger Python developer
+community, whereas an obscure text adventure game written in Python last week is
+not.
 
-一旦新提案被接受，作者有责任保持其镜像和文档的更新并响应用户反馈。Docker 负责在 Docker Hub 上构建和发布镜像。Docker 官方镜像的更新遵循与新镜像相同的拉取请求流程，尽管更新的审核过程更加精简。Docker 官方镜像团队最终充当所有更改的把关者，这有助于确保一致性、质量和安全性。
+Once a new proposal is accepted, the author is responsible for keeping their
+images and documentation up-to-date and responding to user feedback. Docker is
+responsible for building and publishing the images on Docker Hub. Updates to
+Docker Official Images follow the same pull request process as for new images,
+although the review process for updates is more streamlined. The Docker Official
+Images team ultimately acts as a gatekeeper for all changes, which helps
+ensures consistency, quality, and security.
 
-## 为 Docker 官方镜像提交反馈
+## Submitting feedback for Docker Official Images
 
-所有 Docker 官方镜像在其文档中都包含一个 **User Feedback** 部分，涵盖该特定仓库的详细信息。在大多数情况下，包含官方镜像 Dockerfile 的 GitHub 仓库也有一个活跃的问题跟踪器。
+All Docker Official Images contain a **User Feedback** section in their
+documentation which covers the details for that specific repository. In most
+cases, the GitHub repository which contains the Dockerfiles for an Official
+Image also has an active issue tracker.
 
-关于 Docker 官方镜像的一般反馈和支持问题应发送到 [Docker 社区 Slack](https://dockr.ly/comm-slack) 的 `#general` 频道。
+General feedback and support questions about Docker Official Images
+should be directed to the `#general` channel in the [Docker Community Slack](https://dockr.ly/comm-slack).
 
-如果您是 Docker 官方镜像的维护者或贡献者，需要帮助或建议，请使用 [Libera.Chat IRC](https://libera.chat) 上的 `#docker-library` 频道。
+If you're a maintainer or contributor to Docker Official Images and you're
+looking for help or advice, use the `#docker-library` channel on [Libera.Chat IRC](https://libera.chat).

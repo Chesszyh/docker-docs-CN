@@ -1,6 +1,6 @@
 ---
 build:
   render: never
-title: 探索
+title: Explore
 weight: 40
 ---

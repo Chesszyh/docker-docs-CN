@@ -1,22 +1,26 @@
 ---
-description: 更多关于 Docker Scout 分析背后的安全公告数据库和 CVE 到软件包匹配服务的详细信息。
+description: More details on the advisory database and CVE-to-package matching service
+  behind Docker Scout analysis.
 keywords: scout, scanning, analysis, vulnerabilities, Hub, supply chain, security, packages, repositories, ecosystem
-title: 安全公告数据库来源和匹配服务
+title: Advisory database sources and matching service
 aliases:
   /scout/advisory-db-sources/
 ---
 
-可靠的信息来源是 Docker Scout 能够提供相关且准确的软件制品评估的关键。
-鉴于行业中来源和方法论的多样性，
-漏洞评估结果的差异是可能发生的，而且确实会发生。
-本页描述了 Docker Scout 安全公告数据库及其 CVE 到软件包匹配方法如何处理这些差异。
+Reliable information sources are key for Docker Scout's ability to
+surface relevant and accurate assessments of your software artifacts.
+Given the diversity of sources and methodologies in the industry,
+discrepancies in vulnerability assessment results can and do happen.
+This page describes how the Docker Scout advisory database
+and its CVE-to-package matching approach works to deal with these discrepancies.
 
-## 安全公告数据库来源
+## Advisory database sources
 
-Docker Scout 从多个来源聚合漏洞数据。
-数据持续更新，以确保您的安全态势使用最新可用的信息进行实时展示。
+Docker Scout aggregates vulnerability data from multiple sources.
+The data is continuously updated to ensure that your security posture
+is represented using the latest available information, in real-time.
 
-Docker Scout 使用以下软件包仓库和安全跟踪器：
+Docker Scout uses the following package repositories and security trackers:
 
 <!-- vale off -->
 
@@ -46,26 +50,26 @@ Docker Scout 使用以下软件包仓库和安全跟踪器：
 
 <!-- vale on -->
 
-当您为 Docker 组织启用 Docker Scout 时，
-Docker Scout 平台上会配置一个新的数据库实例。
-该数据库存储您镜像的软件物料清单（SBOM）和其他元数据。
-当安全公告有关于漏洞的新信息时，
-您的 SBOM 会与 CVE 信息进行交叉引用，以检测其对您的影响。
+When you enable Docker Scout for your Docker organization,
+a new database instance is provisioned on the Docker Scout platform.
+The database stores the Software Bill of Materials (SBOM) and other metadata about your images.
+When a security advisory has new information about a vulnerability,
+your SBOM is cross-referenced with the CVE information to detect how it affects you.
 
-有关镜像分析工作原理的更多详细信息，请参阅[镜像分析页面](/manuals/scout/explore/analysis.md)。
+For more details on how image analysis works, see the [image analysis page](/manuals/scout/explore/analysis.md).
 
-## 漏洞匹配
+## Vulnerability matching
 
-传统工具通常依赖广泛的[通用产品枚举（Common Product Enumeration，CPE）](https://en.wikipedia.org/wiki/Common_Platform_Enumeration)匹配，
-这可能导致许多误报结果。
+Traditional tools often rely on broad [Common Product Enumeration (CPE)](https://en.wikipedia.org/wiki/Common_Platform_Enumeration) matching,
+which can lead to many false-positive results.
 
-Docker Scout 使用[软件包 URL（Package URLs，PURLs）](https://github.com/package-url/purl-spec)
-将软件包与 CVE 进行匹配，从而更精确地识别漏洞。
-PURLs 显著降低了误报的可能性，只关注真正受影响的软件包。
+Docker Scout uses [Package URLs (PURLs)](https://github.com/package-url/purl-spec)
+to match packages against CVEs, which yields more precise identification of vulnerabilities.
+PURLs significantly reduce the chances of false positives, focusing only on genuinely affected packages.
 
-## 支持的软件包生态系统
+## Supported package ecosystems
 
-Docker Scout 支持以下软件包生态系统：
+Docker Scout supports the following package ecosystems:
 
 - .NET
 - GitHub packages
@@ -78,4 +82,4 @@ Docker Scout 支持以下软件包生态系统：
 - Ruby
 - `alpm` (Arch Linux)
 - `apk` (Alpine Linux)
-- `deb` (Debian Linux 及其衍生版本)
+- `deb` (Debian Linux and derivatives)

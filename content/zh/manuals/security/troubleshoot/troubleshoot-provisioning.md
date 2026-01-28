@@ -1,73 +1,86 @@
 ---
-description: 了解如何排查常见的用户配置问题。
+description: Learn how to troubleshoot common user provisioning issues.
 keywords: scim, jit, provision, troubleshoot, group mapping
-title: 用户配置故障排除
-linkTitle: 用户配置故障排除
+title: Troubleshoot provisioning
+linkTitle: Troubleshoot provisioning
 tags: [Troubleshooting]
 toc_max: 2
 ---
 
-如果您在用户配置（user provisioning）过程中遇到用户角色、属性或意外账户行为的问题，本指南提供故障排除建议以解决冲突。
+If you experience issues with user roles, attributes, or unexpected account
+behavior with user provisioning, this guide provides troubleshooting
+recommendations to resolve conflicts.
 
-## SCIM 属性值被覆盖或忽略
+## SCIM attribute values are overwritten or ignored
 
-### 错误消息
+### Error message
 
-通常，此场景不会在 Docker 或您的 IdP 中产生错误消息。此问题通常表现为角色或团队分配不正确。
+Typically, this scenario does not produce an error message in Docker or your
+IdP. This issue ususally surfaces as incorrect role or team assignment.
 
-### 可能的原因
+### Possible causes
 
-- JIT 配置已启用，Docker 正在使用您的 IdP 的 SSO 登录流程中的值来配置用户，这会覆盖 SCIM 提供的属性。
-- SCIM 是在用户已通过 JIT 配置之后才启用的，因此 SCIM 更新不会生效。
+- JIT provisioning is enabled, and Docker is using values from your IdP's
+SSO login flow to provision the user, which overrides
+SCIM-provided attributes.
+- SCIM was enabled after the user was already provisioned via JIT, so SCIM
+updates don't take effect.
 
-### 受影响的环境
+### Affected environments
 
-- 同时使用 SCIM 和 SSO 的 Docker 组织
-- 在 SCIM 设置之前通过 JIT 配置的用户
+- Docker organizations using SCIM with SSO
+- Users provisioned via JIT prior to SCIM setup
 
-### 复现步骤
+### Steps to replicate
 
-1. 为您的 Docker 组织启用 JIT 和 SSO。
-1. 作为用户通过 SSO 登录 Docker。
-1. 启用 SCIM 并为该用户设置角色/团队属性。
-1. SCIM 尝试更新用户的属性，但角色或团队分配未反映更改。
+1. Enable JIT and SSO for your Docker organization.
+1. Sign in to Docker as a user via SSO.
+1. Enable SCIM and set role/team attributes for that user.
+1. SCIM attempts to update the user's attributes, but the role or team
+assignment does not reflect changes.
 
-### 解决方案
+### Solutions
 
-#### 禁用 JIT 配置（推荐）
+#### Disable JIT provisioning (recommended)
 
-1. 登录 [Docker Home](https://app.docker.com/)。
-1. 选择 **Admin Console**，然后选择 **SSO and SCIM**。
-1. 找到相关的 SSO 连接。
-1. 选择**操作菜单**并选择 **Edit**。
-1. 禁用 **Just-in-Time provisioning**。
-1. 保存更改。
+1. Sign in to [Docker Home](https://app.docker.com/).
+1. Select **Admin Console**, then **SSO and SCIM**.
+1. Find the relevant SSO connection.
+1. Select the **actions menu** and choose **Edit**.
+1. Disable **Just-in-Time provisioning**.
+1. Save your changes.
 
-禁用 JIT 后，Docker 将 SCIM 作为用户创建和角色分配的唯一数据源。
+With JIT disabled, Docker uses SCIM as the source of truth for user creation
+and role assignment.
 
-**保持 JIT 启用并匹配属性**
+**Keep JIT enabled and match attributes**
 
-如果您希望保持 JIT 启用：
+If you prefer to keep JIT enabled:
 
-- 确保您的 IdP 的 SSO 属性映射与 SCIM 发送的值匹配。
-- 避免配置 SCIM 覆盖已通过 JIT 设置的属性。
+- Make sure your IdP's SSO attribute mappings match the values being sent
+by SCIM.
+- Avoid configuring SCIM to override attributes already set via JIT.
 
-此选项需要在 IdP 配置中严格协调 SSO 和 SCIM 属性。
+This option requires strict coordination between SSO and SCIM attributes
+in your IdP configuration.
 
-## SCIM 更新不适用于现有用户
+## SCIM updates don't apply to existing users
 
-### 可能的原因
+### Possible causes
 
-用户账户最初是手动创建或通过 JIT 创建的，SCIM 未关联来管理它们。
+User accounts were originally created manually or via JIT, and SCIM is not
+linked to manage them.
 
-### 解决方案
+### Solution
 
-SCIM 仅管理它配置的用户。要允许 SCIM 管理现有用户：
+SCIM only manages users that it provisions. To allow SCIM to manage an
+existing user:
 
-1. 从 Docker [Admin Console](https://app.docker.com/admin) 手动删除该用户。
-1. 从您的 IdP 触发配置。
-1. SCIM 将使用正确的属性重新创建该用户。
+1. Remove the user manually from the Docker [Admin Console](https://app.docker.com/admin).
+1. Trigger provisioning from your IdP.
+1. SCIM will re-create the user with correct attributes.
 
 > [!WARNING]
 >
-> 删除用户会移除其资源所有权（例如，仓库）。在删除用户之前请转移所有权。
+> Deleting a user removes their resource ownership (e.g., repositories).
+Transfer ownership before removing the user.

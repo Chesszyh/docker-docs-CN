@@ -1,17 +1,28 @@
 ---
-title: 企业级支持
-description: 获取 Docker Hardened Images（DHI）的企业级支持和 SLA 支持的安全更新，包括全天候访问 Docker 支持团队以及针对关键和高危漏洞的有保证的 CVE 补丁。
+title: Enterprise support
+description: Get enterprise-grade support and SLA-backed security updates for Docker Hardened Images (DHI), including 24x7x365 access to Docker’s support team and guaranteed CVE patching for critical and high vulnerabilities.
 keywords: enterprise container support, sla-backed security, cve patching, secure container image, docker enterprise support
 ---
 
-Docker Hardened Images（DHI）旨在为企业环境提供灵活性和强大支持，使团队能够根据其特定需求定制镜像，同时确保安全性和合规性。
+Docker Hardened Images (DHI) are designed to provide flexibility and robust
+support for enterprise environments, allowing teams to tailor images to their
+specific needs while ensuring security and compliance.
 
-## 企业级支持和 SLA 支持的安全更新
+## Enterprise-grade support and SLA-backed security updates
 
-Docker 为 DHI 用户提供全面的企业支持，确保对安全威胁和运营问题做出快速响应：
+Docker provides comprehensive enterprise support for DHI users, ensuring rapid
+response to security threats and operational issues:
 
-- 企业支持：访问 Docker 支持团队，响应时间旨在保护关键任务应用并维持运营连续性。
+- Enterprise support: Access to Docker's support team, with
+  response times designed to safeguard mission-critical applications and
+  maintain operational continuity.
 
-- SLA 支持的 CVE 缓解：Docker 致力于在上游修复可用后的 7 个工作日内解决关键和高危严重性的通用漏洞披露（CVE），但存在一些例外情况。比典型的行业响应时间更快，并由企业级 SLA 支持，因此您的团队可以依靠及时的修复来保持工作负载的安全。
+- SLA-backed CVE mitigation: Docker aims to address Critical and High severity
+  Common Vulnerabilities and Exposures (CVEs) within 7 working days of an
+  upstream fix becoming available, with some exceptions. Faster than typical
+  industry response times and backed by an enterprise-grade SLA, so your teams
+  can rely on timely fixes to keep workloads secure.
 
-这一级别的支持确保组织可以依赖 DHI 用于其关键任务应用，并确信安全性和稳定性会得到主动维护。
+This level of support ensures that organizations can rely on DHI for their
+mission-critical applications, with the assurance that security and stability
+are maintained proactively.

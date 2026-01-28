@@ -1,8 +1,8 @@
 ---
-description: 设置自动构建
+description: Set up automated builds
 keywords: automated, build, images, Docker Hub
-title: 设置自动构建
-linkTitle: 设置
+title: Set up automated builds
+linkTitle: Set up
 weight: 10
 aliases:
 - /docker-hub/builds/automated-build/
@@ -12,142 +12,205 @@ aliases:
 
 > [!NOTE]
 >
-> 自动构建需要 Docker Pro、Team 或 Business 订阅。
+> Automated builds require a
+> Docker Pro, Team, or Business subscription.
 
-## 配置自动构建
+## Configure automated builds
 
-您可以在 Docker Hub 中配置仓库，使其在每次向源代码提供商推送新代码时自动构建镜像。如果您配置了[自动测试](automated-testing.md)，只有在测试成功时才会推送新镜像。
+You can configure repositories in Docker Hub so that they automatically
+build an image each time you push new code to your source provider. If you have
+[automated tests](automated-testing.md) configured, the new image is only pushed
+when the tests succeed.
 
-1. 在 [Docker Hub](https://hub.docker.com) 中，转到 **My Hub** > **Repositories**，选择一个仓库以查看其详情。
+1. In [Docker Hub](https://hub.docker.com), go to **My Hub** > **Repositories**, and select a repository to view its details.
 
-2. 选择 **Builds** 选项卡。
+2. Select the **Builds** tab.
 
-3. 选择 GitHub 或 Bitbucket 来连接镜像源代码的存储位置。
-
-   > [!NOTE]
-   >
-   > 您可能会被重定向到设置页面以[链接](link-source.md)代码仓库服务。否则，如果您正在编辑现有自动构建的构建设置，请选择 **Configure automated builds**。
-
-4. 选择要从中构建 Docker 镜像的**源仓库**。
+3. Select either GitHub or Bitbucket to connect where the image's source code is stored.
 
    > [!NOTE]
    >
-   > 您可能需要从源代码提供商指定组织或用户。选择用户后，源代码仓库会出现在 **Select repository** 下拉列表中。
+   > You may be redirected to the settings page to [link](link-source.md) the
+   > code repository service. Otherwise, if you are editing the build settings
+   > for an existing automated build, select **Configure automated builds**.
 
-5. 可选。启用[自动测试](automated-testing.md#enable-automated-tests-on-a-repository)。
-
-6. 查看默认的 **Build Rules**。
-
-    构建规则控制 Docker Hub 从源代码仓库的内容构建什么镜像，以及如何在 Docker 仓库中标记生成的镜像。
-
-    系统为您设置了一个默认构建规则，您可以编辑或删除。此默认规则设置从源代码仓库中名为 `master` 或 `main` 的 `Branch` 构建，并创建标记为 `latest` 的 Docker 镜像。有关更多信息，请参阅[设置构建规则](#set-up-build-rules)。
-
-7. 可选。选择**加号**图标以添加和[配置更多构建规则](#set-up-build-rules)。
-
-8. 对于每个分支或标签，启用或禁用 **Autobuild** 开关。
-
-    只有启用了 autobuild 的分支或标签才会被构建、测试，并将生成的镜像推送到仓库。禁用 autobuild 的分支会为测试目的进行构建（如果在仓库级别启用了测试），但构建的 Docker 镜像不会推送到仓库。
-
-9. 对于每个分支或标签，启用或禁用 **Build Caching** 开关。
-
-    如果您经常构建大型镜像或有许多依赖项，[构建缓存](/manuals/build/building/best-practices.md#leverage-build-cache)可以节省时间。如果您想确保所有依赖项都在构建时解析，或者如果您有一个在本地构建更快的大层，请禁用构建缓存。
-
-10. 选择 **Save** 保存设置，或选择 **Save and build** 保存并运行初始测试。
-
-    > [!NOTE]
-    >
-    > 系统会自动向您的源代码仓库添加一个 webhook，以在每次推送时通知 Docker Hub。只有推送到被列为一个或多个标签源的分支，才会触发构建。
-
-### 设置构建规则
-
-默认情况下，当您设置自动构建时，系统会为您创建一个基本的构建规则。此默认规则监视源代码仓库中 `master` 或 `main` 分支的更改，并将 `master` 或 `main` 分支构建为标记为 `latest` 的 Docker 镜像。
-
-在 **Build Rules** 部分，输入一个或多个要构建的源。
-
-对于每个源：
-
-* 选择 **Source type** 来构建标签或分支。这会告诉构建系统在源代码仓库中查找什么。
-
-* 输入您要构建的 **Source** 分支或标签的名称。
-
-  当您首次配置自动构建时，系统会为您设置一个默认构建规则。此默认设置从源代码中名为 `master` 的 `Branch` 构建，并创建标记为 `latest` 的 Docker 镜像。
-
-  您还可以使用正则表达式来选择要构建的源分支或标签。要了解更多信息，请参阅[正则表达式](#regexes-and-automated-builds)。
-
-* 输入要应用于从此源构建的 Docker 镜像的标签。
-
-  如果您配置了正则表达式来选择源，您可以引用捕获组并将其结果用作标签的一部分。要了解更多信息，请参阅[正则表达式](#regexes-and-automated-builds)。
-
-* 将 **Dockerfile location** 指定为相对于源代码仓库根目录的路径。如果 Dockerfile 在仓库根目录，请将此路径设置为 `/`。
-
-> [!NOTE]
->
-> 当 Docker Hub 从源代码仓库拉取分支时，它执行浅克隆——仅克隆指定分支的最新提交。请参阅[自动构建和自动测试的高级选项](advanced.md#source-repository-or-branch-clones)获取更多信息。
-
-### 构建的环境变量
-
-您可以在配置自动构建时为构建过程中使用的环境变量设置值。通过选择 **Build environment variables** 部分旁边的**加号**图标来添加构建环境变量，然后输入变量名称和值。
-
-当您从 Docker Hub UI 设置变量值时，您可以在 `hooks` 文件中设置的命令中使用它们。但是，它们的存储方式使得只有对 Docker Hub 仓库拥有 `admin` 访问权限的用户才能看到其值。这意味着您可以使用它们来存储访问令牌或其他应保密的信息。
-
-> [!NOTE]
->
-> 在构建配置界面上设置的变量仅在构建过程中使用，不应与您的服务使用的环境值混淆，例如用于创建服务链接的环境值。
-
-## 高级自动构建选项
-
-要设置自动构建，您至少需要一个由源分支或标签和目标 Docker 标签组成的构建规则。您还可以：
-
-- 更改构建查找 Dockerfile 的位置
-- 设置构建应使用的文件路径（构建上下文）
-- 设置多个要构建的静态标签或分支
-- 使用正则表达式（regexes）动态选择要构建的源代码并创建动态标签
-
-所有这些选项都可以从每个仓库的 **Build configuration** 界面访问。在 [Docker Hub](https://hub.docker.com) 中，选择 **My Hub** > **Repositories**，然后选择要编辑的仓库名称。选择 **Builds** 选项卡，然后选择 **Configure Automated builds**。
-
-### 标签和分支构建
-
-您可以配置自动构建，使推送到特定分支或标签时触发构建。
-
-1. 在 **Build Rules** 部分，选择**加号**图标以添加更多要构建的源。
-
-2.  选择 **Source type** 来构建标签或分支。
-
-    > [!NOTE]
-    >
-    > 这会告诉构建系统在代码仓库中查找什么类型的源。
-
-3. 输入您要构建的 **Source** 分支或标签的名称。
-
-    > [!NOTE]
-    >
-    > 您可以输入名称，或使用正则表达式来匹配要构建的源分支或标签名称。要了解更多信息，请参阅[正则表达式](index.md#regexes-and-automated-builds)。
-
-4. 输入要应用于从此源构建的 Docker 镜像的标签。
+4. Select the **source repository** to build the Docker images from.
 
    > [!NOTE]
    >
-   > 如果您配置了正则表达式来选择源，您可以引用捕获组并将其结果用作标签的一部分。要了解更多信息，请参阅[正则表达式](index.md#regexes-and-automated-builds)。
+   > You might need to specify an organization or user from
+   > the source code provider. Once you select a user, source code
+   > repositories appear in the **Select repository** drop-down list.
 
-5. 对您设置的每个新构建规则重复步骤 2 到 4。
+5. Optional. Enable [autotests](automated-testing.md#enable-automated-tests-on-a-repository).
 
-### 设置构建上下文和 Dockerfile 位置
+6. Review the default **Build Rules**.
 
-根据您在源代码仓库中安排文件的方式，构建镜像所需的文件可能不在仓库根目录。如果是这种情况，您可以指定构建查找文件的路径。
+    Build rules control what Docker Hub builds into images from the contents
+    of the source code repository, and how the resulting images are tagged
+    within the Docker repository.
 
-构建上下文是构建所需文件相对于仓库根目录的路径。在 **Build context** 字段中输入这些文件的路径。输入 `/` 将构建上下文设置为源代码仓库的根目录。
+    A default build rule is set up for you, which you can edit or delete. This
+    default rule sets builds from the `Branch` in your source code repository
+    called `master` or `main`, and creates a Docker image tagged with `latest`.
+    For more information, see [set up build rules](#set-up-build-rules).
+
+7. Optional. Select the **plus** icon to add and [configure more build rules](#set-up-build-rules).
+
+8. For each branch or tag, enable or disable the **Autobuild** toggle.
+
+    Only branches or tags with autobuild enabled are built, tested, and have
+    the resulting image pushed to the repository. Branches with autobuild
+    disabled are built for test purposes (if enabled at the repository
+    level), but the built Docker image isn't pushed to the repository.
+
+9. For each branch or tag, enable or disable the **Build Caching** toggle.
+
+    [Build caching](/manuals/build/building/best-practices.md#leverage-build-cache)
+    can save time if you are building a large image frequently or have
+    many dependencies. Leave the build caching disabled to
+    make sure all of your dependencies are resolved at build time, or if
+    you have a large layer that's quicker to build locally.
+
+10. Select **Save** to save the settings, or select **Save and build** to save and
+   run an initial test.
+
+    > [!NOTE]
+    >
+    > A webhook is automatically added to your source code repository to notify
+    > Docker Hub on every push. Only pushes to branches that are listed as the
+    > source for one or more tags, trigger a build.
+
+### Set up build rules
+
+By default when you set up automated builds, a basic build rule is created for you.
+This default rule watches for changes to the `master` or `main` branch in your source code
+repository, and builds the `master` or `main` branch into a Docker image tagged with
+`latest`.
+
+In the **Build Rules** section, enter one or more sources to build.
+
+For each source:
+
+* Select the **Source type** to build either a tag or a branch. This
+  tells the build system what to look for in the source code repository.
+
+* Enter the name of the **Source** branch or tag you want to build.
+
+  The first time you configure automated builds, a default build rule is set up
+  for you. This default set builds from the `Branch` in your source code called
+  `master`, and creates a Docker image tagged with `latest`.
+
+  You can also use a regex to select which source branches or tags to build.
+  To learn more, see
+  [regexes](#regexes-and-automated-builds).
+
+* Enter the tag to apply to Docker images built from this source.
+
+  If you configured a regex to select the source, you can reference the
+  capture groups and use its result as part of the tag. To learn more, see
+  [regexes](#regexes-and-automated-builds).
+
+* Specify the **Dockerfile location** as a path relative to the root of the source code repository. If the Dockerfile is at the repository root, leave this path set to `/`.
 
 > [!NOTE]
 >
-> 如果您从 **Build context** 字段中删除默认路径 `/` 并将其留空，构建系统会使用 Dockerfile 的路径作为构建上下文。但是，为避免混淆，建议您指定完整路径。
+> When Docker Hub pulls a branch from a source code repository, it performs a
+> shallow clone - only the tip of the specified branch. Refer to
+> [Advanced options for autobuild and autotest](advanced.md#source-repository-or-branch-clones)
+> for more information.
 
-您可以将 **Dockerfile location** 指定为相对于构建上下文的路径。如果 Dockerfile 在构建上下文路径的根目录，请将 Dockerfile 路径设置为 `/`。如果构建上下文字段为空，请从源仓库的根目录设置 Dockerfile 的路径。
+### Environment variables for builds
 
-### 正则表达式和自动构建
+You can set the values for environment variables used in your build processes
+when you configure an automated build. Add your build environment variables by
+selecting the **plus** icon next to the **Build environment variables** section, and
+then entering a variable name and the value.
 
-您可以指定正则表达式（regex），以便只构建匹配的分支或标签。您还可以使用正则表达式的结果来创建应用于构建镜像的 Docker 标签。
+When you set variable values from the Docker Hub UI, you can use them by the
+commands you set in `hooks` files. However, they're stored so that only users who have `admin` access to the Docker Hub repository can see their values. This
+means you can use them to store access tokens or other information that
+should remain secret.
 
-您最多可以使用九个正则表达式捕获组（或用括号括起来的表达式）来选择要构建的源，并在 **Docker Tag** 字段中使用 `{\1}` 到 `{\9}` 引用这些捕获组。
+> [!NOTE]
+>
+> The variables set on the build configuration screen are used during
+> the build processes only and shouldn't get confused with the environment
+> values used by your service, for example to create service links.
+
+## Advanced automated build options
+
+At the minimum you need a build rule composed of a source branch, or tag, and a
+destination Docker tag to set up an automated build. You can also:
+
+- Change where the build looks for the Dockerfile
+- Set a path to the files the build should use (the build context)
+- Set up multiple static tags or branches to build from
+- Use regular expressions (regexes) to dynamically select source code to build and
+create dynamic tags
+
+All of these options are available from the **Build configuration** screen for
+each repository. In [Docker Hub](https://hub.docker.com), select **My Hub** > **Repositories**, and select the name of the repository you want to edit. Select the **Builds** tab, and then select **Configure Automated builds**.
+
+### Tag and branch builds
+
+You can configure your automated builds so that pushes to specific branches or tags triggers a build.
+
+1. In the **Build Rules** section, select the **plus** icon to add more sources to build.
+
+2.  Select the **Source type** to build either a tag or a branch.
+
+    > [!NOTE]
+    >
+    > This tells the build system what type of source to look for in the code
+    > repository.
+
+3. Enter the name of the **Source** branch or tag you want to build.
+
+    > [!NOTE]
+    >
+    > You can enter a name, or use a regex to match which source branch or tag
+    > names to build. To learn more, see [regexes](index.md#regexes-and-automated-builds).
+
+4. Enter the tag to apply to Docker images built from this source.
+
+   > [!NOTE]
+   >
+   > If you configured a regex to select the source, you can reference the
+   > capture groups and use its result as part of the tag. To learn more, see
+   > [regexes](index.md#regexes-and-automated-builds).
+
+5. Repeat steps 2 through 4 for each new build rule you set up.
+
+### Set the build context and Dockerfile location
+
+Depending on how you arrange the files in your source code repository, the
+files required to build your images may not be at the repository root. If that's
+the case, you can specify a path where the build looks for the files.
+
+The build context is the path to the files needed for the build, relative to
+the root of the repository. Enter the path to these files in the **Build context** field. Enter `/` to set the build context as the root of the source code repository.
+
+> [!NOTE]
+>
+> If you delete the default path `/` from the **Build context** field and leave
+> it blank, the build system uses the path to the Dockerfile as the build
+> context. However, to avoid confusion it's recommended that you specify the
+> complete path.
+
+You can specify the **Dockerfile location** as a path relative to the build
+context. If the Dockerfile is at the root of the build context path, leave the
+Dockerfile path set to `/`. If the build context field is blank, set the path
+to the Dockerfile from the root of the source repository.
+
+### Regexes and automated builds
+
+You can specify a regular expression (regex) so that only matching branches or
+tags are built. You can also use the results of the regex to create the Docker
+tag that's applied to the built image.
+
+You can use up to nine regular expression capture groups, or expressions enclosed in parentheses, to select a source to build, and reference
+these in the **Docker Tag** field using `{\1}` through `{\9}`.
 
 <!-- Capture groups Not a priority
 #### Regex example: build from version number branch and tag with version number
@@ -157,60 +220,80 @@ sources. For example, you might have
 
 `/(alice|bob)-v([0-9.]+)/` -->
 
-### 使用 BuildKit 构建镜像
+### Build images with BuildKit
 
-自动构建默认使用 BuildKit 构建系统。如果您想使用传统的 Docker 构建系统，请添加[环境变量](index.md#environment-variables-for-builds) `DOCKER_BUILDKIT=0`。请参阅 [BuildKit](/manuals/build/buildkit/_index.md) 页面获取有关 BuildKit 的更多信息。
+Autobuilds use the BuildKit build system by default. If you want to use the legacy
+Docker build system, add the [environment variable](index.md#environment-variables-for-builds)
+`DOCKER_BUILDKIT=0`. Refer to the [BuildKit](/manuals/build/buildkit/_index.md)
+page for more information on BuildKit.
 
-## 团队的自动构建
+## Autobuild for teams
 
-当您在自己的用户账户中创建自动构建仓库时，您可以启动、取消和重试构建，以及编辑和删除您自己的仓库。
+When you create an automated build repository in your own user account, you
+can start, cancel, and retry builds, and edit and delete your own repositories.
 
-如果您是所有者，这些相同的操作也可以从 Docker Hub 对团队仓库使用。如果您是具有 `write` 权限的团队成员，您可以在团队的仓库中启动、取消和重试构建，但不能编辑团队仓库设置或删除团队仓库。如果您的用户账户具有 `read` 权限，或者您是具有 `read` 权限的团队成员，您可以查看构建配置，包括任何测试设置。
+These same actions are also available for team repositories from Docker Hub if
+you are an owner. If you are a member of a
+team with `write` permissions you can start, cancel, and retry builds in your
+team's repositories, but you cannot edit the team repository settings or delete
+the team repositories. If your user account has `read` permission, or if you're
+a member of a team with `read` permission, you can view the build configuration
+including any testing settings.
 
-| 操作/权限            | Read | Write | Admin | Owner |
+| Action/Permission     | Read | Write | Admin | Owner |
 | --------------------- | ---- | ----- | ----- | ----- |
-| 查看构建详情          |  x   |   x   |   x   |   x   |
-| 启动、取消、重试      |      |   x   |   x   |   x   |
-| 编辑构建设置          |      |       |   x   |   x   |
-| 删除构建              |      |       |       |   x   |
+| view build details    |  x   |   x   |   x   |   x   |
+| start, cancel, retry  |      |   x   |   x   |   x   |
+| edit build settings   |      |       |   x   |   x   |
+| delete build          |      |       |       |   x   |
 
-### 团队自动构建的服务用户
+### Service users for team autobuilds
 
 > [!NOTE]
 >
-> 只有所有者可以为团队设置自动构建。
+> Only owners can set up automated builds for teams.
 
-当您为团队设置自动构建时，您使用与特定用户账户绑定的 OAuth 授予 Docker Hub 访问源代码仓库的权限。这意味着 Docker Hub 可以访问链接的源代码提供商账户能够访问的所有内容。
+When you set up automated builds for teams, you grant Docker Hub access to
+your source code repositories using OAuth tied to a specific user account. This
+means that Docker Hub has access to everything that the linked source provider
+account can access.
 
-对于组织和团队，建议您创建一个专用的服务账户来授予源代码提供商的访问权限。这确保了当个人用户的访问权限发生变化时不会中断任何构建，并且个人用户的个人项目不会暴露给整个组织。
+For organizations and teams, it's recommended you create a dedicated service account to grant access to the source provider. This ensures that no
+builds break as individual users' access permissions change, and that an
+individual user's personal projects aren't exposed to an entire organization.
 
-此服务账户应该有权访问任何要构建的仓库，并且必须具有对源代码仓库的管理访问权限，以便它可以管理部署密钥。如果需要，您可以将此账户限制为仅访问特定构建所需的特定仓库集。
+This service account should have access to any repositories to be built,
+and must have administrative access to the source code repositories so it can
+manage deploy keys. If needed, you can limit this account to only a specific
+set of repositories required for a specific build.
 
-如果您正在构建具有链接的私有子模块（私有依赖项）的仓库，您还需要向与该账户关联的自动构建添加一个覆盖的 `SSH_PRIVATE` 环境变量。有关更多信息，请参阅[故障排除](troubleshoot.md#build-repositories-with-linked-private-submodules)
+If you are building repositories with linked private submodules (private
+dependencies), you also need to add an override `SSH_PRIVATE` environment
+variable to automated builds associated with the account. For more information, see [Troubleshoot](troubleshoot.md#build-repositories-with-linked-private-submodules)
 
-1. 在您的源代码提供商上创建一个服务用户账户，并为其生成 SSH 密钥。
-2. 在您的组织中创建一个"build"团队。
-3. 确保新的"build"团队有权访问您需要构建的每个仓库和子模块。
+1. Create a service user account on your source provider, and generate SSH keys for it.
+2. Create a "build" team in your organization.
+3. Ensure that the new "build" team has access to each repository and submodule you need to build.
 
-    1. 在 GitHub 或 Bitbucket 上，转到仓库的 **Settings** 页面。
-    2. 将新的"build"团队添加到已批准用户列表中。
+    1. On GitHub or Bitbucket, go to the repository's **Settings** page.
+    2. Add the new "build" team to the list of approved users.
 
-        - GitHub：在 **Collaborators and Teams** 中添加团队。
-        - Bitbucket：在 **Access management** 中添加团队。
+        - GitHub: Add the team in **Collaborators and Teams**.
+        - Bitbucket: Add the team in  **Access management**.
 
-4. 将服务用户添加到源代码提供商上的"build"团队。
+4. Add the service user to the "build" team on the source provider.
 
-5. 以所有者身份登录 Docker Hub，切换到组织，然后按照说明使用服务账户[链接到源代码仓库](link-source.md)。
+5. Sign in to Docker Hub as an owner, switch to the organization, and follow the instructions to [link to source code repository](link-source.md) using the service account.
 
     > [!NOTE]
     >
-    > 您可能需要在源代码提供商上退出您的个人账户，才能创建到服务账户的链接。
+    > You may need to sign out of your individual account on the source code provider to create the link to the service account.
 
-6. 可选。使用您生成的 SSH 密钥，使用服务账户和[之前的说明](troubleshoot.md#build-repositories-with-linked-private-submodules)设置任何具有私有子模块的构建。
+6. Optional. Use the SSH keys you generated to set up any builds with private submodules, using the service account and [the previous instructions](troubleshoot.md#build-repositories-with-linked-private-submodules).
 
-## 下一步
+## What's Next?
 
-- [使用环境变量、钩子等自定义您的构建过程](advanced.md)
-- [添加自动测试](automated-testing.md)
-- [管理您的构建](manage-builds.md)
-- [故障排除](troubleshoot.md)
+- [Customize your build process](advanced.md) with environment variables, hooks, and more
+- [Add automated tests](automated-testing.md)
+- [Manage your builds](manage-builds.md)
+- [Troubleshoot](troubleshoot.md)

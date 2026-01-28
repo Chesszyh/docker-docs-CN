@@ -1,45 +1,53 @@
 ---
-title: Swarm 任务状态
+title: Swarm task states
 description: Learn about tasks that are scheduled on your swarm.
 keywords: swarm, task, service
 aliases:
 - /datacenter/ucp/2.2/guides/admin/monitor-and-troubleshoot/troubleshoot-task-state/
 ---
 
-Docker 允许你创建服务，服务可以启动任务（task）。服务是对期望状态的描述，而任务则执行实际工作。工作按以下顺序调度到 swarm 节点上：
+Docker lets you create services, which can start tasks. A service is a
+description of a desired state, and a task does the work. Work is scheduled on
+swarm nodes in this sequence:
 
-1.  使用 `docker service create` 创建服务。
-2.  请求发送到 Docker 管理节点。
-3.  Docker 管理节点将服务调度到特定节点上运行。
-4.  每个服务可以启动多个任务。
-5.  每个任务都有一个生命周期，具有 `NEW`、`PENDING` 和 `COMPLETE` 等状态。
+1.  Create a service by using `docker service create`.
+2.  The request goes to a Docker manager node.
+3.  The Docker manager node schedules the service to run on particular nodes.
+4.  Each service can start multiple tasks.
+5.  Each task has a life cycle, with states like `NEW`, `PENDING`, and `COMPLETE`.
 
-任务是执行单元，运行一次直到完成。当任务停止时，它不会再次执行，但新任务可能会取代它的位置。
+Tasks are execution units that run once to completion. When a task stops, it
+isn't executed again, but a new task may take its place.
 
-任务会经历多个状态，直到完成或失败。任务在 `NEW` 状态下初始化。任务通过多个状态向前推进，其状态不会倒退。例如，任务永远不会从 `COMPLETE` 变回 `RUNNING`。
+Tasks advance through a number of states until they complete or fail. Tasks are
+initialized in the `NEW` state. The task progresses forward through a number of
+states, and its state doesn't go backward. For example, a task never goes from
+`COMPLETE` to `RUNNING`.
 
-任务按以下顺序经历各个状态：
+Tasks go through the states in the following order:
 
-| 任务状态  | 描述                                                                                                 |
+| Task state  | Description                                                                                                 |
 | ----------- | ----------------------------------------------------------------------------------------------------------- |
-| `NEW`       | 任务已初始化。                                                                                   |
-| `PENDING`   | 任务的资源已分配。                                                                      |
-| `ASSIGNED`  | Docker 已将任务分配给节点。                                                                          |
-| `ACCEPTED`  | 任务已被工作节点接受。如果工作节点拒绝任务，状态将变为 `REJECTED`。 |
-| `READY`     | 工作节点已准备好启动任务。                                                                  |
-| `PREPARING` | Docker 正在准备任务。                                                                               |
-| `STARTING`  | Docker 正在启动任务。                                                                                |
-| `RUNNING`   | 任务正在执行。                                                                                      |
-| `COMPLETE`  | 任务已退出且没有错误代码。                                                                      |
-| `FAILED`    | 任务已退出并带有错误代码。                                                                         |
-| `SHUTDOWN`  | Docker 请求任务关闭。                                                                     |
-| `REJECTED`  | 工作节点拒绝了任务。                                                                          |
-| `ORPHANED`  | 节点离线时间过长。                                                                             |
-| `REMOVE`    | 任务不是终端状态，但关联的服务已被删除或缩减。                             |
+| `NEW`       | The task was initialized.                                                                                   |
+| `PENDING`   | Resources for the task were allocated.                                                                      |
+| `ASSIGNED`  | Docker assigned the task to nodes.                                                                          |
+| `ACCEPTED`  | The task was accepted by a worker node. If a worker node rejects the task, the state changes to `REJECTED`. |
+| `READY`     | The worker node is ready to start the task                                                                  |
+| `PREPARING` | Docker is preparing the task.                                                                               |
+| `STARTING`  | Docker is starting the task.                                                                                |
+| `RUNNING`   | The task is executing.                                                                                      |
+| `COMPLETE`  | The task exited without an error code.                                                                      |
+| `FAILED`    | The task exited with an error code.                                                                         |
+| `SHUTDOWN`  | Docker requested the task to shut down.                                                                     |
+| `REJECTED`  | The worker node rejected the task.                                                                          |
+| `ORPHANED`  | The node was down for too long.                                                                             |
+| `REMOVE`    | The task is not terminal but the associated service was removed or scaled down.                             |
 
-## 查看任务状态
+## View task state
 
-运行 `docker service ps <service-name>` 来获取任务的状态。`CURRENT STATE` 字段显示任务的状态及其处于该状态的时长。
+Run `docker service ps <service-name>` to get the state of a task. The
+`CURRENT STATE` field shows the task's state and how long it's been
+there.
 
 ```console
 $ docker service ps webserver
@@ -49,6 +57,6 @@ j91iahr8s74p    \_ webserver.1   nginx    UbuntuVM    Shutdown       Failed 50 s
 7dyaszg13mw2    \_ webserver.1   nginx    UbuntuVM    Shutdown       Failed 5 hours ago       "No such container: webserver.…"
 ```
 
-## 下一步
+## Where to go next
 
-- [了解 swarm 任务](https://github.com/docker/swarmkit/blob/master/design/task_model.md)
+- [Learn about swarm tasks](https://github.com/docker/swarmkit/blob/master/design/task_model.md)

@@ -1,70 +1,125 @@
 ---
 description: How swarm mode services work
 keywords: docker, container, cluster, swarm mode, node
-title: 服务工作原理
+title: How services work
 weight: 20
 ---
 
-当 Docker 引擎处于 Swarm 模式时，要部署应用程序镜像，你需要创建一个服务（service）。通常，服务是某个较大应用程序上下文中的微服务镜像。服务的例子可能包括 HTTP 服务器、数据库，或你希望在分布式环境中运行的任何其他类型的可执行程序。
+To deploy an application image when Docker Engine is in Swarm mode, you create a
+service. Frequently a service is the image for a microservice within the
+context of some larger application. Examples of services might include an HTTP
+server, a database, or any other type of executable program that you wish to run
+in a distributed environment.
 
-当你创建服务时，你需要指定要使用的容器镜像以及在运行的容器中执行的命令。你还可以定义服务的选项，包括：
+When you create a service, you specify which container image to use and which
+commands to execute inside running containers. You also define options for the
+service including:
 
-* swarm 在 swarm 外部提供服务的端口
-* 服务连接到 swarm 中其他服务的覆盖网络（overlay network）
-* CPU 和内存限制及预留
-* 滚动更新策略
-* 在 swarm 中运行的镜像副本数量
+* The port where the swarm makes the service available outside the swarm
+* An overlay network for the service to connect to other services in the swarm
+* CPU and memory limits and reservations
+* A rolling update policy
+* The number of replicas of the image to run in the swarm
 
-## 服务、任务和容器
+## Services, tasks, and containers
 
-当你将服务部署到 swarm 时，swarm 管理节点接受你的服务定义作为服务的期望状态。然后它将服务作为一个或多个副本任务调度到 swarm 中的节点上。这些任务在 swarm 中的节点上独立运行。
+When you deploy the service to the swarm, the swarm manager accepts your service
+definition as the desired state for the service. Then it schedules the service
+on nodes in the swarm as one or more replica tasks. The tasks run independently
+of each other on nodes in the swarm.
 
-例如，假设你想在三个 HTTP 监听器实例之间进行负载均衡。下图显示了一个具有三个副本的 HTTP 监听器服务。监听器的三个实例中的每一个都是 swarm 中的一个任务。
+For example, imagine you want to load balance between three instances of an HTTP
+listener. The diagram below shows an HTTP listener service with three replicas.
+Each of the three instances of the listener is a task in the swarm.
 
 ![ HTTP listener service with three replicas](../images/services-diagram.webp?w=550)
 
-容器是一个隔离的进程。在 Swarm 模式模型中，每个任务恰好调用一个容器。任务类似于调度器放置容器的"槽位"。一旦容器处于活动状态，调度器就会识别出任务处于运行状态。如果容器未通过健康检查或终止，则任务也会终止。
+A container is an isolated process. In the Swarm mode model, each task invokes
+exactly one container. A task is analogous to a “slot” where the scheduler
+places a container. Once the container is live, the scheduler recognizes that
+the task is in a running state. If the container fails health checks or
+terminates, the task terminates.
 
-## 任务和调度
+## Tasks and scheduling
 
-任务是 swarm 中的原子调度单元。当你通过创建或更新服务来声明期望的服务状态时，编排器通过调度任务来实现期望状态。例如，你定义一个服务，指示编排器始终保持三个 HTTP 监听器实例运行。编排器通过创建三个任务来响应。每个任务都是一个槽位，调度器通过生成容器来填充它。容器是任务的实例化。如果 HTTP 监听器任务随后未通过健康检查或崩溃，编排器会创建一个新的副本任务来生成一个新的容器。
+A task is the atomic unit of scheduling within a swarm. When you declare a
+desired service state by creating or updating a service, the orchestrator
+realizes the desired state by scheduling tasks. For instance, you define a
+service that instructs the orchestrator to keep three instances of an HTTP
+listener running at all times. The orchestrator responds by creating three
+tasks. Each task is a slot that the scheduler fills by spawning a container. The
+container is the instantiation of the task. If an HTTP listener task subsequently
+fails its health check or crashes, the orchestrator creates a new replica task
+that spawns a new container.
 
-任务是一种单向机制。它通过一系列状态单调递进：已分配（assigned）、已准备（prepared）、运行中（running）等。如果任务失败，编排器会移除该任务及其容器，然后根据服务指定的期望状态创建新任务来替换它。
+A task is a one-directional mechanism. It progresses monotonically through a
+series of states: assigned, prepared, running, etc. If the task fails, the
+orchestrator removes the task and its container and then creates a new task to
+replace it according to the desired state specified by the service.
 
-Docker Swarm 模式的底层逻辑是一个通用调度器和编排器。服务和任务抽象本身并不知道它们实现的容器。假设上，你可以实现其他类型的任务，如虚拟机任务或非容器化进程任务。调度器和编排器对任务类型是不可知的。但是，当前版本的 Docker 仅支持容器任务。
+The underlying logic of Docker's Swarm mode is a general purpose scheduler and
+orchestrator. The service and task abstractions themselves are unaware of the
+containers they implement. Hypothetically, you could implement other types of
+tasks such as virtual machine tasks or non-containerized process tasks. The
+scheduler and orchestrator are agnostic about the type of the task. However, the
+current version of Docker only supports container tasks.
 
-下图显示了 Swarm 模式如何接受服务创建请求并将任务调度到工作节点。
+The diagram below shows how Swarm mode accepts service create requests and
+schedules tasks to worker nodes.
 
 ![Services flow](../images/service-lifecycle.webp?w=700)
 
-### 挂起的服务
+### Pending services
 
-服务可能被配置为当前 swarm 中没有任何节点可以运行其任务的状态。在这种情况下，服务保持 `pending` 状态。以下是服务可能保持 `pending` 状态的一些示例。
+A service may be configured in such a way that no node currently in the
+swarm can run its tasks. In this case, the service remains in state `pending`.
+Here are a few examples of when a service might remain in state `pending`.
 
 > [!TIP]
-> 如果你的唯一目的是阻止服务被部署，请将服务扩展到 0，而不是尝试以使其保持 `pending` 的方式配置它。
+> If your only intention is to prevent a service from
+> being deployed, scale the service to 0 instead of trying to configure it in
+> such a way that it remains in `pending`.
 
-- 如果所有节点都被暂停或处于排空状态，并且你创建了一个服务，它将处于挂起状态，直到有节点可用。实际上，第一个可用的节点会获得所有任务，因此这在生产环境中不是一个好的做法。
+- If all nodes are paused or drained, and you create a service, it is
+  pending until a node becomes available. In reality, the first node to become
+  available gets all of the tasks, so this is not a good thing to do in a
+  production environment.
 
-- 你可以为服务预留特定数量的内存。如果 swarm 中没有节点具有所需的内存量，服务将保持挂起状态，直到有能够运行其任务的节点可用。如果你指定一个非常大的值，例如 500 GB，任务将永远保持挂起状态，除非你真的有一个能够满足它的节点。
+- You can reserve a specific amount of memory for a service. If no node in the
+  swarm has the required amount of memory, the service remains in a pending
+  state until a node is available which can run its tasks. If you specify a very
+  large value, such as 500 GB, the task stays pending forever, unless you
+  really have a node which can satisfy it.
 
-- 你可以对服务施加放置约束，而这些约束在给定时间可能无法满足。
+- You can impose placement constraints on the service, and the constraints may
+  not be able to be honored at a given time.
 
-这种行为说明了你的任务的要求和配置与 swarm 的当前状态没有紧密绑定。作为 swarm 的管理员，你声明 swarm 的期望状态，管理节点与 swarm 中的节点协作来创建该状态。你不需要对 swarm 上的任务进行微观管理。
+This behavior illustrates that the requirements and configuration of your tasks
+are not tightly tied to the current state of the swarm. As the administrator of
+a swarm, you declare the desired state of your swarm, and the manager works with
+the nodes in the swarm to create that state. You do not need to micro-manage the
+tasks on the swarm.
 
-## 副本服务和全局服务
+## Replicated and global services
 
-有两种类型的服务部署：副本（replicated）和全局（global）。
+There are two types of service deployments, replicated and global.
 
-对于副本服务，你指定要运行的相同任务的数量。例如，你决定部署一个具有三个副本的 HTTP 服务，每个副本提供相同的内容。
+For a replicated service, you specify the number of identical tasks you want to
+run. For example, you decide to deploy an HTTP service with three replicas, each
+serving the same content.
 
-全局服务是在每个节点上运行一个任务的服务。没有预先指定的任务数量。每当你向 swarm 添加一个节点时，编排器就会创建一个任务，调度器将该任务分配给新节点。全局服务的良好候选者包括监控代理、杀毒扫描程序或你希望在 swarm 中的每个节点上运行的其他类型的容器。
+A global service is a service that runs one task on every node. There is no
+pre-specified number of tasks. Each time you add a node to the swarm, the
+orchestrator creates a task and the scheduler assigns the task to the new node.
+Good candidates for global services are monitoring agents, anti-virus scanners
+or other types of containers that you want to run on every node in the swarm.
 
-下图显示了一个三服务副本（灰色）和一个全局服务（黑色）。
+The diagram below shows a three-service replica in gray and a global service
+in black.
 
 ![Global vs replicated services](../images/replicated-vs-global.webp?w=450)
 
-## 了解更多
+## Learn more
 
-* 阅读了解 Swarm 模式[节点](nodes.md)的工作原理。
-* 了解 [PKI](pki.md) 在 Swarm 模式中的工作原理。
+* Read about how Swarm mode [nodes](nodes.md) work.
+* Learn how [PKI](pki.md) works in Swarm mode.

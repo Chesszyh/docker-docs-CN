@@ -1,50 +1,58 @@
 ---
-description: 了解如何在 Docker Hub 上创建仓库
+description: Learn how to create a repository on Docker Hub
 keywords: Docker Hub, Hub, repositories, create
-title: 创建仓库
-linkTitle: 创建
+title: Create a repository
+linkTitle: Create
 toc_max: 3
 weight: 20
 ---
 
-1. 登录 [Docker Hub](https://hub.docker.com)。
-2. 选择 **My Hub** > **Repositories**。
-3. 在右上角附近，选择 **Create repository**。
-4. 选择一个 **Namespace**（命名空间）。
+1. Sign in to [Docker Hub](https://hub.docker.com).
+2. Select **My Hub** > **Repositories**.
+3. Near the top-right corner, select **Create repository**.
+4. Select a **Namespace**.
 
-   您可以选择将其放在您自己的用户账户下，或者放在您是所有者或编辑者的任何组织下。
+   You can choose to locate it under your own user account, or under any
+   organization where you are an owner or editor.
 
-5. 指定 **Repository Name**（仓库名称）。
+5. Specify the **Repository Name**.
 
-   仓库名称需要：
-    - 唯一
-    - 在 2 到 255 个字符之间
-    - 仅包含小写字母、数字、连字符（`-`）和下划线（`_`）
-
-   > [!NOTE]
-   >
-   > 一旦创建，您就无法重命名 Docker Hub 仓库。
-
-6. 指定 **Short description**（简短描述）。
-
-   描述最多可以有 100 个字符。它会出现在搜索结果中。
-
-7. 选择默认可见性。
-
-   - **Public**（公开）：仓库会出现在 Docker Hub 搜索结果中，任何人都可以拉取。
-   - **Private**（私有）：仓库不会出现在 Docker Hub 搜索结果中，只有您和协作者可以访问。此外，如果您选择了组织的命名空间，则具有适用角色或权限的人可以访问该仓库。有关更多详情，请参阅[角色和权限](../../security/for-admins/roles-and-permissions.md)。
+   The repository name needs to:
+    - Be unique
+    - Have between 2 and 255 characters
+    - Only contain lowercase letters, numbers, hyphens (`-`), and underscores
+      (`_`)
 
    > [!NOTE]
    >
-   > 对于创建新仓库的组织，如果您不确定选择哪种可见性，Docker 建议您选择 **Private**。
+   > You can't rename a Docker Hub repository once it's created.
 
-8. 选择 **Create**。
+6. Specify the **Short description**.
 
-仓库创建后，**General** 页面会出现。您现在可以管理：
+   The description can be up to 100 characters. It appears in search results.
 
-- [仓库信息](./manage/information.md)
-- [访问控制](./manage/access.md)
-- [镜像](./manage/hub-images/_index.md)
-- [自动构建](./manage/builds/_index.md)
+7. Select the default visibility.
+
+   - **Public**: The repository appears in Docker Hub search results and can be
+     pulled by everyone.
+   - **Private**: The repository doesn't appear in Docker Hub search results and
+     is only accessible to you and collaborators. In addition, if you selected
+     an organization's namespace, then the repository is accessible to those
+     with applicable roles or permissions. For more details, see [Roles and
+     permissions](../../security/for-admins/roles-and-permissions.md).
+
+   > [!NOTE]
+   >
+   > For organizations creating a new repository, if you're unsure which
+   > visibility to choose, then Docker recommends that you select **Private**.
+
+8. Select **Create**.
+
+After the repository is created, the **General** page appears. You are now able to manage:
+
+- [Repository information](./manage/information.md)
+- [Access](./manage/access.md)
+- [Images](./manage/hub-images/_index.md)
+- [Automated builds](./manage/builds/_index.md)
 - [Webhooks](./manage/webhooks.md)
-- [镜像安全洞察](./manage/vulnerability-scanning.md)
+- [Image security insights](./manage/vulnerability-scanning.md)

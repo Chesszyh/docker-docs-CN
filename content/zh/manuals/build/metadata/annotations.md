@@ -1,40 +1,59 @@
 ---
-title: 注解
-description: 注解指定有关 OCI 镜像的附加元数据
+title: Annotations
+description: Annotations specify additional metadata about OCI images
 keywords: build, buildkit, annotations, metadata
 aliases:
 - /build/building/annotations/
 ---
 
-注解（Annotation）为镜像提供描述性元数据。使用注解记录任意信息并将其附加到您的镜像，这有助于消费者和工具了解镜像的来源、内容以及如何使用。
+Annotations provide descriptive metadata for images. Use annotations to record
+arbitrary information and attach it to your image, which helps consumers and
+tools understand the origin, contents, and how to use the image.
 
-注解与[标签（Label）][labels]类似，在某种意义上有所重叠。两者都服务于相同的目的：将元数据附加到资源。作为一般原则，您可以将注解和标签之间的区别理解如下：
+Annotations are similar to, and in some sense overlap with, [labels]. Both
+serve the same purpose: to attach metadata to a resource. As a general principle,
+you can think of the difference between annotations and labels as follows:
 
-- 注解描述 OCI 镜像组件，例如[清单（Manifest）][manifests]、[索引（Index）][indexes]和[描述符（Descriptor）][descriptors]。
-- 标签描述 Docker 资源，例如镜像、容器、网络和卷。
+- Annotations describe OCI image components, such as [manifests], [indexes],
+  and [descriptors].
+- Labels describe Docker resources, such as images, containers, networks, and
+  volumes.
 
-OCI 镜像[规范][specification]定义了注解的格式，以及一组预定义的注解键。遵守指定的标准可确保有关镜像的元数据能够被 Docker Scout 等工具自动且一致地呈现。
+The OCI image [specification] defines the format of annotations, as well as a set
+of pre-defined annotation keys. Adhering to the specified standards ensures
+that metadata about images can be surfaced automatically and consistently, by
+tools like Docker Scout.
 
-注解不应与[证明（Attestation）][attestations]混淆：
+Annotations are not to be confused with [attestations]:
 
-- 证明包含有关镜像如何构建以及包含什么内容的信息。证明作为单独的清单附加到镜像索引上。证明未由 Open Container Initiative 标准化。
-- 注解包含有关镜像的任意元数据。注解作为标签附加到镜像[配置（Config）][config]，或作为属性附加到镜像索引或清单。
+- Attestations contain information about how an image was built and what it contains.
+  An attestation is attached as a separate manifest on the image index.
+  Attestations are not standardized by the Open Container Initiative.
+- Annotations contain arbitrary metadata about an image.
+  Annotations attach to the image [config] as labels,
+  or on the image index or manifest as properties.
 
-## 添加注解
+## Add annotations
 
-您可以在构建时或创建镜像清单或索引时向镜像添加注解。
+You can add annotations to an image at build-time, or when creating the image
+manifest or index.
 
 > [!NOTE]
->
-> Docker Engine 镜像存储不支持加载带有注解的镜像。要使用注解进行构建，请确保使用 `--push` CLI 标志或 [registry 导出器](/manuals/build/exporters/image-registry.md) 直接将镜像推送到注册表。
+> 
+> The Docker Engine image store doesn't support loading images with
+> annotations. To build with annotations, make sure to push the image directly
+> to a registry, using the `--push` CLI flag or the
+> [registry exporter](/manuals/build/exporters/image-registry.md).
 
-要在命令行上指定注解，请使用 `docker build` 命令的 `--annotation` 标志：
+To specify annotations on the command line, use the `--annotation` flag for the
+`docker build` command:
 
 ```console
 $ docker build --push --annotation "foo=bar" .
 ```
 
-如果您使用 [Bake](/manuals/build/bake/_index.md)，可以使用 `annotations` 属性为给定目标指定注解：
+If you're using [Bake](/manuals/build/bake/_index.md), you can use the `annotations`
+attribute to specify annotations for a given target:
 
 ```hcl
 target "default" {
@@ -43,13 +62,21 @@ target "default" {
 }
 ```
 
-有关如何使用 GitHub Actions 向镜像添加注解的示例，请参阅[使用 GitHub Actions 添加镜像注解](/manuals/build/ci/github-actions/annotations.md)
+For examples on how to add annotations to images built with GitHub Actions, see
+[Add image annotations with GitHub Actions](/manuals/build/ci/github-actions/annotations.md)
 
-您还可以使用 `docker buildx imagetools create` 向创建的镜像添加注解。此命令仅支持向索引或清单描述符添加注解，请参阅 [CLI 参考](/reference/cli/docker/buildx/imagetools/create.md#annotation)。
+You can also add annotations to an image created using `docker buildx
+imagetools create`. This command only supports adding annotations to an index
+or manifest descriptors, see
+[CLI reference](/reference/cli/docker/buildx/imagetools/create.md#annotation).
 
-## 检查注解
+## Inspect annotations
 
-要查看**镜像索引**上的注解，请使用 `docker buildx imagetools inspect` 命令。这会显示索引和索引包含的描述符（对清单的引用）的任何注解。以下示例显示了描述符上的 `org.opencontainers.image.documentation` 注解和索引上的 `org.opencontainers.image.authors` 注解。
+To view annotations on an **image index**, use the `docker buildx imagetools
+inspect` command. This shows you any annotations for the index and descriptors
+(references to manifests) that the index contains. The following example shows
+an `org.opencontainers.image.documentation` annotation on a descriptor, and an
+`org.opencontainers.image.authors` annotation on the index.
 
 ```console {hl_lines=["10-12","19-21"]}
 $ docker buildx imagetools inspect <IMAGE> --raw
@@ -76,7 +103,9 @@ $ docker buildx imagetools inspect <IMAGE> --raw
 }
 ```
 
-要检查清单上的注解，请使用 `docker buildx imagetools inspect` 命令并指定 `<IMAGE>@<DIGEST>`，其中 `<DIGEST>` 是清单的摘要：
+To inspect annotations on a manifest, use the `docker buildx imagetools
+inspect` command and specify `<IMAGE>@<DIGEST>`, where `<DIGEST>` is the digest
+of the manifest:
 
 ```console {hl_lines="22-25"}
 $ docker buildx imagetools inspect <IMAGE>@sha256:d20246ef744b1d05a1dd69d0b3fa907db007c07f79fe3e68c17223439be9fefb --raw
@@ -107,62 +136,74 @@ $ docker buildx imagetools inspect <IMAGE>@sha256:d20246ef744b1d05a1dd69d0b3fa90
 }
 ```
 
-## 指定注解级别
+## Specify annotation level
 
-默认情况下，注解会添加到镜像清单。您可以通过在注解字符串前添加特殊类型声明来指定要将注解附加到哪个级别（OCI 镜像组件）：
+By default, annotations are added to the image manifest. You can specify which
+level (OCI image component) to attach the annotation to by prefixing the
+annotation string with a special type declaration:
 
 ```console
 $ docker build --annotation "<TYPE>:<KEY>=<VALUE>" .
 ```
 
-支持以下类型：
+The following types are supported:
 
-- `manifest`：注解清单。
-- `index`：注解根索引。
-- `manifest-descriptor`：注解索引中的清单描述符。
-- `index-descriptor`：注解镜像布局中的索引描述符。
+- `manifest`: annotates manifests.
+- `index`: annotates the root index.
+- `manifest-descriptor`: annotates manifest descriptors in the index.
+- `index-descriptor`:  annotates the index descriptor in the image layout.
 
-例如，构建一个将注解 `foo=bar` 附加到镜像索引的镜像：
+For example, to build an image with the annotation `foo=bar` attached to the
+image index:
 
 ```console
 $ docker build --tag <IMAGE> --push --annotation "index:foo=bar" .
 ```
 
-请注意，构建必须生成您指定的组件，否则构建将失败。例如，以下命令不起作用，因为 `docker` 导出器不生成索引：
+Note that the build must produce the component that you specify, or else the
+build will fail. For example, the following does not work, because the `docker`
+exporter does not produce an index:
 
 ```console
 $ docker build --output type=docker --annotation "index:foo=bar" .
 ```
 
-同样，以下示例也不起作用，因为在某些情况下（例如当显式禁用 provenance 证明时），buildx 默认创建 `docker` 输出：
+Likewise, the following example also does not work, because buildx creates a
+`docker` output by default under some circumstances, such as when provenance
+attestations are explicitly disabled:
 
 ```console
 $ docker build --provenance=false --annotation "index:foo=bar" .
 ```
 
-可以指定用逗号分隔的类型，将注解添加到多个级别。以下示例创建一个在镜像索引和镜像清单上都有 `foo=bar` 注解的镜像：
+It is possible to specify types, separated by a comma, to add the annotation to
+more than one level. The following example creates an image with the annotation
+`foo=bar` on both the image index and the image manifest:
 
 ```console
 $ docker build --tag <IMAGE> --push --annotation "index,manifest:foo=bar" .
 ```
 
-您还可以在类型前缀中使用方括号指定平台限定符，仅注解匹配特定操作系统和架构的组件。以下示例仅将 `foo=bar` 注解添加到 `linux/amd64` 清单：
+You can also specify a platform qualifier within square brackets in the type
+prefix, to annotate only components matching specific OS and architectures. The
+following example adds the `foo=bar` annotation only to the `linux/amd64`
+manifest:
 
 ```console
 $ docker build --tag <IMAGE> --push --annotation "manifest[linux/amd64]:foo=bar" .
 ```
 
-## 相关信息
+## Related information
 
-相关文章：
+Related articles:
 
-- [使用 GitHub Actions 添加镜像注解](/manuals/build/ci/github-actions/annotations.md)
-- [注解 OCI 规范][specification]
+- [Add image annotations with GitHub Actions](/manuals/build/ci/github-actions/annotations.md)
+- [Annotations OCI specification][specification]
 
-参考信息：
+Reference information:
 
 - [`docker buildx build --annotation`](/reference/cli/docker/buildx/build.md#annotation)
-- [Bake 文件参考：`annotations`](/manuals/build/bake/reference.md#targetannotations)
+- [Bake file reference: `annotations`](/manuals/build/bake/reference.md#targetannotations)
 - [`docker buildx imagetools create --annotation`](/reference/cli/docker/buildx/imagetools/create.md#annotation)
 
 <!-- links -->

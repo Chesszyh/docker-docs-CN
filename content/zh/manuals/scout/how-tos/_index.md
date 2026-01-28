@@ -1,6 +1,6 @@
 ---
 build:
   render: never
-title: 操作指南
+title: How-tos
 weight: 50
 ---

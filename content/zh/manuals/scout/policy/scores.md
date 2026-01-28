@@ -1,108 +1,135 @@
 ---
-title: Docker Scout 健康评分
+title: Docker Scout health scores
 description: |
-  Docker Scout 健康评分为 Docker Hub 镜像提供供应链评估，
-  根据各种安全策略将其评级从 A 到 F。
+  Docker Scout health scores provide a supply chain assessment for Docker Hub
+  images, grading them from A to F based on various security policies.
 keywords: scout, health scores, evaluation, checks, grades, docker hub
 ---
 
 {{< summary-bar feature_name="Docker Scout health scores" >}}
 
-Docker Scout 健康评分为 Docker Hub 上的镜像提供安全评估和整体供应链健康状况，帮助您确定镜像是否符合既定的安全最佳实践。评分范围从 A 到 F，其中 A 代表最高安全级别，F 代表最低级别，为您的镜像安全状况提供一目了然的视图。
+Docker Scout health scores provide a security assessment, and overall supply
+chain health, of images on Docker Hub, helping you determine whether an image
+meets established security best practices. The scores range from A to F, where
+A represents the highest level of security and F the lowest, offering an
+at-a-glance view of the security posture of your images.
 
-只有属于拥有仓库的组织成员，并且至少对仓库具有"read"访问权限的用户才能查看健康评分。组织外部的用户或没有"read"访问权限的成员无法看到评分。
+Only users who are members of the organization that owns the repository, and
+have at least “read” access to the repository, can view the health score. The
+score is not visible to users outside the organization or members without
+"read" access.
 
-## 查看健康评分
+## Viewing health scores
 
 {{< tabs >}}
 {{< tab name="Docker Hub" >}}
 
-在 Docker Hub 中查看镜像的健康评分：
+To view the health score of an image in Docker Hub:
 
-1. 前往 Docker Hub 并登录。
-2. 导航到您组织的页面。
+1. Go to Docker Hub and sign in.
+2. Navigate to your organization's page.
 
-在仓库列表中，您可以看到每个仓库基于最新推送标签的健康评分。
+In the list of repositories, you can see the health score of each repository
+based on the latest pushed tag.
 
-![仓库健康评分](../images/score-badges-repolist.png)
+![Repository health score](../images/score-badges-repolist.png)
 
 {{< /tab >}}
 {{< tab name="Docker Desktop" >}}
 
-在 Docker Desktop 中查看镜像的健康评分：
+To view the health score of an image in Docker Desktop:
 
-1. 打开 Docker Desktop 并登录您的 Docker 账户。
-2. 导航到 **Images** 视图并选择 **Hub** 标签页。
+1. Open Docker Desktop and sign in to your Docker account.
+2. Navigate to the **Images** view and select the **Hub** tab.
 
-在仓库列表中，**Health** 列显示已推送到 Docker Hub 的不同标签的评分。
+In the list of repositories, the **Health** column displays the scores of the
+different tags that have been pushed to Docker Hub.
 
-![仓库健康评分](../images/score-badges-dd.png)
+![Repository health score](../images/score-badges-dd.png)
 
 {{< /tab >}}
 {{< /tabs >}}
 
-健康评分徽章使用颜色编码来指示仓库的整体健康状况：
+The health score badge is color-coded to indicate the overall health of the
+repository:
 
-- **绿色**：评分为 A 或 B。
-- **黄色**：评分为 C。
-- **橙色**：评分为 D。
-- **红色**：评分为 E 或 F。
-- **灰色**：`N/A` 评分。
+- **Green**: A score of A or B.
+- **Yellow**: A score of C.
+- **Orange**: A score of D.
+- **Red**: A score of E or F.
+- **Gray**: An `N/A` score.
 
-评分也显示在给定仓库的 Docker Hub 页面上，以及对评分有贡献的每个策略。
+The score is also displayed on the Docker Hub page for a given repository,
+along with each policy that contributed to the score.
 
-![Scout "A" 健康评分](../images/score-a-shiny.png?w=450px)
+![Scout "A" health score](../images/score-a-shiny.png?w=450px)
 
-## 评分系统
+## Scoring system
 
-健康评分通过根据 Docker Scout [策略](./_index.md)评估镜像来确定。这些策略与软件供应链的最佳实践保持一致。
+Health scores are determined by evaluating images against Docker Scout
+[policies](./_index.md). These policies align with best practices for the
+software supply chain.
 
-如果您的镜像仓库已经加入 Docker Scout，健康评分将根据为您的组织启用的策略自动计算。这还包括您配置的任何自定义策略。
+If your image repositories are already enrolled with Docker Scout, the health
+score is calculated automatically based on the policies that are enabled for
+your organization. This also includes any custom policies that you have
+configured.
 
-如果您没有使用 Docker Scout，健康评分显示您的镜像与默认策略的合规性，这是 Docker 推荐的一套供应链规则，作为镜像的基础标准。您可以为您的组织启用 Docker Scout 并编辑策略配置，以根据您的特定策略获得更相关的健康评分。
+If you're not using Docker Scout, the health scores show the compliance of your
+images with the default policies, a set of supply chain rules recommended by
+Docker as foundational standards for images. You can enable Docker Scout for
+your organization and edit the policy configurations to get a more relevant
+health score based on your specific policies.
 
-### 评分过程
+### Scoring process
 
-每个策略根据其[类型](/manuals/scout/policy/_index.md#policy-types)被分配一个分值。如果镜像符合策略，它将获得该策略类型的分值。镜像的健康评分根据获得的分数占总可能分数的百分比来计算。
+Each policy is assigned a points value based on its
+[type](/manuals/scout/policy/_index.md#policy-types). If the image is compliant
+with a policy, it is awarded the points value for that policy type. The health
+score of an image is calculated based on the percentage of points achieved
+relative to the total possible points.
 
-1. 评估镜像的策略合规性。
-2. 根据策略合规性授予分数。
-3. 计算获得分数的百分比：
+1. Policy compliance is evaluated for the image.
+2. Points are awarded based on compliance with policies.
+3. The points achieved percentage is calculated:
 
    ```text
    Percentage = (Points / Total) * 100
    ```
 
-4. 根据获得分数的百分比分配最终评分，如下表所示：
+4. The final score is assigned based on the percentage of points achieved, as
+   shown in the following table:
 
-   | 分数百分比（获得/总分）    | 评分 |
+   | Points percentage (awarded out of total) | Score |
    | ---------------------------------------- | ----- |
-   | 超过 90%                                 | A     |
-   | 71% 到 90%                               | B     |
-   | 51% 到 70%                               | C     |
-   | 31% 到 50%                               | D     |
-   | 11% 到 30%                               | E     |
-   | 低于 10%                                 | F     |
+   | More than 90%                            | A     |
+   | 71% to 90%                               | B     |
+   | 51% to 70%                               | C     |
+   | 31% to 50%                               | D     |
+   | 11% to 30%                               | E     |
+   | Less than 10%                            | F     |
 
-### N/A 评分
+### N/A scores
 
-镜像也可能被分配 `N/A` 评分，这可能发生在以下情况：
+Images can also be assigned an `N/A` score, which can happen when:
 
-- 镜像大于 4GB（压缩大小）。
-- 镜像架构不是 `linux/amd64` 或 `linux/arm64`。
-- 镜像太旧，没有用于评估的新数据。
+- The image is larger than 4GB (compressed size).
+- The image architecture is not `linux/amd64` or `linux/arm64`.
+- The image is too old and does not have fresh data for evaluation.
 
-如果您看到 `N/A` 评分，请考虑以下事项：
+If you see an `N/A` score, consider the following:
 
-- 如果镜像太大，尝试减小镜像大小。
-- 如果镜像具有不支持的架构，为支持的架构重新构建镜像。
-- 如果镜像太旧，推送新标签以触发新的评估。
+- If the image is too large, try reducing the size of the image.
+- If the image has an unsupported architecture, rebuild the image for a
+  supported architecture.
+- If the image is too old, push a new tag to trigger a fresh evaluation.
 
-### 策略权重
+### Policy weights
 
-不同的策略类型具有不同的权重，这会影响评估期间分配给镜像的分数，如下表所示。
+Different policy types carry varying weights, which impact the score assigned
+to an image during evaluation, as shown in the following table.
 
-| 策略类型                                                                                  | 分数 |
+| Policy type                                                                                  | Points |
 | -------------------------------------------------------------------------------------------- | ------ |
 | [Severity-Based Vulnerability](/manuals/scout/policy/_index.md#severity-based-vulnerability) | 20     |
 | [High-Profile Vulnerabilities](/manuals/scout/policy/_index.md#high-profile-vulnerabilities) | 20     |
@@ -113,30 +140,41 @@ Docker Scout 健康评分为 Docker Hub 上的镜像提供安全评估和整体�
 | [Default Non-Root User](/manuals/scout/policy/_index.md#default-non-root-user)               | 5      |
 | [Compliant Licenses](/manuals/scout/policy/_index.md#compliant-licenses)                     | 5      |
 
-\* *此策略默认不启用，必须由用户配置。*
+\* _This policy is not enabled by default and must be configured by the user._
 
-### 评估
+### Evaluation
 
-健康评分是在启用该功能后为推送到 Docker Hub 的新镜像计算的。健康评分帮助您维护高安全标准，并确保您的应用程序构建在安全可靠的镜像上。
+Health scores are calculated for new images pushed to Docker Hub after the
+feature is enabled. The health scores help you maintain high security standards
+and ensure your applications are built on secure and reliable images.
 
-### 仓库评分
+### Repository scores
 
-除了单个镜像评分（按标签或摘要），每个仓库还会根据最新推送的标签获得健康评分，提供仓库安全状态的整体视图。
+In addition to individual image scores (per tag or digest), each repository
+receives a health score based on the latest pushed tag, providing an overall
+view of the repository's security status.
 
-### 示例
+### Example
 
-对于总可能分数为 100 分的镜像：
+For an image with a total possible score of 100 points:
 
-- 如果镜像仅偏离一个策略（价值 5 分），其分数将是 100 分中的 95 分。由于此分数高于第 90 百分位，镜像将获得 A 健康评分。
-- 如果镜像不符合更多策略并获得 100 分中的 65 分，它将获得 C 健康评分，反映其较低的合规性。
+- If the image only deviates from one policy, worth 5 points, its score will be
+  95 out of 100. Since this score is above the 90th percentile, the image
+  receives an A health score.
+- If the image is non-compliant with more policies and scores 65 out of 100, it
+  receives a C health score, reflecting its lower compliance.
 
-## 提高您的健康评分
+## Improving your health score
 
-要提高镜像的健康评分，请采取措施确保镜像符合 Docker Scout 推荐的[策略](./_index.md)。
+To improve the health score of an image, take steps to ensure that the image is
+compliant with the Docker Scout recommended [policies](./_index.md).
 
-1. 前往 [Docker Scout 仪表板](https://scout.docker.com/)。
-2. 使用您的 Docker ID 登录。
-3. 前往[仓库设置](https://scout.docker.com/settings/repos)，为您的 Docker Hub 镜像仓库启用 Docker Scout。
-4. 分析您仓库的[策略合规性](./_index.md)，并采取措施确保您的镜像符合策略。
+1. Go to the [Docker Scout Dashboard](https://scout.docker.com/).
+2. Sign in using your Docker ID.
+3. Go to [Repository settings](https://scout.docker.com/settings/repos) and
+   enable Docker Scout for your Docker Hub image repositories.
+4. Analyze the [policy compliance](./_index.md) for your repositories,
+   and take actions to ensure your images are policy-compliant.
 
-由于策略的权重不同，优先考虑得分最高的策略，以对镜像的整体评分产生更大影响。
+Since policies are weighted differently, prioritize the policies with the
+highest scores for a greater impact on your image's overall score.

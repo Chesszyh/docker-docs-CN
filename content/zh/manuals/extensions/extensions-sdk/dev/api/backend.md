@@ -1,18 +1,18 @@
 ---
-title: 扩展后端
-description: Docker 扩展 API
+title: Extension Backend
+description: Docker extension API
 keywords: Docker, extensions, sdk, API
-aliases:
+aliases: 
  - /desktop/extensions-sdk/dev/api/backend/
 ---
 
-`ddClient.extension.vm` 对象可用于与扩展元数据 [vm 部分](../../architecture/metadata.md#vm-section)中定义的后端进行通信。
+The `ddClient.extension.vm` object can be used to communicate with the backend defined in the [vm section](../../architecture/metadata.md#vm-section) of the extension metadata.
 
 ## get
 
 ▸ **get**(`url`): `Promise`<`unknown`\>
 
-执行 HTTP GET 请求到后端服务。
+Performs an HTTP GET request to a backend service.
 
 ```typescript
 ddClient.extension.vm.service
@@ -20,15 +20,17 @@ ddClient.extension.vm.service
  .then((value: any) => console.log(value)
 ```
 
-有关其他方法（如 POST、UPDATE 和 DELETE），请参阅 [Service API 参考](/reference/api/extensions-sdk/HttpService.md)。
+See [Service API Reference](/reference/api/extensions-sdk/HttpService.md) for other methods such as POST, UPDATE, and DELETE.
 
-> 已弃用的扩展后端通信
+> Deprecated extension backend communication
 >
-> 下面使用 `window.ddClient.backend` 的方法已被弃用，将在未来版本中移除。请使用上面指定的方法。
+> The methods below that use `window.ddClient.backend` are deprecated and will be removed in a future version. Use the methods specified above.
 
-`window.ddClient.backend` 对象可用于与扩展元数据 [vm 部分](../../architecture/metadata.md#vm-section)中定义的后端进行通信。客户端已连接到后端。
+The `window.ddClient.backend` object can be used to communicate with the backend
+defined in the [vm section](../../architecture/metadata.md#vm-section) of the
+extension metadata. The client is already connected to the backend.
 
-使用示例：
+Example usages:
 
 ```typescript
 window.ddClient.backend
@@ -60,15 +62,15 @@ window.ddClient.backend
   .then((value: any) => console.log(value));
 ```
 
-## 在扩展后端容器中运行命令
+## Run a command in the extension backend container
 
-例如，在后端容器内执行命令 `ls -l`：
+For example, execute the command `ls -l` inside the backend container:
 
 ```typescript
 await ddClient.extension.vm.cli.exec("ls", ["-l"]);
 ```
 
-流式输出在后端容器中执行的命令。例如，在后端容器内生成命令 `ls -l`：
+Stream the output of the command executed in the backend container. For example, spawn the command `ls -l` inside the backend container:
 
 ```typescript
 await ddClient.extension.vm.cli.exec("ls", ["-l"], {
@@ -90,13 +92,14 @@ await ddClient.extension.vm.cli.exec("ls", ["-l"], {
 });
 ```
 
-有关更多详细信息，请参阅 [Extension VM API 参考](/reference/api/extensions-sdk/ExtensionVM.md)
+For more details, refer to the [Extension VM API Reference](/reference/api/extensions-sdk/ExtensionVM.md)
 
-> 已弃用的扩展后端命令执行
+> Deprecated extension backend command execution
 >
-> 此方法已被弃用，将在未来版本中移除。请使用上面指定的方法。
+> This method is deprecated and will be removed in a future version. Use the specified method above.
 
-如果您的扩展附带了应在后端容器内运行的额外二进制文件，您可以使用 `execInVMExtension` 函数：
+If your extension ships with additional binaries that should be run inside the
+backend container, you can use the `execInVMExtension` function:
 
 ```typescript
 const output = await window.ddClient.backend.execInVMExtension(
@@ -105,17 +108,18 @@ const output = await window.ddClient.backend.execInVMExtension(
 console.log(output);
 ```
 
-## 在主机上调用扩展二进制文件
+## Invoke an extension binary on the host
 
-您可以运行在扩展元数据 [host 部分](../../architecture/metadata.md#host-section)中定义的二进制文件。
+You can run binaries defined in the [host section](../../architecture/metadata.md#host-section)
+of the extension metadata.
 
-例如，在主机上执行附带的二进制文件 `kubectl -h` 命令：
+For example, execute the shipped binary `kubectl -h` command in the host:
 
 ```typescript
 await ddClient.extension.host.cli.exec("kubectl", ["-h"]);
 ```
 
-只要 `kubectl` 二进制文件作为扩展的一部分被附带，您就可以在主机上生成 `kubectl -h` 命令并获取输出流：
+As long as the `kubectl` binary is shipped as part of your extension, you can spawn the `kubectl -h` command in the host and get the output stream:
 
 ```typescript
 await ddClient.extension.host.cli.exec("kubectl", ["-h"], {
@@ -137,15 +141,15 @@ await ddClient.extension.host.cli.exec("kubectl", ["-h"], {
 });
 ```
 
-您可以流式输出在后端容器或主机中执行的命令。
+You can stream the output of the command executed in the backend container or in the host.
 
-有关更多详细信息，请参阅 [Extension Host API 参考](/reference/api/extensions-sdk/ExtensionHost.md)
+For more details, refer to the [Extension Host API Reference](/reference/api/extensions-sdk/ExtensionHost.md)
 
-> 已弃用的扩展二进制文件调用
+> Deprecated invocation of extension binary
 >
-> 此方法已被弃用，将在未来版本中移除。请使用上面指定的方法。
+> This method is deprecated and will be removed in a future version. Use the method specified above.
 
-在主机上执行命令：
+To execute a command in the host:
 
 ```typescript
 window.ddClient.execHostCmd(`cliShippedOnHost xxx`).then((cmdResult: any) => {
@@ -153,7 +157,7 @@ window.ddClient.execHostCmd(`cliShippedOnHost xxx`).then((cmdResult: any) => {
 });
 ```
 
-流式输出在后端容器或主机中执行的命令：
+To stream the output of the command executed in the backend container or in the host:
 
 ```typescript
 window.ddClient.spawnHostCmd(
@@ -170,7 +174,7 @@ window.ddClient.spawnHostCmd(
 ```
 
 > [!NOTE]
+> 
+>You cannot use this to chain commands in a single `exec()` invocation (like `cmd1 $(cmd2)` or using pipe between commands).
 >
->您不能在单个 `exec()` 调用中使用命令链（如 `cmd1 $(cmd2)` 或在命令之间使用管道）。
->
-> 您需要为每个命令调用 `exec()`，并在需要时解析结果以将参数传递给下一个命令。
+> You need to invoke `exec()` for each command and parse results to pass parameters to the next command if needed.

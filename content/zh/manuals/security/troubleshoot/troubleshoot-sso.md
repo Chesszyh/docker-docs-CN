@@ -1,228 +1,233 @@
 ---
-description: 了解如何排查常见的 SSO 问题。
+description: Learn how to troubleshoot common SSO issues.
 keywords: sso, troubleshoot, single sign-on
-title: 单点登录故障排除
-linkTitle: SSO 故障排除
+title: Troubleshoot single sign-on
+linkTitle: Troubleshoot SSO
 tags: [Troubleshooting]
 toc_max: 2
 aliases:
     - "/security/for-admins/single-sign-on/troubleshoot/"
 ---
 
-在配置或使用单点登录（Single Sign-On，SSO）时，您可能会遇到源自身份提供商（Identity Provider，IdP）或 Docker 配置的问题。以下部分描述了一些常见的 SSO 错误及可能的解决方案。
+While configuring or using single sign-on (SSO), you may encounter issues that
+can stem from your identity provider (IdP) or Docker configuration. The
+following sections describe some common SSO errors and possible solutions.
 
-## 检查错误
+## Check for errors
 
-如果您遇到 SSO 问题，请首先检查 Docker Admin Console 和您的身份提供商（IdP）中的错误。
+If you experience issues with SSO, check both the Docker Admin Console and your identity provider (IdP) for errors first.
 
-### 检查 Docker 错误日志
+### Check Docker error logs
 
-1. 登录 [Docker Home](https://app.docker.com/) 并选择您的组织。
-1. 选择 **Admin Console**，然后选择 **SSO and SCIM**。
-1. 在 SSO 连接表中，选择 **Action** 菜单，然后选择 **View error logs**。
-1. 要获取特定错误的更多详细信息，请选择错误消息旁边的 **View error details**。
-1. 记录您在此页面上看到的任何错误，以便进一步排查。
+1. Sign in to [Docker Home](https://app.docker.com/) and select your organization.
+1. Select **Admin Console**, then **SSO and SCIM**.
+1. In the SSO connections table, select the **Action** menu and then **View error logs**.
+1. For more details on specific errors, select **View error details** next to an error message.
+1. Note any errors you see on this page for further troubleshooting.
 
-### 检查 IdP 中的错误
+### Check for errors in your IdP
 
-1. 查看您的 IdP 的日志或审计跟踪，了解任何失败的身份验证或配置尝试。
-2. 确认您的 IdP 的 SSO 设置与 Docker 中提供的值匹配。
-3. 如果适用，确认您已正确配置用户配置并在 IdP 中启用了它。
-4. 如果适用，验证您的 IdP 是否正确映射了 Docker 所需的用户属性。
-5. 尝试从您的 IdP 配置一个测试用户，并验证他们是否出现在 Docker 中。
+1. Review your IdP’s logs or audit trails for any failed authentication or provisioning attempts.
+2. Confirm that your IdP’s SSO settings match the values provided in Docker.
+3. If applicable, confirm that you have configured user provisioning correctly and that it is enabled in your IdP.
+4. If applicable, verify that your IdP correctly maps Docker's required user attributes.
+5. Try provisioning a test user from your IdP and verify if they appear in Docker.
 
-如需进一步排查，请查阅您的 IdP 文档。您也可以联系他们的支持团队以获取有关错误消息的指导。
+For further troubleshooting, check your IdP’s documentation. You can also contact their support team for guidance on error messages.
 
-## 群组格式不正确
+## Groups are not formatted correctly
 
-### 错误消息
+### Error message
 
-当发生此问题时，常见的错误消息如下：
+When this issue occurs, the following error message is common:
 ```text
 Some of the groups assigned to the user are not formatted as '<organization name>:<team name>'. Directory groups will be ignored and user will be provisioned into the default organization and team.
 ```
 
-### 可能的原因
+### Possible causes
 
-- 您的身份提供商（IdP）中的群组名称格式不正确：Docker 要求群组遵循 `<organization>:<team>` 格式。如果分配给用户的群组不遵循此格式，它们将被忽略。
-- IdP 和 Docker 组织之间的群组不匹配：如果您的 IdP 中的群组在 Docker 中没有对应的团队，它将不会被识别，用户将被放置在默认组织和团队中。
+- Incorrect group name formatting in your identity provider (IdP): Docker requires groups to follow the format `<organization>:<team>`. If the groups assigned to a user do not follow this format, they will be ignored.
+- Non-matching groups between IdP and Docker organization: If a group in your IdP does not have a corresponding team in Docker, it will not be recognized, and the user will be placed in the default organization and team.
 
-### 受影响的环境
+### Affected environments
 
-- 使用 Okta 或 Azure AD 等 IdP 的 Docker 单点登录设置
-- 在 Docker 中使用基于群组的角色分配的组织
+- Docker single sign-on setup using IdPs such as Okta or Azure AD
+- Organizations using group-based role assignments in Docker
 
-### 复现步骤
+### Steps to replicate
 
-要复现此问题：
-1. 尝试使用 SSO 登录 Docker。
-2. 用户在 IdP 中被分配了群组，但没有被放置在预期的 Docker 团队中。
-3. 查看 Docker 日志或 IdP 日志以查找错误消息。
+To replicate this issue:
+1. Attempt to sign in to Docker using SSO.
+2. The user is assigned groups in the IdP but does not get placed in the expected Docker Team.
+3. Review Docker logs or IdP logs to find the error message.
 
-### 解决方案
+### Solutions
 
-在您的 IdP 中更新群组名称：
-1. 转到您的 IdP 的群组管理部分。
-2. 检查分配给受影响用户的群组。
-3. 确保每个群组遵循所需的格式：`<organization>:<team>`
-4. 更新任何格式不正确的群组以匹配此模式。
-5. 保存更改并重试使用 SSO 登录。
+Update group names in your IdP:
+1. Go to your IdP's group management section.
+2. Check the groups assigned to the affected user.
+3. Ensure each group follows the required format: `<organization>:<team>`
+4. Update any incorrectly formatted groups to match this pattern.
+5. Save changes and retry signing in with SSO.
 
-## 用户未分配到组织
+## User is not assigned to the organization
 
-### 错误消息
+### Error message
 
-当发生此问题时，常见的错误消息如下：
+When this issue occurs, the following error message is common:
 ```text
 User '$username' is not assigned to this SSO organization. Contact your administrator. TraceID: XXXXXXXXXXXXX
 ```
 
-### 可能的原因
+### Possible causes
 
-- 用户未分配到组织：如果即时配置（Just-in-Time，JIT）已禁用，用户可能未被分配到您的组织。
-- 用户未被邀请到组织：如果 JIT 已禁用且您不想启用它，必须手动邀请用户。
-- SCIM 配置错误：如果您使用 SCIM 进行用户配置，它可能未能正确从您的 IdP 同步用户。
+- User is not assigned to the organization: If Just-in-Time (JIT) provisioning is disabled, the user may not be assigned to your organization.
+- User is not invited to the organization: If JIT is disabled and you do not want to enable it, the user must be manually invited.
+- SCIM provisioning is misconfigured: If you use SCIM for user provisioning, it may not be correctly syncing users from your IdP.
 
-### 解决方案
+### Solutions
 
-**启用 JIT 配置**
+**Enable JIT provisioning**
 
-当您启用 SSO 时，JIT 默认启用。如果您已禁用 JIT 并需要重新启用：
+JIT is enabled by default when you enable SSO. If you have JIT disabled and need
+to re-enable it:
 
-1. 登录 [Docker Home](https://app.docker.com/) 并选择您的组织。
-1. 选择 **Admin Console**，然后选择 **SSO and SCIM**。
-1. 在 SSO 连接表中，选择 **Action** 菜单，然后选择 **Enable JIT provisioning**。
-1. 选择 **Enable** 确认。
+1. Sign in to [Docker Home](https://app.docker.com/) and select your organization.
+1. Select **Admin Console**, then **SSO and SCIM**.
+1. In the SSO connections table, select the **Action** menu and then **Enable JIT provisioning**.
+1. Select **Enable** to confirm.
 
-**手动邀请用户**
+**Manually invite users**
 
-当 JIT 禁用时，用户在通过 SSO 进行身份验证时不会自动添加到您的组织。
-要手动邀请用户，请参阅[邀请成员](/manuals/admin/organization/members.md#invite-members)
+When JIT is disabled, users are not automatically added to your organization when they authenticate through SSO.
+To manually invite users, see [Invite members](/manuals/admin/organization/members.md#invite-members)
 
-**配置 SCIM 配置**
+**Configure SCIM provisioning**
 
-如果您启用了 SCIM，请使用以下步骤排查您的 SCIM 连接：
+If you have SCIM enabled, troubleshoot your SCIM connection using the following steps:
 
-1. 登录 [Docker Home](https://app.docker.com/) 并选择您的组织。
-1. 选择 **Admin Console**，然后选择 **SSO and SCIM**。
-1. 在 SSO 连接表中，选择 **Action** 菜单，然后选择 **View error logs**。要获取特定错误的更多详细信息，请选择错误消息旁边的 **View error details**。记录您在此页面上看到的任何错误。
-1. 返回 Admin Console 的 **SSO and SCIM** 页面并验证您的 SCIM 配置：
-    - 确保您的 IdP 中的 SCIM Base URL 和 API Token 与 Docker Admin Console 中提供的匹配。
-    - 验证 SCIM 在 Docker 和您的 IdP 中都已启用。
-1. 确保从您的 IdP 同步的属性与 Docker 的 SCIM [支持的属性](/manuals/security/for-admins/provisioning/scim.md#supported-attributes)匹配。
-1. 通过尝试从您的 IdP 配置一个测试用户来测试用户配置，并验证他们是否出现在 Docker 中。
+1. Sign in to [Docker Home](https://app.docker.com/) and select your organization.
+1. Select **Admin Console**, then **SSO and SCIM**.
+1. In the SSO connections table, select the **Action** menu and then **View error logs**. For more details on specific errors, select **View error details** next to an error message. Note any errors you see on this page.
+1. Navigate back to the **SSO and SCIM** page of the Admin Console and verify your SCIM configuration:
+    - Ensure that the SCIM Base URL and API Token in your IdP match those provided in the Docker Admin Console.
+    - Verify that SCIM is enabled in both Docker and your IdP.
+1. Ensure that the attributes being synced from your IdP match Docker's [supported attributes](/manuals/security/for-admins/provisioning/scim.md#supported-attributes) for SCIM.
+1. Test user provisioning by trying to provision a test user through your IdP and verify if they appear in Docker.
 
-## IdP 发起的登录未为连接启用
+## IdP-initiated sign in is not enabled for connection
 
-### 错误消息
+### Error message
 
-当发生此问题时，常见的错误消息如下：
+When this issue occurs, the following error message is common:
 ```text
 IdP-Initiated sign in is not enabled for connection '$ssoConnection'.
 ```
 
-### 可能的原因
+### Possible causes
 
-Docker 不支持 IdP 发起的 SAML 流程。当用户尝试从您的 IdP 进行身份验证时会发生此错误，例如在登录页面上使用 Docker SSO 应用图标。
+Docker does not support an IdP-initiated SAML flow. This error occurs when a user attempts to authenticate from your IdP, such as using the Docker SSO app tile on the sign in page.
 
-### 解决方案
+### Solutions
 
-**从 Docker 应用进行身份验证**
+**Authenticate from Docker apps**
 
-用户必须从 Docker 应用（Hub、Desktop 等）发起身份验证。用户需要在 Docker 应用中输入其电子邮件地址，然后将被重定向到为其域配置的 SSO IdP。
+The user must initiate authentication from Docker applications (Hub, Desktop, etc). The user needs to enter their email address in a Docker app and they will get redirected to the configured SSO IdP for their domain.
 
-**隐藏 Docker SSO 应用**
+**Hide the Docker SSO app**
 
-您可以在 IdP 中对用户隐藏 Docker SSO 应用。这可以防止用户尝试从 IdP 仪表板发起身份验证。您必须在 IdP 中隐藏和配置此项。
+You can hide the Docker SSO app from users in your IdP. This prevents users from attempting to start authentication from the IdP dashboard. You must hide and configure this in your IdP.
 
-## 组织中没有足够的席位
+## Not enough seats in organization
 
-### 错误消息
+### Error message
 
-当发生此问题时，常见的错误消息如下：
+When this issue occurs, the following error message is common:
 ```text
 Not enough seats in organization '$orgName'. Add more seats or contact your administrator.
 ```
 
-### 可能的原因
+### Possible causes
 
-当通过即时配置（JIT）或 SCIM 配置用户时，组织没有可用的席位给用户，就会发生此错误。
+This error occurs when the organization has no available seats for the user when provisioning via Just-in-Time (JIT) provisioning or SCIM.
 
-### 解决方案
+### Solutions
 
-**为组织添加更多席位**
+**Add more seats to the organization**
 
-购买额外的 Docker Business 订阅席位。有关详细信息，请参阅[管理订阅席位](/manuals/subscription/manage-seats.md)。
+Purchase additional Docker Business subscription seats. For details, see [Manage subscription seats](/manuals/subscription/manage-seats.md).
 
-**移除用户或待处理的邀请**
+**Remove users or pending invitations**
 
-查看您的组织成员和待处理的邀请。移除不活跃的用户或待处理的邀请以释放席位。更多详细信息，请参阅[管理组织成员](/manuals/admin/organization/members.md)。
+Review your organization members and pending invitations. Remove inactive users or pending invitations to free up seats. For more details, see [Manage organization members](/manuals/admin/organization/members.md).
 
-## 域未为 SSO 连接验证
+## Domain is not verified for SSO connection
 
-### 错误消息
+### Error message
 
-当发生此问题时，常见的错误消息如下：
+When this issue occurs, the following error message is common:
 ```text
 Domain '$emailDomain' is not verified for your SSO connection. Contact your company administrator. TraceID: XXXXXXXXXXXXXX
 ```
 
-### 可能的原因
+### Possible causes
 
-如果 IdP 通过 SSO 对用户进行了身份验证，但返回给 Docker 的用户主体名称（User Principal Name，UPN）与 Docker 中配置的 SSO 连接关联的任何已验证域都不匹配，就会发生此错误。
+This error occurs if the IdP authenticated a user through SSO and the User Principal Name (UPN)
+returned to Docker doesn’t match any of the verified domains associated to the
+SSO connection configured in Docker.
 
-### 解决方案
+### Solutions
 
-**验证 UPN 属性映射**
+**Verify UPN attribute mapping**
 
-确保 IdP SSO 连接在断言属性中返回正确的 UPN 值。
+Ensure that the IdP SSO connection is returning the correct UPN value in the assertion attributes.
 
-**添加并验证所有域**
+**Add and verify all domains**
 
-添加并验证您的 IdP 用作 UPN 的所有域和子域，并将它们与您的 Docker SSO 连接关联。有关详细信息，请参阅[配置单点登录](/manuals/security/for-admins/single-sign-on/configure.md)。
+Add and verify all domains and subdomains used as UPN by your IdP and associate them with your Docker SSO connection. For details, see [Configure single sign-on](/manuals/security/for-admins/single-sign-on/configure.md).
 
-## 无法找到会话
+## Unable to find session
 
-### 错误消息
+### Error message
 
-当发生此问题时，常见的错误消息如下：
+When this issue occurs, the following error message is common:
 ```text
 We couldn't find your session. You may have pressed the back button, refreshed the page, opened too many sign-in dialogs, or there is some issue with cookies. Try signing in again. If the issue persists, contact your administrator.
 ```
 
-### 可能的原因
+### Possible causes
 
-以下原因可能导致此问题：
-- 用户在身份验证期间按了后退或刷新按钮。
-- 身份验证流程丢失了对初始请求的跟踪，导致无法完成。
+The following causes may create this issue:
+- The user pressed the back or refresh button during authentication.
+- The authentication flow lost track of the initial request, preventing completion.
 
-### 解决方案
+### Solutions
 
-**不要中断身份验证流程**
+**Do not disrupt the authentication flow**
 
-登录期间不要按后退或刷新按钮。
+Do not press the back or refresh button during sign-in.
 
-**重新开始身份验证**
+**Restart authentication**
 
-关闭浏览器标签页，从 Docker 应用（Desktop、Hub 等）重新开始身份验证流程。
+Close the browser tab and restart the authentication flow from the Docker application (Desktop, Hub, etc).
 
-## Name ID 不是电子邮件地址
+## Name ID is not an email address
 
-### 错误消息
+### Error message
 
-当发生此问题时，常见的错误消息如下：
+When this issue occurs, the following error message is common:
 ```text
 The name ID sent by the identity provider is not an email address. Contact your company administrator.
 ```
 
-### 可能的原因
+### Possible causes
 
-以下原因可能导致此问题：
-- IdP 发送的 Name ID（UPN）不符合 Docker 要求的电子邮件格式。
-- Docker SSO 要求 Name ID 是用户的主要电子邮件地址。
+The following causes may create this issue:
+- The IdP sends a Name ID (UPN) that does not comply with the email format required by Docker.
+- Docker SSO requires the Name ID to be the primary email address of the user.
 
-### 解决方案
+### Solutions
 
-在您的 IdP 中，确保 Name ID 属性格式正确：
-1. 验证您的 IdP 中的 Name ID 属性格式设置为 `EmailAddress`。
-2. 调整您的 IdP 设置以返回正确的 Name ID 格式。
+In your IdP, ensure the Name ID attribute format is correct:
+1. Verify that the Name ID attribute format in your IdP is set to `EmailAddress`.
+2. Adjust your IdP settings to return the correct Name ID format.

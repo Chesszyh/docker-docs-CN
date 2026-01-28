@@ -1,7 +1,8 @@
 ---
-title: Docker Compose 中的环境变量优先级
-linkTitle: 环境变量优先级
-description: 场景概述，说明 Compose 中环境变量是如何解析的
+title: Environment variables precedence in Docker Compose
+linkTitle: Environment variables precedence
+description: Scenario overview illustrating how environment variables are resolved
+  in Compose
 keywords: compose, environment, env file
 weight: 20
 aliases:
@@ -9,21 +10,21 @@ aliases:
 - /compose/environment-variables/envvars-precedence/
 ---
 
-当同一个环境变量在多个来源中设置时，Docker Compose 会遵循优先级规则来确定该变量在容器环境中的值。
+When the same environment variable is set in multiple sources, Docker Compose follows a precedence rule to determine the value for that variable in your container's environment.
 
-本页解释了当环境变量在多个位置定义时，Docker Compose 如何确定其最终值。
+This page explains how Docker Compose determines the final value of an environment variable when it's defined in multiple locations.
 
-优先级顺序（从高到低）如下：
-1. 在 CLI 中使用 [`docker compose run -e`](set-environment-variables.md#set-environment-variables-with-docker-compose-run---env) 设置。
-2. 使用 `environment` 或 `env_file` 属性设置，但值从你的 [shell](variable-interpolation.md#substitute-from-the-shell) 或环境文件中插值。（可以是默认的 [`.env` 文件](variable-interpolation.md#env-file)，或在 CLI 中使用 [`--env-file` 参数](variable-interpolation.md#substitute-with---env-file)）。
-3. 仅使用 Compose 文件中的 [`environment` 属性](set-environment-variables.md#use-the-environment-attribute)设置。
-4. 使用 Compose 文件中的 [`env_file` 属性](set-environment-variables.md#use-the-env_file-attribute)。
-5. 在容器镜像的 [ENV 指令](/reference/dockerfile.md#env)中设置。
-   只有当 Compose 文件中没有 `environment`、`env_file` 或 `run --env` 条目时，`Dockerfile` 中的任何 `ARG` 或 `ENV` 设置才会生效。
+The order of precedence (highest to lowest) is as follows:
+1. Set using [`docker compose run -e` in the CLI](set-environment-variables.md#set-environment-variables-with-docker-compose-run---env).
+2. Set with either the `environment` or `env_file` attribute but with the value interpolated from your [shell](variable-interpolation.md#substitute-from-the-shell) or an environment file. (either your default [`.env` file](variable-interpolation.md#env-file), or with the [`--env-file` argument](variable-interpolation.md#substitute-with---env-file) in the CLI).
+3. Set using just the [`environment` attribute](set-environment-variables.md#use-the-environment-attribute) in the Compose file.
+4. Use of the [`env_file` attribute](set-environment-variables.md#use-the-env_file-attribute) in the Compose file.
+5. Set in a container image in the [ENV directive](/reference/dockerfile.md#env).
+   Having any `ARG` or `ENV` setting in a `Dockerfile` evaluates only if there is no Docker Compose entry for `environment`, `env_file` or `run --env`.
 
-## 简单示例
+## Simple example
 
-在以下示例中，同一个环境变量在 `.env` 文件和 Compose 文件的 `environment` 属性中有不同的值：
+In the following example, a different value for the same environment variable in an `.env` file and with the `environment` attribute in the Compose file:
 
 ```console
 $ cat ./webapp.env
@@ -39,26 +40,26 @@ services:
      - NODE_ENV=production
 ```
 
-使用 `environment` 属性定义的环境变量优先级更高。
+The environment variable defined with the `environment` attribute takes precedence.
 
 ```console
 $ docker compose run webapp env | grep NODE_ENV
 NODE_ENV=production
 ```
 
-## 高级示例
+## Advanced example 
 
-下表以 `VALUE`（一个定义镜像版本的环境变量）为例。
+The following table uses `VALUE`, an environment variable defining the version for an image, as an example.
 
-### 表格说明
+### How the table works
 
-每列代表一个可以设置值或为 `VALUE` 替换值的上下文。
+Each column represents a context from where you can set a value, or substitute in a value for `VALUE`.
 
-`Host OS environment` 和 `.env` 文件列仅用于说明目的。实际上，它们本身不会在容器中产生变量，但与 `environment` 或 `env_file` 属性结合使用时会。
+The columns `Host OS environment` and `.env` file is listed only for illustration purposes. In reality, they don't result in a variable in the container by itself, but in conjunction with either the `environment` or `env_file` attribute.
 
-每行代表设置、替换或同时进行 `VALUE` 的上下文组合。**Result** 列表示每个场景中 `VALUE` 的最终值。
+Each row represents a combination of contexts where `VALUE` is set, substituted, or both. The **Result** column indicates the final value for `VALUE` in each scenario.
 
-|  # |  `docker compose run`  |  `environment` 属性  |  `env_file` 属性  |  镜像 `ENV` |  `Host OS` 环境  |  `.env` 文件      |   结果  |
+|  # |  `docker compose run`  |  `environment` attribute  |  `env_file` attribute  |  Image `ENV` |  `Host OS` environment  |  `.env` file      |   Result  |
 |:--:|:----------------:|:-------------------------------:|:----------------------:|:------------:|:-----------------------:|:-----------------:|:----------:|
 |  1 |   -              |   -                             |   -                    |   -          |  `VALUE=1.4`            |  `VALUE=1.3`      | -               |
 |  2 |   -              |   -                             |  `VALUE=1.6`           |  `VALUE=1.5` |  `VALUE=1.4`            |   -               |**`VALUE=1.6`**  |
@@ -76,35 +77,35 @@ NODE_ENV=production
 | 14 |`--env VALUE=1.8` |   -                             |  `VALUE=1.6`           |  `VALUE=1.5` |  `VALUE=1.4`            |  `VALUE=1.3`      |**`VALUE=1.8`**  |
 | 15 |`--env VALUE=1.8` |  `VALUE=1.7`                    |  `VALUE=1.6`           |  `VALUE=1.5` |  `VALUE=1.4`            |  `VALUE=1.3`      |**`VALUE=1.8`**  |
 
-### 理解优先级结果
+### Understanding precedence results
 
-结果 1：本地环境优先，但 Compose 文件未设置在容器内复制此值，因此不会设置该变量。
+Result 1: The local environment takes precedence, but the Compose file is not set to replicate this inside the container, so no such variable is set.
 
-结果 2：Compose 文件中的 `env_file` 属性为 `VALUE` 定义了显式值，因此容器环境相应地设置。
+Result 2: The `env_file` attribute in the Compose file defines an explicit value for `VALUE` so the container environment is set accordingly.
 
-结果 3：Compose 文件中的 `environment` 属性为 `VALUE` 定义了显式值，因此容器环境相应地设置。
+Result 3: The `environment` attribute in the Compose file defines an explicit value for `VALUE`, so the container environment is set accordingly.
 
-结果 4：镜像的 `ENV` 指令声明了变量 `VALUE`，由于 Compose 文件未设置覆盖此值，因此该变量由镜像定义。
+Result 4: The image's `ENV` directive declares the variable `VALUE`, and since the Compose file is not set to override this value, this variable is defined by image
 
-结果 5：`docker compose run` 命令设置了带有显式值的 `--env` 标志，并覆盖了镜像设置的值。
+Result 5: The `docker compose run` command has the `--env` flag set with an explicit value, and overrides the value set by the image. 
 
-结果 6：`docker compose run` 命令设置了 `--env` 标志以从环境中复制值。主机操作系统的值优先，并被复制到容器环境中。
+Result 6: The `docker compose run` command has the `--env` flag set to replicate the value from the environment. Host OS value takes precedence and is replicated into the container's environment.
 
-结果 7：`docker compose run` 命令设置了 `--env` 标志以从环境中复制值。选择 `.env` 文件中的值来定义容器环境。
+Result 7: The `docker compose run` command has the `--env` flag set to replicate the value from the environment. Value from `.env` file is selected to define the container's environment.
 
-结果 8：Compose 文件中的 `env_file` 属性设置为从本地环境复制 `VALUE`。主机操作系统的值优先，并被复制到容器环境中。
+Result 8: The `env_file` attribute in the Compose file is set to replicate `VALUE` from the local environment. Host OS value takes precedence and is replicated into the container's environment.
 
-结果 9：Compose 文件中的 `env_file` 属性设置为从本地环境复制 `VALUE`。选择 `.env` 文件中的值来定义容器环境。
+Result 9: The `env_file` attribute in the Compose file is set to replicate `VALUE` from the local environment. Value from `.env` file is selected to define the container's environment.
 
-结果 10：Compose 文件中的 `environment` 属性设置为从本地环境复制 `VALUE`。主机操作系统的值优先，并被复制到容器环境中。
+Result 10: The `environment` attribute in the Compose file is set to replicate `VALUE` from the local environment. Host OS value takes precedence and is replicated into the container's environment.
 
-结果 11：Compose 文件中的 `environment` 属性设置为从本地环境复制 `VALUE`。选择 `.env` 文件中的值来定义容器环境。
+Result 11: The `environment` attribute in the Compose file is set to replicate `VALUE` from the local environment. Value from `.env` file is selected to define the container's environment.
 
-结果 12：`--env` 标志的优先级高于 `environment` 和 `env_file` 属性，并设置为从本地环境复制 `VALUE`。主机操作系统的值优先，并被复制到容器环境中。
+Result 12: The `--env` flag has higher precedence than the `environment` and `env_file` attributes and is to set to replicate `VALUE` from the local environment. Host OS value takes precedence and is replicated into the container's environment.
 
-结果 13 到 15：`--env` 标志的优先级高于 `environment` 和 `env_file` 属性，因此设置该值。
+Results 13 to 15: The `--env` flag has higher precedence than the `environment` and `env_file` attributes and so sets the value. 
 
-## 下一步
+## Next steps
 
-- [在 Compose 中设置环境变量](set-environment-variables.md)
-- [在 Compose 文件中使用变量插值](variable-interpolation.md)
+- [Set environment variables in Compose](set-environment-variables.md)
+- [Use variable interpolation in Compose files](variable-interpolation.md)

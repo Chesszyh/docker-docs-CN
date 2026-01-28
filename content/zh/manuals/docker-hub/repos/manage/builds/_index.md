@@ -1,7 +1,7 @@
 ---
-description: 自动构建的工作原理
+description: how automated builds work
 keywords: docker hub, automated builds
-title: 自动构建
+title: Automated builds
 weight: 90
 aliases:
 - /docker-hub/builds/how-builds-work/
@@ -9,19 +9,33 @@ aliases:
 
 {{< summary-bar feature_name="Automated builds" >}}
 
-Docker Hub 可以从外部仓库的源代码自动构建镜像，并自动将构建的镜像推送到您的 Docker 仓库。
+Docker Hub can automatically build images from source code in an external
+repository and automatically push the built image to your Docker repositories.
 
-![自动构建仪表板](images/index-dashboard.png)
+![An automated build dashboard](images/index-dashboard.png)
 
-当您设置自动构建（automated builds，也称为 autobuilds）时，您需要创建一个分支和标签列表，指定要构建为 Docker 镜像的内容。当您向源代码分支（例如 GitHub 中的分支）推送代码时，如果该分支对应列表中的某个镜像标签，推送操作会使用 webhook 触发新的构建，从而生成一个 Docker 镜像。构建完成的镜像随后会被推送到 Docker Hub。
+When you set up automated builds, also called autobuilds, you create a list of
+branches and tags that you want to build into Docker images. When you push code
+to a source-code branch, for example in GitHub, for one of those listed image
+tags, the push uses a webhook to trigger a new build, which produces a Docker
+image. The built image is then pushed to Docker Hub.
 
 > [!NOTE]
 >
-> 您仍然可以使用 `docker push` 将预构建的镜像推送到已配置自动构建的仓库。
+> You can still use `docker push` to push pre-built images to
+repositories with automated builds configured.
 
-如果您配置了自动测试，这些测试会在构建之后、推送到镜像仓库之前运行。您可以使用这些测试来创建持续集成工作流，使测试失败的构建不会将构建的镜像推送到仓库。自动测试本身不会将镜像推送到镜像仓库。[了解自动镜像测试](automated-testing.md)。
+If you have automated tests configured, these run after building, but before
+pushing to the registry. You can use these tests to create a continuous
+integration workflow where a build that fails its tests doesn't push the built
+image. Automated tests don't push images to the registry on their own. [Learn about automated image testing](automated-testing.md).
 
-根据您的[订阅计划](https://www.docker.com/pricing)，您可能获得并发构建功能，这意味着可以同时运行 `N` 个自动构建。`N` 的值根据您的订阅计划配置。一旦有 `N+1` 个构建正在运行，任何额外的构建都会进入队列，稍后执行。
+Depending on your [subscription](https://www.docker.com/pricing),
+you may get concurrent builds, which means that `N` autobuilds can be run at the
+same time. `N` is configured according to your subscription. Once `N+1` builds
+are running, any additional builds go into a queue to be run later.
 
-队列中待处理构建的最大数量为 30 个，Docker Hub 会丢弃超出的请求。Pro 订阅的并发构建数量为 5 个，Team 和 Business 订阅的并发构建数量为 15 个。
-自动构建可以处理最大 10 GB 的镜像。
+The maximum number of pending builds in the queue is 30 and Docker Hub discards further
+requests. The number of concurrent builds for Pro is 5 and
+for Team and Business is 15.
+Automated builds can handle images of up to 10 GB in size.
