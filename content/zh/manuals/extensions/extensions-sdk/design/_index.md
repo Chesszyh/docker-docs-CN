@@ -1,0 +1,55 @@
+---
+title: Docker 扩展的 UI 样式概述
+linkTitle: 设计和 UI 样式
+description: Docker 扩展设计
+keywords: Docker, extensions, design
+aliases:
+ - /desktop/extensions-sdk/design/design-overview/
+ - /desktop/extensions-sdk/design/overview/
+ - /desktop/extensions-sdk/design/
+weight: 60
+---
+
+我们的设计系统是一套不断发展的规范，旨在确保 Docker 产品之间的视觉一致性，并满足 [AA 级无障碍标准](https://www.w3.org/WAI/WCAG2AA-Conformance)。我们已向扩展作者开放了部分内容，记录了基本样式（颜色、排版）和组件。请参阅：[Docker 扩展样式指南](https://www.figma.com/file/U7pLWfEf6IQKUHLhdateBI/Docker-Design-Guidelines?node-id=1%3A28771)。
+
+我们要求扩展在一定程度上与更广泛的 Docker Desktop UI 保持一致，并保留在未来使这一要求更加严格的权利。
+
+要开始您的 UI 工作，请按照以下步骤操作。
+
+## 第一步：选择您的框架
+
+### 推荐：使用我们的主题的 React+MUI
+
+Docker Desktop 的 UI 是用 React 和 [MUI](https://mui.com/)（具体来说是 Material UI）编写的。这是官方支持的唯一用于构建扩展的框架，也是我们的 `init` 命令自动为您配置的框架。使用它为作者带来显著的好处：
+
+- 您可以使用我们的 [Material UI 主题](https://www.npmjs.com/package/@docker/docker-mui-theme)自动复制 Docker Desktop 的外观和风格。
+- 未来，我们将发布专门针对这种组合的实用程序和组件（例如，自定义 MUI 组件，或用于与 Docker 交互的 React hooks）。
+
+阅读我们的 [MUI 最佳实践](mui-best-practices.md)指南，了解在 Docker Desktop 中使用 MUI 的面向未来的方法。
+
+### 不推荐：其他框架
+
+您可能更喜欢使用其他框架，也许是因为您或您的团队更熟悉它，或者因为您有想要重用的现有资源。这是可能的，但强烈不建议。这意味着：
+
+- 您需要手动复制 Docker Desktop 的外观和风格。这需要大量工作，如果您的主题与我们的不够接近，用户会觉得您的扩展不协调，我们可能会在审核过程中要求您进行更改。
+- 您将有更高的维护负担。每当 Docker Desktop 的主题发生变化（这可能在任何版本中发生），您都需要手动更改您的扩展以与之匹配。
+- 如果您的扩展是开源的，故意避开通用约定将使社区更难为其做出贡献。
+
+## 第二步：遵循以下建议
+
+### 遵循我们的 MUI 最佳实践（如适用）
+
+请参阅我们的 [MUI 最佳实践](mui-best-practices.md)文章。
+
+### 仅使用我们调色板中的颜色
+
+除少数例外情况（例如显示您的徽标），您应该只使用我们调色板中的颜色。这些可以在我们的[样式指南文档](https://www.figma.com/file/U7pLWfEf6IQKUHLhdateBI/Docker-Design-Guidelines?node-id=1%3A28771)中找到，并且很快也将在我们的 MUI 主题和 CSS 变量中可用。
+
+### 在浅色/深色模式中使用对应颜色
+
+我们的颜色经过选择，使得每种调色板变体中的对应颜色应具有相同的基本特征。在浅色模式中使用 `red-300` 的任何地方，在深色模式中也应该使用 `red-300`。
+
+## 下一步
+
+- 查看我们的 [MUI 最佳实践](mui-best-practices.md)。
+- 了解如何[发布您的扩展](../extensions/_index.md)。
