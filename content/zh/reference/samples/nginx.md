@@ -1,6 +1,6 @@
 ---
-title: NGINX 示例
-description: NGINX 的 Docker 示例。
+title: NGINX samples
+description: Docker samples for NGINX.
 service: nginx
 aliases:
 - /samples/nginx/

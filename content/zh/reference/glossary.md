@@ -1,7 +1,7 @@
 ---
 title: 术语表
 description: Docker 相关术语表
-keywords: glossary, docker, terms, definitions
+keywords: glossary, docker, terms, definitions, 术语, 定义
 notoc: true
 layout: glossary
 aliases:
@@ -11,9 +11,9 @@ aliases:
 
 > [!TIP]
 >
-> 找不到需要的定义，或者需要更具上下文的解释？
+> 正在寻找未列出的定义，或者需要更具上下文意识的解释？
 >
-> 试试 <a role="button" tabindex="0" class="open-kapa-widget">Ask AI</a>。
+> 尝试 <a role="button" tabindex="0" class="open-kapa-widget">Ask AI</a>。
 
 
 <!--

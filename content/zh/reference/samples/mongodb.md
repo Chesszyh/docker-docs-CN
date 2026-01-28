@@ -1,6 +1,6 @@
 ---
-title: MongoDB 示例
-description: MongoDB 的 Docker 示例。
+title: MongoDB samples
+description: Docker samples for MongoDB.
 service: mongodb
 aliases:
 - /samples/mongodb/

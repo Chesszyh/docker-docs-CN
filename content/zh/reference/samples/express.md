@@ -1,6 +1,6 @@
 ---
-title: Express 示例
-description: Express 的 Docker 示例。
+title: Express samples
+description: Docker samples for Express.
 service: express
 aliases:
 - /samples/express/

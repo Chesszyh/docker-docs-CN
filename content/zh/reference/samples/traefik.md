@@ -1,6 +1,6 @@
 ---
-title: Traefik 示例
-description: Traefik 的 Docker 示例。
+title: Traefik samples
+description: Docker samples for Traefik.
 service: traefik
 aliases:
 - /samples/traefik/

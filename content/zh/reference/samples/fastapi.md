@@ -1,6 +1,6 @@
 ---
-title: FastAPI 示例
-description: FastAPI 的 Docker 示例。
+title: FastAPI samples
+description: Docker samples for .NET.
 service: fastapi
 aliases:
 - /samples/fastapi/

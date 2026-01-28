@@ -1,6 +1,6 @@
 ---
-title: Elasticsearch / Logstash / Kibana 示例
-description: Elasticsearch、Logstash 和 Kibana 的 Docker 示例。
+title: Elasticsearch / Logstash / Kibana samples
+description: Docker samples for Elasticsearch, Logstash, and Kibana.
 service: elk
 aliases:
 - /samples/elasticsearch/

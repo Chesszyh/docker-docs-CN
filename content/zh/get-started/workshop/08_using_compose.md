@@ -1,27 +1,22 @@
 ---
-title: Use Docker Compose
+title: 使用 Docker Compose
 weight: 80
-linkTitle: "Part 7: Use Docker Compose"
+linkTitle: "第七部分：使用 Docker Compose"
 keywords: get started, setup, orientation, quickstart, intro, concepts, containers,
-  docker desktop
-description: Using Docker Compose for multi-container applications
+  docker desktop, 入门, 设置, 概览, 快速入门, 简介, 概念, 容器
+description: 将 Docker Compose 用于多容器应用程序
 aliases:
  - /get-started/08_using_compose/
  - /guides/workshop/08_using_compose/
 ---
 
-[Docker Compose](/manuals/compose/_index.md) is a tool that helps you define and
-share multi-container applications. With Compose, you can create a YAML file to define the services
-and with a single command, you can spin everything up or tear it all down.
+[Docker Compose](/manuals/compose/_index.md) 是一个帮助您定义和共享多容器应用程序的工具。使用 Compose，您可以创建一个 YAML 文件来定义服务，只需一个命令，您就可以启动所有内容或将其全部拆除。
 
-The big advantage of using Compose is you can define your application stack in a file, keep it at the root of
-your project repository (it's now version controlled), and easily enable someone else to contribute to your project.
-Someone would only need to clone your repository and start the app using Compose. In fact, you might see quite a few projects
-on GitHub/GitLab doing exactly this now.
+使用 Compose 的最大好处是您可以在文件中定义应用程序堆栈，将其保留在项目仓库的根目录中（现在受版本控制），并轻松让其他人为您的项目做出贡献。其他人只需要克隆您的仓库并使用 Compose 启动应用程序。事实上，您可能会在 GitHub/GitLab 上看到很多项目现在正是这样做的。
 
-## Create the Compose file
+## 创建 Compose 文件
 
-In the `getting-started-app` directory, create a file named `compose.yaml`.
+在 `getting-started-app` 目录中，创建一个名为 `compose.yaml` 的文件。
 
 ```text
 ├── getting-started-app/
@@ -34,9 +29,9 @@ In the `getting-started-app` directory, create a file named `compose.yaml`.
 │ └── yarn.lock
 ```
 
-## Define the app service
+## 定义应用程序服务
 
-In [part 6](./07_multi_container.md), you used the following command to start the application service.
+在[第六部分](./07_multi_container.md)中，您使用了以下命令来启动应用程序服务。
 
 ```console
 $ docker run -dp 127.0.0.1:3000:3000 \
@@ -50,10 +45,10 @@ $ docker run -dp 127.0.0.1:3000:3000 \
   sh -c "yarn install && yarn run dev"
 ```
 
-You'll now define this service in the `compose.yaml` file.
+您现在将在 `compose.yaml` 文件中定义此服务。
 
-1. Open `compose.yaml` in a text or code editor, and start by defining the name and image of the first service (or container) you want to run as part of your application.
-   The name will automatically become a network alias, which will be useful when defining your MySQL service.
+1. 在文本或代码编辑器中打开 `compose.yaml`，首先定义您想要作为应用程序一部分运行的第一个服务（或容器）的名称和镜像。
+   该名称将自动成为网络别名，这在定义 MySQL 服务时非常有用。
 
    ```yaml
    services:
@@ -61,7 +56,7 @@ You'll now define this service in the `compose.yaml` file.
        image: node:18-alpine
    ```
 
-2. Typically, you will see `command` close to the `image` definition, although there is no requirement on ordering. Add the `command` to your `compose.yaml` file.
+2. 通常，您会看到 `command` 靠近 `image` 定义，尽管对顺序没有要求。将 `command` 添加到您的 `compose.yaml` 文件中。
 
    ```yaml
    services:
@@ -70,7 +65,7 @@ You'll now define this service in the `compose.yaml` file.
        command: sh -c "yarn install && yarn run dev"
    ```
 
-3. Now migrate the `-p 127.0.0.1:3000:3000` part of the command by defining the `ports` for the service.
+3. 现在通过定义服务的 `ports` 来迁移命令的 `-p 127.0.0.1:3000:3000` 部分。
 
    ```yaml
    services:
@@ -81,10 +76,9 @@ You'll now define this service in the `compose.yaml` file.
          - 127.0.0.1:3000:3000
    ```
 
-4. Next, migrate both the working directory (`-w /app`) and the volume mapping
-   (`-v "$(pwd):/app"`) by using the `working_dir` and `volumes` definitions.
+4. 接下来，通过使用 `working_dir` 和 `volumes` 定义迁移工作目录 (`-w /app`) 和卷映射 (`-v "$(pwd):/app"`)。
 
-    One advantage of Docker Compose volume definitions is you can use relative paths from the current directory.
+    Docker Compose 卷定义的一个优点是您可以使用相对于当前目录的路径。
 
    ```yaml
    services:
@@ -98,7 +92,7 @@ You'll now define this service in the `compose.yaml` file.
          - ./:/app
    ```
 
-5. Finally, you need to migrate the environment variable definitions using the `environment` key.
+5. 最后，您需要使用 `environment` 键迁移环境变量定义。
 
    ```yaml
    services:
@@ -117,9 +111,9 @@ You'll now define this service in the `compose.yaml` file.
          MYSQL_DB: todos
    ```
 
-### Define the MySQL service
+### 定义 MySQL 服务
 
-Now, it's time to define the MySQL service. The command that you used for that container was the following:
+现在，是时候定义 MySQL 服务了。您用于该容器的命令如下：
 
 ```console
 $ docker run -d \
@@ -130,28 +124,23 @@ $ docker run -d \
   mysql:8.0
 ```
 
-1. First define the new service and name it `mysql` so it automatically gets the network alias. Also specify the image to use as well.
+1. 首先定义新服务并将其命名为 `mysql`，以便它自动获得网络别名。同时指定要使用的镜像。
 
    ```yaml
 
    services:
      app:
-       # The app service definition
+       # 应用程序服务定义
      mysql:
        image: mysql:8.0
    ```
 
-2. Next, define the volume mapping. When you ran the container with `docker
-   run`, Docker created the named volume automatically. However, that doesn't
-   happen when running with Compose. You need to define the volume in the
-   top-level `volumes:` section and then specify the mountpoint in the service
-   config. By simply providing only the volume name, the default options are
-   used.
+2. 接下来，定义卷映射。当您使用 `docker run` 运行容器时，Docker 会自动创建命名卷。但是，使用 Compose 运行时不会发生这种情况。您需要在顶级 `volumes:` 部分定义卷，然后在服务配置中指定挂载点。通过仅提供卷名称，将使用默认选项。
 
    ```yaml
    services:
      app:
-       # The app service definition
+       # 应用程序服务定义
      mysql:
        image: mysql:8.0
        volumes:
@@ -161,12 +150,12 @@ $ docker run -d \
      todo-mysql-data:
    ```
 
-3. Finally, you need to specify the environment variables.
+3. 最后，您需要指定环境变量。
 
    ```yaml
    services:
      app:
-       # The app service definition
+       # 应用程序服务定义
      mysql:
        image: mysql:8.0
        volumes:
@@ -179,7 +168,7 @@ $ docker run -d \
      todo-mysql-data:
    ```
 
-At this point, your complete `compose.yaml` should look like this:
+此时，您完整的 `compose.yaml` 应该如下所示：
 
 
 ```yaml
@@ -210,20 +199,19 @@ volumes:
   todo-mysql-data:
 ```
 
-## Run the application stack
+## 运行应用程序堆栈
 
-Now that you have your `compose.yaml` file, you can start your application.
+现在您有了 `compose.yaml` 文件，可以启动您的应用程序了。
 
-1. Make sure no other copies of the containers are running first. Use `docker ps` to list the containers and `docker rm -f <ids>` to remove them.
+1. 首先确保没有其他容器副本正在运行。使用 `docker ps` 列出容器，并使用 `docker rm -f <ids>` 删除它们。
 
-2. Start up the application stack using the `docker compose up` command. Add the
-   `-d` flag to run everything in the background.
+2. 使用 `docker compose up` 命令启动应用程序堆栈。添加 `-d` 标志以在后台运行所有内容。
 
    ```console
    $ docker compose up -d
    ```
 
-    When you run the previous command, you should see output like the following:
+    运行上一条命令时，您应该看到类似以下的输出：
 
    ```plaintext
    Creating network "app_default" with the default driver
@@ -232,13 +220,11 @@ Now that you have your `compose.yaml` file, you can start your application.
    Creating app_mysql_1 ... done
    ```
 
-    You'll notice that Docker Compose created the volume as well as a network. By default, Docker Compose automatically creates a network specifically for the application stack (which is why you didn't define one in the Compose file).
+    您会注意到 Docker Compose 创建了卷和网络。默认情况下，Docker Compose 会为应用程序堆栈创建一个专用网络（这就是您没有在 Compose 文件中定义网络的原因）。
 
-3. Look at the logs using the `docker compose logs -f` command. You'll see the logs from each of the services interleaved
-    into a single stream. This is incredibly useful when you want to watch for timing-related issues. The `-f` flag follows the
-    log, so will give you live output as it's generated.
+3. 使用 `docker compose logs -f` 命令查看日志。您将看到来自每个服务的日志交错在单个流中。当您想要监视与时间相关的问题时，这非常有用。`-f` 标志跟随日志，因此将在生成实时输出时提供。
 
-    If you have run the command already, you'll see output that looks like this:
+    如果您已经运行了命令，您将看到类似以下的输出：
 
     ```plaintext
     mysql_1  | 2019-10-03T03:07:16.083639Z 0 [Note] mysqld: ready for connections.
@@ -247,46 +233,37 @@ Now that you have your `compose.yaml` file, you can start your application.
     app_1    | Listening on port 3000
     ```
 
-    The service name is displayed at the beginning of the line (often colored) to help distinguish messages. If you want to
-    view the logs for a specific service, you can add the service name to the end of the logs command (for example,
-    `docker compose logs -f app`).
+    服务名称显示在行首（通常是彩色的），以帮助区分消息。如果您想查看特定服务的日志，可以将服务名称添加到日志命令的末尾（例如，`docker compose logs -f app`）。
 
-4. At this point, you should be able to open your app in your browser on [http://localhost:3000](http://localhost:3000) and see it running.
+4. 此时，您应该能够在浏览器中打开 [http://localhost:3000](http://localhost:3000) 上的应用程序并看到它正在运行。
 
-## See the app stack in Docker Desktop Dashboard
+## 在 Docker Desktop Dashboard 中查看应用程序堆栈
 
-If you look at the Docker Desktop Dashboard, you'll see that there is a group named **getting-started-app**. This is the project name from Docker
-Compose and used to group the containers together. By default, the project name is simply the name of the directory that the
-`compose.yaml` was located in.
+如果您查看 Docker Desktop Dashboard，您会看到有一个名为 **getting-started-app** 的组。这是来自 Docker Compose 的项目名称，用于将容器组合在一起。默认情况下，项目名称只是 `compose.yaml` 所在目录的名称。
 
-If you expand the stack, you'll see the two containers you defined in the Compose file. The names are also a little
-more descriptive, as they follow the pattern of `<service-name>-<replica-number>`. So, it's very easy to
-quickly see what container is your app and which container is the mysql database.
+如果您展开堆栈，您将看到在 Compose 文件中定义的两个容器。名称也更具描述性，因为它们遵循 `<service-name>-<replica-number>` 的模式。因此，很容易快速查看哪个容器是您的应用程序，哪个容器是 mysql 数据库。
 
-## Tear it all down
+## 全部拆除
 
-When you're ready to tear it all down, simply run `docker compose down` or hit the trash can on the Docker Desktop Dashboard
-for the entire app. The containers will stop and the network will be removed.
+当您准备好全部拆除时，只需运行 `docker compose down` 或在 Docker Desktop Dashboard 上点击整个应用程序的垃圾桶图标。容器将停止，网络将被删除。
 
 > [!WARNING]
->
-> By default, named volumes in your compose file are not removed when you run `docker compose down`. If you want to
->remove the volumes, you need to add the `--volumes` flag.
->
-> The Docker Desktop Dashboard does not remove volumes when you delete the app stack.
+> 
+> 默认情况下，当您运行 `docker compose down` 时，不会删除 compose 文件中的命名卷。如果您想删除卷，您需要添加 `--volumes` 标志。
+> 
+> 删除应用程序堆栈时，Docker Desktop Dashboard 不会删除卷。
 
-## Summary
+## 总结
 
-In this section, you learned about Docker Compose and how it helps you simplify
-the way you define and share multi-service applications.
+在本节中，您了解了 Docker Compose 以及它如何帮助您简化定义和共享多服务应用程序的方式。
 
-Related information:
- - [Compose overview](/manuals/compose/_index.md)
- - [Compose file reference](/reference/compose-file/_index.md)
- - [Compose CLI reference](/reference/cli/docker/compose/_index.md)
+相关信息：
+ - [Compose 概览](/manuals/compose/_index.md)
+ - [Compose 文件参考](/reference/compose-file/_index.md)
+ - [Compose CLI 参考](/reference/cli/docker/compose/_index.md)
 
-## Next steps
+## 下一步
 
-Next, you'll learn about a few best practices you can use to improve your Dockerfile.
+接下来，您将学习一些可用于改进 Dockerfile 的最佳实践。
 
-{{< button text="Image-building best practices" url="09_image_best.md" >}}
+{{< button text="镜像构建最佳实践" url="09_image_best.md" >}}

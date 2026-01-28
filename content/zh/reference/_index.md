@@ -2,7 +2,7 @@
 title: 参考文档
 linkTitle: 参考
 layout: wide
-description: 查找 Docker 平台各种 API、CLI 和文件格式的参考文档
+description: 查找 Docker 平台的各种 API、CLI 和文件格式的参考文档
 params:
   icon: terminal
   notoc: true
@@ -17,15 +17,15 @@ params:
     link: /reference/compose-file/
   grid_clis:
   - title: Docker CLI
-    description: Docker 主命令行工具，包含所有 `docker` 命令。
+    description: 主要的 Docker CLI，包含所有 `docker` 命令。
     icon: terminal
     link: /reference/cli/docker/
   - title: Compose CLI
-    description: Docker Compose 的命令行工具，用于构建和运行多容器应用程序。
+    description: Docker Compose 的 CLI，用于构建和运行多容器应用程序。
     icon: subtitles
     link: /reference/cli/docker/compose/
-  - title: Daemon CLI (dockerd)
-    description: 管理容器的常驻进程。
+  - title: 守护进程 CLI (dockerd)
+    description: 管理容器的持久化进程。
     icon: developer_board
     link: /reference/cli/dockerd/
   grid_apis:
@@ -37,8 +37,8 @@ params:
     description: 用于与 Docker Hub 交互的 API。
     icon: communities
     link: /reference/api/hub/latest/
-  - title: DVP Data API
-    description: 供 Docker 认证发布者（Docker Verified Publishers）获取分析数据的 API。
+  - title: DVP 数据 API
+    description: 供 Docker 认证发布者（DVP）获取分析数据的 API。
     icon: area_chart
     link: /reference/api/hub/dvp/
   - title: Registry API
@@ -47,16 +47,16 @@ params:
     link: /reference/api/registry/latest/
 ---
 
-本节包含 Docker 平台各种 API、CLI、驱动程序和规范以及文件格式的参考文档。
+本节包含 Docker 平台的各种 API、CLI、驱动程序、规范以及文件格式的参考文档。
 
 ## 文件格式
 
 {{< grid items="grid_files" >}}
 
-## 命令行接口（CLI）
+## 命令行界面 (CLI)
 
 {{< grid items="grid_clis" >}}
 
-## 应用程序编程接口（API）
+## 应用程序编程接口 (API)
 
 {{< grid items="grid_apis" >}}

@@ -1,7 +1,7 @@
 ---
 layout: api
-description: Docker Hub API 的参考文档和 OpenAPI 规范。
-title: Docker Hub API 参考
+description: Reference documentation and OpenAPI specification for the Docker Hub API.
+title: Docker Hub API reference
 linkTitle: Docker Hub API
 weight: 1
 ---

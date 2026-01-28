@@ -1,6 +1,6 @@
 ---
-title: PostgreSQL 示例
-description: PostgreSQL 的 Docker 示例。
+title: PostgreSQL samples
+description: Docker samples for PostgreSQL.
 service: postgresql
 aliases:
 - /engine/examples/postgresql_service/

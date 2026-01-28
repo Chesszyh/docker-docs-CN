@@ -10,8 +10,8 @@ layout: cli
 ---
 
 <!--
-抱歉，此页面的内容是从 Docker 源代码自动生成的。
-如果您想对此处显示的文本提出修改建议，
-您需要在此仓库中搜索相关字符串：
+Sorry, but the contents of this page are automatically generated from
+Docker's source code. If you want to suggest a change to the text that appears
+here, you'll need to find the string by searching this repo:
 https://github.com/docker/compose
 -->

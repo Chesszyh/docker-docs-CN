@@ -1,6 +1,6 @@
 ---
-title: Java 示例
-description: Java 的 Docker 示例。
+title: Java samples
+description: Docker samples for Java.
 service: java
 aliases:
 - /samples/java/

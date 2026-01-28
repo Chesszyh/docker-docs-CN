@@ -1,6 +1,6 @@
 ---
-title: TypeScript 示例
-description: TypeScript 的 Docker 示例。
+title: TypeScript samples
+description: Docker samples for TypeScript.
 service: typescript
 aliases:
 - /samples/typescript/

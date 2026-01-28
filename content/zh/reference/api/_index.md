@@ -1,5 +1,5 @@
 ---
-title: API 参考
+title: API reference
 build:
   render: never
 ---

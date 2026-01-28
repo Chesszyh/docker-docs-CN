@@ -1,6 +1,6 @@
 ---
-title: React 示例
-description: React 的 Docker 示例。
+title: React samples
+description: Docker samples for React.
 service: react
 aliases:
 - /samples/react/

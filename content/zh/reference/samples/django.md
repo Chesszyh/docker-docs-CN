@@ -1,6 +1,6 @@
 ---
-title: Django 示例
-description: Django 的 Docker 示例。
+title: Django samples
+description: Docker samples for Django.
 service: django
 aliases:
 - /compose/django/

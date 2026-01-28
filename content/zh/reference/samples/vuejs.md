@@ -1,6 +1,6 @@
 ---
-title: Vue.js 示例
-description: Vue.js 的 Docker 示例。
+title: Vue.js samples
+description: Docker samples for Vue.js.
 service: vuejs
 aliases:
 - /samples/vuejs/

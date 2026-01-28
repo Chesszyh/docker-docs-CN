@@ -1,6 +1,6 @@
 ---
-title: Angular 示例
-description: Angular 的 Docker 示例。
+title: Angular samples
+description: Docker samples for Angular.
 service: angular
 aliases:
 - /samples/angular/

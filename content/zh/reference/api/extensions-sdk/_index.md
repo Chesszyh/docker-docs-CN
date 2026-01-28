@@ -1,20 +1,20 @@
 ---
-title: Extensions API 参考
+title: Extensions API Reference
 linkTitle: Extensions API
-description: Docker 扩展 API 参考
+description: Docker extension API reference
 keywords: Docker, extensions, sdk, API, reference
-aliases:
+aliases: 
  - /desktop/extensions-sdk/dev/api/reference/README/
  - /extensions/extensions-sdk/dev/api/reference/README/
 ---
 
-## 仪表板接口
+## Dashboard interfaces
 
 - [Host](Host.md)
 - [NavigationIntents](NavigationIntents.md)
 - [Toast](Toast.md)
 
-## 其他接口
+## Other interfaces
 
 - [ExecResultV0](ExecResultV0.md)
 - [RequestConfigV0](RequestConfigV0.md)

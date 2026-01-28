@@ -1,6 +1,6 @@
 ---
-title: Node.js 示例
-description: Node.js 的 Docker 示例。
+title: Node.js samples
+description: Docker samples for Node.js.
 service: nodejs
 aliases:
 - /samples/nodejs/

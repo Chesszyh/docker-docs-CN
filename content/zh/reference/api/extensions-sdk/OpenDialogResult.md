@@ -1,23 +1,23 @@
 ---
-title: "接口: OpenDialogResult"
-description: Docker 扩展 API 参考
+title: "Interface: OpenDialogResult"
+description: Docker extension API reference
 keywords: Docker, extensions, sdk, API, reference
 aliases:
  - /desktop/extensions-sdk/dev/api/reference/interfaces/OpenDialogResult/
  - /extensions/extensions-sdk/dev/api/reference/interfaces/OpenDialogResult/
 ---
 
-**`起始版本`**
+**`Since`**
 
 0.2.3
 
-## 属性
+## Properties
 
 ### canceled
 
 • `Readonly` **canceled**: `boolean`
 
-对话框是否被取消。
+Whether the dialog was canceled.
 
 ___
 
@@ -25,7 +25,7 @@ ___
 
 • `Readonly` **filePaths**: `string`[]
 
-用户选择的文件路径数组。如果对话框被取消，这将是一个空数组。
+An array of file paths chosen by the user. If the dialog is cancelled this will be an empty array.
 
 ___
 
@@ -33,4 +33,4 @@ ___
 
 • `Optional` `Readonly` **bookmarks**: `string`[]
 
-仅适用于 macOS。与 `filePaths` 数组匹配的 `base64` 编码字符串数组，包含安全作用域书签数据。必须启用 `securityScopedBookmarks` 才能填充此属性。
+macOS only. An array matching the `filePaths` array of `base64` encoded strings which contains security scoped bookmark data. `securityScopedBookmarks` must be enabled for this to be populated.

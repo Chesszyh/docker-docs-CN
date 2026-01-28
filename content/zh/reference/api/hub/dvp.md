@@ -1,7 +1,7 @@
 ---
 layout: api
-description: Docker 认证发布者 API 的参考文档和 Swagger (OpenAPI) 规范。
-linkTitle: DVP 数据 API
-title: Docker 认证发布者 API 参考
+description: Reference documentation and Swagger (OpenAPI) specification for the Docker Verified Publisher API.
+linkTitle: DVP Data API
+title: Docker Verified Publisher API reference
 weight: 4
 ---

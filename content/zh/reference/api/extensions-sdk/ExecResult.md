@@ -1,35 +1,35 @@
 ---
-title: "接口: ExecResult"
-description: Docker 扩展 API 参考
+title: "Interface: ExecResult"
+description: Docker extension API reference
 keywords: Docker, extensions, sdk, API, reference
 aliases:
  - /desktop/extensions-sdk/dev/api/reference/interfaces/ExecResult/
  - /extensions/extensions-sdk/dev/api/reference/interfaces/ExecResult/
 ---
 
-**`起始版本`**
+**`Since`**
 
 0.2.0
 
-## 继承层次
+## Hierarchy
 
 - [`RawExecResult`](RawExecResult.md)
 
   ↳ **`ExecResult`**
 
-## 方法
+## Methods
 
 ### lines
 
 ▸ **lines**(): `string`[]
 
-分割输出行。
+Split output lines.
 
-#### 返回值
+#### Returns
 
 `string`[]
 
-行列表。
+The list of lines.
 
 ___
 
@@ -37,13 +37,13 @@ ___
 
 ▸ **parseJsonLines**(): `any`[]
 
-将每个输出行解析为 JSON 对象。
+Parse each output line as a JSON object.
 
-#### 返回值
+#### Returns
 
 `any`[]
 
-每行都是 JSON 对象的行列表。
+The list of lines where each line is a JSON object.
 
 ___
 
@@ -51,21 +51,21 @@ ___
 
 ▸ **parseJsonObject**(): `any`
 
-解析格式良好的 JSON 输出。
+Parse a well-formed JSON output.
 
-#### 返回值
+#### Returns
 
 `any`
 
-JSON 对象。
+The JSON object.
 
-## 属性
+## Properties
 
 ### cmd
 
 • `Optional` `Readonly` **cmd**: `string`
 
-#### 继承自
+#### Inherited from
 
 [RawExecResult](RawExecResult.md).[cmd](RawExecResult.md#cmd)
 
@@ -75,7 +75,7 @@ ___
 
 • `Optional` `Readonly` **killed**: `boolean`
 
-#### 继承自
+#### Inherited from
 
 [RawExecResult](RawExecResult.md).[killed](RawExecResult.md#killed)
 
@@ -85,7 +85,7 @@ ___
 
 • `Optional` `Readonly` **signal**: `string`
 
-#### 继承自
+#### Inherited from
 
 [RawExecResult](RawExecResult.md).[signal](RawExecResult.md#signal)
 
@@ -95,7 +95,7 @@ ___
 
 • `Optional` `Readonly` **code**: `number`
 
-#### 继承自
+#### Inherited from
 
 [RawExecResult](RawExecResult.md).[code](RawExecResult.md#code)
 
@@ -105,7 +105,7 @@ ___
 
 • `Readonly` **stdout**: `string`
 
-#### 继承自
+#### Inherited from
 
 [RawExecResult](RawExecResult.md).[stdout](RawExecResult.md#stdout)
 
@@ -115,6 +115,6 @@ ___
 
 • `Readonly` **stderr**: `string`
 
-#### 继承自
+#### Inherited from
 
 [RawExecResult](RawExecResult.md).[stderr](RawExecResult.md#stderr)

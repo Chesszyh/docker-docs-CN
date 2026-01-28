@@ -1,17 +1,17 @@
 ---
-title: "接口: Extension"
-description: Docker 扩展 API 参考
+title: "Interface: Extension"
+description: Docker extension API reference
 keywords: Docker, extensions, sdk, API, reference
 aliases:
  - /desktop/extensions-sdk/dev/api/reference/interfaces/Extension/
  - /extensions/extensions-sdk/dev/api/reference/interfaces/Extension/
 ---
 
-**`起始版本`**
+**`Since`**
 
 0.2.0
 
-## 属性
+## Properties
 
 ### vm
 
@@ -29,6 +29,6 @@ ___
 
 • `Readonly` **image**: `string`
 
-**`起始版本`**
+**`Since`**
 
 0.3.3

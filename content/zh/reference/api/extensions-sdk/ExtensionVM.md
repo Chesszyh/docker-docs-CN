@@ -1,25 +1,25 @@
 ---
-title: "接口: ExtensionVM"
-description: Docker 扩展 API 参考
+title: "Interface: ExtensionVM"
+description: Docker extension API reference
 keywords: Docker, extensions, sdk, API, reference
 aliases:
  - /desktop/extensions-sdk/dev/api/reference/interfaces/ExtensionVM/
  - /extensions/extensions-sdk/dev/api/reference/interfaces/ExtensionVM/
 ---
 
-**`起始版本`**
+**`Since`**
 
 0.2.0
 
-## 属性
+## Properties
 
 ### cli
 
 • `Readonly` **cli**: [`ExtensionCli`](ExtensionCli.md)
 
-在后端容器中执行命令。
+Executes a command in the backend container.
 
-示例：在后端容器内执行 `ls -l` 命令：
+Example: Execute the command `ls -l` inside the backend container:
 
 ```typescript
 await ddClient.extension.vm.cli.exec(
@@ -28,18 +28,20 @@ await ddClient.extension.vm.cli.exec(
 );
 ```
 
-以流的形式输出在后端容器中执行的命令的输出。
+Streams the output of the command executed in the backend container.
 
-当扩展使用包含多个容器的 `compose.yaml` 文件定义时，命令会在第一个定义的容器上执行。
-更改容器的定义顺序可以在其他容器上执行命令。
+When the extension defines its own `compose.yaml` file
+with multiple containers, the command is executed on the first container defined.
+Change the order in which containers are defined to execute commands on another
+container.
 
-示例：在后端容器内生成 `ls -l` 命令：
+Example: Spawn the command `ls -l` inside the backend container:
 
 ```typescript
 await ddClient.extension.vm.cli.exec("ls", ["-l"], {
            stream: {
              onOutput(data): void {
-                 // 由于我们可以同时收到 `stdout` 和 `stderr`，我们将它们包装在 JSON 对象中
+                 // As we can receive both `stdout` and `stderr`, we wrap them in a JSON object
                  JSON.stringify(
                    {
                      stdout: data.stdout,
@@ -59,17 +61,17 @@ await ddClient.extension.vm.cli.exec("ls", ["-l"], {
          });
 ```
 
-**`参数`**
+**`Param`**
 
-要执行的命令。
+Command to execute.
 
-**`参数`**
+**`Param`**
 
-要执行的命令的参数。
+Arguments of the command to execute.
 
-**`参数`**
+**`Param`**
 
-用于监听命令输出数据和错误的回调函数。
+The callback function where to listen from the command output data and errors.
 
 ___
 

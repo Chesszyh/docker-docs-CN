@@ -1,6 +1,6 @@
 ---
-title: Rails 示例
-description: Rails 的 Docker 示例。
+title: Rails samples
+description: Docker samples for Rails.
 service: rails
 aliases:
 - /samples/rails/

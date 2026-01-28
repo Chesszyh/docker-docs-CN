@@ -1,6 +1,6 @@
 ---
-title: Cloudflared 示例
-description: cloudflared 的 Docker 示例。
+title: Cloudflared samples
+description: Docker samples for cloudflared.
 service: cloudflared
 aliases:
 - /samples/cloudflared/

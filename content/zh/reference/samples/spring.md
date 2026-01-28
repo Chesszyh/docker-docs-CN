@@ -1,6 +1,6 @@
 ---
-title: Spring Boot 示例
-description: Spring Boot 的 Docker 示例。
+title: Spring Boot samples
+description: Docker samples for Spring Boot.
 service: spring
 aliases:
 - /samples/spring/

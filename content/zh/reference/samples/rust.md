@@ -1,6 +1,6 @@
 ---
-title: Rust 示例
-description: Rust 的 Docker 示例。
+title: Rust samples
+description: Docker samples for Rust.
 service: rust
 aliases:
 - /samples/rust/

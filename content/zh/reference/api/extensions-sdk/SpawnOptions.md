@@ -1,6 +1,6 @@
 ---
-title: "接口：SpawnOptions"
-description: Docker 扩展 API 参考
+title: "Interface: SpawnOptions"
+description: Docker extension API reference
 keywords: Docker, extensions, sdk, API, reference
 aliases:
  - /desktop/extensions-sdk/dev/api/reference/interfaces/SpawnOptions/
@@ -11,19 +11,19 @@ aliases:
 
 0.3.0
 
-## 继承关系
+## Hierarchy
 
 - [`ExecOptions`](ExecOptions.md)
 
   ↳ **`SpawnOptions`**
 
-## 属性
+## Properties
 
 ### cwd
 
 • `Optional` **cwd**: `string`
 
-#### 继承自
+#### Inherited from
 
 [ExecOptions](ExecOptions.md).[cwd](ExecOptions.md#cwd)
 
@@ -33,7 +33,7 @@ ___
 
 • `Optional` **env**: `ProcessEnv`
 
-#### 继承自
+#### Inherited from
 
 [ExecOptions](ExecOptions.md).[env](ExecOptions.md#env)
 

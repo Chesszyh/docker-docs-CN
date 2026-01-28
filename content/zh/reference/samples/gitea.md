@@ -1,6 +1,6 @@
 ---
-title: Gitea 示例
-description: Gitea 的 Docker 示例。
+title: Gitea samples
+description: Docker samples for Gitea.
 service: gitea
 aliases:
 - /samples/gitea/

@@ -1,17 +1,17 @@
 ---
-title: "接口: ExtensionCli"
-description: Docker 扩展 API 参考
+title: "Interface: ExtensionCli"
+description: Docker extension API reference
 keywords: Docker, extensions, sdk, API, reference
-aliases:
+aliases: 
  - /desktop/extensions-sdk/dev/api/reference/interfaces/ExtensionCli/
  - /extensions/extensions-sdk/dev/api/reference/interfaces/ExtensionCli/
 ---
 
-**`起始版本`**
+**`Since`**
 
 0.2.0
 
-## 属性
+## Properties
 
 ### exec
 

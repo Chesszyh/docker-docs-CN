@@ -1,6 +1,6 @@
 ---
-title: Minecraft 示例
-description: Minecraft 的 Docker 示例。
+title: Minecraft samples
+description: Docker samples for Minecraft.
 service: minecraft
 aliases:
 - /samples/minecraft/

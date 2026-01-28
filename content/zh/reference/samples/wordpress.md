@@ -1,6 +1,6 @@
 ---
-title: WordPress 示例
-description: WordPress 的 Docker 示例。
+title: WordPress samples
+description: Docker samples for WordPress.
 service: wordpress
 aliases:
 - /compose/wordpress/

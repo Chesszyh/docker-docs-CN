@@ -1,6 +1,6 @@
 ---
-title: Portainer 示例
-description: Portainer 的 Docker 示例。
+title: Portainer samples
+description: Docker samples for Portainer.
 service: portainer
 aliases:
 - /samples/portainer/

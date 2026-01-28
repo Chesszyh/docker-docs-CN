@@ -1,21 +1,21 @@
 ---
-title: Compose 开发规范
-description: 了解 Compose 开发规范
+title: Compose Develop Specification
+description: Learn about the Compose Develop Specification
 keywords: compose, compose specification, compose file reference, compose develop specification
 aliases:
  - /compose/compose-file/develop/
 weight: 150
 ---
 
-> [!NOTE]
+> [!NOTE] 
 >
-> develop 是 Compose 规范的可选部分。它在 Docker Compose 版本 2.22.0 及更高版本中可用。
+> Develop is an optional part of the Compose Specification. It is available with Docker Compose version 2.22.0 and later.
 
 {{% include "compose/develop.md" %}}
 
-本页定义 Compose 如何高效地协助你，并定义 Compose 设置的开发约束和工作流程。只有 Compose 文件服务的一个子集可能需要 `develop` 子部分。
+This page defines how Compose behaves to efficiently assist you and defines the development constraints and workflows set by Compose. Only a subset of Compose file services may require a `develop` subsection.
 
-## 示例说明
+## Illustrative example
 
 ```yaml
 services:
@@ -23,8 +23,8 @@ services:
     image: example/webapp
     build: ./webapp
     develop:
-      watch:
-        # 同步静态内容
+      watch: 
+        # sync static content
         - path: ./webapp/html
           action: sync
           target: /var/www
@@ -35,51 +35,52 @@ services:
     image: example/backend
     build: ./backend
     develop:
-      watch:
-        # 重建镜像并重新创建服务
+      watch: 
+        # rebuild image and recreate service
         - path: ./backend/src
           action: rebuild
 ```
 
-## 属性
+## Attributes
 
 <!-- vale Docker.HeadingSentenceCase = NO ) -->
 
-`develop` 子部分定义 Compose 应用的配置选项，以在服务开发期间通过优化的工作流程协助你。
+The `develop` subsection defines configuration options that are applied by Compose to assist you during development of a service with optimized workflows.
 
 ### `watch`
 
-`watch` 属性定义基于本地文件更改控制自动服务更新的规则列表。`watch` 是一个序列，序列中的每个单独项目定义 Compose 用于监控源代码更改的规则。有关更多信息，请参阅[使用 Compose Watch](/manuals/compose/how-tos/file-watch.md)。
+The `watch` attribute defines a list of rules that control automatic service updates based on local file changes. `watch` is a sequence, each individual item in the sequence defines a rule to be applied by 
+Compose to monitor source code for changes. For more information, see [Use Compose Watch](/manuals/compose/how-tos/file-watch.md).
 
 #### `action`
 
-`action` 定义检测到更改时要执行的操作。如果 `action` 设置为：
+`action` defines the action to take when changes are detected. If `action` is set to:
 
-- `rebuild`：Compose 根据 `build` 部分重建服务镜像，并使用更新的镜像重新创建服务。
-- `restart`：Compose 重启服务容器。在 Docker Compose 版本 2.32.0 及更高版本中可用。
-- `sync`：Compose 保持现有服务容器运行，但根据 `target` 属性将源文件与容器内容同步。
-- `sync+restart`：Compose 根据 `target` 属性将源文件与容器内容同步，然后重启容器。在 Docker Compose 版本 2.23.0 及更高版本中可用。
-- `sync+exec`：Compose 根据 `target` 属性将源文件与容器内容同步，然后在容器内执行命令。在 Docker Compose 版本 2.32.0 及更高版本中可用。
+- `rebuild`: Compose rebuilds the service image based on the `build` section and recreates the service with the updated image.
+- `restart`: Compose restarts the service container. Available with Docker Compose version 2.32.0 and later.
+- `sync`: Compose keeps the existing service container(s) running, but synchronizes source files with container content according to the `target` attribute.
+- `sync+restart`: Compose synchronizes source files with container content according to the `target` attribute, and then restarts the container. Available with Docker Compose version 2.23.0 and later.
+- `sync+exec`: Compose synchronizes source files with container content according to the `target` attribute, and then executes a command inside the container. Available with Docker Compose version 2.32.0 and later.
 
 #### `exec`
 
 {{< summary-bar feature_name="Compose exec" >}}
 
-`exec` 仅在 `action` 设置为 `sync+exec` 时相关。与[服务钩子](services.md#post_start)类似，`exec` 用于定义容器启动后要在容器内运行的命令。
+`exec` is only relevant when `action` is set to `sync+exec`. Like [service hooks](services.md#post_start), `exec` is used to define the command to be run inside the container once it has started.
 
-- `command`：指定容器启动后要运行的命令。此属性是必需的，你可以选择使用 shell 形式或 exec 形式。
-- `user`：运行命令的用户。如果未设置，命令将使用与主服务命令相同的用户运行。
-- `privileged`：让命令以特权访问运行。
-- `working_dir`：运行命令的工作目录。如果未设置，它将在与主服务命令相同的工作目录中运行。
-- `environment`：设置运行命令的环境变量。虽然命令继承为服务主命令定义的环境变量，但此部分允许你添加新变量或覆盖现有变量。
+- `command`: Specifies the command to run once the container starts. This attribute is required, and you can choose to use either the shell form or the exec form.
+- `user`: The user to run the command. If not set, the command is run with the same user as the main service command.
+- `privileged`: Lets the command run with privileged access.
+- `working_dir`: The working directory in which to run the command. If not set, it is run in the same working directory as the main service command.
+- `environment`: Sets the environment variables to run the command. While the command inherits the environment variables defined for the service’s main command, this section lets you add new variables or override existing ones.
 
 ```yaml
 services:
   frontend:
     image: ...
     develop:
-      watch:
-        # 同步内容然后运行命令以在不中断的情况下重新加载服务
+      watch: 
+        # sync content then run command to reload service without interruption
         - path: ./etc/config
           action: sync+exec
           target: /etc/config/
@@ -89,38 +90,42 @@ services:
 
 #### `ignore`
 
-`ignore` 属性可用于定义要忽略的路径模式列表。任何匹配模式或属于匹配模式文件夹的更新文件都不会触发服务重新创建。
-语法与 `.dockerignore` 文件相同：
+The `ignore` attribute can be used to define a list of patterns for paths to be ignored. Any updated file
+that matches a pattern, or belongs to a folder that matches a pattern, won't trigger services to be re-created. 
+The syntax is the same as `.dockerignore` file: 
 
-- `*` 匹配文件名中的 0 个或多个字符。
-- `?` 匹配文件名中的单个字符。
-- `*/*` 匹配两个任意名称的嵌套文件夹
-- `**` 匹配任意数量的嵌套文件夹
+- `*` matches 0 or more characters in a filename. 
+- `?` matches a single character in filename. 
+- `*/*` matches two nested folders with arbitrary names
+- `**` matches an arbitrary number of nested folders
 
-如果构建上下文包含 `.dockerignore` 文件，该文件中的模式作为 `ignores` 文件的隐式内容加载，Compose 模型中设置的值会追加。
+If the build context includes a `.dockerignore` file, the patterns in this file is loaded as implicit content
+for the `ignores` file, and values set in the Compose model are appended.
 
 #### `include`
 
-有时选择要监视的文件比使用 `ignore` 声明不应监视的文件更容易。
+It is sometimes easier to select files to be watched instead of declaring those that shouldn't be watched with `ignore`.
 
-`include` 属性可用于定义要考虑监视的路径的模式或模式列表。只有匹配这些模式的文件在应用监视规则时才会被考虑。语法与 `ignore` 相同。
+The `include` attribute can be used to define a pattern, or a list of patterns, for paths to be considered for watching.
+Only files that match these patterns will be considered when applying a watch rule. The syntax is the same as `ignore`.
 
 ```yaml
 services:
   backend:
     image: example/backend
     develop:
-      watch:
-        # 重建镜像并重新创建服务
+      watch: 
+        # rebuild image and recreate service
         - path: ./src
-          include: *.go
+          include: *.go  
           action: rebuild
 ```
 
 #### `path`
 
-`path` 属性定义要监控更改的源代码路径（相对于项目目录）。路径内任何不匹配任何 `ignore` 规则的文件更新都会触发配置的操作。
+`path` attribute defines the path to source code (relative to the project directory) to monitor for changes. Updates to any file
+inside the path, which doesn't match any `ignore` rule, triggers the configured action.
 
 #### `target`
 
-`target` 属性仅在 `action` 配置为 `sync` 时适用。`path` 内有更改的文件与容器的文件系统同步，以便后者始终使用最新内容运行。
+`target` attribute only applies when `action` is configured for `sync`. Files within `path` that have changes are synchronized with the container's filesystem, so that the latter is always running with up-to-date content.

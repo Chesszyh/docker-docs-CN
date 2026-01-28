@@ -1,7 +1,8 @@
 ---
-linkTitle: 示例
-title: 示例概览
-description: 通过学习 Docker 官方示例，了解如何将不同类型的服务容器化。
+linkTitle: Samples
+title: Samples overview
+description: Learn how to containerize different types of services by walking through
+  Official Docker samples.
 cascade:
   layout: samples
   type: samples
@@ -14,24 +15,24 @@ aliases:
 - /samples/
 ---
 
-通过学习 Docker 官方示例，了解如何将不同类型的服务容器化。
+Learn how to containerize different types of services by walking through Official Docker samples.
 
-## 数据库
+## Databases
 
 [MariaDB](../samples/mariadb.md) \| [MongoDB](../samples/mongodb.md) \| [MS-SQL](../samples/ms-sql.md) \| [MySQL](../samples/mysql.md) \| [PostgreSQL](../samples/postgres.md) \| [Redis](../samples/redis.md)
 
-## 框架
+## Frameworks
 
 [.NET](../samples/dotnet.md) \| [Angular](../samples/angular.md) \| [Django](../samples/django.md) \| [Express](../samples/express.md) \|[FastAPI](../samples/fastapi.md) \| [Flask](../samples/flask.md) \| [Node.js](../samples/nodejs.md) \| [React](../samples/react.md) \| [Rails](../samples/rails.md) \| [Spark](../samples/spark.md) \| [Spring Boot](../samples/spring.md) \| [Vue.js](../samples/vuejs.md)
 
-## 编程语言
+## Languages
 
 [Go](../samples/go.md) \| [Java](../samples/java.md) \| [JavaScript](../samples/javascript.md) \| [PHP](../samples/php.md) \| [Python](../samples/python.md) \| [Ruby](../samples/ruby.md) \| [Rust](../samples/rust.md) \| [TypeScript](../samples/typescript.md)
 
-## 平台
+## Platforms
 
 [Gitea](../samples/gitea.md) \| [Nextcloud](../samples/nextcloud.md) \| [Portainer](../samples/portainer.md) \|  [Prometheus](../samples/prometheus.md) \| [WordPress](../samples/wordpress.md)
 
-## 其他示例
+## Other samples
 
 [AI/ML](../samples/ai-ml.md) \| [Cloudflared](../samples/cloudflared.md) \| [Elasticsearch / Logstash / Kibana](../samples/elasticsearch.md) \| [Minecraft](../samples/minecraft.md) \| [NGINX](../samples/nginx.md) \| [Pi-hole](../samples/pi-hole.md) \| [Plex](../samples/plex.md) \| [Traefik](../samples/traefik.md) \| [WireGuard](../samples/wireguard.md)

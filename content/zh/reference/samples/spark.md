@@ -1,6 +1,6 @@
 ---
-title: Spark 示例
-description: Spark 的 Docker 示例。
+title: Spark samples
+description: Docker samples for Spark.
 service: spark
 aliases:
 - /samples/spark/

@@ -1,6 +1,6 @@
 ---
-title: JavaScript 示例
-description: JavaScript 的 Docker 示例。
+title: JavaScript samples
+description: Docker samples for JavaScript.
 service: javascript
 aliases:
 - /samples/javascript/

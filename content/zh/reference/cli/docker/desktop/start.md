@@ -7,4 +7,4 @@ layout: cli
 
 > [!NOTE]
 >
-> 由于 WinCred 安全存储凭据的方式存在限制，在 Windows 上通过 SSH 执行 `docker desktop start` 命令将无法正常工作。
+> `docker desktop start` doesn't work when executed via SSH on Windows due to a limitation in how WinCred stores credentials securely.

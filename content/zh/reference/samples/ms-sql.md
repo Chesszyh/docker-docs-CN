@@ -1,6 +1,6 @@
 ---
-title: MS-SQL 示例
-description: MS-SQL 的 Docker 示例。
+title: MS-SQL samples
+description: Docker samples for MS-SQL.
 service: ms-sql
 aliases:
 - /samples/ms-sql/

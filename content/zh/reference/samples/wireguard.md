@@ -1,6 +1,6 @@
 ---
-title: WireGuard 示例
-description: WireGuard 的 Docker 示例。
+title: WireGuard samples
+description: Docker samples for WireGuard.
 service: wireguard
 aliases:
 - /samples/wireguard/

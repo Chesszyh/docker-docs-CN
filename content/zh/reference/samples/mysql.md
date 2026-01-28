@@ -1,6 +1,6 @@
 ---
-title: MySQL 示例
-description: MySQL 的 Docker 示例。
+title: MySQL samples
+description: Docker samples for MySQL.
 service: mysql
 aliases:
 - /samples/mysql/

@@ -1,6 +1,6 @@
 ---
-title: Pi-hole 示例
-description: Pi-hole 的 Docker 示例。
+title: Pi-hole samples
+description: Docker samples for Pi-hole.
 service: pi-hole
 aliases:
 - /samples/pi-hole/

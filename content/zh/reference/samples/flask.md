@@ -1,6 +1,6 @@
 ---
-title: Flask 示例
-description: Flask 的 Docker 示例。
+title: Flask samples
+description: Docker samples for Flask.
 service: flask
 aliases:
 - /samples/flask/

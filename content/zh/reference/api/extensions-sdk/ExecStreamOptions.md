@@ -1,41 +1,42 @@
 ---
-title: "接口: ExecStreamOptions"
-description: Docker 扩展 API 参考
+title: "Interface: ExecStreamOptions"
+description: Docker extension API reference
 keywords: Docker, extensions, sdk, API, reference
-aliases:
+aliases: 
  - /desktop/extensions-sdk/dev/api/reference/interfaces/ExecStreamOptions/
  - /extensions/extensions-sdk/dev/api/reference/interfaces/ExecStreamOptions/
 ---
 
-**`起始版本`**
+**`Since`**
 
 0.2.2
 
-## 属性
+## Properties
 
 ### onOutput
 
 • `Optional` **onOutput**: (`data`: { `stdout`: `string` ; `stderr?`: `undefined`  } \| { `stdout?`: `undefined` ; `stderr`: `string`  }) => `void`
 
-#### 类型声明
+#### Type declaration
 
 ▸ (`data`): `void`
 
-在接收命令执行输出时调用。
-默认情况下，输出在任意边界处分割成块。
-如果您希望输出按完整行分割，请将 `splitOutputLines` 设置为 true。然后每行调用一次回调。
+Invoked when receiving output from command execution.
+By default, the output is split into chunks at arbitrary boundaries.
+If you prefer the output to be split into complete lines, set `splitOutputLines`
+to true. The callback is then invoked once for each line.
 
-**`起始版本`**
+**`Since`**
 
 0.2.0
 
-##### 参数
+##### Parameters
 
-| 名称 | 类型 | 描述 |
+| Name | Type | Description |
 | :------ | :------ | :------ |
-| `data` | `{ stdout: string; stderr?: undefined } \| { stdout?: undefined; stderr: string }` | 输出内容。可以包含 stdout 字符串或 stderr 字符串，每次一个。 |
+| `data` | `{ stdout: string; stderr?: undefined } \| { stdout?: undefined; stderr: string }` | Output content. Can include either stdout string, or stderr string, one at a time. |
 
-##### 返回值
+##### Returns
 
 `void`
 
@@ -45,19 +46,19 @@ ___
 
 • `Optional` **onError**: (`error`: `any`) => `void`
 
-#### 类型声明
+#### Type declaration
 
 ▸ (`error`): `void`
 
-如果执行的命令出错，则调用此方法报告错误。
+Invoked to report error if the executed command errors.
 
-##### 参数
+##### Parameters
 
-| 名称 | 类型 | 描述 |
+| Name | Type | Description |
 | :------ | :------ | :------ |
-| `error` | `any` | 执行命令时发生的错误 |
+| `error` | `any` | The error happening in the executed command |
 
-##### 返回值
+##### Returns
 
 `void`
 
@@ -67,19 +68,19 @@ ___
 
 • `Optional` **onClose**: (`exitCode`: `number`) => `void`
 
-#### 类型声明
+#### Type declaration
 
 ▸ (`exitCode`): `void`
 
-在进程退出时调用。
+Invoked when process exits.
 
-##### 参数
+##### Parameters
 
-| 名称 | 类型 | 描述 |
+| Name | Type | Description |
 | :------ | :------ | :------ |
-| `exitCode` | `number` | 进程退出码 |
+| `exitCode` | `number` | The process exit code |
 
-##### 返回值
+##### Returns
 
 `void`
 
@@ -89,4 +90,4 @@ ___
 
 • `Optional` `Readonly` **splitOutputLines**: `boolean`
 
-指定调用 `onOutput(data)` 的行为。默认为原始输出，在任意位置分割输出。如果设置为 true，每行调用一次 `onOutput`。
+Specifies the behaviour invoking `onOutput(data)`. Raw output by default, splitting output at any position. If set to true, `onOutput` will be invoked once for each line.

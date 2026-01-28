@@ -1,7 +1,8 @@
 ---
-title: 使用 Docker Engine SDK 和 Docker API 的示例
-linkTitle: 示例
-description: 如何使用 Go 和 Python SDK 以及使用 curl 的 HTTP API 执行给定 Docker 操作的示例。
+title: Examples using the Docker Engine SDKs and Docker API
+linkTitle: Examples
+description: Examples on how to perform a given Docker operation using the Go and
+  Python SDKs and the HTTP API using curl.
 keywords: developing, api, sdk, developers, rest, curl, python, go
 aliases:
   - /engine/api/getting-started/
@@ -12,15 +13,22 @@ aliases:
   - /engine/api/sdk/examples/
 ---
 
-[安装 Docker](/get-started/get-docker.md) 后，您可以[安装 Go 或 Python SDK](index.md#install-the-sdks)，也可以尝试使用 Docker Engine API。
+After you
+[install Docker](/get-started/get-docker.md), you can
+[install the Go or Python SDK](index.md#install-the-sdks) and
+also try out the Docker Engine API.
 
-以下每个示例展示了如何使用 Go 和 Python SDK 以及使用 `curl` 的 HTTP API 执行给定的 Docker 操作。
+Each of these examples show how to perform a given Docker operation using the Go
+and Python SDKs and the HTTP API using `curl`.
 
-## 运行容器
+## Run a container
 
-第一个示例展示了如何使用 Docker API 运行容器。在命令行中，您可以使用 `docker run` 命令，但从您自己的应用程序中执行同样简单。
+This first example shows how to run a container using the Docker API. On the
+command line, you would use the `docker run` command, but this is just as easy
+to do from your own apps too.
 
-这相当于在命令提示符下输入 `docker run alpine echo hello world`：
+This is the equivalent of typing `docker run alpine echo hello world` at the
+command prompt:
 
 {{< tabs group="lang" >}}
 {{< tab name="Go" >}}
@@ -53,9 +61,9 @@ func main() {
 	}
 
 	defer reader.Close()
-	// cli.ImagePull 是异步的。
-	// 需要完全读取 reader 才能完成拉取操作。
-	// 如果不需要 stdout，可以考虑使用 io.Discard 而不是 os.Stdout。
+	// cli.ImagePull is asynchronous.
+	// The reader needs to be read completely for the pull operation to complete.
+	// If stdout is not required, consider using io.Discard instead of os.Stdout.
 	io.Copy(os.Stdout, reader)
 
 	resp, err := cli.ContainerCreate(ctx, &container.Config{
@@ -116,20 +124,25 @@ $ curl --unix-socket /var/run/docker.sock "http://localhost/v{{% param "latest_e
 hello world
 ```
 
-使用 cURL 通过 Unix 套接字连接时，主机名并不重要。上述示例使用 `localhost`，但任何主机名都可以。
+When using cURL to connect over a Unix socket, the hostname isn't important. The
+previous examples use `localhost`, but any hostname would work.
 
 > [!IMPORTANT]
 >
-> 上述示例假设您使用的是 cURL 7.50.0 或更高版本。旧版本的 cURL 在使用套接字连接时采用[非标准 URL 表示法](https://github.com/moby/moby/issues/17960)。
+> The previous examples assume you're using cURL 7.50.0 or above. Older versions of
+> cURL used a [non-standard URL notation](https://github.com/moby/moby/issues/17960)
+> when using a socket connection.
 >
-> 如果您使用的是旧版本的 cURL，请改用 `http:/<API version>/`，例如：`http:/v{{% param "latest_engine_api_version" %}}/containers/1c6594faf5/start`。
+> If you're' using an older version of cURL, use `http:/<API version>/` instead,
+> for example: `http:/v{{% param "latest_engine_api_version" %}}/containers/1c6594faf5/start`.
 
 {{< /tab >}}
 {{< /tabs >}}
 
-## 在后台运行容器
+## Run a container in the background
 
-您也可以在后台运行容器，相当于输入 `docker run -d bfirsh/reticulate-splines`：
+You can also run containers in the background, the equivalent of typing
+`docker run -d bfirsh/reticulate-splines`:
 
 {{< tabs group="lang" >}}
 {{< tab name="Go" >}}
@@ -205,9 +218,10 @@ $ curl --unix-socket /var/run/docker.sock -X POST http://localhost/v{{% param "l
 {{< /tab >}}
 {{< /tabs >}}
 
-## 列出和管理容器
+## List and manage containers
 
-您可以使用 API 列出正在运行的容器，就像使用 `docker ps` 一样：
+You can use the API to list containers that are running, just like using
+`docker ps`:
 
 {{< tabs group="lang" >}}
 {{< tab name="Go" >}}
@@ -268,13 +282,16 @@ $ curl --unix-socket /var/run/docker.sock http://localhost/v{{% param "latest_en
 {{< /tab >}}
 {{< /tabs >}}
 
-## 停止所有正在运行的容器
+## Stop all running containers
 
-现在您知道存在哪些容器，您可以对它们执行操作。此示例停止所有正在运行的容器。
+Now that you know what containers exist, you can perform operations on them.
+This example stops all running containers.
 
 > [!NOTE]
 >
-> 不要在生产服务器上运行此操作。此外，如果您使用的是 swarm 服务，容器会停止，但 Docker 会创建新容器以保持服务按其配置状态运行。
+> Don't run this on a production server. Also, if you're' using swarm
+> services, the containers stop, but Docker creates new ones to keep
+> the service running in its configured state.
 
 {{< tabs group="lang" >}}
 {{< tab name="Go" >}}
@@ -305,7 +322,7 @@ func main() {
 
 	for _, container := range containers {
 		fmt.Print("Stopping container ", container.ID[:10], "... ")
-		noWaitTimeout := 0 // 不等待容器优雅退出
+		noWaitTimeout := 0 // to not wait for the container to exit gracefully
 		if err := cli.ContainerStop(ctx, container.ID, containertypes.StopOptions{Timeout: &noWaitTimeout}); err != nil {
 			panic(err)
 		}
@@ -343,9 +360,11 @@ $ curl --unix-socket /var/run/docker.sock \
 {{< /tab >}}
 {{< /tabs >}}
 
-## 打印特定容器的日志
+## Print the logs of a specific container
 
-您还可以对单个容器执行操作。此示例根据容器 ID 打印其日志。运行代码前，您需要修改代码，将硬编码的容器 ID 更改为要打印日志的容器。
+You can also perform actions on individual containers. This example prints the
+logs of a container given its ID. You need to modify the code before running it
+to change the hard-coded ID of the container to print the logs for.
 
 {{< tabs group="lang" >}}
 {{< tab name="Go" >}}
@@ -371,7 +390,7 @@ func main() {
 	defer cli.Close()
 
 	options := container.LogsOptions{ShowStdout: true}
-	// 将此 ID 替换为实际存在的容器
+	// Replace this ID with a container that really exists
 	out, err := cli.ContainerLogs(ctx, "f1064a8a4c82", options)
 	if err != nil {
 		panic(err)
@@ -406,9 +425,9 @@ Reticulating spline 5...
 {{< /tab >}}
 {{< /tabs >}}
 
-## 列出所有镜像
+## List all images
 
-列出您的 Engine 上的镜像，类似于 `docker image ls`：
+List the images on your Engine, similar to `docker image ls`:
 
 {{< tabs group="lang" >}}
 {{< tab name="Go" >}}
@@ -468,9 +487,9 @@ $ curl --unix-socket /var/run/docker.sock http://localhost/v{{% param "latest_en
 {{< /tab >}}
 {{< /tabs >}}
 
-## 拉取镜像
+## Pull an image
 
-拉取镜像，就像 `docker pull` 一样：
+Pull an image, like `docker pull`:
 
 {{< tabs group="lang" >}}
 {{< tab name="Go" >}}
@@ -531,13 +550,14 @@ $ curl --unix-socket /var/run/docker.sock \
 {{< /tab >}}
 {{< /tabs >}}
 
-## 使用身份验证拉取镜像
+## Pull an image with authentication
 
-拉取镜像，就像 `docker pull` 一样，带有身份验证：
+Pull an image, like `docker pull`, with authentication:
 
 > [!NOTE]
 >
-> 凭据以明文形式发送。Docker 官方仓库使用 HTTPS。私有仓库也应配置为使用 HTTPS。
+> Credentials are sent in the clear. Docker's official registries use
+> HTTPS. Private registries should also be configured to use HTTPS.
 
 {{< tabs group="lang" >}}
 {{< tab name="Go" >}}
@@ -588,7 +608,12 @@ func main() {
 {{< /tab >}}
 {{< tab name="Python" >}}
 
-Python SDK 从[凭据存储](/reference/cli/docker/login/#credential-stores)文件检索身份验证信息，并与[凭据助手](https://github.com/docker/docker-credential-helpers)集成。可以覆盖这些凭据，但这超出了本示例指南的范围。使用 `docker login` 后，Python SDK 会自动使用这些凭据。
+The Python SDK retrieves authentication information from the [credentials
+store](/reference/cli/docker/login/#credential-stores) file and
+integrates with [credential
+helpers](https://github.com/docker/docker-credential-helpers). It's possible to override these credentials, but that's out of
+scope for this example guide. After using `docker login`, the Python SDK
+uses these credentials automatically.
 
 ```python
 import docker
@@ -600,7 +625,9 @@ print(image.id)
 {{< /tab >}}
 {{< tab name="HTTP" >}}
 
-此示例会将凭据留在您的 shell 历史记录中，因此请将其视为简单实现。凭据作为 Base-64 编码的 JSON 结构传递。
+This example leaves the credentials in your shell's history, so consider
+this a naive implementation. The credentials are passed as a Base-64-encoded
+JSON structure.
 
 ```console
 $ JSON=$(echo '{"username": "string", "password": "string", "serveraddress": "string"}' | base64)
@@ -619,9 +646,9 @@ $ curl --unix-socket /var/run/docker.sock \
 {{< /tab >}}
 {{< /tabs >}}
 
-## 提交容器
+## Commit a container
 
-提交容器以从其内容创建镜像：
+Commit a container to create an image from its contents:
 
 {{< tabs group="lang" >}}
 {{< tab name="Go" >}}

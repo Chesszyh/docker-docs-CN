@@ -1,6 +1,6 @@
 ---
-title: .NET 示例
-description: .NET 的 Docker 示例。
+title: .NET samples
+description: Docker samples for .NET.
 service: .net
 aliases:
 - /samples/dotnetcore/

@@ -1,6 +1,6 @@
 ---
-title: MariaDB 示例
-description: MariaDB 的 Docker 示例。
+title: MariaDB samples
+description: Docker samples for MariaDB.
 service: mariadb
 aliases:
 - /samples/mariadb/

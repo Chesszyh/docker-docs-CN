@@ -1,25 +1,33 @@
 ---
-title: Services 顶层元素
-description: 探索 services 顶层元素可以拥有的所有属性。
+title: Services top-level elements
+description: Explore all the attributes the services top-level element can have.
 keywords: compose, compose specification, services, compose file reference
-alias:
+aliases:
  - /compose/compose-file/05-services/
 weight: 20
 ---
 
 {{% include "compose/services.md" %}}
 
-Compose 文件必须将 `services` 顶层元素声明为一个映射，其键是服务名称的字符串表示，其值是服务定义。服务定义包含应用于每个服务容器的配置。
+A Compose file must declare a `services` top-level element as a map whose keys are string representations of service names,
+and whose values are service definitions. A service definition contains the configuration that is applied to each
+service container.
 
-每个服务还可以包含一个 `build` 部分，该部分定义了如何为服务创建 Docker 镜像。Compose 支持使用此服务定义构建 Docker 镜像。如果不使用，则忽略 `build` 部分，Compose 文件仍然被视为有效。构建支持是 Compose 规范的一个可选方面，并在 [Compose 构建规范](build.md) 文档中有详细描述。
+Each service may also include a `build` section, which defines how to create the Docker image for the service.
+Compose supports building Docker images using this service definition. If not used, the `build` section is ignored and the Compose file is still considered valid. Build support is an optional aspect of the Compose Specification, and is
+described in detail in the [Compose Build Specification](build.md) documentation.
 
-每个服务都定义了运行其容器的运行时约束和要求。`deploy` 部分对这些约束进行分组，并允许平台调整部署策略，以最匹配容器的需求与可用资源。部署支持是 Compose 规范的一个可选方面，并在 [Compose 部署规范](deploy.md) 文档中有详细描述。如果未实现，则忽略 `deploy` 部分，Compose 文件仍然被视为有效。
+Each service defines runtime constraints and requirements to run its containers. The `deploy` section groups
+these constraints and lets the platform adjust the deployment strategy to best match containers' needs with
+available resources. Deploy support is an optional aspect of the Compose Specification, and is
+described in detail in the [Compose Deploy Specification](deploy.md) documentation.
+If not implemented the `deploy` section is ignored and the Compose file is still considered valid.
 
-## 示例
+## Examples
 
-### 简单示例
+### Simple example
 
-以下示例演示了如何定义两个简单的服务，设置它们的镜像，映射端口，并使用 Docker Compose 配置基本的环境变量。
+The following example demonstrates how to define two simple services, set their images, map ports, and configure basic environment variables using Docker Compose.
 
 ```yaml
 services:
@@ -35,11 +43,11 @@ services:
       POSTGRES_DB: exampledb
 ```
 
-### 高级示例
+### Advanced example 
 
-在以下示例中，`proxy` 服务使用 Nginx 镜像，将本地 Nginx 配置文件挂载到容器中，暴露端口 `80` 并依赖于 `backend` 服务。
+In the following example, the `proxy` service uses the Nginx image, mounts a local Nginx configuration file into the container, exposes port `80` and depends on the `backend` service. 
 
-`backend` 服务从位于 `backend` 目录中的 Dockerfile 构建镜像，该 Dockerfile 设置为在 `builder` 阶段构建。
+The `backend` service builds an image from the Dockerfile located in the `backend` directory that is set to build at stage `builder`.
 
 ```yaml
 services:
@@ -61,15 +69,15 @@ services:
       target: builder
 ```
 
-要查看更多 Compose 文件示例，请浏览 [Awesome Compose 示例](https://github.com/docker/awesome-compose)。
+For more example Compose files, explore the [Awesome Compose samples](https://github.com/docker/awesome-compose).
 
-## 属性
+## Attributes
 
 <!-- vale off(Docker.HeadingSentenceCase.yml) -->
 
 ### `annotations`
 
-`annotations` 定义了容器的注解。`annotations` 可以使用数组或映射。
+`annotations` defines annotations for the container. `annotations` can use either an array or a map.
 
 ```yml
 annotations:
@@ -85,17 +93,18 @@ annotations:
 
 {{< summary-bar feature_name="Compose attach" >}}
 
-当 `attach` 被定义并设置为 `false` 时，Compose 不会收集服务日志，直到你显式请求。
+When `attach` is defined and set to `false` Compose does not collect service logs,
+until you explicitly request it to.
 
-默认服务配置为 `attach: true`。
+The default service configuration is `attach: true`.
 
 ### `build`
 
-`build` 指定了从源代码创建容器镜像的构建配置，如 [Compose 构建规范](build.md) 中所定义。
+`build` specifies the build configuration for creating a container image from source, as defined in the [Compose Build Specification](build.md).
 
 ### `blkio_config`
 
-`blkio_config` 定义了一组配置选项，用于设置服务的块 I/O 限制。
+`blkio_config` defines a set of configuration options to set block I/O limits for a service.
 
 ```yml
 services:
@@ -122,52 +131,58 @@ services:
 
 #### `device_read_bps`, `device_write_bps`
 
-设置给定设备上读/写操作的每秒字节数限制。列表中的每一项必须有两个键：
+Set a limit in bytes per second for read / write operations on a given device.
+Each item in the list must have two keys:
 
-- `path`：定义受影响设备的符号路径。
-- `rate`：表示字节数的整数值或表示字节值的字符串。
+- `path`: Defines the symbolic path to the affected device.
+- `rate`: Either as an integer value representing the number of bytes or as a string expressing a byte value.
 
 #### `device_read_iops`, `device_write_iops`
 
-设置给定设备上读/写操作的每秒操作数限制。列表中的每一项必须有两个键：
+Set a limit in operations per second for read / write operations on a given device.
+Each item in the list must have two keys:
 
-- `path`：定义受影响设备的符号路径。
-- `rate`：表示每秒允许操作数的整数值。
+- `path`: Defines the symbolic path to the affected device.
+- `rate`: As an integer value representing the permitted number of operations per second.
 
 #### `weight`
 
-修改分配给服务的带宽相对于其他服务的比例。取值范围为 10 到 1000 的整数，默认值为 500。
+Modify the proportion of bandwidth allocated to a service relative to other services.
+Takes an integer value between 10 and 1000, with 500 being the default.
 
 #### `weight_device`
 
-按设备微调带宽分配。列表中的每一项必须有两个键：
+Fine-tune bandwidth allocation by device. Each item in the list must have two keys:
 
-- `path`：定义受影响设备的符号路径。
-- `weight`：10 到 1000 之间的整数值。
+- `path`: Defines the symbolic path to the affected device.
+- `weight`: An integer value between 10 and 1000.
 
 ### `cpu_count`
 
-`cpu_count` 定义服务容器可用的 CPU 数量。
+`cpu_count` defines the number of usable CPUs for service container.
 
 ### `cpu_percent`
 
-`cpu_percent` 定义可用 CPU 的可用百分比。
+`cpu_percent` defines the usable percentage of the available CPUs.
 
 ### `cpu_shares`
 
-`cpu_shares` 定义为一个整数值，表示服务容器相对于其他容器的 CPU 权重。
+`cpu_shares` defines, as integer value, a service container's relative CPU weight versus other containers.
 
 ### `cpu_period`
 
-`cpu_period` 配置当平台基于 Linux 内核时的 CPU CFS（完全公平调度器）周期。
+`cpu_period` configures CPU CFS (Completely Fair Scheduler) period when a platform is based
+on Linux kernel.
 
 ### `cpu_quota`
 
-`cpu_quota` 配置当平台基于 Linux 内核时的 CPU CFS（完全公平调度器）配额。
+`cpu_quota` configures CPU CFS (Completely Fair Scheduler) quota when a platform is based
+on Linux kernel.
 
 ### `cpu_rt_runtime`
 
-`cpu_rt_runtime` 为支持实时调度器的平台配置 CPU 分配参数。它可以是使用微秒为单位的整数值，或者是 [duration（持续时间）](extension.md#specifying-durations)。
+`cpu_rt_runtime` configures CPU allocation parameters for platforms with support for real-time scheduler. It can be either
+an integer value using microseconds as unit or a [duration](extension.md#specifying-durations).
 
 ```yml
  cpu_rt_runtime: '400ms'
@@ -176,7 +191,8 @@ services:
 
 ### `cpu_rt_period`
 
-`cpu_rt_period` 为支持实时调度器的平台配置 CPU 分配参数。它可以是使用微秒为单位的整数值，或者是 [duration（持续时间）](extension.md#specifying-durations)。
+`cpu_rt_period` configures CPU allocation parameters for platforms with support for real-time scheduler. It can be either
+an integer value using microseconds as unit or a [duration](extension.md#specifying-durations).
 
 ```yml
  cpu_rt_period: '1400us'
@@ -185,17 +201,19 @@ services:
 
 ### `cpus`
 
-`cpus` 定义分配给服务容器的（可能是虚拟的）CPU 数量。这是一个小数值。`0.000` 表示没有限制。
+`cpus` define the number of (potentially virtual) CPUs to allocate to service containers. This is a fractional number.
+`0.000` means no limit.
 
-设置时，`cpus` 必须与 [部署规范](deploy.md#cpus) 中的 `cpus` 属性一致。
+When set, `cpus` must be consistent with the `cpus` attribute in the [Deploy Specification](deploy.md#cpus).
 
 ### `cpuset`
 
-`cpuset` 定义允许执行的显式 CPU。可以是范围 `0-3` 或列表 `0,1`。
+`cpuset` defines the explicit CPUs in which to permit execution. Can be a range `0-3` or a list `0,1`
 
 ### `cap_add`
 
-`cap_add` 指定额外的容器 [capabilities（能力）](https://man7.org/linux/man-pages/man7/capabilities.7.html) 为字符串。
+`cap_add` specifies additional container [capabilities](https://man7.org/linux/man-pages/man7/capabilities.7.html)
+as strings.
 
 ```yaml
 cap_add:
@@ -204,7 +222,8 @@ cap_add:
 
 ### `cap_drop`
 
-`cap_drop` 指定要删除的容器 [capabilities（能力）](https://man7.org/linux/man-pages/man7/capabilities.7.html) 为字符串。
+`cap_drop` specifies container [capabilities](https://man7.org/linux/man-pages/man7/capabilities.7.html) to drop
+as strings.
 
 ```yaml
 cap_drop:
@@ -216,14 +235,15 @@ cap_drop:
 
 {{< summary-bar feature_name="Compose cgroup" >}}
 
-`cgroup` 指定要加入的 cgroup 命名空间。如果未设置，则由容器运行时决定选择使用哪个 cgroup 命名空间（如果支持）。
+`cgroup` specifies the cgroup namespace to join. When unset, it is the container runtime's decision to
+select which cgroup namespace to use, if supported.
 
-- `host`：在容器运行时 cgroup 命名空间中运行容器。
-- `private`：在自己的私有 cgroup 命名空间中运行容器。
+- `host`: Runs the container in the Container runtime cgroup namespace.
+- `private`: Runs the container in its own private cgroup namespace.
 
 ### `cgroup_parent`
 
-`cgroup_parent` 指定容器的可选父 [cgroup](https://man7.org/linux/man-pages/man7/cgroups.7.html)。
+`cgroup_parent` specifies an optional parent [cgroup](https://man7.org/linux/man-pages/man7/cgroups.7.html) for the container.
 
 ```yaml
 cgroup_parent: m-executor-abcd
@@ -231,42 +251,50 @@ cgroup_parent: m-executor-abcd
 
 ### `command`
 
-`command` 覆盖容器镜像声明的默认命令，例如 Dockerfile 的 `CMD`。
+`command` overrides the default command declared by the container image, for example by Dockerfile's `CMD`.
 
 ```yaml
 command: bundle exec thin -p 3000
 ```
 
-如果值为 `null`，则使用镜像中的默认命令。
+If the value is `null`, the default command from the image is used.
 
-如果值为 `[]`（空列表）或 `''`（空字符串），则忽略镜像声明的默认命令，换句话说，被覆盖为空。
+If the value is `[]` (empty list) or `''` (empty string), the default command declared by the image is ignored, or in other words overridden to be empty.
 
 > [!NOTE]
-> 
-> 与 Dockerfile 中的 `CMD` 指令不同，`command` 字段不会自动在镜像中定义的 [`SHELL`](/reference/dockerfile.md#shell-form) 指令的上下文中运行。如果你的 `command` 依赖于 shell 特定的功能，例如环境变量扩展，你需要显式地在 shell 中运行它。例如：
-> 
+>
+> Unlike the `CMD` instruction in a Dockerfile, the `command` field doesn't automatically run within the context of the [`SHELL`](/reference/dockerfile.md#shell-form) instruction defined in the image. If your `command` relies on shell-specific features, such as environment variable expansion, you need to explicitly run it within a shell. For example:
+>
 > ```yaml
 > command: /bin/sh -c 'echo "hello $$HOSTNAME"'
 > ```
 
-该值也可以是一个列表，类似于 [Dockerfile](/reference/dockerfile.md#exec-form) 使用的 [exec-form 语法](/reference/dockerfile.md#exec-form)。
+The value can also be a list, similar to the [exec-form syntax](/reference/dockerfile.md#exec-form)
+used by the [Dockerfile](/reference/dockerfile.md#exec-form).
 
 ### `configs`
 
-`configs` 允许服务调整其行为，而无需重建 Docker 镜像。
-只有通过 `configs` 属性显式授予访问权限时，服务才能访问配置。支持两种不同的语法变体。
+`configs` let services adapt their behaviour without the need to rebuild a Docker image.
+Services can only access configs when explicitly granted by the `configs` attribute. Two different syntax variants are supported.
 
-如果 `config` 在平台上不存在或未在 Compose 文件的 [`configs` 顶层元素](configs.md) 中定义，Compose 将报告错误。
+Compose reports an error if `config` doesn't exist on the platform or isn't defined in the
+[`configs` top-level element](configs.md) in the Compose file.
 
-定义了两种配置语法：短语法和长语法。
+There are two syntaxes defined for configs: a short syntax and a long syntax.
 
-你可以授予服务访问多个配置的权限，并且可以混合使用长语法和短语法。
+You can grant a service access to multiple configs, and you can mix long and short syntax.
 
-#### 短语法
+#### Short syntax
 
-短语法变体仅指定配置名称。这授予容器对配置的访问权限，并将其作为文件挂载到服务容器的文件系统中。容器内挂载点的位置在 Linux 容器中默认为 `/<config_name>`，在 Windows 容器中默认为 `C:\<config_name>`。
+The short syntax variant only specifies the config name. This grants the
+container access to the config and mounts it as files into a service’s container’s filesystem. The location of the mount point within the container defaults to `/<config_name>` in Linux containers, and `C:\<config-name>` in Windows containers.
 
-以下示例使用短语法授予 `redis` 服务访问 `my_config` 和 `my_other_config` 配置的权限。`my_config` 的值设置为文件 `./my_config.txt` 的内容，而 `my_other_config` 定义为外部资源，这意味着它已经在平台中定义。如果外部配置不存在，部署将失败。
+The following example uses the short syntax to grant the `redis` service
+access to the `my_config` and `my_other_config` configs. The value of
+`my_config` is set to the contents of the file `./my_config.txt`, and
+`my_other_config` is defined as an external resource, which means that it has
+already been defined in the platform. If the external config does not exist,
+the deployment fails.
 
 ```yml
 services:
@@ -282,16 +310,23 @@ configs:
     external: true
 ```
 
-#### 长语法
+#### Long syntax
 
-长语法提供了在服务的任务容器中如何创建配置的更细粒度的控制。
+The long syntax provides more granularity in how the config is created within the service's task containers.
 
-- `source`：平台中存在的配置名称。
-- `target`：要挂载在服务的任务容器中的文件的路径和名称。如果未指定，默认为 `/<source>`。
-- `uid` 和 `gid`：在服务的任务容器中拥有挂载的配置文件的数字 uid 或 gid。未指定时的默认值为 `USER`。
-- `mode`：在服务的任务容器内挂载的文件的 [权限](https://wintelguy.com/permissions-calc.pl)，以八进制表示法。默认值为全局可读 (`0444`)。必须忽略可写位。可以设置可执行位。
+- `source`: The name of the config as it exists in the platform.
+- `target`: The path and name of the file to be mounted in the service's
+  task containers. Defaults to `/<source>` if not specified.
+- `uid` and `gid`: The numeric uid or gid that owns the mounted config file
+  within the service's task containers. Default value when not specified is `USER`.
+- `mode`: The [permissions](https://wintelguy.com/permissions-calc.pl) for the file that is mounted within the service's
+  task containers, in octal notation. Default value is world-readable (`0444`).
+  Writable bit must be ignored. The executable bit can be set.
 
-以下示例将容器内的 `my_config` 名称设置为 `redis_config`，将模式设置为 `0440`（组可读），并将用户和组设置为 `103`。`redis` 服务没有访问 `my_other_config` 配置的权限。
+The following example sets the name of `my_config` to `redis_config` within the
+container, sets the mode to `0440` (group-readable) and sets the user and group
+to `103`. The `redis` service does not have access to the `my_other_config`
+config.
 
 ```yml
 services:
@@ -312,43 +347,49 @@ configs:
 
 ### `container_name`
 
-`container_name` 是一个字符串，指定自定义容器名称，而不是默认生成的名称。
+`container_name` is a string that specifies a custom container name, rather than a name generated by default.
 
 ```yml
 container_name: my-web-container
 ```
 
-如果 Compose 文件指定了 `container_name`，Compose 不会将服务扩展到超过一个容器。尝试这样做会导致错误。
+Compose does not scale a service beyond one container if the Compose file specifies a
+`container_name`. Attempting to do so results in an error.
 
-`container_name` 遵循 `[a-zA-Z0-9][a-zA-Z0-9_.-]+` 的正则表达式格式。
+`container_name` follows the regex format of `[a-zA-Z0-9][a-zA-Z0-9_.-]+`
 
 ### `credential_spec`
 
-`credential_spec` 配置托管服务帐户的凭证规范。
+`credential_spec` configures the credential spec for a managed service account.
 
-如果你的服务使用 Windows 容器，你可以为 `credential_spec` 使用 `file:` 和 `registry:` 协议。Compose 还支持用于自定义用例的其他协议。
+If you have services that use Windows containers, you can use `file:` and
+`registry:` protocols for `credential_spec`. Compose also supports additional
+protocols for custom use-cases.
 
-`credential_spec` 必须采用 `file://<filename>` 或 `registry://<value-name>` 的格式。
+The `credential_spec` must be in the format `file://<filename>` or `registry://<value-name>`.
 
 ```yml
 credential_spec:
   file: my-credential-spec.json
 ```
 
-当使用 `registry:` 时，凭证规范从守护进程主机的 Windows 注册表中读取。具有给定名称的注册表值必须位于：
+When using `registry:`, the credential spec is read from the Windows registry on
+the daemon's host. A registry value with the given name must be located in:
 
     HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Virtualization\Containers\CredentialSpecs
 
-以下示例从注册表中名为 `my-credential-spec` 的值加载凭证规范：
+The following example loads the credential spec from a value named `my-credential-spec`
+in the registry:
 
 ```yml
 credential_spec:
   registry: my-credential-spec
 ```
 
-#### gMSA 配置示例
+#### Example gMSA configuration
 
-为服务配置 gMSA 凭证规范时，你只需使用 `config` 指定凭证规范，如下例所示：
+When configuring a gMSA credential spec for a service, you only need
+to specify a credential spec with `config`, as shown in the following example:
 
 ```yml
 services:
@@ -366,15 +407,18 @@ configs:
 
 {{% include "compose/services-depends-on.md" %}}
 
-#### 短语法
+#### Short syntax
 
-短语法变体仅指定依赖项的服务名称。服务依赖关系会导致以下行为：
+The short syntax variant only specifies service names of the dependencies.
+Service dependencies cause the following behaviors:
 
-- Compose 按依赖顺序创建服务。在以下示例中，`db` 和 `redis` 在 `web` 之前创建。
+- Compose creates services in dependency order. In the following
+  example, `db` and `redis` are created before `web`.
 
-- Compose 按依赖顺序删除服务。在以下示例中，`web` 在 `db` 和 `redis` 之前删除。
+- Compose removes services in dependency order. In the following
+  example, `web` is removed before `db` and `redis`.
 
-简单示例：
+Simple example:
 
 ```yml
 services:
@@ -389,28 +433,41 @@ services:
     image: postgres
 ```
 
-Compose 保证在启动依赖服务之前已启动被依赖的服务。
-Compose 等待依赖服务“就绪”后再启动被依赖的服务。
+Compose guarantees dependency services have been started before
+starting a dependent service.
+Compose waits for dependency services to be "ready" before
+starting a dependent service.
 
-#### 长语法
+#### Long syntax
 
-长格式语法允许配置短格式无法表达的额外字段。
+The long form syntax enables the configuration of additional fields that can't be
+expressed in the short form.
 
-- `restart`：当设置为 `true` 时，Compose 在更新依赖服务后重启此服务。这适用于由 Compose 操作控制的显式重启，不包括容器死机后由容器运行时进行的自动重启。在 Docker Compose 版本 [2.17.0](/manuals/compose/releases/release-notes.md#2170) 中引入。
+- `restart`: When set to `true` Compose restarts this service after it updates the dependency service.
+  This applies to an explicit restart controlled by a Compose operation, and excludes automated restart by the container runtime
+  after the container dies. Introduced in Docker Compose version [2.17.0](/manuals/compose/releases/release-notes.md#2170).
 
-- `condition`：设置依赖被视为满足的条件
-  - `service_started`：等同于前面描述的短语法
-  - `service_healthy`：指定在启动被依赖的服务之前，依赖项预期处于“健康”状态（如 [`healthcheck`](#healthcheck) 所指示）。
-  - `service_completed_successfully`：指定在启动被依赖的服务之前，依赖项预期成功运行完成。
-- `required`：当设置为 `false` 时，如果依赖服务未启动或不可用，Compose 仅发出警告。如果未定义，`required` 的默认值为 `true`。在 Docker Compose 版本 [2.20.0](/manuals/compose/releases/release-notes.md#2200) 中引入。
+- `condition`: Sets the condition under which dependency is considered satisfied
+  - `service_started`: An equivalent of the short syntax described previously
+  - `service_healthy`: Specifies that a dependency is expected to be "healthy"
+    (as indicated by [`healthcheck`](#healthcheck)) before starting a dependent
+    service.
+  - `service_completed_successfully`: Specifies that a dependency is expected to run
+    to successful completion before starting a dependent service.
+- `required`: When set to `false` Compose only warns you when the dependency service isn't started or available. If it's not defined
+    the default value of `required` is `true`. Introduced in Docker Compose version [2.20.0](/manuals/compose/releases/release-notes.md#2200).
 
-服务依赖关系会导致以下行为：
+Service dependencies cause the following behaviors:
 
-- Compose 按依赖顺序创建服务。在以下示例中，`db` 和 `redis` 在 `web` 之前创建。
+- Compose creates services in dependency order. In the following
+  example, `db` and `redis` are created before `web`.
 
-- Compose 等待标记为 `service_healthy` 的依赖项的健康检查通过。在以下示例中，`db` 在 `web` 创建之前预期为“健康”。
+- Compose waits for healthchecks to pass on dependencies
+  marked with `service_healthy`. In the following example, `db` is expected to
+  be "healthy" before `web` is created.
 
-- Compose 按依赖顺序删除服务。在以下示例中，`web` 在 `db` 和 `redis` 之前删除。
+- Compose removes services in dependency order. In the following
+  example, `web` is removed before `db` and `redis`.
 
 ```yml
 services:
@@ -428,22 +485,26 @@ services:
     image: postgres
 ```
 
-Compose 保证在启动被依赖的服务之前启动依赖服务。
-Compose 保证在启动被依赖的服务之前，标记为 `service_healthy` 的依赖服务是“健康”的。
+Compose guarantees dependency services are started before
+starting a dependent service.
+Compose guarantees dependency services marked with
+`service_healthy` are "healthy" before starting a dependent service.
 
 ### `deploy`
 
-`deploy` 指定服务的部署和生命周期配置，如 [Compose 部署规范](deploy.md) 中所定义。
+`deploy` specifies the configuration for the deployment and lifecycle of services, as defined [in the Compose Deploy Specification](deploy.md).
 
 ### `develop`
 
 {{< summary-bar feature_name="Compose develop" >}}
 
-`develop` 指定用于保持容器与源代码同步的开发配置，如 [开发部分](develop.md) 中所定义。
+`develop` specifies the development configuration for maintaining a container in sync with source, as defined in the [Development Section](develop.md).
 
 ### `device_cgroup_rules`
 
-`device_cgroup_rules` 定义此容器的设备 cgroup 规则列表。格式与 Linux 内核在 [Control Groups Device Whitelist Controller](https://www.kernel.org/doc/html/latest/admin-guide/cgroup-v1/devices.html) 中指定的格式相同。
+`device_cgroup_rules` defines a list of device cgroup rules for this container.
+The format is the same format the Linux kernel specifies in the [Control Groups
+Device Whitelist Controller](https://www.kernel.org/doc/html/latest/admin-guide/cgroup-v1/devices.html).
 
 ```yml
 device_cgroup_rules:
@@ -453,7 +514,8 @@ device_cgroup_rules:
 
 ### `devices`
 
-`devices` 以 `HOST_PATH:CONTAINER_PATH[:CGROUP_PERMISSIONS]` 的形式定义已创建容器的设备映射列表。
+`devices` defines a list of device mappings for created containers in the form of
+`HOST_PATH:CONTAINER_PATH[:CGROUP_PERMISSIONS]`.
 
 ```yml
 devices:
@@ -461,7 +523,7 @@ devices:
   - "/dev/sda:/dev/xvda:rwm"
 ```
 
-`devices` 还可以依赖 [CDI](https://github.com/cncf-tags/container-device-interface) 语法让容器运行时选择设备：
+`devices` can also rely on the [CDI](https://github.com/cncf-tags/container-device-interface) syntax to let the container runtime select a device:
 
 ```yml
 devices:
@@ -470,7 +532,7 @@ devices:
 
 ### `dns`
 
-`dns` 定义要在容器网络接口配置上设置的自定义 DNS 服务器。它可以是单个值或列表。
+`dns` defines custom DNS servers to set on the container network interface configuration. It can be a single value or a list.
 
 ```yml
 dns: 8.8.8.8
@@ -484,7 +546,7 @@ dns:
 
 ### `dns_opt`
 
-`dns_opt` 列出要传递给容器 DNS 解析器（Linux 上的 `/etc/resolv.conf` 文件）的自定义 DNS 选项。
+`dns_opt` list custom DNS options to be passed to the container’s DNS resolver (`/etc/resolv.conf` file on Linux).
 
 ```yml
 dns_opt:
@@ -494,7 +556,7 @@ dns_opt:
 
 ### `dns_search`
 
-`dns_search` 定义要在容器网络接口配置上设置的自定义 DNS 搜索域。它可以是单个值或列表。
+`dns_search` defines custom DNS search domains to set on container network interface configuration. It can be a single value or a list.
 
 ```yml
 dns_search: example.com
@@ -508,13 +570,14 @@ dns_search:
 
 ### `domainname`
 
-`domainname` 声明要用于服务容器的自定义域名。它必须是有效的 RFC 1123 主机名。
+`domainname` declares a custom domain name to use for the service container. It must be a valid RFC 1123 hostname.
 
 ### `driver_opts`
 
 {{< summary-bar feature_name="Compose driver opts" >}}
 
-`driver_opts` 指定作为键值对的选项列表以传递给驱动程序。这些选项依赖于驱动程序。
+`driver_opts` specifies a list of options as key-value pairs to pass to the driver. These options are
+driver-dependent.
 
 ```yml
 services:
@@ -525,23 +588,25 @@ services:
           com.docker.network.bridge.host_binding_ipv4: "127.0.0.1"
 ```
 
-有关更多信息，请参阅 [网络驱动程序文档](/manuals/engine/network/_index.md)。
+Consult the [network drivers documentation](/manuals/engine/network/_index.md) for more information.
 
 ### `entrypoint`
 
-`entrypoint` 声明服务容器的默认入口点。
-这会覆盖服务的 Dockerfile 中的 `ENTRYPOINT` 指令。
+`entrypoint` declares the default entrypoint for the service container.
+This overrides the `ENTRYPOINT` instruction from the service's Dockerfile.
 
-如果 `entrypoint` 不为 null，Compose 将忽略镜像中的任何默认命令，例如 Dockerfile 中的 `CMD` 指令。
+If `entrypoint` is non-null, Compose ignores any default command from the image, for example the `CMD`
+instruction in the Dockerfile.
 
-另请参阅 [`command`](#command) 以设置或覆盖由 entrypoint 进程执行的默认命令。
+See also [`command`](#command) to set or override the default command to be executed by the entrypoint process.
 
-在其短形式中，值可以定义为字符串：
+In its short form, the value can be defined as a string:
 ```yml
 entrypoint: /code/entrypoint.sh
 ```
 
-或者，该值也可以是一个列表，方式类似于 [Dockerfile](https://docs.docker.com/reference/dockerfile/#cmd)：
+Alternatively, the value can also be a list, in a manner similar to the
+[Dockerfile](https://docs.docker.com/reference/dockerfile/#cmd):
 
 ```yml
 entrypoint:
@@ -553,9 +618,9 @@ entrypoint:
   - vendor/bin/phpunit
 ```
 
-如果值为 `null`，则使用镜像中的默认入口点。
+If the value is `null`, the default entrypoint from the image is used.
 
-如果值为 `[]`（空列表）或 `''`（空字符串），则忽略镜像声明的默认入口点，换句话说，被覆盖为空。
+If the value is `[]` (empty list) or `''` (empty string), the default entrypoint declared by the image is ignored, or in other words, overridden to be empty.
 
 ### `env_file`
 
@@ -565,11 +630,14 @@ entrypoint:
 env_file: .env
 ```
 
-相对路径从 Compose 文件的父文件夹解析。由于绝对路径会阻止 Compose 文件可移植，因此当使用此类路径设置 `env_file` 时，Compose 会发出警告。
+Relative paths are resolved from the Compose file's parent folder. As absolute paths prevent the Compose
+file from being portable, Compose warns you when such a path is used to set `env_file`.
 
-在 [`environment`](#environment) 部分声明的环境变量会覆盖这些值。即使这些值为空或未定义，这也是适用的。
+Environment variables declared in the [`environment`](#environment) section override these values. This holds true even if those values are
+empty or undefined.
 
-`env_file` 也可以是一个列表。列表中的文件从上到下处理。对于在两个环境文件中指定的同一变量，列表中最后一个文件中的值有效。
+`env_file` can also be a list. The files in the list are processed from the top down. For the same variable
+specified in two environment files, the value from the last file in the list stands.
 
 ```yml
 env_file:
@@ -577,13 +645,14 @@ env_file:
   - ./b.env
 ```
 
-列表元素也可以声明为映射，从而允许你设置其他属性。
+List elements can also be declared as a mapping, which then lets you set additional
+attributes.
 
 #### `required`
 
 {{< summary-bar feature_name="Compose required" >}}
 
-`required` 属性默认为 `true`。当 `required` 设置为 `false` 且 `.env` 文件丢失时，Compose 会静默忽略该条目。
+The `required` attribute defaults to `true`. When `required` is set to `false` and the `.env` file is missing, Compose silently ignores the entry.
 
 ```yml
 env_file:
@@ -597,9 +666,10 @@ env_file:
 
 {{< summary-bar feature_name="Compose format" >}}
 
-`format` 属性允许你为 `env_file` 使用替代文件格式。未设置时，`env_file` 将根据 [`Env_file` 格式](#env_file-format) 中概述的 Compose 规则进行解析。
+The `format` attribute lets you use an alternative file format for the `env_file`. When not set, `env_file` is parsed according to the Compose rules outlined in [`Env_file` format](#env_file-format).
 
-`raw` 格式允许你使用带有 key=value 项目的 `env_file`，但 Compose 不会尝试解析该值以进行插值。这允许你按原样传递值，包括引号和 `$` 符号。
+`raw` format lets you use an `env_file` with key=value items, but without any attempt from Compose to parse the value for interpolation. 
+This let you pass values as-is, including quotes and `$` signs.
 
 ```yml
 env_file:
@@ -607,36 +677,36 @@ env_file:
     format: raw
 ```
 
-#### `Env_file` 格式
+#### `Env_file` format
 
-`.env` 文件中的每一行必须采用 `VAR[=[VAL]]` 格式。适用以下语法规则：
+Each line in an `.env` file must be in `VAR[=[VAL]]` format. The following syntax rules apply:
 
-- 以 `#` 开头的行作为注释处理并忽略。
-- 空行被忽略。
-- 未加引号和双引号 (`"`) 的值应用 [插值](interpolation.md)。
-- 每一行代表一个键值对。值可以选加引号。
+- Lines beginning with `#` are processed as comments and ignored.
+- Blank lines are ignored.
+- Unquoted and double-quoted (`"`) values have [Interpolation](interpolation.md) applied.
+- Each line represents a key-value pair. Values can optionally be quoted.
   - `VAR=VAL` -> `VAL`
   - `VAR="VAL"` -> `VAL`
   - `VAR='VAL'` -> `VAL`
-- 未加引号值的行内注释必须前面有一个空格。
+- Inline comments for unquoted values must be preceded with a space.
   - `VAR=VAL # comment` -> `VAL`
   - `VAR=VAL# not a comment` -> `VAL# not a comment`
-- 加引号值的行内注释必须跟在结束引号后面。
+- Inline comments for quoted values must follow the closing quote.
   - `VAR="VAL # not a comment"` -> `VAL # not a comment`
   - `VAR="VAL" # comment` -> `VAL`
-- 单引号 (`'`) 值按字面意思使用。
+- Single-quoted (`'`) values are used literally.
   - `VAR='$OTHER'` -> `$OTHER`
   - `VAR='${OTHER}'` -> `${OTHER}`
-- 引号可以用 `\` 转义。
+- Quotes can be escaped with `\`.
   - `VAR='Let\'s go!'` -> `Let's go!`
   - `VAR="{\"hello\": \"json\"}"` -> `{"hello": "json"}`
-- 双引号值中支持常见的 shell 转义序列，包括 `\n`、`\r`、`\t` 和 `\\`。
+- Common shell escape sequences including `\n`, `\r`, `\t`, and `\\` are supported in double-quoted values.
   - `VAR="some\tvalue"` -> `some  value`
   - `VAR='some\tvalue'` -> `some\tvalue`
   - `VAR=some\tvalue` -> `some\tvalue`
 
-`VAL` 可以省略，在这种情况下，变量值是一个空字符串。
-`=VAL` 可以省略，在这种情况下，变量未设置。
+`VAL` may be omitted, in such cases the variable value is an empty string.
+`=VAL` may be omitted, in such cases the variable is unset.
 
 ```bash
 # Set Rails/Rack environment
@@ -648,9 +718,11 @@ VAR="quoted"
 
 {{% include "compose/services-environment.md" %}}
 
-环境变量可以通过单个键（没有值到等号）声明。在这种情况下，Compose 依赖于你来解析该值。如果值未解析，则该变量未设置并从服务容器环境中删除。
+Environment variables can be declared by a single key (no value to equals sign). In this case Compose
+relies on you to resolve the value. If the value is not resolved, the variable
+is unset and is removed from the service container environment.
 
-映射语法：
+Map syntax:
 
 ```yml
 environment:
@@ -659,7 +731,7 @@ environment:
   USER_INPUT:
 ```
 
-数组语法：
+Array syntax:
 
 ```yml
 environment:
@@ -668,14 +740,16 @@ environment:
   - USER_INPUT
 ```
 
-当同时为服务设置 `env_file` 和 `environment` 时，由 `environment` 设置的值具有优先权。
+When both `env_file` and `environment` are set for a service, values set by `environment` have precedence.
 
 ### `expose`
 
-`expose` 定义 Compose 从容器暴露的（传入）端口或端口范围。这些端口必须可供链接的服务访问，并且不应发布到主机。只能指定内部容器端口。
+`expose` defines the (incoming) port or a range of ports that Compose exposes from the container. These ports must be
+accessible to linked services and should not be published to the host machine. Only the internal container
+ports can be specified.
 
-语法是 `<portnum>/[<proto>]` 或 `<startport-endport>/[<proto>]` 用于端口范围。
-当未显式设置时，使用 `tcp` 协议。
+Syntax is `<portnum>/[<proto>]` or `<startport-endport>/[<proto>]` for a port range.
+When not explicitly set, `tcp` protocol is used.
 
 ```yml
 expose:
@@ -685,14 +759,15 @@ expose:
 ```
 
 > [!NOTE]
-> 
-> 如果镜像的 Dockerfile 已经暴露了端口，即使你的 Compose 文件中未设置 `expose`，它对网络上的其他容器也是可见的。
+>
+> If the Dockerfile for the image already exposes ports, it is visible to other containers on the network even if `expose` is not set in your Compose file. 
 
 ### `extends`
 
-`extends` 允许你在不同文件甚至完全不同的项目之间共享通用配置。使用 `extends`，你可以在一个地方定义一组通用的服务选项，并从任何地方引用它。你可以引用另一个 Compose 文件并选择你也想在自己的应用程序中使用的服务，并且能够根据自己的需要覆盖某些属性。
+`extends` lets you share common configurations among different files, or even different projects entirely. With `extends` you can define a common set of service options in one place and refer to it from anywhere. You can refer to another Compose file and select a service you want to also use in your own application, with the ability to override some attributes for your own needs.
 
-You可以在任何服务上将 `extends` 与其他配置键一起使用。`extends` 值必须是使用必需的 `service` 和可选的 `file` 键定义的映射。
+You can use `extends` on any service together with other configuration keys. The `extends` value must be a mapping
+defined with a required `service` and an optional `file` key.
 
 ```yaml
 extends:
@@ -700,47 +775,56 @@ extends:
   service: webapp
 ```
 
-- `service`：定义被引用为基础的服务名称，例如 `web` 或 `database`。
-- `file`：定义该服务的 Compose 配置文件的位置。
+- `service`: Defines the name of the service being referenced as a base, for example `web` or `database`.
+- `file`: The location of a Compose configuration file defining that service.
 
-#### 限制
+#### Restrictions 
 
-当使用 `extends` 引用服务时，它可以声明对其他资源的依赖关系。这些依赖关系可以通过 `volumes`、`networks`、`configs`、`secrets`、`links`、`volumes_from` 或 `depends_on` 等属性显式定义。或者，依赖关系可以在 `ipc`、`pid` 或 `network_mode` 等命名空间声明中使用 `service:{name}` 语法引用另一个服务。
+When a service is referenced using `extends`, it can declare dependencies on other resources. These dependencies may be explicitly defined through attributes like `volumes`, `networks`, `configs`, `secrets`, `links`, `volumes_from`, or `depends_on`. Alternatively, dependencies can reference another service using the `service:{name}` syntax in namespace declarations such as `ipc`, `pid`, or `network_mode`.
 
-Compose 不会自动将这些引用的资源导入扩展模型。你有责任确保依赖于 extends 的模型中显式声明了所有必需的资源。
+Compose does not automatically import these referenced resources into the extended model. It is your responsibility to ensure all required resources are explicitly declared in the model that relies on extends.
 
-不支持带有 `extends` 的循环引用，当检测到时，Compose 会返回错误。
+Circular references with `extends` are not supported, Compose returns an error when one is detected.
 
-#### 查找引用的服务
+#### Finding referenced service
 
-`file` 值可以是：
+`file` value can be:
 
-- 不存在。
-  这表示正在引用同一 Compose 文件中的另一个服务。
-- 文件路径，可以是：
-  - 相对路径。此路径被视为相对于主 Compose 文件位置的相对路径。
-  - 绝对路径。
+- Not present.
+  This indicates that another service within the same Compose file is being referenced.
+- File path, which can be either:
+  - Relative path. This path is considered as relative to the location of the main Compose
+    file.
+  - Absolute path.
 
-`service` 表示的服务必须存在于标识的被引用 Compose 文件中。
-如果出现以下情况，Compose 将返回错误：
+A service denoted by `service` must be present in the identified referenced Compose file.
+Compose returns an error if:
 
-- 未找到 `service` 表示的服务。
-- 未找到 `file` 表示的 Compose 文件。
+- The service denoted by `service` is not found.
+- The Compose file denoted by `file` is not found.
 
-#### 合并服务定义
+#### Merging service definitions
 
-两个服务定义（当前 Compose 文件中的主定义和由 `extends` 指定的被引用定义）按以下方式合并：
+Two service definitions, the main one in the current Compose file and the referenced one
+specified by `extends`, are merged in the following way:
 
-- 映射：主服务定义的映射中的键覆盖被引用服务定义的映射中的键。未覆盖的键按原样包含。
-- 序列：项目组合成一个新的序列。保留元素的顺序，引用的项目在先，主项目在后。
-- 标量：主服务定义中的键优先于被引用的键。
+- Mappings: Keys in mappings of the main service definition override keys in mappings
+  of the referenced service definition. Keys that aren't overridden are included as is.
+- Sequences: Items are combined together into a new sequence. The order of elements is
+  preserved with the referenced items coming first and main items after.
+- Scalars: Keys in the main service definition take precedence over keys in the
+  referenced one.
 
-##### 映射
+##### Mappings
 
-以下键应被视为映射：`annotations`、`build.args`、`build.labels`、`build.extra_hosts`、`deploy.labels`、`deploy.update_config`、`deploy.rollback_config`、`deploy.restart_policy`、`deploy.resources.limits`、`environment`、`healthcheck`、`labels`、`logging.options`、`sysctls`、`storage_opt`、`extra_hosts`、`ulimits`。
+The following keys should be treated as mappings: `annotations`, `build.args`, `build.labels`,
+`build.extra_hosts`, `deploy.labels`, `deploy.update_config`, `deploy.rollback_config`,
+`deploy.restart_policy`, `deploy.resources.limits`, `environment`, `healthcheck`,
+`labels`, `logging.options`, `sysctls`, `storage_opt`, `extra_hosts`, `ulimits`.
 
-适用于 `healthcheck` 的一个例外是，除非被引用的映射也指定了 `disable: true`，否则主映射不能指定 `disable: true`。在这种情况下，Compose 返回错误。
-例如，以下输入：
+One exception that applies to `healthcheck` is that the main mapping cannot specify
+`disable: true` unless the referenced mapping also specifies `disable: true`. Compose returns an error in this case.
+For example, the following input:
 
 ```yaml
 services:
@@ -756,7 +840,8 @@ services:
       PORT: 8080
 ```
 
-为 `cli` 服务生成以下配置。如果使用数组语法，也会产生相同的输出。
+Produces the following configuration for the `cli` service. The same output is
+produced if array syntax is used.
 
 ```yaml
 environment:
@@ -765,9 +850,12 @@ environment:
 image: busybox
 ```
 
-`blkio_config.device_read_bps`、`blkio_config.device_read_iops`、`blkio_config.device_write_bps`、`blkio_config.device_write_iops`、`devices` 和 `volumes` 下的项目也被视为映射，其中键是容器内的目标路径。
+Items under `blkio_config.device_read_bps`, `blkio_config.device_read_iops`,
+`blkio_config.device_write_bps`, `blkio_config.device_write_iops`, `devices` and
+`volumes` are also treated as mappings where key is the target path inside the
+container.
 
-例如，以下输入：
+For example, the following input:
 
 ```yaml
 services:
@@ -782,7 +870,8 @@ services:
       - cli-volume:/var/lib/backup/data:ro
 ```
 
-为 `cli` 服务生成以下配置。请注意，挂载路径现在指向新的卷名称，并且应用了 `ro` 标志。
+Produces the following configuration for the `cli` service. Note that the mounted path
+now points to the new volume name and `ro` flag was applied.
 
 ```yaml
 image: busybox
@@ -790,9 +879,11 @@ volumes:
 - cli-volume:/var/lib/backup/data:ro
 ```
 
-如果被引用的服务定义包含 `extends` 映射，则其下的项目将简单地复制到新的合并定义中。然后再次启动合并过程，直到没有剩余的 `extends` 键。
+If the referenced service definition contains `extends` mapping, the items under it
+are simply copied into the new merged definition. The merging process is then kicked
+off again until no `extends` keys are remaining.
 
-例如，以下输入：
+For example, the following input:
 
 ```yaml
 services:
@@ -808,19 +899,25 @@ services:
       service: common
 ```
 
-为 `cli` 服务生成以下配置。这里，`cli` 服务从 `common` 服务获取 `user` 键，而 `common` 服务又从 `base` 服务获取此键。
+Produces the following configuration for the `cli` service. Here, `cli` services
+gets `user` key from `common` service, which in turn gets this key from `base`
+service.
 
 ```yaml
 image: busybox
 user: root
 ```
 
-##### 序列
+##### Sequences
 
-以下键应被视为序列：`cap_add`、`cap_drop`、`configs`、`deploy.placement.constraints`、`deploy.placement.preferences`、`deploy.reservations.generic_resources`、`device_cgroup_rules`、`expose`、`external_links`、`ports`、`secrets`、`security_opt`。
-删除合并产生的任何重复项，以便序列仅包含唯一元素。
+The following keys should be treated as sequences: `cap_add`, `cap_drop`, `configs`,
+`deploy.placement.constraints`, `deploy.placement.preferences`,
+`deploy.reservations.generic_resources`, `device_cgroup_rules`, `expose`,
+`external_links`, `ports`, `secrets`, `security_opt`.
+Any duplicates resulting from the merge are removed so that the sequence only
+contains unique elements.
 
-例如，以下输入：
+For example, the following input:
 
 ```yaml
 services:
@@ -835,7 +932,7 @@ services:
       - label=user:USER
 ```
 
-为 `cli` 服务生成以下配置。
+Produces the following configuration for the `cli` service.
 
 ```yaml
 image: busybox
@@ -844,17 +941,19 @@ security_opt:
 - label=user:USER
 ```
 
-如果使用列表语法，以下键也应被视为序列：`dns`、`dns_search`、`env_file`、`tmpfs`。与前面提到的序列字段不同，不会删除合并产生的重复项。
+In case list syntax is used, the following keys should also be treated as sequences:
+`dns`, `dns_search`, `env_file`, `tmpfs`. Unlike sequence fields mentioned previously,
+duplicates resulting from the merge are not removed.
 
-##### 标量
+##### Scalars
 
-服务定义中任何其他允许的键都应被视为标量。
+Any other allowed keys in the service definition should be treated as scalars.
 
 ### `external_links`
 
-`external_links` 将服务容器链接到 Compose 应用程序之外管理的常见。
-`external_links` 定义要使用平台查找机制检索的现有服务名称。
-可以指定 `SERVICE:ALIAS` 形式的别名。
+`external_links` link service containers to services managed outside of your Compose application.
+`external_links` define the name of an existing service to retrieve using the platform lookup mechanism.
+An alias of the form `SERVICE:ALIAS` can be specified.
 
 ```yml
 external_links:
@@ -865,11 +964,11 @@ external_links:
 
 ### `extra_hosts`
 
-`extra_hosts` 将主机名映射添加到容器网络接口配置（Linux 为 `/etc/hosts`）。
+`extra_hosts` adds hostname mappings to the container network interface configuration (`/etc/hosts` for Linux).
 
-#### 短语法
+#### Short syntax
 
-短语法在列表中使用纯字符串。值必须以 `HOSTNAME=IP` 的形式为其他主机设置主机名和 IP 地址。
+Short syntax uses plain strings in a list. Values must set hostname and IP address for additional hosts in the form of `HOSTNAME=IP`.
 
 ```yml
 extra_hosts:
@@ -878,14 +977,14 @@ extra_hosts:
   - "myhostv6=::1"
 ```
 
-IPv6 地址可以用方括号括起来，例如：
+IPv6 addresses can be enclosed in square brackets, for example:
 
 ```yml
 extra_hosts:
   - "myhostv6=[::1]"
 ```
 
-首选分隔符 `=`，但也支持 `:`。在 Docker Compose 版本 [2.24.1](/manuals/compose/releases/release-notes.md#2241) 中引入。例如：
+The separator `=` is preferred, but `:` can also be used. Introduced in Docker Compose version [2.24.1](/manuals/compose/releases/release-notes.md#2241). For example:
 
 ```yml
 extra_hosts:
@@ -893,9 +992,9 @@ extra_hosts:
   - "myhostv6:::1"
 ```
 
-#### 长语法
+#### Long syntax
 
-或者，`extra_hosts` 可以设置为主机名和 IP 之间的映射
+Alternatively, `extra_hosts` can be set as a mapping between hostname(s) and IP(s)
 
 ```yml
 extra_hosts:
@@ -904,7 +1003,8 @@ extra_hosts:
   myhostv6: "::1"
 ```
 
-Compose 在容器的网络配置中创建一个包含 IP 地址和主机名的匹配条目，这意味着对于 Linux，`/etc/hosts` 会获得额外的行：
+Compose creates a matching entry with the IP address and hostname in the container's network
+configuration, which means for Linux `/etc/hosts` get extra lines:
 
 ```console
 162.242.195.82  somehost
@@ -916,7 +1016,8 @@ Compose 在容器的网络配置中创建一个包含 IP 地址和主机名的�
 
 {{< summary-bar feature_name="Compose gpus" >}}
 
-`gpus` 指定要为容器使用分配的 GPU 设备。这等同于具有隐式 `gpu` 能力的 [设备请求](deploy.md#devices)。
+`gpus` specifies GPU devices to be allocated for container usage. This is equivalent to a [device request](deploy.md#devices) with
+an implicit `gpu` capability.
 
 ```yaml
 services:
@@ -926,7 +1027,7 @@ services:
         count: 2
 ```
 
-`gpus` 也可以设置为字符串 `all`，以将所有可用的 GPU 设备分配给容器。
+`gpus` also can be set as string `all` to allocate all available GPU devices to the container.
 
 ```yaml
 services:
@@ -936,9 +1037,11 @@ services:
 
 ### `group_add`
 
-`group_add` 指定容器内的用户必须所属的其他组（按名称或编号）。
+`group_add` specifies additional groups, by name or number, which the user inside the container must be a member of.
 
-一个有用的例子是当多个容器（作为不同用户运行）都需要读取或写入共享卷上的同一文件时。该文件可以由所有容器共享的组拥有，并在 `group_add` 中指定。
+An example of where this is useful is when multiple containers (running as different users) need to all read or write
+the same file on a shared volume. That file can be owned by a group shared by all the containers, and specified in
+`group_add`.
 
 ```yml
 services:
@@ -948,13 +1051,14 @@ services:
       - mail
 ```
 
-在创建的容器内运行 `id` 必须显示用户属于 `mail` 组，如果未声明 `group_add`，情况则不会如此。
+Running `id` inside the created container must show that the user belongs to the `mail` group, which would not have
+been the case if `group_add` were not declared.
 
 ### `healthcheck`
 
 {{% include "compose/services-healthcheck.md" %}}
 
-有关 `HEALTHCHECK` 的更多信息，请参阅 [Dockerfile 参考](/reference/dockerfile.md#healthcheck)。
+For more information on `HEALTHCHECK`, see the [Dockerfile reference](/reference/dockerfile.md#healthcheck).
 
 ```yml
 healthcheck:
@@ -966,17 +1070,19 @@ healthcheck:
   start_interval: 5s
 ```
 
-`interval`、`timeout`、`start_period` 和 `start_interval` [指定为持续时间](extension.md#specifying-durations)。在 Docker Compose 版本 [2.20.2](/manuals/compose/releases/release-notes.md#2202) 中引入
+`interval`, `timeout`, `start_period`, and `start_interval` are [specified as durations](extension.md#specifying-durations). Introduced in Docker Compose version [2.20.2](/manuals/compose/releases/release-notes.md#2202)
 
-`test` 定义 Compose 运行以检查容器健康的命令。它可以是字符串或列表。如果是列表，第一项必须是 `NONE`、`CMD` 或 `CMD-SHELL`。
-如果是字符串，则等同于指定 `CMD-SHELL` 后跟该字符串。
+`test` defines the command Compose runs to check container health. It can be
+either a string or a list. If it's a list, the first item must be either `NONE`, `CMD` or `CMD-SHELL`.
+If it's a string, it's equivalent to specifying `CMD-SHELL` followed by that string.
 
 ```yml
 # Hit the local web app
 test: ["CMD", "curl", "-f", "http://localhost"]
 ```
 
-使用 `CMD-SHELL` 使用容器的默认 shell（Linux 为 `/bin/sh`）运行配置为字符串的命令。以下两种形式是等效的：
+Using `CMD-SHELL` runs the command configured as a string using the container's default shell
+(`/bin/sh` for Linux). Both of the following forms are equivalent:
 
 ```yml
 test: ["CMD-SHELL", "curl -f http://localhost || exit 1"]
@@ -986,7 +1092,8 @@ test: ["CMD-SHELL", "curl -f http://localhost || exit 1"]
 test: curl -f https://localhost || exit 1
 ```
 
-`NONE` 禁用健康检查，主要用于禁用服务镜像设置的 Healthcheck Dockerfile 指令。或者，可以通过设置 `disable: true` 来禁用镜像设置的健康检查：
+`NONE` disables the healthcheck, and is mostly useful to disable the Healthcheck Dockerfile instruction set by the service's Docker image. Alternatively,
+the healthcheck set by the image can be disabled by setting `disable: true`:
 
 ```yml
 healthcheck:
@@ -995,11 +1102,13 @@ healthcheck:
 
 ### `hostname`
 
-`hostname` 声明要用于服务容器的自定义主机名。它必须是有效的 RFC 1123 主机名。
+`hostname` declares a custom host name to use for the service container. It must be a valid RFC 1123 hostname.
 
 ### `image`
 
-`image` 指定启动容器所使用的镜像。`image` 必须遵循开放容器规范 [可寻址镜像格式](https://github.com/opencontainers/org/blob/master/docs/docs/introduction/digests.md)，即 `[<registry>/][<project>/]<image>[:<tag>|@<digest>]`。
+`image` specifies the image to start the container from. `image` must follow the Open Container Specification
+[addressable image format](https://github.com/opencontainers/org/blob/master/docs/docs/introduction/digests.md),
+as `[<registry>/][<project>/]<image>[:<tag>|@<digest>]`.
 
 ```yml
     image: redis
@@ -1010,15 +1119,16 @@ healthcheck:
     image: my_private.registry:5000/redis
 ```
 
-如果镜像在平台上不存在，Compose 会尝试根据 `pull_policy` 拉取它。
-如果你也使用 [Compose 构建规范](build.md)，则还有用于控制拉取优先于从源构建镜像的替代选项，但拉取镜像是默认行为。
+If the image does not exist on the platform, Compose attempts to pull it based on the `pull_policy`.
+If you are also using the [Compose Build Specification](build.md), there are alternative options for controlling the precedence of
+pull over building the image from source, however pulling the image is the default behavior.
 
-只要声明了 `build` 部分，就可以从 Compose 文件中省略 `image`。如果你不使用 Compose 构建规范，如果 Compose 文件中缺少 `image`，Compose 将无法工作。
+`image` may be omitted from a Compose file as long as a `build` section is declared. If you are not using the Compose Build Specification, Compose won't work if `image` is missing from the Compose file.
 
 ### `init`
 
-`init` 在容器内运行一个 init 进程 (PID 1)，该进程转发信号并回收进程。
-将此选项设置为 `true` 以启用服务的此功能。
+`init` runs an init process (PID 1) inside the container that forwards signals and reaps processes.
+Set this option to `true` to enable this feature for the service.
 
 ```yml
 services:
@@ -1027,14 +1137,16 @@ services:
     init: true
 ```
 
-使用的 init 二进制文件是特定于平台的。
+The init binary that is used is platform specific.
 
 ### `ipc`
 
-`ipc` 配置服务容器设置的 IPC 隔离模式。
+`ipc` configures the IPC isolation mode set by the service container.
 
-- `shareable`：为容器提供自己的私有 IPC 命名空间，并可能与其他容器共享。
-- `service:{name}`：让容器加入另一个容器 (`shareable`) 的 IPC 命名空间。
+- `shareable`: Gives the container its own private IPC namespace, with a
+  possibility to share it with other containers.
+- `service:{name}`: Makes the container join another container's
+  (`shareable`) IPC namespace.
 
 ```yml
     ipc: "shareable"
@@ -1043,13 +1155,14 @@ services:
 
 ### `isolation`
 
-`isolation` 指定容器的隔离技术。支持的值是特定于平台的。
+`isolation` specifies a container’s isolation technology. Supported values are platform specific.
 
 ### `labels`
 
-`labels` 向容器添加元数据。你可以使用数组或映射。
+`labels` add metadata to containers. You can use either an array or a map.
 
-建议你使用反向 DNS 表示法，以防止你的标签与其他软件使用的标签冲突。
+It's recommended that you use reverse-DNS notation to prevent your labels from conflicting with
+those used by other software.
 
 ```yml
 labels:
@@ -1065,20 +1178,21 @@ labels:
   - "com.example.label-with-empty-value"
 ```
 
-Compose 使用规范标签创建容器：
+Compose creates containers with canonical labels:
 
-- `com.docker.compose.project` 在 Compose 创建的所有资源上设置为用户项目名称
-- `com.docker.compose.service` 在服务容器上设置为 Compose 文件中定义的服务名称
+- `com.docker.compose.project` set on all resources created by Compose to the user project name
+- `com.docker.compose.service` set on service containers with service name as defined in the Compose file
 
-`com.docker.compose` 标签前缀是保留的。在 Compose 文件中指定带有此前缀的标签会导致运行时错误。
+The `com.docker.compose` label prefix is reserved. Specifying labels with this prefix in the Compose file
+results in a runtime error.
 
 ### `label_file`
 
 {{< summary-bar feature_name="Compose label file" >}}
 
-`label_file` 属性允许你从外部文件或文件列表加载服务标签。这提供了一种管理多个标签而不会使 Compose 文件混乱的便捷方法。
+The `label_file` attribute lets you load labels for a service from an external file or a list of files. This provides a convenient way to manage multiple labels without cluttering the Compose file.
 
-该文件使用键值格式，类似于 `env_file`。你可以将多个文件指定为列表。使用多个文件时，它们按在列表中出现的顺序进行处理。如果同一标签在多个文件中定义，则列表中最后一个文件中的值将覆盖前面的值。
+The file uses a key-value format, similar to `env_file`. You can specify multiple files as a list. When using multiple files, they are processed in the order they appear in the list. If the same label is defined in multiple files, the value from the last file in the list overrides earlier ones.
 
 ```yaml
 services:
@@ -1091,11 +1205,12 @@ services:
       - ./additional.labels
 ```
 
-如果在 `label_file` 和 `labels` 属性中都定义了标签，则 [labels](#labels) 中的值优先。
+If a label is defined in both the `label_file` and the `labels` attribute, the value in [labels](#labels) takes precedence.
 
 ### `links`
 
-`links` 定义到另一个服务中的容器的网络链接。指定服务名称和链接别名 (`SERVICE:ALIAS`)，或仅指定服务名称。
+`links` defines a network link to containers in another service. Either specify both the service name and
+a link alias (`SERVICE:ALIAS`), or just the service name.
 
 ```yml
 web:
@@ -1105,16 +1220,19 @@ web:
     - redis
 ```
 
-链接服务的容器可以通过与别名相同的主机名访问，如果未指定别名，则通过服务名称访问。
+Containers for the linked service are reachable at a hostname identical to the alias, or the service name
+if no alias is specified.
 
-不需要链接来启用服务通信。当未设置特定网络配置时，任何服务都可以在 `default` 网络上以该服务的名称访问任何其他服务。
-如果服务指定了它们连接到的网络，`links` 不会覆盖网络配置。未连接到共享网络的服务无法相互通信。Compose 不会警告你配置不匹配。
+Links are not required to enable services to communicate. When no specific network configuration is set,
+any service is able to reach any other service at that service’s name on the `default` network.
+If services specify the networks they are attached to, `links` does not override the network configuration. Services that are not connected to a shared network are not be able to communicate with each other. Compose doesn't warn you about a configuration mismatch.
 
-链接还以与 [`depends_on`](#depends_on) 相同的方式表示服务之间的隐式依赖关系，因此它们确定服务启动的顺序。
+Links also express implicit dependency between services in the same way as
+[`depends_on`](#depends_on), so they determine the order of service startup.
 
 ### `logging`
 
-`logging` 定义服务的日志记录配置。
+`logging` defines the logging configuration for the service.
 
 ```yml
 logging:
@@ -1123,53 +1241,58 @@ logging:
     syslog-address: "tcp://192.168.0.42:123"
 ```
 
-`driver` 名称指定服务容器的日志记录驱动程序。默认值和可用值是特定于平台的。驱动程序特定选项可以使用 `options` 设置为键值对。
+The `driver` name specifies a logging driver for the service's containers. The default and available values
+are platform specific. Driver specific options can be set with `options` as key-value pairs.
 
 ### `mac_address`
 
-> 适用于 Docker Compose 版本 2.24.0 及更高版本。
+> Available with Docker Compose version 2.24.0 and later.
 
-`mac_address` 设置服务容器的 Mac 地址。
+`mac_address` sets a Mac address for the service container.
 
 > [!NOTE]
-> 容器运行时可能会拒绝此值，例如 Docker Engine >= v25.0。在这种情况下，你应该改用 [networks.mac_address](#mac_address)。
+> Container runtimes might reject this value, for example Docker Engine >= v25.0. In that case, you should use [networks.mac_address](#mac_address) instead.
 
 ### `mem_limit`
 
-`mem_limit` 配置容器可以分配的内存限制，设置为表示 [字节值](extension.md#specifying-byte-values) 的字符串。
+`mem_limit` configures a limit on the amount of memory a container can allocate, set as a string expressing a [byte value](extension.md#specifying-byte-values).
 
-设置时，`mem_limit` 必须与 [部署规范](deploy.md#memory) 中的 `limits.memory` 属性一致。
+When set, `mem_limit` must be consistent with the `limits.memory` attribute in the [Deploy Specification](deploy.md#memory).
 
 ### `mem_reservation`
 
-`mem_reservation` 配置容器可以分配的内存预留，设置为表示 [字节值](extension.md#specifying-byte-values) 的字符串。
+`mem_reservation` configures a reservation on the amount of memory a container can allocate, set as a string expressing a [byte value](extension.md#specifying-byte-values).
 
-设置时，`mem_reservation` 必须与 [部署规范](deploy.md#memory) 中的 `reservations.memory` 属性一致。
+When set, `mem_reservation` must be consistent with the `reservations.memory` attribute in the [Deploy Specification](deploy.md#memory).
 
 ### `mem_swappiness`
 
-`mem_swappiness` 定义主机内核交换容器使用的匿名内存页的百分比，值在 0 到 100 之间。
+`mem_swappiness` defines as a percentage, a value between 0 and 100, for the host kernel to swap out
+anonymous memory pages used by a container.
 
-- `0`：关闭匿名页面交换。
-- `100`：将所有匿名页面设置为可交换。
+- `0`: Turns off anonymous page swapping.
+- `100`: Sets all anonymous pages as swappable.
 
-默认值是特定于平台的。
+The default value is platform specific.
 
 ### `memswap_limit`
 
-`memswap_limit` 定义允许容器交换到磁盘的内存量。这是一个修饰属性，只有在同时也设置了 [`memory`](deploy.md#memory) 时才有意义。使用交换允许容器在耗尽所有可用内存时将多余的内存需求写入磁盘。对于频繁将内存交换到磁盘的应用程序，会有性能损失。
+`memswap_limit` defines the amount of memory the container is allowed to swap to disk. This is a modifier
+attribute that only has meaning if [`memory`](deploy.md#memory) is also set. Using swap lets the container write excess
+memory requirements to disk when the container has exhausted all the memory that is available to it.
+There is a performance penalty for applications that swap memory to disk often.
 
-- 如果 `memswap_limit` 设置为正整数，则必须同时设置 `memory` 和 `memswap_limit`。`memswap_limit` 表示可以使用的内存和交换的总量，而 `memory` 控制非交换内存的使用量。因此，如果 `memory`="300m" 且 `memswap_limit`="1g"，则容器可以使用 300m 内存和 700m (1g - 300m) 交换。
-- 如果 `memswap_limit` 设置为 0，则忽略该设置，并将该值视为未设置。
-- 如果 `memswap_limit` 设置为与 `memory` 相同的值，并且 `memory` 设置为正整数，则容器无法访问交换。
-- 如果 `memswap_limit` 未设置，并且设置了 `memory`，如果主机容器配置了交换内存，则容器可以使用与 `memory` 设置一样多的交换。例如，如果 `memory`="300m" 并且未设置 `memswap_limit`，则容器总共可以使用 600m 的内存和交换。
-- 如果 `memswap_limit` 显式设置为 -1，则允许容器使用无限交换，最高可达主机系统上的可用量。
+- If `memswap_limit` is set to a positive integer, then both `memory` and `memswap_limit` must be set. `memswap_limit` represents the total amount of memory and swap that can be used, and `memory` controls the amount used by non-swap memory. So if `memory`="300m" and `memswap_limit`="1g", the container can use 300m of memory and 700m (1g - 300m) swap.
+- If `memswap_limit` is set to 0, the setting is ignored, and the value is treated as unset.
+- If `memswap_limit` is set to the same value as `memory`, and `memory` is set to a positive integer, the container does not have access to swap.
+- If `memswap_limit` is unset, and `memory` is set, the container can use as much swap as the `memory` setting, if the host container has swap memory configured. For instance, if `memory`="300m" and `memswap_limit` is not set, the container can use 600m in total of memory and swap.
+- If `memswap_limit` is explicitly set to -1, the container is allowed to use unlimited swap, up to the amount available on the host system.
 
 ### models
 
 {{< summary-bar feature_name="Compose models" >}}
 
-`models` 定义服务在运行时应使用的 AI 模型。每个引用的模型必须在 [`models` 顶层元素](models.md) 下定义。
+`models` defines which AI models the service should use at runtime. Each referenced model must be defined under the [`models` top-level element](models.md).
 
 ```yaml
 services:
@@ -1185,31 +1308,31 @@ services:
         model_var: MODEL
 ```
 
-当服务链接到模型时，Docker Compose 会注入环境变量以将连接详细信息和模型标识符传递给容器。这允许应用程序在运行时动态定位并与模型通信，而无需硬编码值。
+When a service is linked to a model, Docker Compose injects environment variables to pass connection details and model identifiers to the container. This allows the application to locate and communicate with the model dynamically at runtime, without hard-coding values.
 
-#### 长语法
+#### Long syntax
 
-长语法让你能够更好地控制环境变量名称。
+The long syntax gives you more control over the environment variable names.
 
-- `endpoint_var` 设置保存模型运行器 URL 的环境变量的名称。
-- `model_var` 设置保存模型标识符的环境变量的名称。
+- `endpoint_var` sets the name of the environment variable that holds the model runner’s URL.
+- `model_var` sets the name of the environment variable that holds the model identifier.
 
-如果省略任何一个，Compose 会根据模型键使用以下规则自动生成环境变量名称：
+If either is omitted, Compose automatically generates the environment variable names based on the model key using the following rules:
 
- - 将模型键转换为大写
- - 将任何 '-' 字符替换为 '_'
- - 附加 `_URL` 用于端点变量
+ - Convert the model key to uppercase
+ - Replace any '-' characters with '_'
+ - Append `_URL` for the endpoint variable
 
 ### `network_mode`
 
-`network_mode` 设置服务容器的网络模式。
+`network_mode` sets a service container's network mode. 
 
-- `none`：关闭所有容器网络。
-- `host`：让容器获得对主机网络接口的原始访问权限。
-- `service:{name}`：通过引用服务名称让容器访问指定容器。
-- `container:{name}`：通过引用容器 ID 让容器访问指定容器。
+- `none`: Turns off all container networking.
+- `host`: Gives the container raw access to the host's network interface.
+- `service:{name}`: Gives the container access to the specified container by referring to its service name. 
+- `container:{name}`: Gives the container access to the specified container by referring to its container ID. 
 
-有关容器网络的更多信息，请参阅 [Docker Engine 文档](/manuals/engine/network/_index.md#container-networks)。
+For more information container networks, see the [Docker Engine documentation](/manuals/engine/network/_index.md#container-networks).
 
 ```yml
     network_mode: "host"
@@ -1217,7 +1340,8 @@ services:
     network_mode: "service:[service name]"
 ```
 
-设置后，不允许使用 [`networks`](#networks) 属性，Compose 将拒绝包含这两个属性的任何 Compose 文件。
+When set, the [`networks`](#networks) attribute is not allowed and Compose rejects any
+Compose file containing both attributes.
 
 ### `networks`
 
@@ -1230,38 +1354,40 @@ services:
       - some-network
       - other-network
 ```
-有关 `networks` 顶层元素的更多信息，请参阅 [网络](networks.md)。
+For more information about the `networks` top-level element, see [Networks](networks.md).
 
-### 隐式默认网络
+### Implicit default network
 
-如果 `networks` 为空或从 Compose 文件中缺失，Compose 会考虑该服务的隐式定义为连接到 `default` 网络：
+If `networks` is empty or absent from the Compose file, Compose considers an implicit definition for the service to be
+connected to the `default` network: 
 
 ```yml
 services:
   some-service:
     image: foo
 ```
-这个例子实际上等同于：
+This example is actually equivalent to:
 
 ```yml
 services:
   some-service:
     image: foo  
     networks:
-      default: {}
+      default: {}  
 ```
 
-如果你希望服务不连接到网络，必须设置 [`network_mode: none`](#network_mode)。
+If you want the service to not be connected a network, you must set [`network_mode: none`](#network_mode).
 
 #### `aliases`
 
-`aliases` 声明网络上服务的替代主机名。同一网络上的其他容器可以使用服务名称或别名连接到服务容器之一。
+`aliases` declares alternative hostnames for the service on the network. Other containers on the same
+network can use either the service name or an alias to connect to one of the service's containers.
 
-由于 `aliases` 是网络范围的，因此同一服务可以在不同网络上具有不同的别名。
+Since `aliases` are network-scoped, the same service can have different aliases on different networks.
 
 > [!NOTE]
-> 网络范围的别名可以由多个容器甚至多个服务共享。
-> 如果是这样，则不保证名称解析到哪个容器。
+> A network-wide alias can be shared by multiple containers, and even by multiple services.
+> If it is, then exactly which container the name resolves to is not guaranteed.
 
 ```yml
 services:
@@ -1276,7 +1402,9 @@ services:
           - alias2
 ```
 
-在以下示例中，`frontend` 服务能够在 `back-tier` 网络上的主机名 `backend` 或 `database` 处访问 `backend` 服务。`monitoring` 服务能够在 `admin` 网络上的 `backend` 或 `mysql` 处访问同一个 `backend` 服务。
+In the following example, service `frontend` is able to reach the `backend` service at
+the hostname `backend` or `database` on the `back-tier` network. The service `monitoring`
+is able to reach same `backend` service at `backend` or `mysql` on the `admin` network.
 
 ```yml
 services:
@@ -1311,7 +1439,7 @@ networks:
 
 {{< summary-bar feature_name="Compose interface-name" >}}
 
-`interface_name` 允许你指定用于将服务连接到给定网络的网络接口名称。这确保了跨服务和网络的一致和可预测的接口命名。
+`interface_name` lets you specify the name of the network interface used to connect a service to a given network. This ensures consistent and predictable interface naming across services and networks.
 
 ```yaml
 services:
@@ -1323,7 +1451,7 @@ services:
         interface_name: eth0
 ```
 
-运行示例 Compose 应用程序显示：
+Running the example Compose application shows:
 
 ```console
 backend-1  | 11: eth0@if64: <BROADCAST,MULTICAST,UP,LOWER_UP,M-DOWN> mtu 1500 qdisc noqueue state UP 
@@ -1331,9 +1459,10 @@ backend-1  | 11: eth0@if64: <BROADCAST,MULTICAST,UP,LOWER_UP,M-DOWN> mtu 1500 qd
 
 #### `ipv4_address`, `ipv6_address`
 
-加入网络时为服务容器指定静态 IP 地址。
+Specify a static IP address for a service container when joining the network.
 
-[顶层 networks 部分](networks.md) 中的相应网络配置必须具有覆盖每个静态地址的子网配置的 `ipam` 属性。
+The corresponding network configuration in the [top-level networks section](networks.md) must have an
+`ipam` attribute with subnet configurations covering each static address.
 
 ```yml
 services:
@@ -1355,11 +1484,13 @@ networks:
 
 #### `link_local_ips`
 
-`link_local_ips` 指定本地链接 IP 列表。本地链接 IP 是属于众所周知的子网的特殊 IP，纯粹由操作员管理，通常取决于部署它们的架构。
+`link_local_ips` specifies a list of link-local IPs. Link-local IPs are special IPs which belong to a well
+known subnet and are purely managed by the operator, usually dependent on the architecture where they are
+deployed.
 
-示例：
+Example:
 
-```yml
+```yaml
 services:
   app:
     image: busybox
@@ -1378,16 +1509,16 @@ networks:
 
 {{< summary-bar feature_name="Compose mac address" >}}
 
-`mac_address` 设置服务容器在连接到此特定网络时使用的 Mac 地址。
+`mac_address` sets the Mac address used by the service container when connecting to this particular network.
 
 #### `gw_priority`
 
 {{< summary-bar feature_name="Compose gw priority" >}}
 
-具有最高 `gw_priority` 的网络被选为服务容器的默认网关。
-如果未指定，默认值为 0。
+The network with the highest `gw_priority` is selected as the default gateway for the service container.
+If unspecified, the default value is 0.
 
-在以下示例中，`app_net_2` 将被选为默认网关。
+In the following example, `app_net_2` will be selected as the default gateway.
 
 ```yaml
 services:
@@ -1407,13 +1538,19 @@ networks:
 
 #### `priority`
 
-`priority` 指示 Compose 将服务容器连接到其网络的顺序。如果未指定，默认值为 0。
+`priority` indicates in which order Compose connects the service’s containers to its
+networks. If unspecified, the default value is 0.
 
-如果容器运行时接受服务级别的 `mac_address` 属性，则将其应用于具有最高 `priority` 的网络。在其他情况下，使用属性 `networks.mac_address`。
+If the container runtime accepts a `mac_address` attribute at service level, it is
+applied to the network with the highest `priority`. In other cases, use attribute
+`networks.mac_address`.
 
-`priority` 不影响哪个网络被选为默认网关。请改用 [`gw_priority`](#gw_priority) 属性。
+`priority` does not affect which network is selected as the default gateway. Use the
+[`gw_priority`](#gw_priority) attribute instead.
 
-`priority` 不控制将网络连接添加到容器的顺序，它不能用于确定容器中的设备名称（`eth0` 等）。
+`priority` does not control the order in which networks connections are added to
+the container, it cannot be used to determine the device name (`eth0` etc.) in the
+container.
 
 ```yaml
 services:
@@ -1435,34 +1572,37 @@ networks:
 
 ### `oom_kill_disable`
 
-如果设置了 `oom_kill_disable`，Compose 会配置平台，以便在内存不足的情况下不会终止容器。
+If `oom_kill_disable` is set, Compose configures the platform so it won't kill the container in case
+of memory starvation.
 
 ### `oom_score_adj`
 
-`oom_score_adj` 调整平台在内存不足时终止容器的偏好。值必须在 -1000,1000 范围内。
+`oom_score_adj` tunes the preference for containers to be killed by platform in case of memory starvation. Value must
+be within -1000,1000 range.
 
 ### `pid`
 
-`pid` 设置 Compose 创建的容器的 PID 模式。 
-支持的值是特定于平台的。
+`pid` sets the PID mode for container created by Compose.
+Supported values are platform specific.
 
 ### `pids_limit`
 
-`pids_limit` 调整容器的 PID 限制。设置为 -1 表示无限制 PID。
+`pids_limit` tunes a container’s PIDs limit. Set to -1 for unlimited PIDs.
 
 ```yml
 pids_limit: 10
 ```
 
-设置时，`pids_limit` 必须与 [部署规范](deploy.md#pids) 中的 `pids` 属性一致。
+When set, `pids_limit` must be consistent with the `pids` attribute in the [Deploy Specification](deploy.md#pids).
 
 ### `platform`
 
-`platform` 定义服务容器运行的目标平台。它使用 `os[/arch[/variant]]` 语法。
+`platform` defines the target platform the containers for the service run on. It uses the `os[/arch[/variant]]` syntax.
 
-`os`、`arch` 和 `variant` 的值必须符合 [OCI 镜像规范](https://github.com/opencontainers/image-spec/blob/v1.0.2/image-index.md) 使用的约定。
+The values of `os`, `arch`, and `variant` must conform to the convention used by the [OCI Image Spec](https://github.com/opencontainers/image-spec/blob/v1.0.2/image-index.md).
 
-Compose 使用此属性来确定拉取哪个版本的镜像和/或在哪个平台上执行服务的构建。
+Compose uses this attribute to determine which version of the image is pulled
+and/or on which platform the service’s build is performed.
 
 ```yml
 platform: darwin
@@ -1475,28 +1615,31 @@ platform: linux/arm64/v8
 {{% include "compose/services-ports.md" %}}
 
 > [!NOTE]
-> 
-> 端口映射不得与 `network_mode: host` 一起使用。这样做会导致运行时错误，因为 `network_mode: host` 已经将容器端口直接暴露给主机网络，因此不需要端口映射。
+>
+> Port mapping must not be used with `network_mode: host`. Doing so causes a runtime error because `network_mode: host` already exposes container ports directly to the host network, so port mapping isn’t needed.
 
-#### 短语法
+#### Short syntax
 
-短语法是一个冒号分隔的字符串，用于设置主机 IP、主机端口和容器端口，形式如下：
+The short syntax is a colon-separated string to set the host IP, host port, and container port
+in the form:
 
-`[HOST:]CONTAINER[/PROTOCOL]` 其中：
+`[HOST:]CONTAINER[/PROTOCOL]` where:
 
-- `HOST` 是 `[IP:](port | range)`（可选）。如果未设置，则绑定到所有网络接口 (`0.0.0.0`)。
-- `CONTAINER` 是 `port | range`。
-- `PROTOCOL` 将端口限制为指定协议，`tcp` 或 `udp`（可选）。默认为 `tcp`。
+- `HOST` is `[IP:](port | range)` (optional). If it is not set, it binds to all network interfaces (`0.0.0.0`). 
+- `CONTAINER` is `port | range`.
+- `PROTOCOL` restricts ports to a specified protocol either `tcp` or `udp`(optional). Default is `tcp`.
 
-端口可以是单个值或范围。`HOST` 和 `CONTAINER` 必须使用等效的范围。
+Ports can be either a single value or a range. `HOST` and `CONTAINER` must use equivalent ranges. 
 
-你可以指定两个端口（`HOST:CONTAINER`），也可以仅指定容器端口。在后一种情况下，容器运行时会自动分配主机的任何未分配端口。
+You can either specify both ports (`HOST:CONTAINER`), or just the container port. In the latter case,
+the container runtime automatically allocates any unassigned port of the host.
 
-`HOST:CONTAINER` 应始终指定为（带引号的）字符串，以避免与 [YAML base-60 float](https://yaml.org/type/float.html) 冲突。
+`HOST:CONTAINER` should always be specified as a (quoted) string, to avoid conflicts
+with [YAML base-60 float](https://yaml.org/type/float.html).
 
-IPv6 地址可以用方括号括起来。
+IPv6 addresses can be enclosed in square brackets.
 
-示例：
+Examples:
 
 ```yml
 ports:
@@ -1514,20 +1657,22 @@ ports:
 ```
 
 > [!NOTE]
-> 
-> 如果容器引擎不支持主机 IP 映射，Compose 将拒绝 Compose 文件并忽略指定的主机 IP。
+>
+> If host IP mapping is not supported by a container engine, Compose rejects
+> the Compose file and ignores the specified host IP.
 
-#### 长语法
+#### Long syntax
 
-长格式语法允许你配置短格式无法表达的额外字段。
+The long form syntax lets you configure additional fields that can't be
+expressed in the short form.
 
-- `target`：容器端口。
-- `published`：公开暴露的端口。它定义为字符串，可以使用语法 `start-end` 设置为范围。这意味着实际端口被分配了设定范围内的剩余可用端口。
-- `host_ip`：主机 IP 映射。如果未设置，则绑定到所有网络接口 (`0.0.0.0`)。
-- `protocol`：端口协议（`tcp` 或 `udp`）。默认为 `tcp`。
-- `app_protocol`：此端口使用的应用程序协议（TCP/IP 第 4 层/OSI 第 7 层）。这是可选的，可以用作提示，让 Compose 为其理解的协议提供更丰富的行为。在 Docker Compose 版本 [2.26.0](/manuals/compose/releases/release-notes.md#2260) 中引入。
-- `mode`：指定如何在 Swarm 设置中发布端口。如果设置为 `host`，则在 Swarm 中的每个节点上发布端口。如果设置为 `ingress`，则允许在 Swarm 中的节点之间进行负载均衡。默认为 `ingress`。
-- `name`：端口的人类可读名称，用于在服务中记录其用途。
+- `target`: The container port.
+- `published`: The publicly exposed port. It is defined as a string and can be set as a range using syntax `start-end`. It means the actual port is assigned a remaining available port, within the set range.
+- `host_ip`: The host IP mapping. If it is not set, it binds to all network interfaces (`0.0.0.0`).
+- `protocol`: The port protocol (`tcp` or `udp`). Defaults to `tcp`.
+- `app_protocol`: The application protocol (TCP/IP level 4 / OSI level 7) this port is used for. This is optional and can be used as a hint for Compose to offer richer behavior for protocols that it understands. Introduced in Docker Compose version [2.26.0](/manuals/compose/releases/release-notes.md#2260).
+- `mode`: Specifies how the port is published in a Swarm setup. If set to `host`, it publishes the port on every node in Swarm. If set to `ingress`, it allows load balancing across the nodes in Swarm. Defaults to `ingress`.
+- `name`: A human-readable name for the port, used to document it's usage within the service.
 
 ```yml
 ports:
@@ -1552,15 +1697,15 @@ ports:
 
 {{< summary-bar feature_name="Compose post start" >}}
 
-`post_start` 定义了在容器启动后运行的一系列生命周期钩子。命令运行的确切时间无法保证。
+`post_start` defines a sequence of lifecycle hooks to run after a container has started. The exact timing of when the command is run is not guaranteed.
 
-- `command`：指定容器启动后运行的命令。此属性是必需的，你可以选择使用 shell 形式或 exec 形式。
-- `user`：运行命令的用户。如果未设置，命令将以与主服务命令相同的用户运行。
-- `privileged`：允许 `post_start` 命令以特权访问权限运行。
-- `working_dir`：运行命令的工作目录。如果未设置，它将在与主服务命令相同的工作目录中运行。
-- `environment`：专门为 `post_start` 命令设置环境变量。虽然命令继承了为服务主命令定义的环境变量，但此部分允许你添加新变量或覆盖现有变量。
+- `command`: Specifies the command to run once the container starts. This attribute is required, and you can choose to use either the shell form or the exec form.
+- `user`: The user to run the command. If not set, the command is run with the same user as the main service command.
+- `privileged`: Lets the `post_start` command run with privileged access.
+- `working_dir`: The working directory in which to run the command. If not set, it is run in the same working directory as the main service command.
+- `environment`: Sets environment variables specifically for the `post_start` command. While the command inherits the environment variables defined for the service’s main command, this section lets you add new variables or override existing ones.
 
-```yml
+```yaml
 services:
   test:
     post_start:
@@ -1571,27 +1716,27 @@ services:
           - FOO=BAR
 ```
 
-有关更多信息，请参阅 [使用生命周期钩子](/manuals/compose/how-tos/lifecycle.md)。
+For more information, see [Use lifecycle hooks](/manuals/compose/how-tos/lifecycle.md).
 
 ### `pre_stop`
 
 {{< summary-bar feature_name="Compose pre stop" >}}
 
-`pre_stop` 定义了在容器停止之前运行的一系列生命周期钩子。如果容器自行停止或突然终止，这些钩子将不会运行。
+`pre_stop` defines a sequence of lifecycle hooks to run before the container is stopped. These hooks won't run if the container stops by itself or is terminated suddenly.
 
-配置等同于 [post_start](#post_start)。
+Configuration is equivalent to [post_start](#post_start).
 
 ### `privileged`
 
-`privileged` 配置服务容器以提升的权限运行。支持和实际影响是特定于平台的。
+`privileged` configures the service container to run with elevated privileges. Support and actual impacts are platform specific.
 
 ### `profiles`
 
-`profiles` 定义服务启用的一组命名配置文件。如果未分配，服务总是启动，但如果已分配，则只有在激活配置文件时才启动。
+`profiles` defines a list of named profiles for the service to be enabled under. If unassigned, the service is always started but if assigned, it is only started if the profile is activated.
 
-如果存在，`profiles` 遵循 `[a-zA-Z0-9][a-zA-Z0-9_.-]+` 的正则表达式格式。
+If present, `profiles` follow the regex format of `[a-zA-Z0-9][a-zA-Z0-9_.-]+`.
 
-```yml
+```yaml
 services:
   frontend:
     image: frontend
@@ -1609,7 +1754,7 @@ services:
 
 {{< summary-bar feature_name="Compose provider services" >}}
 
-`provider` 可用于定义 Compose 不会直接管理的服务。Compose 将服务生命周期委托给专用或第三方组件。
+`provider` can be used to define a service that Compose won't manage directly. Compose delegated the service lifecycle to a dedicated or third-party component.
 
 ```yaml
   database:
@@ -1624,39 +1769,41 @@ services:
        - database
 ```
 
-当 Compose 运行应用程序时，使用 `awesomecloud` 二进制文件来管理 `database` 服务设置。
-依赖服务 `app` 接收以服务名称为前缀的附加环境变量，以便它可以访问资源。
+As Compose runs the application, the `awesomecloud` binary is used to manage the `database` service setup. 
+Dependent service `app` receives additional environment variables prefixed by the service name so it can access the resource. 
 
-为了说明，假设 `awesomecloud` 执行产生了变量 `URL` 和 `API_KEY`，`app` 服务使用环境变量 `DATABASE_URL` 和 `DATABASE_API_KEY` 运行。
+For illustration, assuming `awesomecloud` execution produced variables `URL` and `API_KEY`, the `app` service
+runs with environment variables `DATABASE_URL` and `DATABASE_API_KEY`.
 
-当 Compose 停止应用程序时，使用 `awesomecloud` 二进制文件来管理 `database` 服务拆卸。
+As Compose stops the application, the `awesomecloud` binary is used to manage the `database` service tear down.
 
-[这里](https://github.com/docker/compose/tree/main/docs/extension.md) 描述了 Compose 用于将服务生命周期委托给外部二进制文件的机制。
+The mechanism used by Compose to delegate the service lifecycle to an external binary is described [here](https://github.com/docker/compose/tree/main/docs/extension.md).
 
-有关使用 `provider` 属性的更多信息，请参阅 [使用提供程序服务](/manuals/compose/how-tos/provider-services.md)。
+For more information on using the `provider` attribute, see [Use provider services](/manuals/compose/how-tos/provider-services.md).
 
 ### `type`
 
-`type` 属性是必需的。它定义了 Compose 用于管理设置和拆卸生命周期事件的外部组件。
+`type` attribute is required. It defines the external component used by Compose to manage setup and tear down lifecycle
+events.
 
 ### `options`
 
-`options` 特定于所选提供程序，并且不由 compose 规范验证。
+`options` are specific to the selected provider and not validated by the compose specification
 
 ### `pull_policy`
 
-`pull_policy` 定义 Compose 在开始拉取镜像时做出的决策。可能的值有：
+`pull_policy` defines the decisions Compose makes when it starts to pull images. Possible values are:
 
-- `always`：Compose 总是从注册表中拉取镜像。
-- `never`：Compose 不会从注册表中拉取镜像，而是依赖于平台缓存的镜像。
-   如果没有缓存的镜像，则报告失败。
-- `missing`：Compose 仅在平台缓存中不可用时才拉取镜像。
-   如果你没有同时使用 [Compose 构建规范](build.md)，这是默认选项。
-  为了向后兼容，`if_not_present` 被视为此值的别名。
-- `build`：Compose 构建镜像。如果镜像已存在，Compose 会重建镜像。
-- `daily`：如果上次拉取发生在 24 小时前，Compose 会检查注册表以获取镜像更新。
-- `weekly`：如果上次拉取发生在 7 天前，Compose 会检查注册表以获取镜像更新。
-- `every_<duration>`：如果上次拉取发生在 `<duration>` 之前，Compose 会检查注册表以获取镜像更新。持续时间可以用周 (`w`)、天 (`d`)、小时 (`h`)、分钟 (`m`)、秒 (`s`) 或这些的组合来表示。
+- `always`: Compose always pulls the image from the registry.
+- `never`: Compose doesn't pull the image from a registry and relies on the platform cached image.
+   If there is no cached image, a failure is reported.
+- `missing`: Compose pulls the image only if it's not available in the platform cache.
+   This is the default option if you are not also using the [Compose Build Specification](build.md).
+  `if_not_present` is considered an alias for this value for backward compatibility.
+- `build`: Compose builds the image. Compose rebuilds the image if it's already present.
+- `daily`: Compose checks the registry for image updates if the last pull took place more than 24 hours ago.
+- `weekly`: Compose checks the registry for image updates if the last pull took place more than 7 days ago.
+- `every_<duration>`: Compose checks the registry for image updates if the last pull took place before `<duration>`. Duration can be expressed in weeks (`w`), days (`d`), hours (`h`), minutes (`m`), seconds (`s`) or a combination of these.
 
 ```yaml
 services:
@@ -1667,17 +1814,18 @@ services:
 
 ### `read_only`
 
-`read_only` 配置服务容器以只读文件系统创建。
+`read_only` configures the service container to be created with a read-only filesystem.
 
 ### `restart`
 
-`restart` 定义平台在容器终止时应用的策略。
+`restart` defines the policy that the platform applies on container termination.
 
-- `no`：默认重启策略。它在任何情况下都不会重启容器。
-- `always`：该策略总是重启容器直到其被删除。
-- `on-failure[:max-retries]`：如果退出代码指示错误，该策略会重启容器。
-可选地，限制 Docker 守护进程尝试重启的次数。
-- `unless-stopped`：该策略无论退出代码如何都会重启容器，但当服务停止或删除时停止重启。
+- `no`: The default restart policy. It does not restart the container under any circumstances.
+- `always`: The policy always restarts the container until its removal.
+- `on-failure[:max-retries]`: The policy restarts the container if the exit code indicates an error.
+Optionally, limit the number of restart retries the Docker daemon attempts.
+- `unless-stopped`: The policy restarts the container irrespective of the exit code but stops
+  restarting when the service is stopped or removed.
 
 ```yml
     restart: "no"
@@ -1687,13 +1835,15 @@ services:
     restart: unless-stopped
 ```
 
-你可以在 Docker 运行参考页面的 [重启策略 (--restart)](/reference/cli/docker/container/run.md#restart) 部分找到有关重启策略的更多详细信息。
+You can find more detailed information on restart policies in the
+[Restart Policies (--restart)](/reference/cli/docker/container/run.md#restart)
+section of the Docker run reference page.
 
 ### `runtime`
 
-`runtime` 指定用于服务容器的运行时。
+`runtime` specifies which runtime to use for the service’s containers.
 
-例如，`runtime` 可以是 [OCI 运行时规范的实现](https://github.com/opencontainers/runtime-spec/blob/master/implementations.md) 的名称，例如 "runc"。
+For example, `runtime` can be the name of [an implementation of OCI Runtime Spec](https://github.com/opencontainers/runtime-spec/blob/master/implementations.md), such as "runc".
 
 ```yml
 web:
@@ -1702,29 +1852,35 @@ web:
   runtime: runc
 ```
 
-默认为 `runc`。要使用不同的运行时，请参阅 [替代运行时](/manuals/engine/daemon/alternative-runtimes.md)。
+The default is `runc`. To use a different runtime, see [Alternative runtimes](/manuals/engine/daemon/alternative-runtimes.md).
 
 ### `scale`
 
-`scale` 指定为此服务部署的默认容器数量。
-当两者都设置时，`scale` 必须与 [部署规范](deploy.md#replicas) 中的 `replicas` 属性一致。
+`scale` specifies the default number of containers to deploy for this service.
+When both are set, `scale` must be consistent with the `replicas` attribute in the [Deploy Specification](deploy.md#replicas).
 
 ### `secrets`
 
 {{% include "compose/services-secrets.md" %}}
 
-支持两种不同的语法变体；短语法和长语法。长语法和短语法的密钥可以在同一个 Compose 文件中使用。
+Two different syntax variants are supported; the short syntax and the long syntax. Long and short syntax for secrets may be used in the same Compose file.
 
-如果密钥在平台上不存在或未在 Compose 文件的 [`secrets` 顶层部分](secrets.md) 中定义，Compose 将报告错误。
+Compose reports an error if the secret doesn't exist on the platform or isn't defined in the
+[`secrets` top-level section](secrets.md) of the Compose file.
 
-在顶层 `secrets` 中定义密钥不得暗示授予任何服务访问它的权限。
-此类授予必须在服务规范中显式作为 [secrets](secrets.md) 服务元素。
+Defining a secret in the top-level `secrets` must not imply granting any service access to it.
+Such grant must be explicit within service specification as [secrets](secrets.md) service element.
 
-#### 短语法
+#### Short syntax
 
-短语法变体仅指定密钥名称。这授予容器访问密钥的权限，并在容器内将其以只读方式挂载到 `/run/secrets/<secret_name>`。源名称和目标挂载点都设置为密钥名称。
+The short syntax variant only specifies the secret name. This grants the
+container access to the secret and mounts it as read-only to `/run/secrets/<secret_name>`
+within the container. The source name and destination mountpoint are both set
+to the secret name.
 
-以下示例使用短语法授予 `frontend` 服务访问 `server-certificate` 密钥的权限。`server-certificate` 的值设置为文件 `./server.cert` 的内容。
+The following example uses the short syntax to grant the `frontend` service
+access to the `server-certificate` secret. The value of `server-certificate` is set
+to the contents of the file `./server.cert`.
 
 ```yml
 services:
@@ -1737,20 +1893,27 @@ secrets:
     file: ./server.cert
 ```
 
-#### 长语法
+#### Long syntax
 
-长语法提供了在服务容器中如何创建密钥的更细粒度的控制。
+The long syntax provides more granularity in how the secret is created within
+the service's containers.
 
-- `source`：平台中存在的密钥名称。
-- `target`：要挂载在服务任务容器中 `/run/secrets/` 中的文件名，如果需要备用位置，则是文件的绝对路径。如果未指定，默认为 `source`。
-- `uid` 和 `gid`：在服务任务容器中拥有 `/run/secrets/` 内文件的数字 uid 或 gid。默认值为 `USER`。
-- `mode`：在服务任务容器中挂载到 `/run/secrets/` 的文件的 [权限](https://wintelguy.com/permissions-calc.pl)，以八进制表示法。
-  默认值为全局可读权限 (模式 `0444`)。
-  如果设置，必须忽略可写位。可以设置可执行位。
+- `source`: The name of the secret as it exists on the platform.
+- `target`: The name of the file to be mounted in `/run/secrets/` in the
+  service's task container, or absolute path of the file if an alternate location is required. Defaults to `source` if not specified.
+- `uid` and `gid`: The numeric uid or gid that owns the file within
+  `/run/secrets/` in the service's task containers. Default value is `USER`.
+- `mode`: The [permissions](https://wintelguy.com/permissions-calc.pl) for the file to be mounted in `/run/secrets/`
+  in the service's task containers, in octal notation.
+  The default value is world-readable permissions (mode `0444`).
+  The writable bit must be ignored if set. The executable bit may be set. 
 
-请注意，当密钥的源是 [`file`](secrets.md) 时，Docker Compose 未实现对 `uid`、`gid` 和 `mode` 属性的支持。这是因为底层使用的绑定挂载不允许 uid 重映射。
+Note that support for `uid`, `gid`, and `mode` attributes are not implemented in Docker Compose when the source of the secret is a [`file`](secrets.md). This is because bind-mounts used under the hood don't allow uid remapping.
 
-以下示例将容器内的 `server-certificate` 密钥文件名称设置为 `server.cert`，将模式设置为 `0440`（组可读），并将用户和组设置为 `103`。`server-certificate` 的值设置为文件 `./server.cert` 的内容。
+The following example sets the name of the `server-certificate` secret file to `server.cert`
+within the container, sets the mode to `0440` (group-readable), and sets the user and group
+to `103`. The value of `server-certificate` is set
+to the contents of the file `./server.cert`.
 
 ```yml
 services:
@@ -1769,7 +1932,7 @@ secrets:
 
 ### `security_opt`
 
-`security_opt` 覆盖每个容器的默认标签方案。
+`security_opt` overrides the default labeling scheme for each container.
 
 ```yml
 security_opt:
@@ -1777,34 +1940,38 @@ security_opt:
   - label=role:ROLE
 ```
 
-有关你可以覆盖的更多默认标签方案，请参阅 [安全配置](/reference/cli/docker/container/run.md#security-opt)。
+For further default labeling schemes you can override, see [Security configuration](/reference/cli/docker/container/run.md#security-opt).
 
 ### `shm_size`
 
-`shm_size` 配置服务容器允许的共享内存（Linux 上的 `/dev/shm` 分区）的大小。
-它指定为 [字节值](extension.md#specifying-byte-values)。
+`shm_size` configures the size of the shared memory (`/dev/shm` partition on Linux) allowed by the service container.
+It's specified as a [byte value](extension.md#specifying-byte-values).
 
 ### `stdin_open`
 
-`stdin_open` 配置服务容器以分配的 stdin 运行。这与使用 `-i` 标志运行容器相同。有关更多信息，请参阅 [保持 stdin 打开](/reference/cli/docker/container/run.md#interactive)。
+`stdin_open` configures a service's container to run with an allocated stdin. This is the same as running a container with the 
+`-i` flag. For more information, see [Keep stdin open](/reference/cli/docker/container/run.md#interactive).
 
-支持的值是 `true` 或 `false`。
+Supported values are `true` or `false`.
 
 ### `stop_grace_period`
 
-`stop_grace_period` 指定 Compose 在尝试停止容器时，如果容器不处理 SIGTERM（或使用 [`stop_signal`](#stop_signal) 指定的任何停止信号），必须等待多长时间才能发送 SIGKILL。它指定为 [持续时间](extension.md#specifying-durations)。
+`stop_grace_period` specifies how long Compose must wait when attempting to stop a container if it doesn't
+handle SIGTERM (or whichever stop signal has been specified with
+[`stop_signal`](#stop_signal)), before sending SIGKILL. It's specified
+as a [duration](extension.md#specifying-durations).
 
 ```yml
     stop_grace_period: 1s
     stop_grace_period: 1m30s
 ```
 
-默认值为 10 秒，在发送 SIGKILL 之前让容器退出。
+Default value is 10 seconds for the container to exit before sending SIGKILL.
 
 ### `stop_signal`
 
-`stop_signal` 定义 Compose 用于停止服务容器的信号。
-如果未设置，容器由 Compose 发送 `SIGTERM` 停止。
+`stop_signal` defines the signal that Compose uses to stop the service containers.
+If unset containers are stopped by Compose by sending `SIGTERM`.
 
 ```yml
 stop_signal: SIGUSR1
@@ -1812,7 +1979,7 @@ stop_signal: SIGUSR1
 
 ### `storage_opt`
 
-`storage_opt` 定义服务的存储驱动程序选项。
+`storage_opt` defines storage driver options for a service.
 
 ```yml
 storage_opt:
@@ -1821,7 +1988,7 @@ storage_opt:
 
 ### `sysctls`
 
-`sysctls` 定义在容器中设置的内核参数。`sysctls` 可以使用数组或映射。
+`sysctls` defines kernel parameters to set in the container. `sysctls` can use either an array or a map.
 
 ```yml
 sysctls:
@@ -1835,12 +2002,14 @@ sysctls:
   - net.ipv4.tcp_syncookies=0
 ```
 
-你只能使用在内核中命名空间的 sysctls。Docker 不支持在容器内更改同时修改主机系统的 sysctls。
-有关支持的 sysctls 的概述，请参阅 [在运行时配置命名空间内核参数 (sysctls)](/reference/cli/docker/container/run.md#sysctl)。
+You can only use sysctls that are namespaced in the kernel. Docker does not
+support changing sysctls inside a container that also modify the host system.
+For an overview of supported sysctls, refer to [configure namespaced kernel
+parameters (sysctls) at runtime](/reference/cli/docker/container/run.md#sysctl).
 
 ### `tmpfs`
 
-`tmpfs` 在容器内挂载临时文件系统。它可以是单个值或列表。
+`tmpfs` mounts a temporary file system inside the container. It can be a single value or a list.
 
 ```yml
 tmpfs:
@@ -1848,14 +2017,14 @@ tmpfs:
  - <path>:<options>
 ```
 
-- `path`：容器内挂载 tmpfs 的路径。
-- `options`：tmpfs 挂载的逗号分隔选项列表。
+- `path`: The path inside the container where the tmpfs will be mounted.
+- `options`: Comma-separated list of options for the tmpfs mount.
 
-可用选项：
+Available options:
 
-- `mode`：设置文件系统权限。
-- `uid`：设置拥有挂载 tmpfs 的用户 ID。
-- `gid`：设置拥有挂载 tmpfs 的组 ID。
+- `mode`: Sets the file system permissions.
+- `uid`: Sets the user ID that owns the mounted tmpfs.
+- `gid`: Sets the group ID that owns the mounted tmpfs.
 
 ```yml
 services:
@@ -1867,13 +2036,15 @@ services:
 
 ### `tty`
 
-`tty` 配置服务容器以 TTY 运行。这与使用 `-t` 或 `--tty` 标志运行容器相同。有关更多信息，请参阅 [分配伪 TTY](/reference/cli/docker/container/run.md#tty)。
+`tty` configures a service's container to run with a TTY. This is the same as running a container with the 
+`-t` or `--tty` flag. For more information, see [Allocate a pseudo-TTY](/reference/cli/docker/container/run.md#tty).
 
-支持的值是 `true` 或 `false`。
+Supported values are `true` or `false`.
 
 ### `ulimits`
 
-`ulimits` 覆盖容器的默认 `ulimits`。它指定为单个限制的整数或软/硬限制的映射。
+`ulimits` overrides the default `ulimits` for a container. It's specified either as an integer for a single limit
+or as mapping for soft/hard limits.
 
 ```yml
 ulimits:
@@ -1885,17 +2056,18 @@ ulimits:
 
 ### `use_api_socket`
 
-当设置 `use_api_socket` 时，容器能够通过 API 套接字与底层容器引擎交互。
-你的凭证挂载在容器内，因此容器充当与容器引擎相关的命令的纯代表。
-通常，容器运行的命令可以 `pull` 和 `push` 到你的注册表。
+When `use_api_socket` is set, the container is able to interact with the underlying container engine through the API socket.
+Your credentials are mounted inside the container so the container acts as a pure delegate for your commands relating to the container engine.
+Typically, commands ran by container can `pull` and `push` to your registry.
 
 ### `user`
 
-`user` 覆盖用于运行容器进程的用户。默认值由镜像设置，例如 Dockerfile `USER`。如果未设置，则为 `root`。
+`user` overrides the user used to run the container process. The default is set by the image, for example Dockerfile `USER`. If it's not set, then `root`.
 
 ### `userns_mode`
 
-`userns_mode` 设置服务的用户命名空间。支持的值是特定于平台的，并且可能取决于平台配置。
+`userns_mode` sets the user namespace for the service. Supported values are platform specific and may depend
+on platform configuration.
 
 ```yml
 userns_mode: "host"
@@ -1905,9 +2077,10 @@ userns_mode: "host"
 
 {{< summary-bar feature_name="Compose uts" >}}
 
-`uts` 配置为服务容器设置的 UTS 命名空间模式。当未指定时，由运行时决定分配 UTS 命名空间（如果支持）。可用值有：
+`uts` configures the UTS namespace mode set for the service container. When unspecified
+it is the runtime's decision to assign a UTS namespace, if supported. Available values are:
 
-- `'host'`：导致容器使用与主机相同的 UTS 命名空间。
+- `'host'`: Results in the container using the same UTS namespace as the host.
 
 ```yml
     uts: "host"
@@ -1917,7 +2090,8 @@ userns_mode: "host"
 
 {{% include "compose/services-volumes.md" %}}
 
-以下示例显示了 `backend` 服务正在使用的命名卷 (`db-data`)，以及为单个服务定义的绑定挂载。
+The following example shows a named volume (`db-data`) being used by the `backend` service,
+and a bind mount defined for a single service.
 
 ```yml
 services:
@@ -1938,63 +2112,76 @@ volumes:
   db-data:
 ```
 
-有关 `volumes` 顶层元素的更多信息，请参阅 [卷](volumes.md)。
+For more information about the `volumes` top-level element, see [Volumes](volumes.md).
 
-#### 短语法
+#### Short syntax
 
-短语法使用带有冒号分隔值的单个字符串来指定卷挂载 (`VOLUME:CONTAINER_PATH`) 或访问模式 (`VOLUME:CONTAINER_PATH:ACCESS_MODE`)。
+The short syntax uses a single string with colon-separated values to specify a volume mount
+(`VOLUME:CONTAINER_PATH`), or an access mode (`VOLUME:CONTAINER_PATH:ACCESS_MODE`).
 
-- `VOLUME`：可以是托管容器的平台上的主机路径（绑定挂载）或卷名称。
-- `CONTAINER_PATH`：卷挂载在容器中的路径。
-- `ACCESS_MODE`：逗号分隔 `,` 的选项列表：
-  - `rw`：读写访问。如果未指定，这是默认值。
-  - `ro`：只读访问。
-  - `z`：SELinux 选项，指示绑定挂载主机内容在多个容器之间共享。
-  - `Z`：SELinux 选项，指示绑定挂载主机内容是私有的，不与其他容器共享。
-
-> [!NOTE]
-> SELinux 重新标记绑定挂载选项在没有 SELinux 的平台上被忽略。
+- `VOLUME`: Can be either a host path on the platform hosting containers (bind mount) or a volume name.
+- `CONTAINER_PATH`: The path in the container where the volume is mounted.
+- `ACCESS_MODE`: A comma-separated `,` list of options:
+  - `rw`: Read and write access. This is the default if none is specified.
+  - `ro`: Read-only access.
+  - `z`: SELinux option indicating that the bind mount host content is shared among multiple containers.
+  - `Z`: SELinux option indicating that the bind mount host content is private and unshared for other containers.
 
 > [!NOTE]
-> 
-> 对于绑定挂载，如果主机上的源路径不存在，短语法会在该路径创建目录。这是为了与 `docker-compose` 旧版向后兼容。
-> 可以通过使用长语法并将 `create_host_path` 设置为 `false` 来防止这种情况。
+>
+> The SELinux re-labeling bind mount option is ignored on platforms without SELinux.
 
-#### 长语法
+> [!NOTE]
+> Relative host paths are only supported by Compose that deploy to a
+> local container runtime. This is because the relative path is resolved from the Compose file’s parent
+> directory which is only applicable in the local case. When Compose deploys to a non-local
+> platform it rejects Compose files which use relative host paths with an error. To avoid ambiguities
+> with named volumes, relative paths should always begin with `.` or `..`.
 
-长格式语法允许你配置短格式无法表达的额外字段。
+> [!NOTE]
+>
+> For bind mounts, the short syntax creates a directory at the source path on the host if it doesn't exist. This is for backward compatibility with `docker-compose` legacy. 
+> It can be prevented by using long syntax and setting `create_host_path` to `false`.
 
-- `type`：挂载类型。`volume`、`bind`、`tmpfs`、`image`、`npipe` 或 `cluster` 之一。
-- `source`：挂载的源，绑定挂载的主机路径，镜像挂载的 Docker 镜像引用，或 [顶层 `volumes` 键](volumes.md) 中定义的卷名称。不适用于 tmpfs 挂载。
-- `target`：卷挂载在容器中的路径。
-- `read_only`：将卷设置为只读的标志。
-- `bind`：用于配置其他绑定选项：
-  - `propagation`：用于绑定的传播模式。
-  - `create_host_path`：如果主机上源路径不存在，则在该路径创建目录。默认为 `true`。
-  - `selinux`：SELinux 重新标记选项 `z`（共享）或 `Z`（私有）
-- `volume`：配置其他卷选项：
-  - `nocopy`：创建卷时禁用从容器复制数据的标志。
-  - `subpath`：挂载在卷内部的路径，而不是卷根目录。
-- `tmpfs`：配置其他 tmpfs 选项：
-  - `size`：tmpfs 挂载的大小，以字节为单位（数字或字节单位）。
-  - `mode`：tmpfs 挂载的文件模式，作为八进制数字的 Unix 权限位。在 Docker Compose 版本 [2.14.0](/manuals/compose/releases/release-notes.md#2260) 中引入。
-- `image`：配置其他镜像选项：
-  - `subpath`：挂载在源镜像内部的路径，而不是镜像根目录。在 [Docker Compose 版本 2.35.0](/manuals/compose/releases/release-notes.md#2350) 中可用
-- `consistency`：挂载的一致性要求。可用值是特定于平台的。
+#### Long syntax
+
+The long form syntax lets you configure additional fields that can't be
+expressed in the short form.
+
+- `type`: The mount type. Either `volume`, `bind`, `tmpfs`, `image`, `npipe`, or `cluster`
+- `source`: The source of the mount, a path on the host for a bind mount, a Docker image reference for an image mount, or the
+  name of a volume defined in the
+  [top-level `volumes` key](volumes.md). Not applicable for a tmpfs mount.
+- `target`: The path in the container where the volume is mounted.
+- `read_only`: Flag to set the volume as read-only.
+- `bind`: Used to configure additional bind options:
+  - `propagation`: The propagation mode used for the bind.
+  - `create_host_path`: Creates a directory at the source path on host if there is nothing present. Defaults to `true`.
+  - `selinux`: The SELinux re-labeling option `z` (shared) or `Z` (private)
+- `volume`: Configures additional volume options:
+  - `nocopy`: Flag to disable copying of data from a container when a volume is created.
+  - `subpath`: Path inside a volume to mount instead of the volume root.
+- `tmpfs`: Configures additional tmpfs options:
+  - `size`: The size for the tmpfs mount in bytes (either numeric or as bytes unit).
+  - `mode`: The file mode for the tmpfs mount as Unix permission bits as an octal number. Introduced in Docker Compose version [2.14.0](/manuals/compose/releases/release-notes.md#2260).
+- `image`: Configures additional image options:
+  - `subpath`: Path inside the source image to mount instead of the image root. Available in [Docker Compose version 2.35.0](/manuals/compose/releases/release-notes.md#2350)
+- `consistency`: The consistency requirements of the mount. Available values are platform specific.
 
 > [!TIP]
-> 
-> 处理大型存储库或 monorepo，或者处理不再随代码库扩展的虚拟文件系统？
-> Compose 现在利用 [同步文件共享](/manuals/desktop/features/synchronized-file-sharing.md) 并自动为绑定挂载创建文件共享。
-> 确保你已使用付费订阅登录 Docker，并在 Docker Desktop 设置中启用了 **Access experimental features** 和 **Manage Synchronized file shares with Compose**。
+>
+> Working with large repositories or monorepos, or with virtual file systems that are no longer scaling with your codebase? 
+> Compose now takes advantage of [Synchronized file shares](/manuals/desktop/features/synchronized-file-sharing.md) and automatically creates file shares for bind mounts. 
+> Ensure you're signed in to Docker with a paid subscription and have enabled both **Access experimental features** and **Manage Synchronized file shares with Compose** in Docker Desktop's settings.
 
 ### `volumes_from`
 
-`volumes_from` 挂载来自另一个服务或容器的所有卷。你可以选择性地指定只读访问 `ro` 或读写 `rw`。如果未指定访问级别，则使用读写访问。
+`volumes_from` mounts all of the volumes from another service or container. You can optionally specify
+read-only access `ro` or read-write `rw`. If no access level is specified, then read-write access is used.
 
-你还可以通过使用 `container:` 前缀挂载非 Compose 管理的容器的卷。
+You can also mount volumes from a container that is not managed by Compose by using the `container:` prefix.
 
-```yml
+```yaml
 volumes_from:
   - service_name
   - service_name:ro
@@ -2004,8 +2191,4 @@ volumes_from:
 
 ### `working_dir`
 
-`working_dir` 覆盖由镜像指定的容器工作目录，例如 Dockerfile `WORKDIR`。
-
-
-```yaml
-```
+`working_dir` overrides the container's working directory which is specified by the image, for example Dockerfile's `WORKDIR`.

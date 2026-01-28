@@ -1,39 +1,39 @@
 ---
-title: "接口：Toast"
-description: Docker 扩展 API 参考
+title: "Interface: Toast"
+description: Docker extension API reference
 keywords: Docker, extensions, sdk, API, reference
 aliases:
  - /desktop/extensions-sdk/dev/api/reference/interfaces/Toast/
  - /extensions/extensions-sdk/dev/api/reference/interfaces/Toast/
 ---
 
-Toast（提示框）向用户提供简短的通知。
-它们临时出现，不应打断用户体验。
-它们也不需要用户输入即可消失。
+Toasts provide a brief notification to the user.
+They appear temporarily and shouldn't interrupt the user experience.
+They also don't require user input to disappear.
 
 **`Since`**
 
 0.2.0
 
-## 方法
+## Methods
 
 ### success
 
 ▸ **success**(`msg`): `void`
 
-显示成功类型的 toast 消息。
+Display a toast message of type success.
 
 ```typescript
 ddClient.desktopUI.toast.success("message");
 ```
 
-#### 参数
+#### Parameters
 
-| 名称 | 类型 | 描述 |
+| Name | Type | Description |
 | :------ | :------ | :------ |
-| `msg` | `string` | 要在 toast 中显示的消息。 |
+| `msg` | `string` | The message to display in the toast. |
 
-#### 返回值
+#### Returns
 
 `void`
 
@@ -43,19 +43,19 @@ ___
 
 ▸ **warning**(`msg`): `void`
 
-显示警告类型的 toast 消息。
+Display a toast message of type warning.
 
 ```typescript
 ddClient.desktopUI.toast.warning("message");
 ```
 
-#### 参数
+#### Parameters
 
-| 名称 | 类型 | 描述 |
+| Name | Type | Description |
 | :------ | :------ | :------ |
-| `msg` | `string` | 要在警告中显示的消息。 |
+| `msg` | `string` | The message to display in the warning. |
 
-#### 返回值
+#### Returns
 
 `void`
 
@@ -65,18 +65,18 @@ ___
 
 ▸ **error**(`msg`): `void`
 
-显示错误类型的 toast 消息。
+Display a toast message of type error.
 
 ```typescript
 ddClient.desktopUI.toast.error("message");
 ```
 
-#### 参数
+#### Parameters
 
-| 名称 | 类型 | 描述 |
+| Name | Type | Description |
 | :------ | :------ | :------ |
-| `msg` | `string` | 要在 toast 中显示的消息。 |
+| `msg` | `string` | The message to display in the toast. |
 
-#### 返回值
+#### Returns
 
 `void`

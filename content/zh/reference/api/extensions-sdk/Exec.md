@@ -1,60 +1,60 @@
 ---
-title: "接口: Exec"
-description: Docker 扩展 API 参考
+title: "Interface: Exec"
+description: Docker extension API reference
 keywords: Docker, extensions, sdk, API, reference
-aliases:
+aliases: 
  - /desktop/extensions-sdk/dev/api/reference/interfaces/Exec/
  - /extensions/extensions-sdk/dev/api/reference/interfaces/Exec/
 ---
 
-## 可调用
+## Callable
 
 ### Exec
 
 ▸ **Exec**(`cmd`, `args`, `options?`): `Promise`<[`ExecResult`](ExecResult.md)\>
 
-执行命令。
+Executes a command.
 
-**`起始版本`**
+**`Since`**
 
 0.2.0
 
-#### 参数
+#### Parameters
 
-| 名称 | 类型 | 描述 |
+| Name | Type | Description |
 | :------ | :------ | :------ |
-| `cmd` | `string` | 要执行的命令。 |
-| `args` | `string`[] | 要执行的命令的参数。 |
-| `options?` | [`ExecOptions`](ExecOptions.md) | 选项列表。 |
+| `cmd` | `string` | The command to execute. |
+| `args` | `string`[] | The arguments of the command to execute. |
+| `options?` | [`ExecOptions`](ExecOptions.md) | The list of options. |
 
-#### 返回值
+#### Returns
 
 `Promise`<[`ExecResult`](ExecResult.md)\>
 
-命令完成后将解析的 promise。
+A promise that will resolve once the command finishes.
 
 ### Exec
 
 ▸ **Exec**(`cmd`, `args`, `options`): [`ExecProcess`](ExecProcess.md)
 
-如果在 `options` 参数中指定了 `stream`，则以流的形式返回命令的结果。
+Streams the result of a command if `stream` is specified in the `options` parameter.
 
-如果命令的输出太长，或者您需要无限期地以流的形式输出（例如容器日志），请指定 `stream`。
+Specify the `stream` if the output of your command is too long or if you need to stream things indefinitely (for example container logs).
 
-**`起始版本`**
+**`Since`**
 
 0.2.2
 
-#### 参数
+#### Parameters
 
-| 名称 | 类型 | 描述 |
+| Name | Type | Description |
 | :------ | :------ | :------ |
-| `cmd` | `string` | 要执行的命令。 |
-| `args` | `string`[] | 要执行的命令的参数。 |
-| `options` | [`SpawnOptions`](SpawnOptions.md) | 选项列表。 |
+| `cmd` | `string` | The command to execute. |
+| `args` | `string`[] | The arguments of the command to execute. |
+| `options` | [`SpawnOptions`](SpawnOptions.md) | The list of options. |
 
-#### 返回值
+#### Returns
 
 [`ExecProcess`](ExecProcess.md)
 
-生成的进程。
+The spawned process.

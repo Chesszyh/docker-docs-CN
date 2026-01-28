@@ -1,7 +1,7 @@
 ---
 build:
   render: never
-title: 最新版本
+title: Latest
 params:
   sidebar:
     goto: /reference/api/engine/latest/

@@ -1,23 +1,23 @@
 ---
-title: "接口: HttpService"
-description: Docker 扩展 API 参考
+title: "Interface: HttpService"
+description: Docker extension API reference
 keywords: Docker, extensions, sdk, API, reference
 aliases:
  - /desktop/extensions-sdk/dev/api/reference/interfaces/HttpService/
  - /extensions/extensions-sdk/dev/api/reference/interfaces/HttpService/
 ---
 
-**`起始版本`**
+**`Since`**
 
 0.2.0
 
-## 方法
+## Methods
 
 ### get
 
 ▸ **get**(`url`): `Promise`<`unknown`\>
 
-向后端服务执行 HTTP GET 请求。
+Performs an HTTP GET request to a backend service.
 
 ```typescript
 ddClient.extension.vm.service
@@ -25,13 +25,13 @@ ddClient.extension.vm.service
  .then((value: any) => console.log(value)
 ```
 
-#### 参数
+#### Parameters
 
-| 名称 | 类型 | 描述 |
+| Name | Type | Description |
 | :------ | :------ | :------ |
-| `url` | `string` | 后端服务的 URL。 |
+| `url` | `string` | The URL of the backend service. |
 
-#### 返回值
+#### Returns
 
 `Promise`<`unknown`\>
 
@@ -41,7 +41,7 @@ ___
 
 ▸ **post**(`url`, `data`): `Promise`<`unknown`\>
 
-向后端服务执行 HTTP POST 请求。
+Performs an HTTP POST request to a backend service.
 
 ```typescript
 ddClient.extension.vm.service
@@ -49,14 +49,14 @@ ddClient.extension.vm.service
  .then((value: any) => console.log(value));
 ```
 
-#### 参数
+#### Parameters
 
-| 名称 | 类型 | 描述 |
+| Name | Type | Description |
 | :------ | :------ | :------ |
-| `url` | `string` | 后端服务的 URL。 |
-| `data` | `any` | 请求体。 |
+| `url` | `string` | The URL of the backend service. |
+| `data` | `any` | The body of the request. |
 
-#### 返回值
+#### Returns
 
 `Promise`<`unknown`\>
 
@@ -66,7 +66,7 @@ ___
 
 ▸ **put**(`url`, `data`): `Promise`<`unknown`\>
 
-向后端服务执行 HTTP PUT 请求。
+Performs an HTTP PUT request to a backend service.
 
 ```typescript
 ddClient.extension.vm.service
@@ -74,14 +74,14 @@ ddClient.extension.vm.service
  .then((value: any) => console.log(value));
 ```
 
-#### 参数
+#### Parameters
 
-| 名称 | 类型 | 描述 |
+| Name | Type | Description |
 | :------ | :------ | :------ |
-| `url` | `string` | 后端服务的 URL。 |
-| `data` | `any` | 请求体。 |
+| `url` | `string` | The URL of the backend service. |
+| `data` | `any` | The body of the request. |
 
-#### 返回值
+#### Returns
 
 `Promise`<`unknown`\>
 
@@ -91,7 +91,7 @@ ___
 
 ▸ **patch**(`url`, `data`): `Promise`<`unknown`\>
 
-向后端服务执行 HTTP PATCH 请求。
+Performs an HTTP PATCH request to a backend service.
 
 ```typescript
 ddClient.extension.vm.service
@@ -99,14 +99,14 @@ ddClient.extension.vm.service
  .then((value: any) => console.log(value));
 ```
 
-#### 参数
+#### Parameters
 
-| 名称 | 类型 | 描述 |
+| Name | Type | Description |
 | :------ | :------ | :------ |
-| `url` | `string` | 后端服务的 URL。 |
-| `data` | `any` | 请求体。 |
+| `url` | `string` | The URL of the backend service. |
+| `data` | `any` | The body of the request. |
 
-#### 返回值
+#### Returns
 
 `Promise`<`unknown`\>
 
@@ -116,7 +116,7 @@ ___
 
 ▸ **delete**(`url`): `Promise`<`unknown`\>
 
-向后端服务执行 HTTP DELETE 请求。
+Performs an HTTP DELETE request to a backend service.
 
 ```typescript
 ddClient.extension.vm.service
@@ -124,13 +124,13 @@ ddClient.extension.vm.service
  .then((value: any) => console.log(value));
 ```
 
-#### 参数
+#### Parameters
 
-| 名称 | 类型 | 描述 |
+| Name | Type | Description |
 | :------ | :------ | :------ |
-| `url` | `string` | 后端服务的 URL。 |
+| `url` | `string` | The URL of the backend service. |
 
-#### 返回值
+#### Returns
 
 `Promise`<`unknown`\>
 
@@ -140,7 +140,7 @@ ___
 
 ▸ **head**(`url`): `Promise`<`unknown`\>
 
-向后端服务执行 HTTP HEAD 请求。
+Performs an HTTP HEAD request to a backend service.
 
 ```typescript
 ddClient.extension.vm.service
@@ -148,13 +148,13 @@ ddClient.extension.vm.service
  .then((value: any) => console.log(value));
 ```
 
-#### 参数
+#### Parameters
 
-| 名称 | 类型 | 描述 |
+| Name | Type | Description |
 | :------ | :------ | :------ |
-| `url` | `string` | 后端服务的 URL。 |
+| `url` | `string` | The URL of the backend service. |
 
-#### 返回值
+#### Returns
 
 `Promise`<`unknown`\>
 
@@ -164,7 +164,7 @@ ___
 
 ▸ **request**(`config`): `Promise`<`unknown`\>
 
-向后端服务执行 HTTP 请求。
+Performs an HTTP request to a backend service.
 
 ```typescript
 ddClient.extension.vm.service
@@ -172,12 +172,12 @@ ddClient.extension.vm.service
  .then((value: any) => console.log(value));
 ```
 
-#### 参数
+#### Parameters
 
-| 名称 | 类型 | 描述 |
+| Name | Type | Description |
 | :------ | :------ | :------ |
-| `config` | [`RequestConfig`](RequestConfig.md) | 后端服务的 URL。 |
+| `config` | [`RequestConfig`](RequestConfig.md) | The URL of the backend service. |
 
-#### 返回值
+#### Returns
 
 `Promise`<`unknown`\>

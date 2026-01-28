@@ -1,23 +1,23 @@
 ---
-title: "接口: RawExecResult"
-description: Docker 扩展 API 参考
+title: "Interface: RawExecResult"
+description: Docker extension API reference
 keywords: Docker, extensions, sdk, API, reference
 aliases:
  - /desktop/extensions-sdk/dev/api/reference/interfaces/RawExecResult/
  - /extensions/extensions-sdk/dev/api/reference/interfaces/RawExecResult/
 ---
 
-**`起始版本`**
+**`Since`**
 
 0.2.0
 
-## 继承层次
+## Hierarchy
 
 - **`RawExecResult`**
 
   ↳ [`ExecResult`](ExecResult.md)
 
-## 属性
+## Properties
 
 ### cmd
 

@@ -1,28 +1,31 @@
 ---
-title: "接口: DockerDesktopClient"
-description: Docker 扩展 API 参考
+title: "Interface: DockerDesktopClient"
+description: Docker extension API reference
 keywords: Docker, extensions, sdk, API, reference
 aliases:
  - /desktop/extensions-sdk/dev/api/reference/interfaces/DockerDesktopClient/
  - /extensions/extensions-sdk/dev/api/reference/interfaces/DockerDesktopClient/
 ---
 
-Docker Desktop API 客户端 v0 和 v1 接口的组合，为向后兼容而提供。除非您正在使用旧版扩展，否则请改用 v1 类型。
+An amalgam of the v0 and v1 interfaces of the Docker Desktop API client,
+provided for backwards compatibility reasons. Unless you're working with
+a legacy extension, use the v1 type instead.
 
-## 属性
+## Properties
 
 ### backend
 
 • `Readonly` **backend**: `undefined` \| [`BackendV0`](BackendV0.md)
 
-`window.ddClient.backend` 对象可用于与扩展元数据的 vm 部分中定义的后端进行通信。
-客户端已连接到后端。
+The `window.ddClient.backend` object can be used to communicate with the backend defined in the vm section of
+the extension metadata.
+The client is already connected to the backend.
 
 > [!WARNING]
 >
-> 此属性将在未来版本中移除。请改用 [extension](DockerDesktopClient.md#extension)。
+> It will be removed in a future version. Use [extension](DockerDesktopClient.md#extension) instead.
 
-#### 继承自
+#### Inherited from
 
 DockerDesktopClientV0.backend
 
@@ -32,10 +35,11 @@ ___
 
 • `Readonly` **extension**: [`Extension`](Extension.md)
 
-`ddClient.extension` 对象可用于与扩展元数据的 vm 部分中定义的后端进行通信。
-客户端已连接到后端。
+The `ddClient.extension` object can be used to communicate with the backend defined in the vm section of the
+extension metadata.
+The client is already connected to the backend.
 
-#### 继承自
+#### Inherited from
 
 DockerDesktopClientV1.extension
 
@@ -45,7 +49,7 @@ ___
 
 • `Readonly` **desktopUI**: [`DesktopUI`](DesktopUI.md)
 
-#### 继承自
+#### Inherited from
 
 DockerDesktopClientV1.desktopUI
 
@@ -55,7 +59,7 @@ ___
 
 • `Readonly` **host**: [`Host`](Host.md)
 
-#### 继承自
+#### Inherited from
 
 DockerDesktopClientV1.host
 
@@ -65,20 +69,20 @@ ___
 
 • `Readonly` **docker**: [`Docker`](Docker.md)
 
-#### 继承自
+#### Inherited from
 
 DockerDesktopClientV1.docker
 
-## 容器方法
+## Container Methods
 
 ### listContainers
 
 ▸ **listContainers**(`options`): `Promise`<`unknown`\>
 
-获取正在运行的容器列表（与 `docker ps` 相同）。
+Get the list of running containers (same as `docker ps`).
 
-默认情况下，这不会列出已停止的容器。
-您可以使用选项 `{"all": true}` 来列出所有正在运行和已停止的容器。
+By default, this will not list stopped containers.
+You can use the option `{"all": true}` to list all the running and stopped containers.
 
 ```typescript
 const containers = await window.ddClient.listContainers();
@@ -86,31 +90,31 @@ const containers = await window.ddClient.listContainers();
 
 > [!WARNING]
 >
-> 此方法将在未来版本中移除。请改用 [listContainers](Docker.md#listcontainers)。
+> It will be removed in a future version. Use [listContainers](Docker.md#listcontainers) instead.
 
-#### 参数
+#### Parameters
 
-| 名称 | 类型 | 描述 |
+| Name | Type | Description |
 | :------ | :------ | :------ |
-| `options` | `never` | （可选）。类似 `{ "all": true, "limit": 10, "size": true, "filters": JSON.stringify({ status: ["exited"] }), }` 的 JSON 对象。有关不同属性的更多信息，请参阅 [Docker API 端点文档](https://docs.docker.com/engine/api/v1.41/#operation/ContainerList)。 |
+| `options` | `never` | (Optional). A JSON like `{ "all": true, "limit": 10, "size": true, "filters": JSON.stringify({ status: ["exited"] }), }` For more information about the different properties see [the Docker API endpoint documentation](https://docs.docker.com/engine/api/v1.41/#operation/ContainerList). |
 
-#### 返回值
+#### Returns
 
 `Promise`<`unknown`\>
 
-#### 继承自
+#### Inherited from
 
 DockerDesktopClientV0.listContainers
 
 ___
 
-## 镜像方法
+## Image Methods
 
 ### listImages
 
 ▸ **listImages**(`options`): `Promise`<`unknown`\>
 
-获取镜像列表
+Get the list of images
 
 ```typescript
 const images = await window.ddClient.listImages();
@@ -118,44 +122,44 @@ const images = await window.ddClient.listImages();
 
 > [!WARNING]
 >
-> 此方法将在未来版本中移除。请改用 [listImages](Docker.md#listimages)。
+> It will be removed in a future version. Use [listImages](Docker.md#listimages) instead.
 
-#### 参数
+#### Parameters
 
-| 名称 | 类型 | 描述 |
+| Name | Type | Description |
 | :------ | :------ | :------ |
-| `options` | `never` | （可选）。类似 `{ "all": true, "filters": JSON.stringify({ dangling: ["true"] }), "digests": true }` 的 JSON 对象。有关不同属性的更多信息，请参阅 [Docker API 端点文档](https://docs.docker.com/engine/api/v1.41/#tag/Image)。 |
+| `options` | `never` | (Optional). A JSON like `{ "all": true, "filters": JSON.stringify({ dangling: ["true"] }), "digests": true }` For more information about the different properties see [the Docker API endpoint documentation](https://docs.docker.com/engine/api/v1.41/#tag/Image). |
 
-#### 返回值
+#### Returns
 
 `Promise`<`unknown`\>
 
-#### 继承自
+#### Inherited from
 
 DockerDesktopClientV0.listImages
 
 ___
 
-## 导航方法
+## Navigation Methods
 
 ### navigateToContainers
 
 ▸ **navigateToContainers**(): `void`
 
-在 Docker Desktop 中导航到容器窗口。
+Navigate to the container's window in Docker Desktop.
 ```typescript
 window.ddClient.navigateToContainers();
 ```
 
 > [!WARNING]
 >
-> 此方法将在未来版本中移除。请改用 [viewContainers](NavigationIntents.md#viewcontainers)。
+> It will be removed in a future version. Use [viewContainers](NavigationIntents.md#viewcontainers) instead.
 
-#### 返回值
+#### Returns
 
 `void`
 
-#### 继承自
+#### Inherited from
 
 DockerDesktopClientV0.navigateToContainers
 
@@ -165,28 +169,28 @@ ___
 
 ▸ **navigateToContainer**(`id`): `Promise`<`any`\>
 
-在 Docker Desktop 中导航到容器窗口。
+Navigate to the container window in Docker Desktop.
 ```typescript
 await window.ddClient.navigateToContainer(id);
 ```
 
 > [!WARNING]
 >
-> 此方法将在未来版本中移除。
+> It will be removed in a future version.
 
-#### 参数
+#### Parameters
 
-| 名称 | 类型 | 描述 |
+| Name | Type | Description |
 | :------ | :------ | :------ |
-| `id` | `string` | 完整的容器 id，例如 `46b57e400d801762e9e115734bf902a2450d89669d85881058a46136520aca28`。您可以使用 `docker ps` 命令的 `--no-trunc` 标志来显示完整的容器 id。 |
+| `id` | `string` | The full container id, e.g. `46b57e400d801762e9e115734bf902a2450d89669d85881058a46136520aca28`. You can use the `--no-trunc` flag as part of the `docker ps` command to display the full container id. |
 
-#### 返回值
+#### Returns
 
 `Promise`<`any`\>
 
-如果容器不存在，promise 将失败。
+A promise that fails if the container doesn't exist.
 
-#### 继承自
+#### Inherited from
 
 DockerDesktopClientV0.navigateToContainer
 
@@ -196,28 +200,28 @@ ___
 
 ▸ **navigateToContainerLogs**(`id`): `Promise`<`any`\>
 
-在 Docker Desktop 中导航到容器日志窗口。
+Navigate to the container logs window in Docker Desktop.
 ```typescript
 await window.ddClient.navigateToContainerLogs(id);
 ```
 
 > [!WARNING]
 >
-> 此方法将在未来版本中移除。
+> It will be removed in a future version.
 
-#### 参数
+#### Parameters
 
-| 名称 | 类型 | 描述 |
+| Name | Type | Description |
 | :------ | :------ | :------ |
-| `id` | `string` | 完整的容器 id，例如 `46b57e400d801762e9e115734bf902a2450d89669d85881058a46136520aca28`。您可以使用 `docker ps` 命令的 `--no-trunc` 标志来显示完整的容器 id。 |
+| `id` | `string` | The full container id, e.g. `46b57e400d801762e9e115734bf902a2450d89669d85881058a46136520aca28`. You can use the `--no-trunc` flag as part of the `docker ps` command to display the full container id. |
 
-#### 返回值
+#### Returns
 
 `Promise`<`any`\>
 
-如果容器不存在，promise 将失败。
+A promise that fails if the container doesn't exist.
 
-#### 继承自
+#### Inherited from
 
 DockerDesktopClientV0.navigateToContainerLogs
 
@@ -227,28 +231,28 @@ ___
 
 ▸ **navigateToContainerInspect**(`id`): `Promise`<`any`\>
 
-在 Docker Desktop 中导航到容器检查窗口。
+Navigate to the container inspect window in Docker Desktop.
 ```typescript
 await window.ddClient.navigateToContainerInspect(id);
 ```
 
 > [!WARNING]
 >
-> 此方法将在未来版本中移除。
+> It will be removed in a future version.
 
-#### 参数
+#### Parameters
 
-| 名称 | 类型 | 描述 |
+| Name | Type | Description |
 | :------ | :------ | :------ |
-| `id` | `string` | 完整的容器 id，例如 `46b57e400d801762e9e115734bf902a2450d89669d85881058a46136520aca28`。您可以使用 `docker ps` 命令的 `--no-trunc` 标志来显示完整的容器 id。 |
+| `id` | `string` | The full container id, e.g. `46b57e400d801762e9e115734bf902a2450d89669d85881058a46136520aca28`. You can use the `--no-trunc` flag as part of the `docker ps` command to display the full container id. |
 
-#### 返回值
+#### Returns
 
 `Promise`<`any`\>
 
-如果容器不存在，promise 将失败。
+A promise that fails if the container doesn't exist.
 
-#### 继承自
+#### Inherited from
 
 DockerDesktopClientV0.navigateToContainerInspect
 
@@ -258,7 +262,7 @@ ___
 
 ▸ **navigateToContainerStats**(`id`): `Promise`<`any`\>
 
-导航到容器统计信息，查看 CPU、内存、磁盘读写和网络 I/O 使用情况。
+Navigate to the container stats to see the CPU, memory, disk read/write and network I/O usage.
 
 ```typescript
 await window.ddClient.navigateToContainerStats(id);
@@ -266,21 +270,21 @@ await window.ddClient.navigateToContainerStats(id);
 
 > [!WARNING]
 >
-> 此方法将在未来版本中移除。
+> It will be removed in a future version.
 
-#### 参数
+#### Parameters
 
-| 名称 | 类型 | 描述 |
+| Name | Type | Description |
 | :------ | :------ | :------ |
-| `id` | `string` | 完整的容器 id，例如 `46b57e400d801762e9e115734bf902a2450d89669d85881058a46136520aca28`。您可以使用 `docker ps` 命令的 `--no-trunc` 标志来显示完整的容器 id。 |
+| `id` | `string` | The full container id, e.g. `46b57e400d801762e9e115734bf902a2450d89669d85881058a46136520aca28`. You can use the `--no-trunc` flag as part of the `docker ps` command to display the full container id. |
 
-#### 返回值
+#### Returns
 
 `Promise`<`any`\>
 
-如果容器不存在，promise 将失败。
+A promise that fails if the container doesn't exist.
 
-#### 继承自
+#### Inherited from
 
 DockerDesktopClientV0.navigateToContainerStats
 
@@ -290,20 +294,20 @@ ___
 
 ▸ **navigateToImages**(): `void`
 
-在 Docker Desktop 中导航到镜像窗口。
+Navigate to the images window in Docker Desktop.
 ```typescript
 await window.ddClient.navigateToImages(id);
 ```
 
 > [!WARNING]
 >
-> 此方法将在未来版本中移除。请改用 [viewImages](NavigationIntents.md#viewimages)。
+> It will be removed in a future version. Use [viewImages](NavigationIntents.md#viewimages) instead.
 
-#### 返回值
+#### Returns
 
 `void`
 
-#### 继承自
+#### Inherited from
 
 DockerDesktopClientV0.navigateToImages
 
@@ -313,8 +317,8 @@ ___
 
 ▸ **navigateToImage**(`id`, `tag`): `Promise`<`any`\>
 
-在 Docker Desktop 中导航到由 `id` 和 `tag` 引用的特定镜像。
-在此导航路由中，您可以查看镜像层、命令、创建时间和大小。
+Navigate to a specific image referenced by `id` and `tag` in Docker Desktop.
+In this navigation route you can find the image layers, commands, created time and size.
 
 ```typescript
 await window.ddClient.navigateToImage(id, tag);
@@ -322,22 +326,22 @@ await window.ddClient.navigateToImage(id, tag);
 
 > [!WARNING]
 >
-> 此方法将在未来版本中移除。请改用 [viewImage](NavigationIntents.md#viewimage)。
+> It will be removed in a future version. Use [viewImage](NavigationIntents.md#viewimage) instead.
 
-#### 参数
+#### Parameters
 
-| 名称 | 类型 | 描述 |
+| Name | Type | Description |
 | :------ | :------ | :------ |
-| `id` | `string` | 完整的镜像 id（包含 sha），例如 `sha256:34ab3ae068572f4e85c448b4035e6be5e19cc41f69606535cd4d768a63432673`。 |
-| `tag` | `string` | 镜像的标签，例如 `latest`、`0.0.1` 等。 |
+| `id` | `string` | The full image id (including sha), e.g. `sha256:34ab3ae068572f4e85c448b4035e6be5e19cc41f69606535cd4d768a63432673`. |
+| `tag` | `string` | The tag of the image, e.g. `latest`, `0.0.1`, etc. |
 
-#### 返回值
+#### Returns
 
 `Promise`<`any`\>
 
-如果容器不存在，promise 将失败。
+A promise that fails if the container doesn't exist.
 
-#### 继承自
+#### Inherited from
 
 DockerDesktopClientV0.navigateToImage
 
@@ -347,7 +351,7 @@ ___
 
 ▸ **navigateToVolumes**(): `void`
 
-在 Docker Desktop 中导航到卷窗口。
+Navigate to the volumes window in Docker Desktop.
 
 ```typescript
 await window.ddClient.navigateToVolumes();
@@ -355,13 +359,13 @@ await window.ddClient.navigateToVolumes();
 
 > [!WARNING]
 >
-> 此方法将在未来版本中移除。请改用 [viewVolumes](NavigationIntents.md#viewvolumes)。
+> It will be removed in a future version. Use [viewVolumes](NavigationIntents.md#viewvolumes) instead.
 
-#### 返回值
+#### Returns
 
 `void`
 
-#### 继承自
+#### Inherited from
 
 DockerDesktopClientV0.navigateToVolumes
 
@@ -371,7 +375,7 @@ ___
 
 ▸ **navigateToVolume**(`volume`): `void`
 
-在 Docker Desktop 中导航到特定卷。
+Navigate to a specific volume in Docker Desktop.
 
 ```typescript
 window.ddClient.navigateToVolume(volume);
@@ -379,31 +383,31 @@ window.ddClient.navigateToVolume(volume);
 
 > [!WARNING]
 >
-> 此方法将在未来版本中移除。请改用 [viewVolume](NavigationIntents.md#viewvolume)。
+> It will be removed in a future version. Use [viewVolume](NavigationIntents.md#viewvolume) instead.
 
-#### 参数
+#### Parameters
 
-| 名称 | 类型 | 描述 |
+| Name | Type | Description |
 | :------ | :------ | :------ |
-| `volume` | `string` | 卷的名称，例如 `my-volume`。 |
+| `volume` | `string` | The name of the volume, e.g. `my-volume`. |
 
-#### 返回值
+#### Returns
 
 `void`
 
-#### 继承自
+#### Inherited from
 
 DockerDesktopClientV0.navigateToVolume
 
 ___
 
-## 其他方法
+## Other Methods
 
 ### execHostCmd
 
 ▸ **execHostCmd**(`cmd`): `Promise`<[`ExecResultV0`](ExecResultV0.md)\>
 
-您可以运行扩展元数据的 host 部分中定义的二进制文件。
+You can run binaries defined in the host section in the extension metadata.
 
 ```typescript
 window.ddClient.execHostCmd(`cliShippedOnHost xxx`).then((cmdResult: any) => {
@@ -413,19 +417,19 @@ window.ddClient.execHostCmd(`cliShippedOnHost xxx`).then((cmdResult: any) => {
 
 > [!WARNING]
 >
-> 此方法将在未来版本中移除。请改用 [exec](ExtensionCli.md#exec)。
+> It will be removed in a future version. Use [exec](ExtensionCli.md#exec) instead.
 
-#### 参数
+#### Parameters
 
-| 名称 | 类型 | 描述 |
+| Name | Type | Description |
 | :------ | :------ | :------ |
-| `cmd` | `string` | 要执行的命令。 |
+| `cmd` | `string` | The command to be executed. |
 
-#### 返回值
+#### Returns
 
 `Promise`<[`ExecResultV0`](ExecResultV0.md)\>
 
-#### 继承自
+#### Inherited from
 
 DockerDesktopClientV0.execHostCmd
 
@@ -435,7 +439,7 @@ ___
 
 ▸ **spawnHostCmd**(`cmd`, `args`, `callback`): `void`
 
-在您的主机上调用扩展二进制文件并获取输出流。
+Invoke an extension binary on your host and get the output stream.
 
 ```typescript
 window.ddClient.spawnHostCmd(
@@ -443,7 +447,7 @@ window.ddClient.spawnHostCmd(
   [`arg1`, `arg2`],
   (data: any, err: any) => {
     console.log(data.stdout, data.stderr);
-    // 命令退出后我们获取状态码
+    // Once the command exits we get the status code
     if (data.code) {
       console.log(data.code);
     }
@@ -453,21 +457,21 @@ window.ddClient.spawnHostCmd(
 
 > [!WARNING]
 >
-> 此方法将在未来版本中移除。请改用 [exec](ExtensionCli.md#exec)。
+> It will be removed in a future version. Use [exec](ExtensionCli.md#exec) instead.
 
-#### 参数
+#### Parameters
 
-| 名称 | 类型 | 描述 |
+| Name | Type | Description |
 | :------ | :------ | :------ |
-| `cmd` | `string` | 要执行的命令。 |
-| `args` | `string`[] | 要执行的命令的参数。 |
-| `callback` | (`data`: `any`, `error`: `any`) => `void` | 用于监听命令输出数据和错误的回调函数。 |
+| `cmd` | `string` | The command to be executed. |
+| `args` | `string`[] | The arguments of the command to execute. |
+| `callback` | (`data`: `any`, `error`: `any`) => `void` | The callback function where to listen from the command output data and errors. |
 
-#### 返回值
+#### Returns
 
 `void`
 
-#### 继承自
+#### Inherited from
 
 DockerDesktopClientV0.spawnHostCmd
 
@@ -477,7 +481,7 @@ ___
 
 ▸ **execDockerCmd**(`cmd`, `...args`): `Promise`<[`ExecResultV0`](ExecResultV0.md)\>
 
-您还可以直接执行 Docker 二进制文件。
+You can also directly execute the Docker binary.
 
 ```typescript
 const output = await window.ddClient.execDockerCmd("info");
@@ -485,33 +489,34 @@ const output = await window.ddClient.execDockerCmd("info");
 
 > [!WARNING]
 >
-> 此方法将在未来版本中移除。请改用 [exec](DockerCommand.md#exec)。
+> It will be removed in a future version. Use [exec](DockerCommand.md#exec) instead.
 
-#### 参数
+#### Parameters
 
-| 名称 | 类型 | 描述 |
+| Name | Type | Description |
 | :------ | :------ | :------ |
-| `cmd` | `string` | 要执行的命令。 |
-| `...args` | `string`[] | 要执行的命令的参数。 |
+| `cmd` | `string` | The command to execute. |
+| `...args` | `string`[] | The arguments of the command to execute. |
 
-#### 返回值
+#### Returns
 
 `Promise`<[`ExecResultV0`](ExecResultV0.md)\>
 
-结果将包含执行命令的标准输出和标准错误：
+The result will contain both the standard output and the standard error of the executed command:
 ```json
 {
   "stderr": "...",
   "stdout": "..."
 }
 ```
-为方便起见，命令结果对象还具有根据输出格式轻松解析它的方法：
+For convenience, the command result object also has methods to easily parse it depending on the output format:
 
-- `output.lines(): string[]` 分割输出行。
-- `output.parseJsonObject(): any` 解析格式良好的 JSON 输出。
-- `output.parseJsonLines(): any[]` 将每个输出行解析为 JSON 对象。
+- `output.lines(): string[]` splits output lines.
+- `output.parseJsonObject(): any` parses a well-formed JSON output.
+- `output.parseJsonLines(): any[]` parses each output line as a JSON object.
 
-如果命令的输出太长，或者您需要以流的形式获取输出，可以使用 spawnDockerCmd 函数：
+If the output of the command is too long, or you need to get the output as a stream you can use the
+ * spawnDockerCmd function:
 
 ```typescript
 window.ddClient.spawnDockerCmd("logs", ["-f", "..."], (data, error) => {
@@ -519,7 +524,7 @@ window.ddClient.spawnDockerCmd("logs", ["-f", "..."], (data, error) => {
 });
 ```
 
-#### 继承自
+#### Inherited from
 
 DockerDesktopClientV0.execDockerCmd
 
@@ -531,21 +536,21 @@ ___
 
 > [!WARNING]
 >
-> 此方法将在未来版本中移除。请改用 [exec](DockerCommand.md#exec)。
+> It will be removed in a future version. Use [exec](DockerCommand.md#exec) instead.
 
-#### 参数
+#### Parameters
 
-| 名称 | 类型 |
+| Name | Type |
 | :------ | :------ |
 | `cmd` | `string` |
 | `args` | `string`[] |
 | `callback` | (`data`: `any`, `error`: `any`) => `void` |
 
-#### 返回值
+#### Returns
 
 `void`
 
-#### 继承自
+#### Inherited from
 
 DockerDesktopClientV0.spawnDockerCmd
 
@@ -555,7 +560,7 @@ ___
 
 ▸ **openExternal**(`url`): `void`
 
-使用系统默认浏览器打开外部 URL。
+Opens an external URL with the system default browser.
 
 ```typescript
 window.ddClient.openExternal("https://docker.com");
@@ -563,51 +568,51 @@ window.ddClient.openExternal("https://docker.com");
 
 > [!WARNING]
 >
-> 此方法将在未来版本中移除。请改用 [openExternal](Host.md#openexternal)。
+> It will be removed in a future version. Use [openExternal](Host.md#openexternal) instead.
 
-#### 参数
+#### Parameters
 
-| 名称 | 类型 | 描述 |
+| Name | Type | Description |
 | :------ | :------ | :------ |
-| `url` | `string` | 浏览器打开的 URL（必须使用 `http` 或 `https` 协议）。 |
+| `url` | `string` | The URL the browser opens (must have the protocol `http` or `https`). |
 
-#### 返回值
+#### Returns
 
 `void`
 
-#### 继承自
+#### Inherited from
 
 DockerDesktopClientV0.openExternal
 
 ___
 
-## Toast 方法
+## Toast Methods
 
 ### toastSuccess
 
 ▸ **toastSuccess**(`msg`): `void`
 
-显示成功类型的 toast 消息。
+Display a toast message of type success.
 
 ```typescript
 window.ddClient.toastSuccess("message");
 ```
 
->**警告`**
+>**Warning`**
 >
-> 此方法将在未来版本中移除。请改用 [success](Toast.md#success)。
+> It will be removed in a future version. Use [success](Toast.md#success) instead.
 
-#### 参数
+#### Parameters
 
-| 名称 | 类型 | 描述 |
+| Name | Type | Description |
 | :------ | :------ | :------ |
-| `msg` | `string` | 要在 toast 中显示的消息。 |
+| `msg` | `string` | The message to display in the toast. |
 
-#### 返回值
+#### Returns
 
 `void`
 
-#### 继承自
+#### Inherited from
 
 DockerDesktopClientV0.toastSuccess
 
@@ -617,7 +622,7 @@ ___
 
 ▸ **toastWarning**(`msg`): `void`
 
-显示警告类型的 toast 消息。
+Display a toast message of type warning.
 
 ```typescript
 window.ddClient.toastWarning("message");
@@ -625,19 +630,19 @@ window.ddClient.toastWarning("message");
 
 > [!WARNING]
 >
-> 此方法将在未来版本中移除。请改用 [warning](Toast.md#warning)。
+> It will be removed in a future version. Use [warning](Toast.md#warning) instead.
 
-#### 参数
+#### Parameters
 
-| 名称 | 类型 | 描述 |
+| Name | Type | Description |
 | :------ | :------ | :------ |
-| `msg` | `string` | 要在 toast 中显示的消息。 |
+| `msg` | `string` | The message to display in the toast. |
 
-#### 返回值
+#### Returns
 
 `void`
 
-#### 继承自
+#### Inherited from
 
 DockerDesktopClientV0.toastWarning
 
@@ -647,7 +652,7 @@ ___
 
 ▸ **toastError**(`msg`): `void`
 
-显示错误类型的 toast 消息。
+Display a toast message of type error.
 
 ```typescript
 window.ddClient.toastError("message");
@@ -655,18 +660,18 @@ window.ddClient.toastError("message");
 
 > [!WARNING]
 >
-> 此方法将在未来版本中移除。请改用 [error](Toast.md#error)。
+> It will be removed in a future version. Use [error](Toast.md#error) instead.
 
-#### 参数
+#### Parameters
 
-| 名称 | 类型 | 描述 |
+| Name | Type | Description |
 | :------ | :------ | :------ |
-| `msg` | `string` | 要在 toast 中显示的消息。 |
+| `msg` | `string` | The message to display in the toast. |
 
-#### 返回值
+#### Returns
 
 `void`
 
-#### 继承自
+#### Inherited from
 
 DockerDesktopClientV0.toastError

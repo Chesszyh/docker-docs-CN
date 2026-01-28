@@ -1,6 +1,6 @@
 ---
-title: Plex 示例
-description: Plex 的 Docker 示例。
+title: Plex samples
+description: Docker samples for Plex.
 service: plex
 aliases:
 - /samples/plex/

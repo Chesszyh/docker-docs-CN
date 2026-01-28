@@ -1,8 +1,8 @@
 ---
-title: 使用 Docker Engine SDK 进行开发
+title: Develop with Docker Engine SDKs
 linkTitle: SDK
 weight: 10
-description: 了解如何使用 Docker Engine SDK 以您选择的语言自动化 Docker 任务
+description: Learn how to use Docker Engine SDKs to automate Docker tasks in your language of choice
 keywords: developing, sdk, Docker Engine SDKs, install SDKs, SDK versions
 aliases:
   - /develop/sdk/
@@ -10,13 +10,18 @@ aliases:
   - /engine/api/sdk/
 ---
 
-Docker 提供了一个用于与 Docker 守护进程（daemon）交互的 API（称为 Docker Engine API），以及 Go 和 Python 的 SDK。这些 SDK 使您能够高效地构建和扩展 Docker 应用程序和解决方案。如果 Go 或 Python 不适合您的需求，您可以直接使用 Docker Engine API。
+Docker provides an API for interacting with the Docker daemon (called the Docker
+Engine API), as well as SDKs for Go and Python. The SDKs allow you to efficiently build and
+scale Docker apps and solutions. If Go or Python don't work
+for you, you can use the Docker Engine API directly.
 
-Docker Engine API 是一个 RESTful API，可通过 HTTP 客户端（如 `wget` 或 `curl`）访问，也可以使用大多数现代编程语言内置的 HTTP 库来访问。
+The Docker Engine API is a RESTful API accessed by an HTTP client such as `wget` or
+`curl`, or the HTTP library which is part of most modern programming languages.
 
-## 安装 SDK
+## Install the SDKs
 
-使用以下命令安装 Go 或 Python SDK。两个 SDK 可以同时安装并共存。
+Use the following commands to install the Go or Python SDK. Both SDKs can be
+installed and coexist together.
 
 ### Go SDK
 
@@ -24,39 +29,49 @@ Docker Engine API 是一个 RESTful API，可通过 HTTP 客户端（如 `wget` 
 $ go get github.com/docker/docker/client
 ```
 
-客户端需要较新版本的 Go。运行 `go version` 并确保您正在运行当前支持的 Go 版本。
+The client requires a recent version of Go. Run `go version` and ensure that you're running a currently supported version of Go.
 
-有关更多信息，请参阅 [Docker Engine Go SDK 参考文档](https://godoc.org/github.com/docker/docker/client)。
+
+For more information, see [Docker Engine Go SDK reference](https://godoc.org/github.com/docker/docker/client).
 
 ### Python SDK
 
-- 推荐方式：运行 `pip install docker`。
+- Recommended: Run `pip install docker`.
 
-- 如果无法使用 `pip`：
+- If you can't use `pip`:
 
-  1.  [直接下载包](https://pypi.python.org/pypi/docker/)。
-  2.  解压并进入解压后的目录。
-  3.  运行 `python setup.py install`。
+  1.  [Download the package directly](https://pypi.python.org/pypi/docker/).
+  2.  Extract it and change to the extracted directory.
+  3.  Run `python setup.py install`.
 
-有关更多信息，请参阅 [Docker Engine Python SDK 参考文档](https://docker-py.readthedocs.io/)。
+For more information, see [Docker Engine Python SDK reference](https://docker-py.readthedocs.io/).
 
-## 查看 API 参考
+## View the API reference
 
-您可以[查看最新版本 API 的参考文档](/reference/api/engine/latest/)或[选择特定版本](/reference/api/engine/version-history/)。
+You can
+[view the reference for the latest version of the API](/reference/api/engine/latest/)
+or [choose a specific version](/reference/api/engine/version-history/).
 
-## API 和 SDK 版本控制
+## Versioned API and SDK
 
-您应该使用的 Docker Engine API 版本取决于您的 Docker 守护进程和 Docker 客户端的版本。有关详细信息，请参阅 API 文档中的[版本化的 API 和 SDK](/reference/api/engine/#versioned-api-and-sdk) 部分。
+The version of the Docker Engine API you should use depends on the version of
+your Docker daemon and Docker client. See the [versioned API and SDK](/reference/api/engine/#versioned-api-and-sdk)
+section in the API documentation for details.
 
-## SDK 和 API 快速入门
+## SDK and API quickstart
 
-使用以下指南选择在您的代码中使用的 SDK 或 API 版本：
+Use the following guidelines to choose the SDK or API version to use in your
+code:
 
-- 如果您正在开始一个新项目，请使用[最新版本](/reference/api/engine/latest/)，但要使用 API 版本协商或指定您正在使用的版本。这有助于避免意外情况。
-- 如果您需要新功能，请将代码更新为至少使用支持该功能的最低版本，并优先使用您可以使用的最新版本。
-- 否则，继续使用您的代码已经在使用的版本。
+- If you're starting a new project, use the [latest version](/reference/api/engine/latest/),
+  but use API version negotiation or specify the version you are using. This
+  helps prevent surprises.
+- If you need a new feature, update your code to use at least the minimum version
+  that supports the feature, and prefer the latest version you can use.
+- Otherwise, continue to use the version that your code is already using.
 
-作为示例，`docker run` 命令可以使用 Docker API 直接实现，也可以使用 Python 或 Go SDK 实现。
+As an example, the `docker run` command can be implemented using the
+Docker API directly, or using the Python or Go SDK.
 
 {{< tabs >}}
 {{< tab name="Go" >}}
@@ -146,48 +161,54 @@ $ curl --unix-socket /var/run/docker.sock "http://localhost/v{{% param "latest_e
 hello world
 ```
 
-使用 cURL 通过 Unix 套接字连接时，主机名并不重要。上述示例使用 `localhost`，但任何主机名都可以。
+When using cURL to connect over a Unix socket, the hostname is not important. The previous
+examples use `localhost`, but any hostname would work.
 
 > [!IMPORTANT]
 >
-> 上述示例假设您使用的是 cURL 7.50.0 或更高版本。旧版本的 cURL 在使用套接字连接时采用[非标准 URL 表示法](https://github.com/moby/moby/issues/17960)。
+> The previous examples assume you're using cURL 7.50.0 or above. Older versions of
+> cURL used a [non-standard URL notation](https://github.com/moby/moby/issues/17960)
+> when using a socket connection.
 >
-> 如果您使用的是旧版本的 cURL，请改用 `http:/<API version>/`，例如：`http:/v{{% param "latest_engine_api_version" %}}/containers/1c6594faf5/start`。
+> If you're' using an older version of cURL, use `http:/<API version>/` instead,
+> for example: `http:/v{{% param "latest_engine_api_version" %}}/containers/1c6594faf5/start`.
 
 {{< /tab >}}
 {{< /tabs >}}
 
-有关更多示例，请查看 [SDK 示例](examples.md)。
+For more examples, take a look at the [SDK examples](examples.md).
 
-## 非官方库
+## Unofficial libraries
 
-社区支持了多种其他语言的库。它们未经 Docker 测试，因此如果遇到任何问题，请向库维护者提交问题。
+There are a number of community supported libraries available for other
+languages. They haven't been tested by Docker, so if you run into any issues,
+file them with the library maintainers.
 
-| 语言                  | 库                                                                              |
-|:----------------------|:--------------------------------------------------------------------------------|
-| C                     | [libdocker](https://github.com/danielsuo/libdocker)                             |
-| C#                    | [Docker.DotNet](https://github.com/ahmetalpbalkan/Docker.DotNet)                |
-| C++                   | [lasote/docker_client](https://github.com/lasote/docker_client)                 |
-| Clojure               | [clj-docker-client](https://github.com/into-docker/clj-docker-client)           |
-| Clojure               | [contajners](https://github.com/lispyclouds/contajners)                         |
-| Dart                  | [bwu_docker](https://github.com/bwu-dart/bwu_docker)                            |
-| Erlang                | [erldocker](https://github.com/proger/erldocker)                                |
-| Gradle                | [gradle-docker-plugin](https://github.com/gesellix/gradle-docker-plugin)        |
-| Groovy                | [docker-client](https://github.com/gesellix/docker-client)                      |
-| Haskell               | [docker-hs](https://github.com/denibertovic/docker-hs)                          |
-| Java                  | [docker-client](https://github.com/spotify/docker-client)                       |
-| Java                  | [docker-java](https://github.com/docker-java/docker-java)                       |
-| Java                  | [docker-java-api](https://github.com/amihaiemil/docker-java-api)                |
-| Java                  | [jocker](https://github.com/ndeloof/jocker)                                     |
-| NodeJS                | [dockerode](https://github.com/apocas/dockerode)                                |
-| NodeJS                | [harbor-master](https://github.com/arhea/harbor-master)                         |
-| NodeJS                | [the-moby-effect](https://github.com/leonitousconforti/the-moby-effect)         |
-| Perl                  | [Eixo::Docker](https://github.com/alambike/eixo-docker)                         |
-| PHP                   | [Docker-PHP](https://github.com/docker-php/docker-php)                          |
-| Ruby                  | [docker-api](https://github.com/swipely/docker-api)                             |
-| Rust                  | [bollard](https://github.com/fussybeaver/bollard)                               |
-| Rust                  | [docker-rust](https://github.com/abh1nav/docker-rust)                           |
-| Rust                  | [shiplift](https://github.com/softprops/shiplift)                               |
-| Scala                 | [tugboat](https://github.com/softprops/tugboat)                                 |
-| Scala                 | [reactive-docker](https://github.com/almoehi/reactive-docker)                   |
-| Swift                 | [docker-client-swift](https://github.com/valeriomazzeo/docker-client-swift)     |
+| Language              | Library                                                                     |
+|:----------------------|:----------------------------------------------------------------------------|
+| C                     | [libdocker](https://github.com/danielsuo/libdocker)                         |
+| C#                    | [Docker.DotNet](https://github.com/ahmetalpbalkan/Docker.DotNet)            |
+| C++                   | [lasote/docker_client](https://github.com/lasote/docker_client)             |
+| Clojure               | [clj-docker-client](https://github.com/into-docker/clj-docker-client)       |
+| Clojure               | [contajners](https://github.com/lispyclouds/contajners)                     |
+| Dart                  | [bwu_docker](https://github.com/bwu-dart/bwu_docker)                        |
+| Erlang                | [erldocker](https://github.com/proger/erldocker)                            |
+| Gradle                | [gradle-docker-plugin](https://github.com/gesellix/gradle-docker-plugin)    |
+| Groovy                | [docker-client](https://github.com/gesellix/docker-client)                  |
+| Haskell               | [docker-hs](https://github.com/denibertovic/docker-hs)                      |
+| Java                  | [docker-client](https://github.com/spotify/docker-client)                   |
+| Java                  | [docker-java](https://github.com/docker-java/docker-java)                   |
+| Java                  | [docker-java-api](https://github.com/amihaiemil/docker-java-api)            |
+| Java                  | [jocker](https://github.com/ndeloof/jocker)                                 |
+| NodeJS                | [dockerode](https://github.com/apocas/dockerode)                            |
+| NodeJS                | [harbor-master](https://github.com/arhea/harbor-master)                     |
+| NodeJS                | [the-moby-effect](https://github.com/leonitousconforti/the-moby-effect)     |
+| Perl                  | [Eixo::Docker](https://github.com/alambike/eixo-docker)                     |
+| PHP                   | [Docker-PHP](https://github.com/docker-php/docker-php)                      |
+| Ruby                  | [docker-api](https://github.com/swipely/docker-api)                         |
+| Rust                  | [bollard](https://github.com/fussybeaver/bollard)                           |
+| Rust                  | [docker-rust](https://github.com/abh1nav/docker-rust)                       |
+| Rust                  | [shiplift](https://github.com/softprops/shiplift)                           |
+| Scala                 | [tugboat](https://github.com/softprops/tugboat)                             |
+| Scala                 | [reactive-docker](https://github.com/almoehi/reactive-docker)               |
+| Swift                 | [docker-client-swift](https://github.com/valeriomazzeo/docker-client-swift) |

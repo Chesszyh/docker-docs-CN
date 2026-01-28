@@ -1,28 +1,26 @@
 ---
-title: Image-building best practices
+title: 镜像构建最佳实践
 weight: 90
-linkTitle: "Part 8: Image-building best practices"
+linkTitle: "第八部分：镜像构建最佳实践"
 keywords: get started, setup, orientation, quickstart, intro, concepts, containers,
-  docker desktop
-description: Tips for building images for your application
+  docker desktop, 入门, 设置, 概览, 快速入门, 简介, 概念, 容器
+description: 构建应用程序镜像的提示
 aliases:
  - /get-started/09_image_best/
  - /guides/workshop/09_image_best/
 ---
 
-## Image layering
+## 镜像分层
 
-Using the `docker image history` command, you can see the command that was used
-to create each layer within an image.
+使用 `docker image history` 命令，您可以看到用于创建镜像中每一层的命令。
 
-1. Use the `docker image history` command to see the layers in the `getting-started` image you
-   created.
+1. 使用 `docker image history` 命令查看您创建的 `getting-started` 镜像中的层。
 
     ```console
     $ docker image history getting-started
     ```
 
-    You should get output that looks something like the following.
+    您应该得到类似以下的输出。
 
     ```plaintext
     IMAGE               CREATED             CREATED BY                                      SIZE                COMMENT
@@ -41,23 +39,19 @@ to create each layer within an image.
     <missing>           13 days ago         /bin/sh -c #(nop) ADD file:e69d441d729412d24…   5.59MB   
     ```
 
-    Each of the lines represents a layer in the image. The display here shows the base at the bottom with
-    the newest layer at the top. Using this, you can also quickly see the size of each layer, helping 
-    diagnose large images.
+    每一行代表镜像中的一层。此处的显示在底部显示基础，顶部显示最新层。使用此功能，您还可以快速查看每一层的大小，从而帮助诊断大型镜像。
 
-2. You'll notice that several of the lines are truncated. If you add the `--no-trunc` flag, you'll get the
-   full output.
+2. 您会注意到几行被截断了。如果添加 `--no-trunc` 标志，您将获得完整的输出。
 
     ```console
     $ docker image history --no-trunc getting-started
     ```
 
-## Layer caching
+## 层缓存
 
-Now that you've seen the layering in action, there's an important lesson to learn to help decrease build
-times for your container images. Once a layer changes, all downstream layers have to be recreated as well.
+现在您已经看到了分层的实际效果，这里有一个重要的教训可以帮助减少容器镜像的构建时间。一旦层发生变化，所有下游层也必须重新创建。
 
-Look at the following Dockerfile you created for the getting started app.
+查看您为入门应用程序创建的以下 Dockerfile。
 
 ```dockerfile
 # syntax=docker/dockerfile:1
@@ -68,16 +62,12 @@ RUN yarn install --production
 CMD ["node", "src/index.js"]
 ```
 
-Going back to the image history output, you see that each command in the Dockerfile becomes a new layer in the image.
-You might remember that when you made a change to the image, the yarn dependencies had to be reinstalled. It doesn't make much sense to ship around the same dependencies every time you build.
+回到镜像历史记录输出，您会看到 Dockerfile 中的每个命令都会成为镜像中的一个新层。
+您可能还记得，当您更改镜像时，必须重新安装 yarn 依赖项。每次构建时都传输相同的依赖项并没有多大意义。
 
-To fix it, you need to restructure your Dockerfile to help support the caching
-of the dependencies. For Node-based applications, those dependencies are defined
-in the `package.json` file. You can copy only that file in first, install the
-dependencies, and then copy in everything else. Then, you only recreate the yarn
-dependencies if there was a change to the `package.json`.
+为了解决这个问题，您需要重构 Dockerfile 以帮助支持依赖项的缓存。对于基于 Node 的应用程序，这些依赖项在 `package.json` 文件中定义。您可以先仅复制该文件，安装依赖项，然后再复制其他所有内容。然后，仅当 `package.json` 发生更改时，才会重新创建 yarn 依赖项。
 
-1. Update the Dockerfile to copy in the `package.json` first, install dependencies, and then copy everything else in.
+1. 更新 Dockerfile 以首先复制 `package.json`，安装依赖项，然后再复制其他所有内容。
 
    ```dockerfile
    # syntax=docker/dockerfile:1
@@ -89,13 +79,13 @@ dependencies if there was a change to the `package.json`.
    CMD ["node", "src/index.js"]
    ```
 
-2. Build a new image using `docker build`.
+2. 使用 `docker build` 构建新镜像。
 
     ```console
     $ docker build -t getting-started .
     ```
 
-    You should see output like the following.
+    您应该看到类似以下的输出。
 
     ```plaintext
     [+] Building 16.1s (10/10) FINISHED
@@ -117,9 +107,9 @@ dependencies if there was a change to the `package.json`.
     => => naming to docker.io/library/getting-started
     ```
 
-3. Now, make a change to the `src/static/index.html` file. For example, change the `<title>` to "The Awesome Todo App".
+3. 现在，更改 `src/static/index.html` 文件。例如，将 `<title>` 更改为 "The Awesome Todo App"。
 
-4. Build the Docker image now using `docker build -t getting-started .` again. This time, your output should look a little different.
+4. 现在再次使用 `docker build -t getting-started .` 构建 Docker 镜像。这一次，您的输出应该看起来有点不同。
 
     ```plaintext
     [+] Building 1.2s (10/10) FINISHED
@@ -141,23 +131,18 @@ dependencies if there was a change to the `package.json`.
     => => naming to docker.io/library/getting-started
     ```
 
-    First off, you should notice that the build was much faster. And, you'll see
-    that several steps are using previously cached layers. Pushing and pulling
-    this image and updates to it will be much faster as well. 
+    首先，您应该注意到构建速度快了很多。而且，您将看到几个步骤正在使用以前缓存的层。推送和拉取此镜像及其更新也将快得多。
 
-## Multi-stage builds
+## 多阶段构建
 
-Multi-stage builds are an incredibly powerful
-tool to help use multiple stages to create an image. There are several advantages for them:
+多阶段构建是一个非常强大的工具，可以帮助使用多个阶段来创建镜像。它们有几个优点：
 
-- Separate build-time dependencies from runtime dependencies
-- Reduce overall image size by shipping only what your app needs to run
+- 将构建时依赖项与运行时依赖项分离
+- 通过仅发布应用程序运行所需的内容来减小总体镜像大小
 
-### Maven/Tomcat example
+### Maven/Tomcat 示例
 
-When building Java-based applications, you need a JDK to compile the source code to Java bytecode. However,
-that JDK isn't needed in production. Also, you might be using tools like Maven or Gradle to help build the app.
-Those also aren't needed in your final image. Multi-stage builds help.
+构建基于 Java 的应用程序时，您需要 JDK 将源代码编译为 Java 字节码。但是，生产环境中不需要该 JDK。此外，您可能会使用 Maven 或 Gradle 等工具来帮助构建应用程序。最终镜像中也不需要这些工具。多阶段构建会有所帮助。
 
 ```dockerfile
 # syntax=docker/dockerfile:1
@@ -170,15 +155,11 @@ FROM tomcat
 COPY --from=build /app/target/file.war /usr/local/tomcat/webapps 
 ```
 
-In this example, you use one stage (called `build`) to perform the actual Java build using Maven. In the second
-stage (starting at `FROM tomcat`), you copy in files from the `build` stage. The final image is only the last stage
-being created, which can be overridden using the `--target` flag.
+在此示例中，您使用一个阶段（称为 `build`）来使用 Maven 执行实际的 Java 构建。在第二个阶段（从 `FROM tomcat` 开始），您从 `build` 阶段复制文件。最终镜像只是正在创建的最后阶段，可以使用 `--target` 标志覆盖它。
 
-### React example
+### React 示例
 
-When building React applications, you need a Node environment to compile the JS code (typically JSX), SASS stylesheets,
-and more into static HTML, JS, and CSS. If you aren't doing server-side rendering, you don't even need a Node environment
-for your production build. You can ship the static resources in a static nginx container.
+构建 React 应用程序时，您需要 Node 环境将 JS 代码（通常是 JSX）、SASS 样式表等编译为静态 HTML、JS 和 CSS。如果您不进行服务器端渲染，甚至不需要 Node 环境来进行生产构建。您可以将静态资源发布在静态 nginx 容器中。
 
 ```dockerfile
 # syntax=docker/dockerfile:1
@@ -194,19 +175,18 @@ FROM nginx:alpine
 COPY --from=build /app/build /usr/share/nginx/html
 ```
 
-In the previous Dockerfile example, it uses the `node:lts` image to perform the build (maximizing layer caching) and then copies the output
-into an nginx container.
+在前面的 Dockerfile 示例中，它使用 `node:lts` 镜像执行构建（最大化层缓存），然后将输出复制到 nginx 容器中。
 
-## Summary
+## 总结
 
-In this section, you learned a few image building best practices, including layer caching and multi-stage builds.
+在本节中，您了解了一些镜像构建最佳实践，包括层缓存和多阶段构建。
 
-Related information:
- - [Dockerfile reference](/reference/dockerfile/)
- - [Dockerfile best practices](/manuals/build/building/best-practices.md)
+相关信息：
+ - [Dockerfile 参考](/reference/dockerfile/)
+ - [Dockerfile 最佳实践](/manuals/build/building/best-practices.md)
 
-## Next steps
+## 下一步
 
-In the next section, you'll learn about additional resources you can use to continue learning about containers.
+在下一节中，您将了解可用于继续学习容器的其他资源。
 
-{{< button text="What next" url="10_what_next.md" >}}
+{{< button text="下一步" url="10_what_next.md" >}}

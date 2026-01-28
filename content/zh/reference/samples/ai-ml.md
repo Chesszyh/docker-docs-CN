@@ -1,6 +1,6 @@
 ---
-title: AI/ML 示例
-description: AI/ML 的 Docker 示例。
+title: AI/ML samples
+description: Docker samples for AI/ML.
 service: aiml
 aliases:
 - /samples/ai-ml/

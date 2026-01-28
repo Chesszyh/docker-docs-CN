@@ -1,23 +1,23 @@
 ---
-title: "接口: Docker"
-description: Docker 扩展 API 参考
+title: "Interface: Docker"
+description: Docker extension API reference
 keywords: Docker, extensions, sdk, API, reference
 aliases:
  - /desktop/extensions-sdk/dev/api/reference/interfaces/Docker/
  - /extensions/extensions-sdk/dev/api/reference/interfaces/Docker/
 ---
 
-**`起始版本`**
+**`Since`**
 
 0.2.0
 
-## 属性
+## Properties
 
 ### cli
 
 • `Readonly` **cli**: [`DockerCommand`](DockerCommand.md)
 
-您还可以直接执行 Docker 二进制文件。
+You can also directly execute the Docker binary.
 
 ```typescript
 const output = await ddClient.docker.cli.exec("volume", [
@@ -27,7 +27,7 @@ const output = await ddClient.docker.cli.exec("volume", [
 ]);
 ```
 
-输出：
+Output:
 
 ```json
 {
@@ -36,18 +36,18 @@ const output = await ddClient.docker.cli.exec("volume", [
 }
 ```
 
-为方便起见，命令结果对象还具有根据输出格式轻松解析它的方法。请参阅 [ExecResult](ExecResult.md)。
+For convenience, the command result object also has methods to easily parse it depending on output format. See [ExecResult](ExecResult.md) instead.
 
 ---
 
-以流的形式输出 Docker 命令执行的结果。
-当命令的输出太长，或者您需要以流的形式获取输出时，此功能很有用。
+Streams the output as a result of the execution of a Docker command.
+It is useful when the output of the command is too long, or you need to get the output as a stream.
 
 ```typescript
 await ddClient.docker.cli.exec("logs", ["-f", "..."], {
   stream: {
     onOutput(data): void {
-        // 由于我们可以同时收到 `stdout` 和 `stderr`，我们将它们包装在 JSON 对象中
+        // As we can receive both `stdout` and `stderr`, we wrap them in a JSON object
         JSON.stringify(
           {
             stdout: data.stdout,
@@ -67,28 +67,28 @@ await ddClient.docker.cli.exec("logs", ["-f", "..."], {
 });
 ```
 
-## 方法
+## Methods
 
 ### listContainers
 
 ▸ **listContainers**(`options?`): `Promise`<`unknown`\>
 
-获取正在运行的容器列表（与 `docker ps` 相同）。
+Get the list of running containers (same as `docker ps`).
 
-默认情况下，这不会列出已停止的容器。
-您可以使用选项 `{"all": true}` 来列出所有正在运行和已停止的容器。
+By default, this will not list stopped containers.
+You can use the option `{"all": true}` to list all the running and stopped containers.
 
 ```typescript
 const containers = await ddClient.docker.listContainers();
 ```
 
-#### 参数
+#### Parameters
 
-| 名称 | 类型 | 描述 |
+| Name | Type | Description |
 | :------ | :------ | :------ |
-| `options?` | `any` | （可选）。类似 `{ "all": true, "limit": 10, "size": true, "filters": JSON.stringify({ status: ["exited"] }), }` 的 JSON 对象。有关不同属性的更多信息，请参阅 [Docker API 端点文档](https://docs.docker.com/engine/api/v1.41/#operation/ContainerList)。 |
+| `options?` | `any` | (Optional). A JSON like `{ "all": true, "limit": 10, "size": true, "filters": JSON.stringify({ status: ["exited"] }), }` For more information about the different properties see [the Docker API endpoint documentation](https://docs.docker.com/engine/api/v1.41/#operation/ContainerList). |
 
-#### 返回值
+#### Returns
 
 `Promise`<`unknown`\>
 
@@ -98,18 +98,18 @@ const containers = await ddClient.docker.listContainers();
 
 ▸ **listImages**(`options?`): `Promise`<`unknown`\>
 
-获取本地容器镜像列表
+Get the list of local container images
 
 ```typescript
 const images = await ddClient.docker.listImages();
 ```
 
-#### 参数
+#### Parameters
 
-| 名称 | 类型 | 描述 |
+| Name | Type | Description |
 | :------ | :------ | :------ |
-| `options?` | `any` | （可选）。类似 `{ "all": true, "filters": JSON.stringify({ dangling: ["true"] }), "digests": true * }` 的 JSON 对象。有关不同属性的更多信息，请参阅 [Docker API 端点文档](https://docs.docker.com/engine/api/v1.41/#tag/Image)。 |
+| `options?` | `any` | (Optional). A JSON like `{ "all": true, "filters": JSON.stringify({ dangling: ["true"] }), "digests": true * }` For more information about the different properties see [the Docker API endpoint documentation](https://docs.docker.com/engine/api/v1.41/#tag/Image). |
 
-#### 返回值
+#### Returns
 
 `Promise`<`unknown`\>

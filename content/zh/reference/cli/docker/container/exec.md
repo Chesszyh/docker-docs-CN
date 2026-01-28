@@ -10,18 +10,20 @@ aliases:
 layout: cli
 ---
 
-> **Docker Debug 介绍**
+> **Introducing Docker Debug**
 >
-> 要轻松获取任何容器的调试 shell，请使用 `docker debug`。Docker Debug
-> 是 `docker exec` 调试功能的替代方案。使用它，您可以进入任何容器或镜像的
-> shell，即使是精简版镜像也可以，无需任何修改。此外，您还可以在其可定制的
-> 工具箱中携带您喜爱的调试工具。
+> To easily get a debug shell into any container, use `docker debug`. Docker
+> Debug is a replacement for debugging with `docker exec`. With it, you can get
+> a shell into any container or image, even slim ones, without modifications.
+> Plus, you can bring along your favorite debugging tools in its customizable
+> toolbox.
 >
-> 立即探索 [Docker Debug](../debug.md)。
+> Explore [Docker Debug](../debug.md) now.
 
 <!--
-本页面由 Docker 源代码自动生成。如果您想对此处显示的文本提出修改建议，
-请在 GitHub 上的源代码仓库中提交 issue 或 pull request：
+This page is automatically generated from Docker's source code. If you want to
+suggest a change to the text that appears here, open a ticket or pull request
+in the source repository on GitHub:
 
 https://github.com/docker/cli
 -->

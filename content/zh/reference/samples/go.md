@@ -1,6 +1,6 @@
 ---
-title: Go 示例
-description: Go 的 Docker 示例。
+title: Go samples
+description: Docker samples for Go.
 service: go
 aliases:
 - /samples/go/

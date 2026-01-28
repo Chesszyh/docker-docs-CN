@@ -1,19 +1,19 @@
 ---
-title: models 顶级元素
-description: 了解 models 顶级元素
+title: Models
+description: Learn about the models top-level element
 keywords: compose, compose specification, models, compose file reference
 weight: 120
 ---
 
 {{< summary-bar feature_name="Compose models" >}}
 
-顶级 `models` 部分声明 Compose 应用程序使用的 AI 模型。这些模型通常作为 OCI 工件拉取，由模型运行器运行，并作为服务容器可以使用的 API 公开。
+The top-level `models` section declares AI models that are used by your Compose application. These models are typically pulled as OCI artifacts, run by a model runner, and exposed as an API that your service containers can consume.
 
-只有当服务通过 `services` 顶级元素内的 [`models` 属性](services.md#models) 显式授权时，服务才能访问模型。
+Services can only access models when explicitly granted by a [`models` attribute](services.md#models) within the `services` top-level element.
 
-## 示例
+## Examples
 
-### 示例 1
+### Example 1
 
 ```yaml
 services:
@@ -28,13 +28,13 @@ models:
     model: ai/model
 ```
 
-在此基本示例中：
+In this basic example:
 
- - app 服务使用 `ai_model`。
- - `ai_model` 定义为由模型运行器拉取和提供服务的 OCI 工件（`ai/model`）。
- - Docker Compose 将连接信息（例如 `AI_MODEL_URL`）注入到容器中。
+ - The app service uses the `ai_model`.
+ - The `ai_model` is defined as an OCI artifact (`ai/model`) that is pulled and served by the model runner.
+ - Docker Compose injects connection info, for example `AI_MODEL_URL`, into the container. 
 
-### 示例 2
+### Example 2
 
 ```yaml
 services:
@@ -48,18 +48,18 @@ models:
   my_model:
     model: ai/model
     context_size: 1024
-    runtime_flags:
+    runtime_flags: 
       - "--a-flag"
       - "--another-flag=42"
 ```
 
-在此高级设置中：
+In this advanced setup:
 
- - 服务 app 使用长语法引用 `my_model`。
- - Compose 将模型运行器的 URL 作为环境变量 `MODEL_URL` 注入。
+ - The service app references `my_model` using the long syntax.
+ - Compose injects the model runner's URL as the environment variable `MODEL_URL`.
 
-## 属性
+## Attributes
 
-- `model`（必需）：模型的 OCI 工件标识符。这是 Compose 通过模型运行器拉取和运行的内容。
-- `context_size`：定义模型的最大令牌上下文大小。
-- `runtime_flags`：启动模型时传递给推理引擎的原始命令行标志列表。
+- `model` (required): The OCI artifact identifier for the model. This is what Compose pulls and runs via the model runner. 
+- `context_size`: Defines the maximum token context size for the model.
+- `runtime_flags`: A list of raw command-line flags passed to the inference engine when the model is started.

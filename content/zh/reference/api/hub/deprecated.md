@@ -1,7 +1,7 @@
 ---
-description: Docker Hub API v1（已弃用）
+description: Docker Hub API v1 (deprecated)
 keywords: kitematic, deprecated
-title: Docker Hub API v1（已弃用）
+title: Docker Hub API v1 (deprecated)
 weight: 3
 aliases:
   - /docker-hub/api/deprecated/
@@ -9,9 +9,9 @@ aliases:
 
 > **Deprecated**
 >
-> Docker Hub API v1 已弃用。请改用 Docker Hub API v2。
+> Docker Hub API v1 has been deprecated. Please use Docker Hub API v2 instead.
 
-v1 路径中的以下 API 路由将不再工作，并返回 410 状态码：
+The following API routes within the v1 path will no longer work and will return a 410 status code:
 * `/v1/repositories/{name}/images`
 * `/v1/repositories/{name}/tags`
 * `/v1/repositories/{name}/tags/{tag_name}`
@@ -19,9 +19,9 @@ v1 路径中的以下 API 路由将不再工作，并返回 410 状态码：
 * `/v1/repositories/{namespace}/{name}/tags`
 * `/v1/repositories/{namespace}/{name}/tags/{tag_name}`
 
-如果你想在当前的应用程序中继续使用 Docker Hub API，请更新你的客户端以使用 v2 端点。
+If you want to continue using the Docker Hub API in your current applications, update your clients to use v2 endpoints.
 
-| **旧**                                                                                                                                                              | **新**                                                                                                                                                                                                              |
+| **OLD**                                                                                                                                                              | **NEW**                                                                                                                                                                                                              |
 |----------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [/v1/repositories/{name}/images](https://github.com/moby/moby/blob/v1.3.0/docs/sources/reference/api/docker-io_api.md#list-user-repository-images)                   | [/v2/namespaces/{namespace}/repositories/{repository}/images](/reference/api/hub/latest.md#tag/images/operation/GetNamespacesRepositoriesImages)                                                              |
 | [/v1/repositories/{namespace}/{name}/images](https://github.com/moby/moby/blob/v1.3.0/docs/sources/reference/api/docker-io_api.md#list-user-repository-images)       | [/v2/namespaces/{namespace}/repositories/{repository}/images](/reference/api/hub/latest.md#tag/images/operation/GetNamespacesRepositoriesImages)                                                              |

@@ -1,38 +1,44 @@
 ---
-title: 变量插值
-description: 了解变量插值
+title: Interpolation
+description: Learn about interpolation
 keywords: compose, compose specification, interpolation, compose file reference
-aliases:
+aliases: 
  - /compose/compose-file/12-interpolation/
 weight: 90
 ---
 
 {{% include "compose/interpolation.md" %}}
 
-对于花括号表达式，支持以下格式：
-- 直接替换
-  - `${VAR}` -> `VAR` 的值
-- 默认值
-  - `${VAR:-default}` -> 如果 `VAR` 已设置且非空则为其值，否则为 `default`
-  - `${VAR-default}` -> 如果 `VAR` 已设置则为其值，否则为 `default`
-- 必需值
-  - `${VAR:?error}` -> 如果 `VAR` 已设置且非空则为其值，否则退出并显示错误
-  - `${VAR?error}` -> 如果 `VAR` 已设置则为其值，否则退出并显示错误
-- 替代值
-  - `${VAR:+replacement}` -> 如果 `VAR` 已设置且非空则为 `replacement`，否则为空
-  - `${VAR+replacement}` -> 如果 `VAR` 已设置则为 `replacement`，否则为空
+For braced expressions, the following formats are supported:
+- Direct substitution
+  - `${VAR}` -> value of `VAR`
+- Default value
+  - `${VAR:-default}` -> value of `VAR` if set and non-empty, otherwise `default`
+  - `${VAR-default}` -> value of `VAR` if set, otherwise `default`
+- Required value
+  - `${VAR:?error}` -> value of `VAR` if set and non-empty, otherwise exit with error
+  - `${VAR?error}` -> value of `VAR` if set, otherwise exit with error
+- Alternative value
+  - `${VAR:+replacement}` -> `replacement` if `VAR` is set and non-empty, otherwise empty
+  - `${VAR+replacement}` -> `replacement` if `VAR` is set, otherwise empty
 
-变量插值也可以嵌套：
+Interpolation can also be nested:
 
 - `${VARIABLE:-${FOO}}`
 - `${VARIABLE?$FOO}`
 - `${VARIABLE:-${FOO:-default}}`
 
-其他扩展的 shell 风格特性，如 `${VARIABLE/foo/bar}`，Compose 不支持。
+Other extended shell-style features, such as `${VARIABLE/foo/bar}`, are not
+supported by Compose.
 
-只要字符串形成有效的变量定义，Compose 就会处理 `$` 符号后面的任何字符串——可以是字母数字名称（`[_a-zA-Z][_a-zA-Z0-9]*`）或以 `${` 开头的花括号字符串。在其他情况下，它将被保留而不尝试插入值。
+Compose processes any string following a `$` sign as long as it makes it
+a valid variable definition - either an alphanumeric name (`[_a-zA-Z][_a-zA-Z0-9]*`)
+or a braced string starting with `${`. In other circumstances, it will be preserved without attempting to interpolate a value.
 
-当你的配置需要字面美元符号时，可以使用 `$$`（双美元符号）。这也防止 Compose 插入值，因此 `$$` 允许你引用不想被 Compose 处理的环境变量。
+You can use a `$$` (double-dollar sign) when your configuration needs a literal
+dollar sign. This also prevents Compose from interpolating a value, so a `$$`
+allows you to refer to environment variables that you don't want processed by
+Compose.
 
 ```yml
 web:
@@ -40,11 +46,14 @@ web:
   command: "$$VAR_NOT_INTERPOLATED_BY_COMPOSE"
 ```
 
-如果 Compose 无法解析替换的变量且未定义默认值，它会显示警告并用空字符串替换该变量。
+If Compose can't resolve a substituted variable and no default value is defined, it displays a warning and substitutes the variable with an empty string.
 
-由于 Compose 文件中的任何值都可以通过变量替换进行插值，包括复杂元素的紧凑字符串表示法，因此插值在合并之前按每个文件进行。
+As any values in a Compose file can be interpolated with variable substitution, including compact string notation
+for complex elements, interpolation is applied before a merge on a per-file basis.
 
-插值仅适用于 YAML 值，不适用于键。对于键实际上是任意用户定义字符串的少数地方，如 [labels](services.md#labels) 或 [environment](services.md#environment)，必须使用替代的等号语法才能应用插值。例如：
+Interpolation applies only to YAML values, not to keys. For the few places where keys are actually arbitrary
+user-defined strings, such as [labels](services.md#labels) or [environment](services.md#environment), an alternate equal sign syntax
+must be used for interpolation to apply. For example:
 
 ```yml
 services:

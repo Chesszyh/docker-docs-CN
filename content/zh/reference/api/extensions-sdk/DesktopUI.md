@@ -1,17 +1,17 @@
 ---
-title: "接口: DesktopUI"
-description: Docker 扩展 API 参考
+title: "Interface: DesktopUI"
+description: Docker extension API reference
 keywords: Docker, extensions, sdk, API, reference
 aliases:
  - /desktop/extensions-sdk/dev/api/reference/interfaces/DesktopUI/
  - /extensions/extensions-sdk/dev/api/reference/interfaces/DesktopUI/
 ---
 
-**`起始版本`**
+**`Since`**
 
 0.2.0
 
-## 属性
+## Properties
 
 ### toast
 

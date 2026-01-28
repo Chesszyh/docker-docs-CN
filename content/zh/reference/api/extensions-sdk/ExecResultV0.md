@@ -1,13 +1,13 @@
 ---
-title: "接口: ExecResultV0"
-description: Docker 扩展 API 参考
+title: "Interface: ExecResultV0"
+description: Docker extension API reference
 keywords: Docker, extensions, sdk, API, reference
 aliases:
  - /desktop/extensions-sdk/dev/api/reference/interfaces/ExecResultV0/
  - /extensions/extensions-sdk/dev/api/reference/interfaces/ExecResultV0/
 ---
 
-## 属性
+## Properties
 
 ### cmd
 
@@ -43,19 +43,19 @@ ___
 
 • `Readonly` **stderr**: `string`
 
-## 方法
+## Methods
 
 ### lines
 
 ▸ **lines**(): `string`[]
 
-分割输出行。
+Split output lines.
 
-#### 返回值
+#### Returns
 
 `string`[]
 
-行列表。
+The list of lines.
 
 ___
 
@@ -63,13 +63,13 @@ ___
 
 ▸ **parseJsonLines**(): `any`[]
 
-将每个输出行解析为 JSON 对象。
+Parse each output line as a JSON object.
 
-#### 返回值
+#### Returns
 
 `any`[]
 
-每行都是 JSON 对象的行列表。
+The list of lines where each line is a JSON object.
 
 ___
 
@@ -77,10 +77,10 @@ ___
 
 ▸ **parseJsonObject**(): `any`
 
-解析格式良好的 JSON 输出。
+Parse a well-formed JSON output.
 
-#### 返回值
+#### Returns
 
 `any`
 
-JSON 对象。
+The JSON object.
