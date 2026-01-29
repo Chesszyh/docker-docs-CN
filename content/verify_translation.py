@@ -62,4 +62,4 @@ def verify_structure(src_dir, dst_dir):
 
 if __name__ == "__main__":
     # 检查当前目录下所有内容是否已同步到 zh/
-    verify_structure(".", "zh")
+    verify_structure(".", "zh") 
