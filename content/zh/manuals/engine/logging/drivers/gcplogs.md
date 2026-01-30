@@ -1,0 +1,1 @@
+--log-opt gcp-meta-name=`hostname` \
