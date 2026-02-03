@@ -1,16 +1,15 @@
----
-title: 使用 GitHub Actions 构建多平台镜像
+--- title: 使用 GitHub Actions 构建多平台镜像
 linkTitle: 多平台镜像
-description: 使用 GitHub Actions 通过 QEMU 模拟或多个原生构建器为多种架构进行构建
-keywords: ci, github actions, gha, buildkit, buildx, 多平台
+description: 使用 GitHub Actions 配合 QEMU 模拟或多个原生构建器为多种架构进行构建
+keywords: ci, github actions, gha, buildkit, buildx, multi-platform, 多平台, 架构
 ---
 
-您可以使用 `platforms` 选项构建 [多平台镜像](../../building/multi-platform.md)，如下例所示：
+您可以使用 `platforms` 选项构建 [多平台镜像](../../building/multi-platform.md)，如以下示例所示：
 
 > [!NOTE]
 > 
-> - 有关可用平台的列表，请参阅 [Docker Setup Buildx](https://github.com/marketplace/actions/docker-setup-buildx) action。
-> - 如果您需要支持更多平台，可以使用 [Docker Setup QEMU](https://github.com/docker/setup-qemu-action) action 配合 QEMU。
+> - 有关可用平台的列表，请参阅 [Docker Setup Buildx](https://github.com/marketplace/actions/docker-setup-buildx) Action。
+> - 如果您需要支持更多平台，可以使用带有 [Docker Setup QEMU](https://github.com/docker/setup-qemu-action) Action 的 QEMU。
 
 ```yaml
 name: ci
@@ -44,11 +43,11 @@ jobs:
 
 ## 构建并加载多平台镜像
 
-GitHub Actions runner 的默认 Docker 设置不支持在构建完成后将多平台镜像加载到 runner 的本地镜像库。要加载多平台镜像，您需要为 Docker Engine 启用 containerd 镜像库选项。
+GitHub Actions 运行器 (runners) 默认的 Docker 设置不支持在构建多平台镜像后将其加载到运行器的本地镜像库中。要加载多平台镜像，您需要为 Docker Engine 启用 containerd 镜像存储选项。
 
-虽然无法直接配置 GitHub Actions runner 的默认 Docker 设置，但您可以使用 `docker/setup-docker-action` 为作业自定义 Docker Engine 和 CLI 设置。
+目前无法直接配置 GitHub Actions 运行器的默认 Docker 设置，但您可以使用 `docker/setup-docker-action` 来为特定的任务自定义 Docker Engine 和 CLI 设置。
 
-以下示例工作流启用了 containerd 镜像库，构建了多平台镜像，并将结果加载到 GitHub runner 的本地镜像库中。
+以下示例工作流启用了 containerd 镜像存储，构建了多平台镜像，并将其结果加载到 GitHub 运行器的本地镜像库中。
 
 ```yaml
 name: ci
@@ -88,13 +87,13 @@ jobs:
           tags: user/app:latest
 ```
 
-## 在多个 runner 之间分布构建
+## 在多个运行器间分配构建任务
 
-在前面的示例中，每个平台都在同一个 runner 上构建，这可能会根据平台数量和您的 Dockerfile 耗费很长时间。
+在前一个示例中，所有平台都在同一个运行器上构建，这可能会根据平台数量和 Dockerfile 的复杂程度而耗费较长时间。
 
-为解决此问题，您可以使用矩阵策略将每个平台的构建分布到多个 runner 上，并使用 [`buildx imagetools create` 命令](/reference/cli/docker/buildx/imagetools/create.md) 创建清单列表（manifest list）。
+为了解决这个问题，您可以使用 matrix（矩阵）策略将每个平台的构建任务分配到多个运行器上，并使用 [`buildx imagetools create` 命令](/reference/cli/docker/buildx/imagetools/create.md) 创建清单列表 (manifest list)。
 
-以下工作流将使用矩阵策略在专用 runner 上为每个平台构建镜像，并按摘要（digest）推送。然后，`merge` 作业将创建清单列表并将其推送到 Docker Hub。[`metadata` action](https://github.com/docker/metadata-action) 用于设置标签（tags 和 labels）。
+以下工作流将使用 matrix 策略在专用的运行器上构建每个平台的镜像，并按摘要 (digest) 推送。随后，`merge` 任务将创建清单列表并推送到 Docker Hub。使用 [`metadata` action](https://github.com/docker/metadata-action) 来设置标签 (tags 和 labels)。
 
 ```yaml
 name: ci
@@ -204,25 +203,25 @@ jobs:
           docker buildx imagetools inspect ${{ env.REGISTRY_IMAGE }}:${{ steps.meta.outputs.version }}
 ```
 
-### 使用 Bake
+### 配合 Bake 使用
 
-使用 Bake 同样可以在多个 runner 上进行构建，配合使用 [bake action](https://github.com/docker/bake-action)。
+也可以使用 Bake 和 [bake action](https://github.com/docker/bake-action) 在多个运行器上进行构建。
 
-You can find an online example in [this GitHub repository](https://github.com/crazy-max/docker-linguist).
+您可以在 [这个 GitHub 仓库](https://github.com/crazy-max/docker-linguist) 中找到一个真实的示例。
 
-The following example achieves the same result as the [previous section](#在多个-runner-之间分布构建).
+以下示例实现了与[前一节](#在多个运行器间分配构建任务)相同的效果。
 
 ```hcl
 variable "DEFAULT_TAG" {
   default = "app:local"
 }
 
-// Special target: https://github.com/docker/metadata-action#bake-definition
+// 特殊目标：https://github.com/docker/metadata-action#bake-definition
 target "docker-metadata-action" {
   tags = ["${DEFAULT_TAG}"]
 }
 
-// Default target if none specified
+// 如果未指定，则使用默认目标
 group "default" {
   targets = ["image-local"]
 }
@@ -259,7 +258,7 @@ env:
 jobs:
   prepare:
     runs-on: ubuntu-latest
-    outputs: 
+    outputs:
       matrix: ${{ steps.platforms.outputs.matrix }}
     steps:
       - name: Checkout
@@ -387,4 +386,3 @@ jobs:
       - name: Inspect image
         run: |
           docker buildx imagetools inspect ${{ env.REGISTRY_IMAGE }}:$(jq -r '.target."docker-metadata-action".args.DOCKER_META_VERSION' ${{ runner.temp }}/bake-meta.json)
-```

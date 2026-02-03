@@ -1,9 +1,1 @@
----
-build:
-  render: never
-title: 安装 (Install)
-weight: 10
-aliases:
-- /desktop/install/
-- /desktop/setup/install/
----
+---\nbuild:\n  render: never\ntitle: Install\nweight: 10\naliases:\n- /desktop/install/\n- /desktop/setup/install/\n---

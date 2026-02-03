@@ -1,6 +1,1 @@
----
-build:
-  render: never
-title: 设置 (Setup)
-weight: 10
----
+---\nbuild:\n  render: never\ntitle: Setup\nweight: 10\n---

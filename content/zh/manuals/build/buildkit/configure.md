@@ -1,16 +1,16 @@
 ---
 title: 配置 BuildKit
 description: 了解如何为您的构建器配置 BuildKit。
-keywords: build, buildkit, 配置, buildx, 网络, cni, 镜像库
+keywords: build, buildkit, configuration, buildx, network, cni, registry, 配置, 网络, 注册表
 ---
 
-如果您使用 Buildx 创建了 `docker-container` 或 `kubernetes` 构建器，可以通过向 `docker buildx create` 命令传递 [`--config` 标志](/reference/cli/docker/buildx/create.md#config) 来应用自定义 [BuildKit 配置](toml-configuration.md)。
+如果您使用 Buildx 创建了 `docker-container` 或 `kubernetes` 构建器，可以通过向 `docker buildx create` 命令传递 [`--config` 标志](/reference/cli/docker/buildx/create.md#config) 来应用自定义的 [BuildKit 配置](toml-configuration.md)。
 
-## 镜像库镜像 (Registry mirror)
+## 注册表镜像站 (Registry mirror)
 
-您可以为构建定义镜像库镜像（registry mirror）。这样做会重定向 BuildKit 从不同的主机名拉取镜像。以下步骤以将 `docker.io` (Docker Hub) 的镜像定义为 `mirror.gcr.io` 为例。
+您可以为您构建任务定义一个注册表镜像站。这样做会将 BuildKit 重定向到从不同的主机名拉取镜像。以下步骤以将 `docker.io` (Docker Hub) 的镜像重定向到 `mirror.gcr.io` 为例。
 
-1. 在 `/etc/buildkitd.toml` 创建一个包含以下内容的 TOML 文件：
+1. 在 `/etc/buildkitd.toml` 创建一个 TOML 文件，内容如下：
 
    ```toml
    debug = true
@@ -20,7 +20,7 @@ keywords: build, buildkit, 配置, buildx, 网络, cni, 镜像库
 
    > [!NOTE]
    > 
-   > `debug = true` 会开启 BuildKit 守护进程中的调试请求，记录一条显示镜像何时被使用的消息。
+   > `debug = true` 开启了 BuildKit 守护进程中的调试请求，它会记录一条显示何时使用了镜像站的消息。
 
 2. 创建一个使用此 BuildKit 配置的 `docker-container` 构建器：
 
@@ -40,7 +40,7 @@ keywords: build, buildkit, 配置, buildx, 网络, cni, 镜像库
    EOF
    ```
 
-该构建器的 BuildKit 日志现在显示它使用了 GCR 镜像。您可以从响应消息包含 `x-goog-*` HTTP 标头这一事实中看出来。
+该构建器的 BuildKit 日志现在会显示它使用了 GCR 镜像站。您可以从响应消息中包含 `x-goog-*` HTTP 响应头这一事实中看出来。
 
 ```console
 $ docker logs buildx_buildkit_mybuilder0
@@ -60,11 +60,11 @@ time="2022-02-06T17:47:48Z" level=debug msg="fetch response received" response.h
 ...
 ```
 
-## 设置镜像库证书
+## 设置注册表证书 (Registry certificates)
 
-如果您在 BuildKit 配置中指定了镜像库证书，守护进程会将文件复制到容器内的 `/etc/buildkit/certs` 下。以下步骤显示了如何将自签名镜像库证书添加到 BuildKit 配置中。
+如果您在 BuildKit 配置中指定了注册表证书，守护进程会将这些文件复制到容器内的 `/etc/buildkit/certs` 目录下。以下步骤展示了如何向 BuildKit 配置添加自签名注册表证书。
 
-1. 将以下配置添加到 `/etc/buildkitd.toml`：
+1. 向 `/etc/buildkitd.toml` 添加如下配置：
 
    ```toml
    # /etc/buildkitd.toml
@@ -76,7 +76,7 @@ time="2022-02-06T17:47:48Z" level=debug msg="fetch response received" response.h
        cert="/etc/certs/myregistry_cert.pem"
    ```
 
-   这告诉构建器使用指定位置 (`/etc/certs`) 的证书将镜像推送到 `myregistry.com` 镜像库。
+   这会告知构建器使用指定位置 (`/etc/certs`) 的证书向 `myregistry.com` 注册表推送镜像。
 
 2. 创建一个使用此配置的 `docker-container` 构建器：
 
@@ -87,7 +87,7 @@ time="2022-02-06T17:47:48Z" level=debug msg="fetch response received" response.h
      --config /etc/buildkitd.toml
    ```
 
-3. 检查构建器的配置文件 (`/etc/buildkit/buildkitd.toml`)，它显示证书配置现已在构建器中配置完成。
+3. 检查构建器的配置文件 (`/etc/buildkitd.toml`)，它显示证书配置现已在构建器中生效。
 
    ```console
    $ docker exec -it buildx_buildkit_mybuilder0 cat /etc/buildkit/buildkitd.toml
@@ -106,14 +106,14 @@ time="2022-02-06T17:47:48Z" level=debug msg="fetch response received" response.h
          key = "/etc/buildkit/certs/myregistry.com/myregistry_key.pem"
    ```
 
-4. 验证证书是否在容器内：
+4. 验证证书是否已进入容器内部：
 
    ```console
    $ docker exec -it buildx_buildkit_mybuilder0 ls /etc/buildkit/certs/myregistry.com/
    myregistry.pem    myregistry_cert.pem   myregistry_key.pem
    ```
 
-现在您可以使用此构建器推送到镜像库，它将使用证书进行身份验证：
+现在您可以使用此构建器向注册表推送镜像，它将使用这些证书进行身份验证：
 
 ```console
 $ docker buildx build --push --tag myregistry.com/myimage:latest .
@@ -121,9 +121,9 @@ $ docker buildx build --push --tag myregistry.com/myimage:latest .
 
 ## CNI 网络
 
-构建器的 CNI 网络对于处理并发构建期间的网络端口争用非常有用。默认的 BuildKit 镜像中 [尚未](https://github.com/moby/buildkit/issues/28) 提供 CNI 支持。但您可以创建自己的包含 CNI 支持的镜像。
+构建器的 CNI 网络对于处理并发构建期间的网络端口冲突非常有用。CNI [尚未](https://github.com/moby/buildkit/issues/28) 在默认的 BuildKit 镜像中可用。但您可以创建自己的包含 CNI 支持的镜像。
 
-以下 Dockerfile 示例显示了一个具有 CNI 支持的自定义 BuildKit 镜像。它使用 BuildKit 中用于集成测试的 [CNI 配置](https://github.com/moby/buildkit/blob/master//hack/fixtures/cni.json) 作为示例。您可以根据需要包含自己的 CNI 配置。
+以下 Dockerfile 示例展示了一个带有 CNI 支持的自定义 BuildKit 镜像。它以 BuildKit 中用于 [集成测试的 CNI 配置](https://github.com/moby/buildkit/blob/master//hack/fixtures/cni.json) 为例。您可以随意包含自己的 CNI 配置。
 
 ```dockerfile
 # syntax=docker/dockerfile:1
@@ -146,7 +146,7 @@ COPY --from=cni-plugins /opt/cni/bin /opt/cni/bin
 ADD https://raw.githubusercontent.com/moby/buildkit/${BUILDKIT_VERSION}/hack/fixtures/cni.json /etc/buildkit/cni.json
 ```
 
-现在您可以构建此镜像，并使用 [`--driver-opt image` 选项](/reference/cli/docker/buildx/create.md#driver-opt) 从中创建一个构建器实例：
+现在您可以构建此镜像，并使用 [过 `--driver-opt image` 选项](/reference/cli/docker/buildx/create.md#driver-opt) 从中创建一个构建器实例：
 
 ```console
 $ docker buildx build --tag buildkit-cni:local --load .
@@ -159,9 +159,9 @@ $ docker buildx create --use --bootstrap \
 
 ## 资源限制
 
-### 最大并行度
+### 最大并行度 (Max parallelism)
 
-您可以限制 BuildKit 解算器的并行度（这对低性能机器特别有用），方法是在使用 [`--config` 标志](/reference/cli/docker/buildx/create.md#config) 创建构建器时使用 [BuildKit 配置](toml-configuration.md)。
+您可以在创建构建器时通过 [`--config` 标志](/reference/cli/docker/buildx/create.md#config) 使用 [BuildKit 配置](toml-configuration.md) 来限制 BuildKit 求解器的并行度，这对于低性能机器特别有用。
 
 ```toml
 # /etc/buildkitd.toml
@@ -169,7 +169,7 @@ $ docker buildx create --use --bootstrap \
   max-parallelism = 4
 ```
 
-现在您可以 [创建一个 `docker-container` 构建器](/manuals/build/builders/drivers/docker-container.md)，该构建器将使用此 BuildKit 配置来限制并行度。
+现在您可以 [创建一个 `docker-container` 构建器](/manuals/build/builders/drivers/docker-container.md)，它将使用此 BuildKit 配置来限制并行度。
 
 ```console
 $ docker buildx create --use \
@@ -180,8 +180,8 @@ $ docker buildx create --use \
 
 ### TCP 连接限制
 
-在拉取和推送镜像时，每个镜像库的 TCP 连接限制为 4 个并发连接，外加一个专门用于元数据请求的额外连接。此连接限制可防止您的构建在拉取镜像时卡住。专用的元数据连接有助于缩短总体构建时间。
+对于拉取和推送镜像，每个注册表的 TCP 连接被限制为 4 个并发连接，外加一个专门用于元数据请求的额外连接。此连接限制可防止您的构建任务在拉取镜像时卡住。专用的元数据连接有助于缩短整体构建时间。
 
-更多信息请参阅：[moby/buildkit#2259](https://github.com/moby/buildkit/pull/2259)
+更多信息请参见：[moby/buildkit#2259](https://github.com/moby/buildkit/pull/2259)
 
 ```

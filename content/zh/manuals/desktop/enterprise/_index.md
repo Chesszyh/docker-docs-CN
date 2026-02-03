@@ -1,7 +1,7 @@
 ---
-title: Docker Desktop 企业版 (Enterprise)
+title: Docker Desktop 企业版
 description: Docker Desktop 企业版
-keywords: Docker Desktop 企业版
+keywords: Docker Desktop Enterprise, 企业版
 sitemap: false
 aliases:
 - /ee/desktop/
@@ -16,8 +16,8 @@ aliases:
 - /desktop/enterprise/troubleshoot/windows-issues/
 ---
 
-Docker Desktop 企业版 (DDE) 已被弃用，并且不再处于活跃开发中。请改用 [Docker Desktop](../_index.md) 社区版。
+Docker Desktop Enterprise (DDE) 已被弃用，且不再处于活跃开发状态。请使用 [Docker Desktop 社区版](../_index.md) 代替。
 
-如果您是现有的 DDE 客户，请使用我们的 [支持表单](https://hub.docker.com/support/desktop/) 请求过渡到我们的新 [订阅](https://www.docker.com/pricing) 之一。
+如果您是现有的 DDE 客户，请使用我们的 [支持表单](https://hub.docker.com/support/desktop/) 请求过渡到我们新的 [订阅方案](https://www.docker.com/pricing)。
 
-如果您希望大规模部署 Docker Desktop，请通过 [pricingquestions@docker.com](mailto:pricingquestions@docker.com) 联系我们。
+如果您希望进行大规模的 Docker Desktop 部署，请通过 [pricingquestions@docker.com](mailto:pricingquestions@docker.com) 联系我们。

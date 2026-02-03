@@ -1,11 +1,11 @@
 ---
-title: 使用 GitHub Actions 导出到 Docker
-linkTitle: 导出到 Docker
-description: 使用 GitHub Actions 将构建结果加载到镜像库
-keywords: ci, github actions, gha, buildkit, buildx, docker, 导出, load
+title: 使用 GitHub Actions 导出至 Docker
+linkTitle: 导出至 Docker
+description: 使用 GitHub Actions 将构建结果加载到镜像库中
+keywords: ci, github actions, gha, buildkit, buildx, docker, export, load, 导出, 加载
 ---
 
-您可能希望通过 `docker images` 让 Docker 客户端可以使用您的构建结果，以便在工作流的另一个步骤中使用它：
+您可能希望构建结果能够通过 `docker images` 命令在 Docker 客户端中可见，以便在工作流的后续步骤中使用它：
 
 ```yaml
 name: ci

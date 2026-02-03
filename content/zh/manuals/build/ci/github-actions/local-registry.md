@@ -1,11 +1,11 @@
 ---
-title: 使用 GitHub Actions 的本地镜像库
-linkTitle: 本地镜像库
-description: 在 GitHub Actions 中创建并使用本地 OCI 镜像库
-keywords: ci, github actions, gha, buildkit, buildx, 镜像库
+title: 在 GitHub Actions 中使用本地注册表
+linkTitle: 本地注册表
+description: 在 GitHub Actions 中创建并使用本地 OCI 注册表
+keywords: ci, github actions, gha, buildkit, buildx, registry, 本地注册表
 ---
 
-出于测试目的，您可能需要创建一个 [本地镜像库](https://hub.docker.com/_/registry) 来推送镜像：
+出于测试目的，您可能需要创建一个 [本地注册表](https://hub.docker.com/_/registry) 并向其中推送镜像：
 
 ```yaml
 name: ci

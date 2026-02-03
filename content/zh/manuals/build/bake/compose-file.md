@@ -2,11 +2,9 @@
 title: 使用 Bake 从 Compose 文件构建
 description: 使用 Bake 构建您的 Compose 服务
 keywords: build, buildx, bake, buildkit, compose, yaml
-aliases:
-  - /build/customize/bake/compose-file/
 ---
 
-Bake 支持 [Compose 文件格式](/reference/compose-file/_index.md)，可以解析 Compose 文件并将每个服务转换为一个 [目标 (target)](reference.md#target)。
+Bake 支持 [Compose 文件格式](/reference/compose-file/_index.md)，它能够解析 Compose 文件并将每个服务转换为一个 [目标 (target)](reference.md#target)。
 
 ```yaml
 # compose.yaml
@@ -91,14 +89,14 @@ $ docker buildx bake --print
 }
 ```
 
-与 HCL 格式相比，Compose 格式有一些局限性：
+与 HCL 格式相比，Compose 格式存在一些限制：
 
-- 尚不支持指定变量或全局范围属性
-- 不支持 `inherits` 服务字段，但您可以使用 [YAML 锚点](/reference/compose-file/fragments.md) 来引用其他服务，如前面示例中 `&build-dev` 所示。
+- 尚不支持指定变量或全局作用域属性
+- 不支持服务的 `inherits` 字段，但您可以使用 [YAML 锚点](/reference/compose-file/fragments.md) 来引用其他服务，如上例中的 `&build-dev` 所示。
 
-## .env 文件
+## `.env` 文件
 
-您可以在名为 `.env` 的环境文件中声明默认环境变量。该文件将从执行命令的当前工作目录加载，并应用于通过 `-f` 传递的 Compose 定义。
+您可以在名为 `.env` 的环境文件中声明默认环境变量。该文件将从命令执行所在的当前工作目录加载，并应用于通过 `-f` 传递的 Compose 定义。
 
 ```yaml
 # compose.yaml
@@ -139,9 +137,9 @@ $ docker buildx bake --print
 >
 > 系统环境变量的优先级高于 `.env` 文件中的环境变量。
 
-## 带有 x-bake 的扩展字段
+## 使用 `x-bake` 扩展字段
 
-当 Compose 规范中没有某些字段时，您可以在 Compose 文件中使用 [特殊扩展](/reference/compose-file/extension.md) 字段 `x-bake` 来评估额外的字段：
+对于某些在 Compose 规范中不可用的字段，您可以在 Compose 文件中使用 [特殊扩展字段](/reference/compose-file/extension.md) `x-bake` 来评估额外字段：
 
 ```yaml
 # compose.yaml
@@ -253,7 +251,7 @@ $ docker buildx bake --print
 }
 ```
 
-x-bake 的有效字段完整列表：
+`x-bake` 可用字段完整列表：
 
 - `cache-from`
 - `cache-to`

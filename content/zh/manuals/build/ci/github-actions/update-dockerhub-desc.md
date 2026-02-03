@@ -1,11 +1,11 @@
 ---
 title: 使用 GitHub Actions 更新 Docker Hub 描述
 linkTitle: 更新 Docker Hub 描述
-description: 了解如何使用 GitHub Actions 更新 Docker Hub 中的仓库 README
-keywords: ci, github actions, gha, buildkit, buildx, docker hub
+description: 了解如何使用 GitHub Actions 更新 Docker Hub 存储库的 README 描述
+keywords: ci, github actions, gha, buildkit, buildx, docker hub, 存储库描述
 ---
 
-您可以使用名为 [Docker Hub Description](https://github.com/peter-evans/dockerhub-description) 的第三方 action 来更新 Docker Hub 仓库描述：
+您可以使用名为 [Docker Hub Description](https://github.com/peter-evans/dockerhub-description) 的第三方 Action 来更新 Docker Hub 存储库的描述：
 
 ```yaml
 name: ci

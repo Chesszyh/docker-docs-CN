@@ -1,12 +1,12 @@
 ---
-title: Bake 中的继承
+title: Bake 中的继承机制
 linkTitle: 继承 (Inheritance)
 weight: 30
 description: 了解如何在 Bake 中从其他目标继承属性
-keywords: buildx, buildkit, bake, 继承, 目标, 属性
+keywords: buildx, buildkit, bake, inheritance, targets, attributes, 继承, 属性
 ---
 
-目标可以使用 `inherits` 属性从其他目标继承属性。例如，假设您有一个为开发环境构建 Docker 镜像的目标：
+目标 (Targets) 可以使用 `inherits` 属性从其他目标继承属性。例如，假设您有一个用于构建开发环境 Docker 镜像的目标：
 
 ```hcl {title=docker-bake.hcl}
 target "app-dev" {
@@ -21,7 +21,7 @@ target "app-dev" {
 }
 ```
 
-您可以创建一个新的目标，该目标使用相同的构建配置，但为生产环境构建使用略有不同的属性。在此示例中，`app-release` 目标继承了 `app-dev` 目标，但覆盖了 `tags` 属性并添加了一个新的 `platforms` 属性：
+您可以创建一个新目标，使用相同的构建配置，但为生产环境构建设置略有不同的属性。在本例中，`app-release` 目标继承了 `app-dev` 目标，但覆盖了 `tags` 属性，并添加了新的 `platforms` 属性：
 
 ```hcl {title=docker-bake.hcl}
 target "app-release" {
@@ -31,9 +31,9 @@ target "app-release" {
 }
 ```
 
-## 通用可重用目标
+## 通用的可复用目标
 
-一种常见的继承模式是定义一个包含项目中所有或许多构建目标的共享属性的通用目标。例如，以下 `_common` 目标定义了一组通用的构建参数：
+一种常见的继承模式是定义一个包含项目中所有或许多构建目标共享属性的通用目标。例如，以下 `_common` 目标定义了一组通用的构建参数：
 
 ```hcl {title=docker-bake.hcl}
 target "_common" {
@@ -44,7 +44,7 @@ target "_common" {
 }
 ```
 
-然后，您可以在其他目标中继承 `_common` 目标以应用共享属性：
+然后，您可以在其他目标中继承 `_common` 目标以应用这些共享属性：
 
 ```hcl {title=docker-bake.hcl}
 target "lint" {
@@ -75,7 +75,7 @@ target "binaries" {
 
 ## 覆盖继承的属性
 
-当一个目标继承另一个目标时，它可以覆盖任何继承的属性。例如，以下目标覆盖了继承目标的 `args` 属性：
+当一个目标继承另一个目标时，它可以覆盖任何继承而来的属性。例如，以下目标覆盖了继承目标中的 `args` 属性：
 
 ```hcl {title=docker-bake.hcl}
 target "app-dev" {
@@ -93,7 +93,7 @@ target "app-dev" {
 
 ## 从多个目标继承
 
-`inherits` 属性是一个列表，这意味着您可以重用来自多个其他目标的属性。在以下示例中，`app-release` 目标重用了来自 `app-dev` 和 `_common` 目标的属性。
+`inherits` 属性是一个列表，这意味着您可以复用来自多个其他目标的属性。在以下示例中，`app-release` 目标同时复用了来自 `app-dev` 和 `_common` 目标的属性。
 
 ```hcl {title=docker-bake.hcl}
 target "_common" {
@@ -122,13 +122,13 @@ target "app-release" {
 }
 ```
 
-当从多个目标继承属性且发生冲突时，在 `inherits` 列表中最后出现的目标具有最高优先级。前面的示例在 `_common` 目标中定义了 `BUILDKIT_CONTEXT_KEEP_GIT_DIR`，并在 `app-dev` 目标中覆盖了它。
+当从多个目标继承属性且发生冲突时，在 `inherits` 列表中靠后出现的目标优先级更高。前面的示例在 `_common` 目标中定义了 `BUILDKIT_CONTEXT_KEEP_GIT_DIR`，并在 `app-dev` 目标中将其覆盖。
 
-`app-release` 目标同时继承了 `app-dev` 目标和 `_common` 目标。`BUILDKIT_CONTEXT_KEEP_GIT_DIR` 参数在 `app-dev` 目标中被设置为 0，在 `_common` 目标中被设置为 1。由于 `_common` 目标在 `inherits` 列表中排在最后，`app-release` 目标中的 `BUILDKIT_CONTEXT_KEEP_GIT_DIR` 参数被设置为 1，而不是 0。
+`app-release` 目标同时继承了 `app-dev` 目标和 `_common` 目标。在 `app-dev` 中 `BUILDKIT_CONTEXT_KEEP_GIT_DIR` 设置为 0，在 `_common` 中设置为 1。由于 `_common` 在 `inherits` 列表中靠后出现，因此 `app-release` 目标中的 `BUILDKIT_CONTEXT_KEEP_GIT_DIR` 参数被最终设置为 1，而不是 0。
 
-## 重用目标的单个属性
+## 复用目标的单个属性
 
-如果您只想从一个目标继承单个属性，可以使用点符号引用另一个目标的属性。例如，在以下 Bake 文件中，`bar` 目标重用了 `foo` 目标的 `tags` 属性：
+如果您只想从某个目标继承单个属性，可以使用点记法引用另一个目标的属性。例如，在以下 Bake 文件中，`bar` 目标复用了来自 `foo` 目标的 `tags` 属性：
 
 ```hcl {title=docker-bake.hcl}
 target "foo" {

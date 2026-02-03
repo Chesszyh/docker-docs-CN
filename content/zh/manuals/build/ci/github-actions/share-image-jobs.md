@@ -1,13 +1,11 @@
 ---
-title: 使用 GitHub Actions 在作业之间共享构建的镜像
-linkTitle: 在作业之间共享镜像
-description: 在不推送到镜像库的情况下，在 runner 之间共享镜像
-keywords: ci, github actions, gha, buildkit, buildx
+title: 使用 GitHub Actions 在不同任务间共享已构建的镜像
+linkTitle: 在不同任务间共享镜像
+description: 在不推送到注册表的情况下，在不同运行器之间共享镜像
+keywords: ci, github actions, gha, buildkit, buildx, 共享镜像
 ---
 
-由于每个作业都在其自身的 runner 中隔离运行，除非您使用的是 [自托管 runner](https://docs.github.com/en/actions/hosting-your-own-runners/about-self-hosted-runners) 或 [Docker Build Cloud](/build-cloud)，否则您无法在作业之间直接使用构建的镜像。
-
-但是，您可以使用 [actions/upload-artifact](https://github.com/actions/upload-artifact) 和 [actions/download-artifact](https://github.com/actions/download-artifact) 在工作流的 [作业之间传递数据](https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts#passing-data-between-jobs-in-a-workflow)：
+由于每个任务都在其独立的运行器中隔离运行，您无法在不同任务之间直接使用已构建的镜像，除非您使用的是 [自托管运行器 (self-hosted runners)](https://docs.github.com/en/actions/hosting-your-own-runners/about-self-hosted-runners) 或 [Docker Build Cloud](/build-cloud)。但是，您可以使用 [actions/upload-artifact](https://github.com/actions/upload-artifact) 和 [actions/download-artifact](https://github.com/actions/download-artifact) Actions 在工作流的 [任务间传递数据](https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts#passing-data-between-jobs-in-a-workflow)：
 
 ```yaml
 name: ci

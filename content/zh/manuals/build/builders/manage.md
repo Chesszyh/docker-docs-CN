@@ -1,26 +1,26 @@
 ---
-title: 管理构建器
-keywords: build, buildx, builders, buildkit, drivers, backend
-description: null
+title: 管理构建器 (Builders)
+keywords: build, buildx, builders, buildkit, drivers, backend, 构建器, 管理
+description: 了解如何创建、列出、检查及移除 Docker 构建器
 ---
 
-您可以使用 `docker buildx` 命令或 [通过 Docker Desktop](#使用-docker-desktop-管理构建器) 来创建、检查和管理构建器。
+您可以使用 `docker buildx` 命令，或通过 [Docker Desktop](#使用-docker-desktop-管理构建器) 来创建、检查和管理构建器。
 
-## 创建新构建器
+## 创建一个新构建器
 
-默认构建器使用 [`docker` 驱动程序](drivers/docker.md)。您无法手动创建新的 `docker` 构建器，但可以创建使用其他驱动程序（如 [`docker-container` 驱动程序](drivers/docker-container.md)）的构建器，该驱动程序在容器中运行 BuildKit 守护进程。
+默认构建器使用 [`docker` 驱动](drivers/docker.md)。您无法手动创建新的 `docker` 构建器，但可以创建使用其他驱动程序的构建器，例如 [`docker-container` 驱动](drivers/docker-container.md)，它会在容器中运行 BuildKit 守护进程。
 
-使用 [`docker buildx create`](/reference/cli/docker/buildx/create.md) 命令创建构建器。
+使用 [`docker buildx create`](/reference/cli/docker/buildx/create.md) 命令创建一个构建器。
 
 ```console
-$ docker buildx create --name=<builder-name>
+$ docker buildx create --name=<构建器名称>
 ```
 
-如果省略 `--driver` 标志，Buildx 默认使用 `docker-container` 驱动程序。有关可用驱动程序的更多信息，请参阅 [构建驱动程序](drivers/_index.md)。
+如果您省略了 `--driver` 标志，Buildx 默认使用 `docker-container` 驱动。有关可用驱动程序的更多信息，请参阅 [构建驱动](drivers/_index.md)。
 
 ## 列出可用构建器
 
-使用 `docker buildx ls` 查看系统上可用的构建器实例及其使用的驱动程序。
+使用 `docker buildx ls` 查看您系统上可用的构建器实例及其使用的驱动程序。
 
 ```console
 $ docker buildx ls
@@ -31,11 +31,11 @@ my_builder      docker-container
   my_builder0   default              running  v0.11.6  linux/amd64, linux/amd64/v2, linux/amd64/v3, linux/386
 ```
 
-构建器名称旁边的星号 (`*`) 表示 [已选构建器](_index.md#已选构建器)。
+构建器名称旁边的星号 (`*`) 表示 [已选构建器](_index.md#selected-builder)。
 
 ## 检查构建器
 
-要通过 CLI 检查构建器，请使用 `docker buildx inspect <name>`。只有在构建器处于活动状态时，您才能检查它。您可以在命令中添加 `--bootstrap` 标志来启动构建器。
+要通过 CLI 检查构建器，请使用 `docker buildx inspect <名称>`。只有在构建器处于活动状态时，您才能检查它。您可以为命令添加 `--bootstrap` 标志以启动构建器。
 
 ```console
 $ docker buildx inspect --bootstrap my_builder
@@ -55,7 +55,7 @@ Buildkit:  v0.11.6
 Platforms: linux/arm64, linux/amd64, linux/amd64/v2, linux/riscv64, linux/ppc64le, linux/s390x, linux/386, linux/mips64le, linux/mips64, linux/arm/v7, linux/arm/v6
 ```
 
-如果您想查看构建器占用的磁盘空间，请使用 `docker buildx du` 命令。默认情况下，此命令显示所有可用构建器的总磁盘使用情况。要查看特定构建器的使用情况，请使用 `--builder` 标志。
+如果您想查看构建器占用了多少磁盘空间，请使用 `docker buildx du` 命令。默认情况下，该命令显示所有可用构建器的总磁盘占用情况。要查看特定构建器的占用情况，请使用 `--builder` 标志。
 
 ```console
 $ docker buildx du --builder my_builder
@@ -86,12 +86,12 @@ Total:        2.01GB
 使用 [`docker buildx remove`](/reference/cli/docker/buildx/create.md) 命令移除构建器。
 
 ```console
-$ docker buildx rm <builder-name>
+$ docker buildx rm <构建器名称>
 ```
 
-如果您移除当前选中的构建器，系统将自动选中默认的 `docker` 构建器。您无法移除默认构建器。
+如果您移除了当前选中的构建器，系统会自动选中默认的 `docker` 构建器。您无法移除默认构建器。
 
-构建器的本地构建缓存也会被移除。
+该构建器的本地构建缓存也会被同时移除。
 
 ### 移除远程构建器
 
@@ -99,4 +99,4 @@ $ docker buildx rm <builder-name>
 
 ## 使用 Docker Desktop 管理构建器
 
-如果您已开启 [Docker Desktop 构建视图](/manuals/desktop/use-desktop/builds.md)，可以在 [Docker Desktop 设置](/manuals/desktop/settings-and-maintenance/settings.md#builders) 中检查构建器。
+如果您已经开启了 [Docker Desktop 构建视图](/manuals/desktop/use-desktop/builds.md)，可以在 [Docker Desktop 设置](/manuals/desktop/settings-and-maintenance/settings.md#构建器) 中检查构建器。

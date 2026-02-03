@@ -1,7 +1,7 @@
 ---
 title: 使用 GitHub Actions 进行缓存管理
-linkTitle: 缓存管理 (Cache management)
-keywords: ci, github actions, gha, buildkit, buildx, 缓存
+linkTitle: 缓存管理
+keywords: ci, github actions, gha, buildkit, buildx, cache, 缓存
 ---
 
 本页包含在 GitHub Actions 中使用缓存存储后端的示例。
@@ -12,7 +12,7 @@ keywords: ci, github actions, gha, buildkit, buildx, 缓存
 
 ## 内联缓存 (Inline cache)
 
-在大多数情况下，您会希望使用 [内联缓存导出器](../../cache/backends/inline.md)。但是请注意，`inline` 缓存导出器仅支持 `min` 缓存模式。要使用 `max` 缓存模式，请使用带有 `cache-to` 选项的 registry 缓存导出器分别推送镜像和缓存，如 [registry 缓存示例](#registry-缓存) 所示。
+在大多数情况下，您会希望使用 [内联缓存导出器](../../cache/backends/inline.md)。但请注意，`inline` 缓存导出器仅支持 `min` 缓存模式。要使用 `max` 模式，请使用带 `cache-to` 选项的注册表缓存导出器，将镜像和缓存分开推送，如 [注册表缓存示例](#注册表缓存) 所示。
 
 ```yaml
 name: ci
@@ -42,9 +42,9 @@ jobs:
           cache-to: type=inline
 ```
 
-## Registry 缓存
+## 注册表缓存 (Registry cache)
 
-您可以使用 [registry 缓存导出器](../../cache/backends/registry.md) 从镜像库中的缓存清单或（特殊的）镜像配置中导入/导出缓存。
+您可以使用 [注册表缓存导出器](../../cache/backends/registry.md) 从注册表上的缓存清单或（特殊的）镜像配置中导入/导出缓存。
 
 ```yaml
 name: ci
@@ -80,7 +80,7 @@ jobs:
 
 {{< summary-bar feature_name="缓存后端 API" >}}
 
-[GitHub Actions 缓存导出器](../../cache/backends/gha.md) 后端使用 [GitHub 缓存服务 API](https://github.com/tonistiigi/go-actions-cache) 来获取和上传缓存 blob。这就是为什么您应该仅在 GitHub Action 工作流中使用此缓存后端的原因，因为 `url` (`$ACTIONS_RESULTS_URL`) 和 `token` (`$ACTIONS_RUNTIME_TOKEN`) 属性仅在工作流上下文中填充。
+[GitHub Actions 缓存导出器](../../cache/backends/gha.md) 后端使用 [GitHub 缓存服务 API](https://github.com/tonistiigi/go-actions-cache) 来获取和上传缓存 blob。这就是为什么您应该仅在 GitHub Action 工作流中使用此缓存后端，因为 `url` (`$ACTIONS_RESULTS_URL`) 和 `token` (`$ACTIONS_RUNTIME_TOKEN`) 属性仅在工作流上下文中才会被填充。
 
 ```yaml
 name: ci
@@ -112,21 +112,21 @@ jobs:
 
 > [!IMPORTANT]
 >
-> 自 [2025 年 4 月 15 日起，将仅支持 GitHub 缓存服务 API v2](https://gh.io/gha-cache-sunset)。
+> 自 [2025 年 4 月 15 日起，仅支持 GitHub 缓存服务 API v2](https://gh.io/gha-cache-sunset)。
 > 
-> 如果您在构建期间遇到以下错误：
+> 如果您在构建过程中遇到以下错误：
 > 
 > ```console
 > ERROR: failed to solve: This legacy service is shutting down, effective April 15, 2025. Migrate to the new service ASAP. For more information: https://gh.io/gha-cache-sunset
 > ```
 > 
-> 您可能正在使用仅支持旧版 GitHub 缓存服务 API v1 的过期工具。根据您的用例，以下是您需要升级到的最低版本：
+> 说明您可能正在使用仅支持旧版 GitHub 缓存服务 API v1 的过时工具。取决于您的使用场景，以下是您需要升级到的最低版本：
 > * Docker Buildx >= v0.21.0
 > * BuildKit >= v0.20.0
 > * Docker Compose >= v2.33.1
-> * Docker Engine >= v28.0.0（如果您是在启用了 containerd 镜像库的情况下使用 Docker 驱动程序进行构建）
+> * Docker Engine >= v28.0.0（如果您在启用 containerd 镜像存储的情况下使用 Docker 驱动进行构建）
 > 
-> 如果您在 GitHub 托管的 runner 上使用 `docker/build-push-action` 或 `docker/bake-action` 进行构建，Docker Buildx 和 BuildKit 已经是最新的，但在自托管 runner 上，您可能需要自己更新它们。或者，您可以使用 `docker/setup-buildx-action` 安装最新版本的 Docker Buildx：
+> 如果您在 GitHub 托管的运行器（runners）上使用 `docker/build-push-action` 或 `docker/bake-action`，Docker Buildx 和 BuildKit 已经是最新的。但在自托管运行器上，您可能需要手动更新它们。或者，您可以使用 `docker/setup-buildx-action` 安装最新版本的 Docker Buildx：
 > 
 > ```yaml
 > - name: Set up Docker Buildx
@@ -135,7 +135,7 @@ jobs:
 >    version: latest
 > ```
 > 
-> 如果您使用 Docker Compose 进行构建，可以使用 `docker/setup-compose-action` ：
+> 如果您使用 Docker Compose 进行构建，可以使用 `docker/setup-compose-action`：
 > 
 > ```yaml
 > - name: Set up Docker Compose
@@ -144,7 +144,7 @@ jobs:
 >    version: latest
 > ```
 > 
-> 如果您在启用了 containerd 镜像库的情况下使用 Docker Engine 进行构建，可以使用 `docker/setup-docker-action` ：
+> 如果您在启用 containerd 镜像存储的情况下使用 Docker Engine 进行构建，可以使用 `docker/setup-docker-action`：
 > 
 > ```yaml
 > -
@@ -162,13 +162,13 @@ jobs:
 
 ### 缓存挂载 (Cache mounts)
 
-默认情况下，BuildKit 不会在 GitHub Actions 缓存中保留缓存挂载。如果您希望将缓存挂载放入 GitHub Actions 缓存并在构建之间重用它，可以使用 [`reproducible-containers/buildkit-cache-dance`](https://github.com/reproducible-containers/buildkit-cache-dance) 提供的变通方法。
+默认情况下，BuildKit 不会在 GitHub Actions 缓存中保留缓存挂载。如果您希望将缓存挂载存入 GitHub Actions 缓存并在构建之间复用，可以使用由 [`reproducible-containers/buildkit-cache-dance`](https://github.com/reproducible-containers/buildkit-cache-dance) 提供的变通方案。
 
-此 GitHub Action 会创建临时容器，以配合您的 Docker 构建步骤提取和注入缓存挂载数据。
+这个 GitHub Action 会创建临时容器，将缓存挂载数据提取并注入到您的 Docker 构建步骤中。
 
-以下示例显示了如何在一个 Go 项目中使用此变通方法。
+以下示例展示了如何在 Go 项目中使用此变通方案。
 
-示例 Dockerfile 位于 `build/package/Dockerfile`
+示例 Dockerfile 位于 `build/package/Dockerfile`：
 
 ```Dockerfile
 FROM golang:1.21.1-alpine as base-build
@@ -184,7 +184,7 @@ RUN --mount=type=cache,target=/root/.cache/go-build go build -o /bin/app /build/
 ...
 ```
 
-示例 CI action
+示例 CI Action：
 
 ```yaml
 name: ci
@@ -242,15 +242,15 @@ jobs:
           platforms: linux/amd64,linux/arm64
 ```
 
-有关此变通方法的更多信息，请参考 [GitHub 仓库](https://github.com/reproducible-containers/buildkit-cache-dance)。
+有关此变通方案的更多信息，请参考 [GitHub 仓库](https://github.com/reproducible-containers/buildkit-cache-dance)。
 
 ### 本地缓存 (Local cache)
 
 > [!WARNING]
 >
-> 目前，旧的缓存条目不会被删除，因此缓存大小会 [持续增长](https://github.com/docker/build-push-action/issues/252)。以下示例使用 `Move cache` 步骤作为变通方法（更多信息请参见 [`moby/buildkit#1896`](https://github.com/moby/buildkit/issues/1896)）。
+> 目前旧的缓存条目不会被删除，因此缓存大小会 [持续增长](https://github.com/docker/build-push-action/issues/252)。以下示例使用 `Move cache` 步骤作为一种变通方法（更多信息请参见 [`moby/buildkit#1896`](https://github.com/moby/buildkit/issues/1896)）。
 
-您还可以通过此 action，利用 [actions/cache](https://github.com/actions/cache) 和 [本地缓存导出器](../../cache/backends/local.md) 来使用 [GitHub 缓存](https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows)：
+您还可以通过使用 [actions/cache](https://github.com/actions/cache) 以及 [本地缓存导出器](../../cache/backends/local.md) 来利用 [GitHub 缓存](https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows)：
 
 ```yaml
 name: ci

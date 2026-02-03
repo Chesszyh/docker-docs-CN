@@ -1,11 +1,11 @@
 ---
-title: 使用 GitHub Actions 推送到多个镜像库
-linkTitle: 推送到多个镜像库
-description: 使用 GitHub Actions 推送到多个镜像库
-keywords: ci, github actions, gha, buildkit, buildx, 镜像库
+title: 使用 GitHub Actions 推送到多个注册表
+linkTitle: 推送到多个注册表
+description: 使用 GitHub Actions 向多个注册表推送镜像
+keywords: ci, github actions, gha, buildkit, buildx, registry, 推送, 注册表
 ---
 
-以下工作流将连接到 Docker Hub 和 GitHub Container Registry，并将镜像推送到这两个镜像库：
+以下工作流将连接到 Docker Hub 和 GitHub Container Registry，并向这两个注册表推送镜像：
 
 ```yaml
 name: ci

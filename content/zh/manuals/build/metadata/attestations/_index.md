@@ -1,34 +1,34 @@
 ---
 title: 构建证明 (Build attestations)
-keywords: build, attestations, sbom, provenance, metadata
+keywords: build, attestations, sbom, provenance, metadata, 证明, 来源
 description: |
-  Docker Build 中的 SBOM 和来源证明简介，介绍它们是什么以及存在的原因
+  介绍 Docker Build 的 SBOM 和来源证明，包括它们是什么以及为什么存在
 aliases:
   - /build/attestations/
 ---
 
 {{< youtube-embed qOzcycbTs4o >}}
 
-构建证明（Build attestations）描述了镜像如何构建以及包含什么内容。证明由 BuildKit 在构建时创建，并作为元数据附加到最终镜像上。
+构建证明 (Build attestations) 描述了镜像如何构建以及它包含什么。这些证明由 BuildKit 在构建时创建，并作为元数据附加到最终镜像上。
 
-证明的目的是使检查镜像成为可能，从而了解镜像的来源、创建者、创建方式以及包含的内容。这使您能够对镜像如何影响应用程序的供应链安全做出明智的决策。它还允许使用策略引擎根据您定义的策略规则来验证镜像。
+证明的目的是使检查镜像并了解其来源、创建者及方式、包含的内容成为可能。这使您能够根据镜像对应用程序供应链安全的影响做出明智决策。它还支持使用策略引擎根据您定义的规则验证镜像。
 
-有两种类型的构建注解可用：
+目前有两种类型的构建证明：
 
-- 软件物料清单 (SBOM)：镜像包含的或用于构建镜像的软件构件列表。
-- 来源 (Provenance)：镜像的构建方式。
+- **软件物料清单 (Software Bill of Material, SBOM)**：镜像包含的、或用于构建镜像的软件产物列表。
+- **来源证明 (Provenance)**：镜像构建过程的详细记录。
 
-## 证明的目的
+## 证明的作用
 
-开源和第三方软件包的使用比以往任何时候都更加广泛。开发人员分享和重用代码，因为这有助于提高生产力，使团队能够更快地创造更好的产品。
+开源和第三方包的使用比以往任何时候都更加广泛。开发人员分享和复用代码有助于提高生产力，使团队能够更快地创建更好的产品。
 
-导入和使用在别处创建且未经审核的代码会带来严重的安全风险。即使您确实审查了所使用的软件，新的零日漏洞也会经常被发现，这需要开发团队采取行动进行修复。
+但在未经审查的情况下导入并使用其他地方创建的代码会带来严重的安全风险。即便您确实审查了所使用的软件，新的零日漏洞也会经常被发现，需要开发团队采取行动进行修复。
 
-构建证明使得查看镜像内容及其来源变得更加容易。使用证明来分析并决定是否使用某个镜像，或者查看您已经在使用的镜像是否暴露在漏洞之下。
+构建证明使查看镜像内容及其来源变得更加容易。使用证明来分析并决定是否使用某个镜像，或者查看您已经在使用的镜像是否存在漏洞。
 
 ## 创建证明
 
-当您使用 `docker buildx build` 构建镜像时，可以使用 `--provenance` 和 `--sbom` 选项向生成的镜像添加证明记录。您可以选择添加 SBOM 或来源证明类型，或者两者都添加。
+当您使用 `docker buildx build` 构建镜像时，可以使用 `--provenance` 和 `--sbom` 选项为生成的镜像添加证明记录。您可以选择添加 SBOM 或来源证明，或者两者都添加。
 
 ```console
 $ docker buildx build --sbom=true --provenance=true .
@@ -36,34 +36,34 @@ $ docker buildx build --sbom=true --provenance=true .
 
 > [!NOTE]
 >
-> 默认的镜像库不支持证明。如果您使用的是默认的镜像库，并且使用默认的 `docker` 驱动程序构建镜像，或者使用带有 `--load` 标志的其他驱动程序构建镜像，证明将会丢失。
+> 默认的镜像库不支持证明。如果您使用的是默认镜像库，并且使用默认的 `docker` 驱动构建镜像，或者使用其他驱动但带有 `--load` 标志，则证明将会丢失。
 >
-> 为了确保保留证明，您可以：
+> 要确保保留证明，您可以：
 >
-> - 使用带有 `--push` 标志的 `docker-container` 驱动程序直接将镜像推送到镜像库。
-> - 启用 [containerd 镜像库](/manuals/desktop/features/containerd.md)。
+> - 使用带有 `--push` 标志的 `docker-container` 驱动将镜像直接推送到注册表。
+> - 启用 [containerd 镜像存储](/manuals/desktop/features/containerd.md)。
 
 > [!NOTE]
 >
-> 来源证明默认启用，带有 `mode=min` 选项。您可以使用 `--provenance=false` 标志或通过设置 [`BUILDX_NO_DEFAULT_ATTESTATIONS`](/manuals/build/building/variables.md#buildx_no_default_attestations) 环境变量来禁用来源证明。
+> 来源证明默认开启，选项为 `mode=min`。您可以使用 `--provenance=false` 标志或通过设置 [`BUILDX_NO_DEFAULT_ATTESTATIONS`](/manuals/build/building/variables.md#buildx_no_default_attestations) 环境变量来禁用来源证明。
 >
-> 使用 `--provenance=true` 标志默认会附加 `mode=min` 的来源证明。有关更多详情，请参阅 [来源证明](./slsa-provenance.md)。
+> 使用 `--provenance=true` 标志默认附加 `mode=min` 的来源证明。详情请参阅 [来源证明](./slsa-provenance.md)。
 
-BuildKit 在构建镜像时生成证明。证明记录以 in-toto JSON 格式包装，并在最终镜像的清单中附加到镜像索引上。
+BuildKit 在构建镜像时生成证明。证明记录被包裹在 in-toto JSON 格式中，并附加到最终镜像的镜像索引（image index）清单中。
 
 ## 存储
 
-BuildKit 以 [in-toto 格式](https://github.com/in-toto/attestation) 生成证明，该格式由 Linux 基金会支持的标准 [in-toto 框架](https://in-toto.io/) 定义。
+BuildKit 生成符合 [in-toto 格式](https://github.com/in-toto/attestation) 的证明，该格式由 Linux 基金会支持的 [in-toto 框架](https://in-toto.io/) 定义。
 
-证明作为镜像索引中的清单附加到镜像上。证明的数据记录存储为 JSON blob。
+证明作为镜像索引中的一个清单附加到镜像上。证明的数据记录以 JSON blob 的形式存储。
 
-由于证明作为清单附加到镜像上，这意味着您可以检查镜像库中任何镜像的证明，而无需拉取整个镜像。
+由于证明以清单形式附加到镜像，这意味着您可以检查注册表中任何镜像的证明，而无需拉取整个镜像。
 
-所有 BuildKit 导出器都支持证明。`local` 和 `tar` 导出器无法将证明保存到镜像清单中，因为它们输出的是文件目录或 tar 包，而不是镜像。相反，这些导出器会将证明写入导出根目录中的一个或多个 JSON 文件中。
+所有的 BuildKit 导出器都支持证明。`local` 和 `tar` 导出器无法将证明保存到镜像清单中，因为它们输出的是文件目录或 tar 包，而不是镜像。相反，这些导出器会将证明写入到导出根目录下的一个或多个 JSON 文件中。
 
 ## 示例
 
-以下示例显示了 SBOM 证明的截断的 in-toto JSON 表示。
+以下示例展示了一个 SBOM 证明的 in-toto JSON 表示形式（已截断）。
 
 ```json
 {
@@ -71,7 +71,7 @@ BuildKit 以 [in-toto 格式](https://github.com/in-toto/attestation) 生成证�
   "predicateType": "https://spdx.dev/Document",
   "subject": [
     {
-      "name": "pkg:docker/<registry>/<image>@<tag/digest>?platform=<platform>",
+      "name": "pkg:docker/<注册表>/<镜像名>@<标签/摘要>?platform=<平台>",
       "digest": {
         "sha256": "e8275b2b76280af67e26f068e5d585eb905f8dfd2f1918b3229db98133cb4862"
       }
@@ -96,7 +96,7 @@ BuildKit 以 [in-toto 格式](https://github.com/in-toto/attestation) 生成证�
         "licenseConcluded": "NOASSERTION"
       }
     ],
-    // 为此镜像识别的软件包列表：
+    // 为此镜像识别出的软件包列表：
     "packages": [
       {
         "name": "busybox",
@@ -111,7 +111,7 @@ BuildKit 以 [in-toto 格式](https://github.com/in-toto/attestation) 生成证�
         // ...
       }
     ],
-    // 文件-软件包关系
+    // 文件与软件包的关系
     "relationships": [
       {
         "relatedSpdxElement": "SPDXRef-1ac501c94e2f9f81",
@@ -125,13 +125,13 @@ BuildKit 以 [in-toto 格式](https://github.com/in-toto/attestation) 生成证�
 }
 ```
 
-要深入了解证明如何存储的细节，请参阅 [镜像证明存储 (BuildKit)](attestation-storage.md)。
+欲深入了解关于证明存储方式的细节，请参阅 [镜像证明存储 (BuildKit)](attestation-storage.md)。
 
 ## 证明清单格式
 
-证明作为清单存储，由镜像索引引用。每个 _证明清单_ 都指向单个 _镜像清单_（镜像的一个平台变体）。证明清单包含单个层，即证明的“值”。
+证明以清单 (manifests) 的形式存储，由镜像索引引用。每个 **证明清单** 指向单个 **镜像清单**（镜像的一个平台变体）。证明清单包含一个层，即证明的“值”。
 
-以下示例显示了证明清单的结构：
+以下示例展示了证明清单的结构：
 
 ```json
 {
@@ -155,17 +155,17 @@ BuildKit 以 [in-toto 格式](https://github.com/in-toto/attestation) 生成证�
 }
 ```
 
-### 将证明作为 OCI 构件
+### 作为 OCI 产物的证明 (Attestations as OCI artifacts)
 
-您可以使用 `image` 和 `registry` 导出器的 [`oci-artifact` 选项](/manuals/build/exporters/image-registry.md#概要) 来配置证明清单的格式。如果设置为 `true`，证明清单的结构将发生如下变化：
+您可以使用 `image` 和 `registry` 导出器的 [`oci-artifact` 选项](/manuals/build/exporters/image-registry.md#语法) 来配置证明清单的格式。如果设为 `true`，证明清单的结构将发生如下变化：
 
-- 证明清单中添加了一个 `artifactType` 字段，其值为 `application/vnd.docker.attestation.manifest.v1+json`。
-- `config` 字段是一个 [空描述符 (empty descriptor)]，而不是“伪”配置。
-- 还添加了一个 `subject` 字段，指向证明所引用的镜像清单。
+- 证明清单中增加了一个 `artifactType` 字段，值为 `application/vnd.docker.attestation.manifest.v1+json`。
+- `config` 字段是一个 [空描述符 (empty descriptor)] 而不是“虚拟”配置。
+- 增加了一个 `subject` 字段，指向该证明所引用的镜像清单。
 
 [空描述符 (empty descriptor)]: https://github.com/opencontainers/image-spec/blob/main/manifest.md#guidance-for-an-empty-descriptor
 
-以下示例显示了采用 OCI 构件格式的证明：
+以下是一个采用 OCI 产物格式的证明示例：
 
 ```json
 {
@@ -202,7 +202,7 @@ BuildKit 以 [in-toto 格式](https://github.com/in-toto/attestation) 生成证�
 
 ## 下一步
 
-详细了解可用的证明类型及其使用方法：
+了解更多关于可用证明类型及其使用方法：
 
 - [来源证明 (Provenance)](slsa-provenance.md)
 - [SBOM](sbom.md)

@@ -1,53 +1,55 @@
---- 
+---
 title: 来源证明 (Provenance attestations)
-keywords: build, attestations, provenance, slsa, git, metadata
+keywords: build, attestations, provenance, slsa, git, metadata, 证明, 来源
 description: >
-  来源构建证明描述了镜像如何构建以及在何处构建。
+  来源构建证明描述了您的镜像是在何处以及如何构建的。
+alias:
+  - /build/attestations/slsa-provenance/
 ---
 
-来源证明包含关于构建过程的事实，包括以下细节：
+来源证明 (Provenance attestations) 包含了关于构建过程的事实，包括如下详情：
 
 - 构建时间戳
-- 构建参数和环境
+- 构建参数与环境
 - 版本控制元数据
 - 源代码详情
-- 构建过程中消耗的材料（文件、脚本）
+- 构建期间消耗的物料（文件、脚本）
 
-来源证明遵循 [SLSA 来源架构版本 0.2](https://slsa.dev/provenance/v0.2#schema)。
+来源证明遵循 [SLSA 来源规范 0.2 版本](https://slsa.dev/provenance/v0.2#schema)。
 
-有关 BuildKit 如何填充这些来源属性的更多信息，请参阅 [SLSA 定义](slsa-definitions.md)。
+有关 BuildKit 如何填充这些来源属性的更多信息，请参考 [SLSA 定义 (SLSA definitions)](slsa-definitions.md)。
 
 ## 创建来源证明
 
-要创建来源证明，请将 `--attest type=provenance` 选项传递给 `docker buildx build` 命令：
+要创建来源证明，请向 `docker buildx build` 命令传递 `--attest type=provenance` 选项：
 
 ```console
-$ docker buildx build --tag <namespace>/<image>:<version> \
+$ docker buildx build --tag <命名空间>/<镜像名>:<版本> \
     --attest type=provenance,mode=[min,max] .
 ```
 
-或者，您可以使用简写选项 `--provenance=true` 代替 `--attest type=provenance`。要使用简写选项指定 `mode` 参数，请使用：`--provenance=mode=max`。
+或者，您也可以使用简写的 `--provenance=true` 选项来代替 `--attest type=provenance`。若要使用简写选项指定 `mode` 参数，请使用：`--provenance=mode=max`。
 
-有关如何通过 GitHub Actions 添加来源证明的示例，请参阅 [使用 GitHub Actions 添加证明](/manuals/build/ci/github-actions/attestations.md)。
+有关如何使用 GitHub Actions 添加来源证明的示例，请参阅 [使用 GitHub Actions 添加证明](/manuals/build/ci/github-actions/attestations.md)。
 
 ## 模式 (Mode)
 
-您可以使用 `mode` 参数来定义包含在来源证明中的详细程度。支持的值有 `mode=min`（默认）和 `mode=max`。
+您可以使用 `mode` 参数来定义来源证明中包含的详细程度。支持的值包括 `mode=min`（默认值）和 `mode=max`。
 
-### 最小模式 (Min)
+### Min
 
-在 `min` 模式下，来源证明包含最少的信息集，例如：
+在 `min` 模式下，来源证明仅包含最基本的信息，例如：
 
 - 构建时间戳
-- 所使用的前端
-- 构建材料
-- 源码库及修订版本
+- 使用的前端
+- 构建物料
+- 源码仓库及修订号
 - 构建平台
-- 可复现性
+- 可重现性
 
-构建参数的值、密钥的标识以及丰富的层元数据不包含在 `mode=min` 中。`min` 级别的来源证明可以安全地用于所有构建，因为它不会泄露构建环境任何部分的敏感信息。
+在 `mode=min` 中不包含构建参数的值、机密信息的标识符以及丰富的层元数据。`min` 级别的来源证明对于所有构建都是安全的，因为它不会泄露来自构建环境任何部分的信息。
 
-以下 JSON 示例显示了使用 `min` 模式创建的来源证明中包含的信息：
+以下 JSON 示例展示了使用 `min` 模式创建的来源证明中包含的信息：
 
 ```json
 {
@@ -55,7 +57,7 @@ $ docker buildx build --tag <namespace>/<image>:<version> \
   "predicateType": "https://slsa.dev/provenance/v0.2",
   "subject": [
     {
-      "name": "pkg:docker/<registry>/<image>@<tag/digest>?platform=<platform>",
+      "name": "pkg:docker/<注册表>/<镜像名>@<标签/摘要>?platform=<平台>",
       "digest": {
         "sha256": "e8275b2b76280af67e26f068e5d585eb905f8dfd2f1918b3229db98133cb4862"
       }
@@ -104,7 +106,7 @@ $ docker buildx build --tag <namespace>/<image>:<version> \
       "https://mobyproject.org/buildkit@v1#metadata": {
         "vcs": {
           "revision": "a9ba846486420e07d30db1107411ac3697ecab68",
-          "source": "git@github.com:<org>/<repo>.git"
+          "source": "git@github.com:<组织>/<仓库>.git"
         }
       }
     }
@@ -112,30 +114,30 @@ $ docker buildx build --tag <namespace>/<image>:<version> \
 }
 ```
 
-### 最大模式 (Max)
+### Max
 
-`max` 模式包含了 `min` 模式中的所有信息，以及：
+`max` 模式包含了 `min` 模式中的所有信息，此外还包括：
 
-- 构建的 LLB 定义。这些显示了生成镜像所采取的确切步骤。
-- 关于 Dockerfile 的信息，包括文件的完整 base64 编码版本。
-- 描述构建步骤与镜像层之间关系的源码映射 (Source maps)。
+- 构建的 LLB 定义。这些定义展示了生成镜像所采取的确切步骤。
+- 关于 Dockerfile 的信息，包括该文件的完整 base64 编码版本。
+- 描述构建步骤与镜像层之间关系的源码映射 (source maps)。
 
-只要可能，您应该优先选择 `mode=max`，因为它包含更多详细信息供分析。
+只要可能，应优先选择 `mode=max`，因为它包含了供分析使用的更详细的信息。
 
 > [!WARNING]
-> 
-> 请注意，`mode=max` 会暴露 [构建参数](/reference/cli/docker/buildx/build.md#build-arg) 的值。
-> 
-> 如果您滥用构建参数来传递凭据、身份验证令牌或其他密钥，则应重构构建，改用 [密钥挂载](/reference/cli/docker/buildx/build.md#secret) 传递密钥。密钥挂载不会泄露到构建之外，且绝不会包含在来源证明中。
+>
+> 请注意，`mode=max` 会暴露 [构建参数 (build arguments)](/reference/cli/docker/buildx/build.md#build-arg) 的值。
+>
+> 如果您错误地使用构建参数来传递凭据、身份验证令牌或其他机密信息，您应当重构构建过程，改用 [机密挂载 (secret mounts)](/reference/cli/docker/buildx/build.md#secret) 来传递这些机密。机密挂载不会泄露到构建之外，且绝不会包含在来源证明中。
 
-## 检查来源证明
+## 检查来源证明 (Inspect)
 
-要探索通过 `image` 导出器导出的已创建来源证明，可以使用 [`imagetools inspect`](/reference/cli/docker/buildx/imagetools/inspect.md)。
+要探索通过 `image` 导出器导出的已创建来源证明，您可以使用 [`imagetools inspect`](/reference/cli/docker/buildx/imagetools/inspect.md) 命令。
 
-使用 `--format` 选项，您可以为输出指定一个模板。所有与来源相关的数据都在 `.Provenance` 属性下可用。例如，获取 SLSA 格式的来源证明原始内容：
+使用 `--format` 选项，您可以为输出指定一个模板。所有与来源相关的数据都在 `.Provenance` 属性下。例如，要以 SLSA 格式获取来源证明的原始内容：
 
 ```console
-$ docker buildx imagetools inspect <namespace>/<image>:<version> \
+$ docker buildx imagetools inspect <命名空间>/<镜像名>:<版本> \
     --format "{{ json .Provenance.SLSA }}"
 {
   "buildType": "https://mobyproject.org/buildkit@v1",
@@ -143,10 +145,10 @@ $ docker buildx imagetools inspect <namespace>/<image>:<version> \
 }
 ```
 
-您还可以利用 Go 模板的完整功能构建更复杂的表达式。例如，对于使用 `mode=max` 生成的来源证明，您可以提取用于构建镜像的 Dockerfile 的完整源代码：
+您还可以利用 Go 模板的完整功能构建更复杂的表达式。例如，对于使用 `mode=max` 生成的证明，您可以提取用于构建镜像的 Dockerfile 的完整源代码：
 
 ```console
-$ docker buildx imagetools inspect <namespace>/<image>:<version> \
+$ docker buildx imagetools inspect <命名空间>/<镜像名>:<版本> \
     --format '{{ range (index .Provenance.SLSA.metadata "https://mobyproject.org/buildkit@v1#metadata").source.infos }}{{ if eq .filename "Dockerfile" }}{{ .data }}{{ end }}{{ end }}' | base64 -d
 FROM ubuntu:24.04
 RUN apt-get update
@@ -155,9 +157,7 @@ RUN apt-get update
 
 ## 来源证明示例
 
-<!-- TODO: add a link to the definitions page, imported from moby/buildkit -->
-
-以下示例展示了带有 `mode=max` 的来源证明的 JSON 表示形式：
+以下示例展示了 `mode=max` 的来源证明的 JSON 表示形式：
 
 ```json
 {
@@ -165,7 +165,7 @@ RUN apt-get update
   "predicateType": "https://slsa.dev/provenance/v0.2",
   "subject": [
     {
-      "name": "pkg:docker/<registry>/<image>@<tag/digest>?platform=<platform>",
+      "name": "pkg:docker/<注册表>/<镜像名>@<标签/摘要>?platform=<平台>",
       "digest": {
         "sha256": "e8275b2b76280af67e26f068e5d585eb905f8dfd2f1918b3229db98133cb4862"
       }
@@ -251,7 +251,7 @@ RUN apt-get update
       "https://mobyproject.org/buildkit@v1#metadata": {
         "vcs": {
           "revision": "a9ba846486420e07d30db1107411ac3697ecab68-dirty",
-          "source": "git@github.com:<org>/<repo>.git"
+          "source": "git@github.com:<组织>/<仓库>.git"
         },
         "source": {
           "locations": {

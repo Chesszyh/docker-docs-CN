@@ -1,9 +1,9 @@
 ---
-title: Docker Desktop for Windows 中的 GPU 支持
+title: Windows 版 Docker Desktop 的 GPU 支持
 linkTitle: GPU 支持
 weight: 40
-description: 了解如何在 Docker Desktop 中使用 GPU
-keywords: gpu, gpu support, nvidia, wsl2, docker desktop, windows
+description: 如何在 Docker Desktop 中使用 GPU
+keywords: gpu, gpu support, nvidia, wsl2, docker desktop, windows, 显卡支持
 toc_max: 3
 aliases:
 - /desktop/gpu/
@@ -11,19 +11,19 @@ aliases:
 
 > [!NOTE]
 >
-> 目前 Docker Desktop 中的 GPU 支持仅适用于具有 WSL2 后端的 Windows 系统。
+> 目前，Docker Desktop 中的 GPU 支持仅适用于采用 WSL 2 后端的 Windows 系统。
 
-Docker Desktop for Windows 支持在 NVIDIA GPU 上使用 NVIDIA GPU 半虚拟化 (GPU-PV)，允许容器访问 GPU 资源，用于 AI、机器学习或视频处理等计算密集型工作负载。
+Windows 版 Docker Desktop 支持 NVIDIA GPU 的半虚拟化（GPU Paravirtualization, GPU-PV），允许容器访问 NVIDIA GPU 资源，以执行 AI、机器学习或视频处理等计算密集型工作负载。
 
 ## 前提条件
 
 要启用 WSL 2 GPU 半虚拟化，您需要：
 
-- 一台带有 NVIDIA GPU 的 Windows 机器
+- 一台配备 NVIDIA GPU 的 Windows 机器
 - 最新的 Windows 10 或 Windows 11 安装
-- 来自 NVIDIA 的 [最新驱动程序](https://developer.nvidia.com/cuda/wsl)，支持 WSL 2 GPU 半虚拟化
-- 最新版本的 WSL 2 Linux 内核。在命令行使用 `wsl --update`
-- 确保在 Docker Desktop 中 [开启了 WSL 2 后端](wsl/_index.md#开启-docker-desktop-wsl-2)
+- 来自 NVIDIA 的[最新驱动程序](https://developer.nvidia.com/cuda/wsl)，需支持 WSL 2 GPU 半虚拟化
+- 最新版本的 WSL 2 Linux 内核。可在命令行使用 `wsl --update` 进行更新
+- 确保 Docker Desktop 中的 [WSL 2 后端已开启](wsl/_index.md#开启-docker-desktop-wsl-2)
 
 ## 验证 GPU 支持
 
@@ -33,7 +33,7 @@ Docker Desktop for Windows 支持在 NVIDIA GPU 上使用 NVIDIA GPU 半虚拟�
 $ docker run --rm -it --gpus=all nvcr.io/nvidia/k8s/cuda-sample:nbody nbody -gpu -benchmark
 ```
 
-这将在 GPU 上运行 n-body 模拟基准测试。输出将类似于：
+这将在 GPU 上运行 n-body 模拟基准测试。输出结果将类似于：
 
 ```console
 Run "nbody -benchmark [-numbodies=<numBodies>]" to measure performance.
@@ -63,9 +63,9 @@ GPU Device 0: "GeForce RTX 2060 with Max-Q Design" with compute capability 7.5
 = 2724.379 single-precision GFLOP/s at 20 flops per interaction
 ```
 
-## 运行一个真实的模型：基于 Ollama 的 Llama2
+## 运行真实模型：使用 Ollama 运行 Llama2
 
-使用 [官方 Ollama 镜像](https://hub.docker.com/r/ollama/ollama) 在 GPU 加速下运行 Llama2 LLM：
+使用 [官方 Ollama 镜像](https://hub.docker.com/r/ollama/ollama) 通过 GPU 加速运行 Llama2 大语言模型：
 
 ```console
 $ docker run --gpus=all -d -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/ollama

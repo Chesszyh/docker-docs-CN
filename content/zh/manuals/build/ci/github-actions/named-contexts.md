@@ -1,17 +1,17 @@
 ---
 title: 在 GitHub Actions 中使用命名上下文
 linkTitle: 命名上下文 (Named contexts)
-description: 在 GitHub Actions 的多阶段构建中使用附加上下文
-keywords: ci, github actions, gha, buildkit, buildx, 上下文
+description: 在 GitHub Actions 的多阶段构建中使用额外的上下文
+keywords: ci, github actions, gha, buildkit, buildx, context, 命名上下文, 上下文
 ---
 
-您可以定义 [附加上下文 (additional build contexts)](/reference/cli/docker/buildx/build.md#build-context)，并在 Dockerfile 中通过 `FROM name` 或 `--from=name` 访问它们。如果 Dockerfile 定义了同名的阶段，它将被覆盖。
+您可以定义 [额外的构建上下文 (additional build contexts)](/reference/cli/docker/buildx/build.md#build-context)，并在 Dockerfile 中通过 `FROM name` 或 `--from=name` 进行访问。当 Dockerfile 定义了同名的阶段时，该阶段会被覆盖。
 
 这在 GitHub Actions 中非常有用，可以复用其他构建的结果，或者在工作流中将镜像固定到特定的标签。
 
 ## 将镜像固定到标签
 
-将 `alpine:latest` 替换为固定的版本：
+将 `alpine:latest` 替换为一个固定的镜像：
 
 ```dockerfile
 # syntax=docker/dockerfile:1
@@ -42,9 +42,9 @@ jobs:
 
 ## 在后续步骤中使用镜像
 
-默认情况下，[Docker Setup Buildx](https://github.com/marketplace/actions/docker-setup-buildx) action 使用 `docker-container` 作为构建驱动程序，因此构建好的 Docker 镜像不会被自动加载。
+默认情况下，[Docker Setup Buildx](https://github.com/marketplace/actions/docker-setup-buildx) Action 使用 `docker-container` 作为构建驱动，因此构建的 Docker 镜像不会自动加载。
 
-使用命名上下文，您可以复用构建好的镜像：
+使用命名上下文，您可以复用已构建的镜像：
 
 ```dockerfile
 # syntax=docker/dockerfile:1
@@ -84,7 +84,7 @@ jobs:
 
 ## 配合容器构建器使用
 
-如上一节所示，我们在使用命名上下文构建时没有使用默认的 [`docker-container` 驱动程序](../../builders/drivers/docker-container.md)。这是因为该驱动程序是隔离的，无法从 Docker 存储中加载镜像。为了解决这个问题，您可以使用 [本地镜像库 (local registry)](local-registry.md) 在工作流中推送您的基础镜像：
+如前一节所示，我们在使用命名上下文构建时没有使用默认的 [`docker-container` 驱动](../../builders/drivers/docker-container.md)。这是因为该驱动是隔离的，无法从 Docker 镜像库中加载镜像。为了解决这个问题，您可以使用 [本地注册表](local-registry.md) 在工作流中推送您的基础镜像：
 
 ```dockerfile
 # syntax=docker/dockerfile:1
@@ -113,7 +113,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         with:
-          # 需要 network=host driver-opt 才能推送到本地镜像库
+          # 推送到本地注册表需要设置 network=host driver-opt
           driver-opts: network=host
 
       - name: Build base image

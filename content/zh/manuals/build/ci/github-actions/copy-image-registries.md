@@ -1,11 +1,11 @@
 ---
-title: 使用 GitHub Actions 在镜像库之间复制镜像
-linkTitle: 在镜像库之间复制镜像
-description: 使用 GitHub Actions 构建多平台镜像并在镜像库之间进行复制
-keywords: ci, github actions, gha, buildkit, buildx, 镜像库
+title: 使用 GitHub Actions 在注册表间复制镜像
+linkTitle: 在注册表间复制镜像
+description: 使用 GitHub Actions 构建多平台镜像并在不同注册表之间进行复制
+keywords: ci, github actions, gha, buildkit, buildx, registry, 复制镜像, 注册表
 ---
 
-使用 Buildx 构建的 [多平台镜像](../../building/multi-platform.md) 可以使用 [`buildx imagetools create` 命令](/reference/cli/docker/buildx/imagetools/create.md) 从一个镜像库复制到另一个镜像库：
+使用 Buildx 构建的 [多平台镜像](../../building/multi-platform.md) 可以使用 [`buildx imagetools create` 命令](/reference/cli/docker/buildx/imagetools/create.md) 从一个注册表复制到另一个注册表：
 
 ```yaml
 name: ci
@@ -52,4 +52,3 @@ jobs:
             --tag ghcr.io/user/app:1.0.0 \
             user/app:latest
 ```
-
